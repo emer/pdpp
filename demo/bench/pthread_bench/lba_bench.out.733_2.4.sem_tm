@@ -1,0 +1,379 @@
+=======================================
+10 unit layers, 200 epochs
+=======================================
+
+leabra++ Loading: lba_pt_10_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 200 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:     2.1 sys:    0.04 tot:    2.33 n: 164205
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    3.68 sys:    0.07 tot:    3.53 n: 316410
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Total time: usr:    20.2 sys:    0.44 tot:    20.7 n: 1
+20.82user 0.48system 0:21.31elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2112major+2902minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_10_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 200 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 300:   1:200,  3:100,  
+  t_run    usr:    1.64 sys:    0.03 tot:     1.7 n: 164205
+  t_wait   usr:    0.98 sys:    1.63 tot:    6.67 n: 164205
+Thread: 1
+  tot_cnt: 200:   2:200,  0:0,  
+  t_run    usr:    1.78 sys:     0.1 tot:    2.14 n: 164205
+  t_wait   usr: -2.23e+ sys: -3.55e+ tot:    4.42 n: 164205
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 20:   2:10,  3:10,  
+  t_run    usr:    3.29 sys:    0.07 tot:    3.56 n: 316410
+  t_wait   usr:    1.36 sys:    2.98 tot:    11.7 n: 316410
+Thread: 1
+  tot_cnt: 20:   1:10,  0:10,  
+  t_run    usr:    2.62 sys:    0.26 tot:    3.06 n: 316410
+  t_wait   usr: -3.49e+ sys: -3.92e+ tot:    8.51 n: 316410
+
+Total time: usr:    31.8 sys:    6.52 tot:    50.5 n: 1
+48.58user 13.18system 0:51.18elapsed 120%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+2907minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_10_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 200 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 300:   1:200,  3:100,  
+  t_run    usr:    1.67 sys:    0.05 tot:    1.42 n: 164205
+  t_wait   usr:     0.8 sys:    1.63 tot:    6.59 n: 164205
+Thread: 1
+  tot_cnt: 200:   2:200,  0:0,  
+  t_run    usr:     1.7 sys:    0.15 tot:    1.53 n: 164205
+  t_wait   usr: -1.75e+ sys: -3.03e+ tot:     4.4 n: 164205
+
+Total time: usr:      26 sys:    2.65 tot:    32.6 n: 1
+32.47user 4.96system 0:33.23elapsed 112%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+2906minor)pagefaults 0swaps
+ 
+=======================================
+50 unit layers, 50 epochs
+=======================================
+
+leabra++ Loading: lba_pt_50_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    11.5 sys:    0.02 tot:    11.6 n: 43529
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:     3.8 sys:    0.04 tot:    3.92 n: 84058
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Total time: usr:    25.9 sys:    0.17 tot:    26.1 n: 1
+26.68user 0.22system 0:26.89elapsed 100%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2112major+3094minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_50_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 7500:   1:5000,  3:2500,  
+  t_run    usr:    7.31 sys:    0.02 tot:    7.09 n: 43529
+  t_wait   usr:    0.31 sys:    0.41 tot:    2.48 n: 43529
+Thread: 1
+  tot_cnt: 5000:   2:5000,  0:0,  
+  t_run    usr:    6.39 sys:    0.04 tot:    6.48 n: 43529
+  t_wait   usr: -4.44e+ sys: -2.77e+ tot:    1.24 n: 43529
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 100:   2:50,  3:50,  
+  t_run    usr:    3.41 sys:       0 tot:    3.35 n: 84058
+  t_wait   usr:    0.34 sys:    0.58 tot:    2.65 n: 84058
+Thread: 1
+  tot_cnt: 100:   1:50,  0:50,  
+  t_run    usr:    2.67 sys:    0.07 tot:    2.72 n: 84058
+  t_wait   usr: -9.74e+ sys: -1.93e+ tot:    2.62 n: 84058
+
+Total time: usr:    26.4 sys:    1.61 tot:    31.6 n: 1
+39.54user 3.24system 0:32.42elapsed 131%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+3098minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_50_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 7500:   1:5000,  3:2500,  
+  t_run    usr:    6.22 sys:    0.02 tot:    6.35 n: 43529
+  t_wait   usr:    0.17 sys:     0.4 tot:    2.74 n: 43529
+Thread: 1
+  tot_cnt: 5000:   2:5000,  0:0,  
+  t_run    usr:    5.71 sys:       0 tot:    5.58 n: 43529
+  t_wait   usr: -3.91e+ sys: -4.46e+ tot:    1.49 n: 43529
+
+Total time: usr:    23.5 sys:    0.66 tot:    26.3 n: 1
+31.00user 1.22system 0:27.08elapsed 118%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+3096minor)pagefaults 0swaps
+ 
+=======================================
+100 unit layers, 15 epochs
+=======================================
+
+leabra++ Loading: lba_pt_100_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    19.5 sys:    0.05 tot:    19.9 n: 13401
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    2.72 sys:       0 tot:    2.44 n: 25902
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Total time: usr:    30.1 sys:    0.08 tot:    30.1 n: 1
+31.34user 0.13system 0:31.43elapsed 100%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2112major+3576minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_100_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 30000:   1:20000,  3:10000,  
+  t_run    usr:    10.1 sys:    0.01 tot:    10.7 n: 13401
+  t_wait   usr:    0.09 sys:    0.11 tot:    3.71 n: 13401
+Thread: 1
+  tot_cnt: 20000:   2:20000,  0:0,  
+  t_run    usr:      11 sys:    0.01 tot:    11.5 n: 13401
+  t_wait   usr: -8.71e+ sys: -2.88e+ tot:    0.41 n: 13401
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 200:   2:100,  3:100,  
+  t_run    usr:    2.02 sys:       0 tot:    1.91 n: 25902
+  t_wait   usr:    0.16 sys:    0.22 tot:    0.77 n: 25902
+Thread: 1
+  tot_cnt: 200:   1:100,  0:100,  
+  t_run    usr:    1.65 sys:    0.02 tot:    1.43 n: 25902
+  t_wait   usr: -2.85e+ sys: -4.06e+ tot:    0.72 n: 25902
+
+Total time: usr:    22.2 sys:    0.56 tot:    26.9 n: 1
+37.17user 1.20system 0:28.21elapsed 135%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+3579minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_100_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 30000:   1:20000,  3:10000,  
+  t_run    usr:    9.92 sys:       0 tot:    9.86 n: 13401
+  t_wait   usr:    0.08 sys:    0.08 tot:    2.87 n: 13401
+Thread: 1
+  tot_cnt: 20000:   2:20000,  0:0,  
+  t_run    usr:    9.45 sys:    0.03 tot:    9.28 n: 13401
+  t_wait   usr: -8.74e+ sys:      30 tot:    0.54 n: 13401
+
+Total time: usr:    20.6 sys:     0.2 tot:    23.4 n: 1
+31.78user 0.44system 0:24.67elapsed 130%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+3578minor)pagefaults 0swaps
+ 
+=======================================
+200 unit layers, 5 epochs
+=======================================
+
+leabra++ Loading: lba_pt_200_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    28.4 sys:    0.02 tot:    28.5 n: 4605
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:     1.8 sys:       0 tot:     1.7 n: 8910
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Total time: usr:    36.4 sys:    0.05 tot:    36.4 n: 1
+40.05user 0.10system 0:40.08elapsed 100%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2112major+5355minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_200_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 120000:   1:80000,  3:40000,  
+  t_run    usr:    14.6 sys:    0.02 tot:    14.8 n: 4605
+  t_wait   usr:    0.03 sys:    0.06 tot:    5.45 n: 4605
+Thread: 1
+  tot_cnt: 80000:   2:80000,  0:0,  
+  t_run    usr:    16.6 sys:    0.02 tot:    16.4 n: 4605
+  t_wait   usr: -2.78e+ sys:    -460 tot:     0.1 n: 4605
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 400:   2:200,  3:200,  
+  t_run    usr:    1.27 sys:       0 tot:    1.36 n: 8910
+  t_wait   usr:    0.07 sys:    0.06 tot:    0.52 n: 8910
+Thread: 1
+  tot_cnt: 400:   1:200,  0:200,  
+  t_run    usr:    1.21 sys:    0.02 tot:    1.08 n: 8910
+  t_wait   usr: -1.22e+ sys:    -364 tot:    0.46 n: 8910
+
+Total time: usr:    22.5 sys:    0.22 tot:      29 n: 1
+44.47user 0.56system 0:32.65elapsed 137%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+5361minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_200_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 120000:   1:80000,  3:40000,  
+  t_run    usr:    14.4 sys:       0 tot:    14.9 n: 4605
+  t_wait   usr:    0.08 sys:    0.06 tot:    5.24 n: 4605
+Thread: 1
+  tot_cnt: 80000:   2:80000,  0:0,  
+  t_run    usr:    16.7 sys:    0.02 tot:    16.2 n: 4605
+  t_wait   usr: -2.78e+ sys:    -554 tot:    0.21 n: 4605
+
+Total time: usr:    22.8 sys:    0.13 tot:    28.1 n: 1
+43.23user 0.27system 0:31.81elapsed 136%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+5358minor)pagefaults 0swaps
+ 
+=======================================
+500 unit layers, 1 epochs
+=======================================
+
+leabra++ Loading: lba_pt_500_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    43.2 sys:    0.03 tot:    43.1 n: 935
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run    usr:    1.08 sys:    0.01 tot:    1.13 n: 1810
+  t_wait   usr:       0 sys:       0 tot:       0 n: 0
+
+Total time: usr:    48.2 sys:    0.04 tot:    48.2 n: 1
+74.86user 0.22system 1:15.01elapsed 100%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2112major+15963minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_500_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 750000:   1:500000,  3:250000,  
+  t_run    usr:    22.6 sys:    0.01 tot:    22.9 n: 935
+  t_wait   usr:    0.01 sys:       0 tot:    7.54 n: 935
+Thread: 1
+  tot_cnt: 500000:   2:500000,  0:0,  
+  t_run    usr:      24 sys:    0.02 tot:    24.2 n: 935
+  t_wait   usr: -2.26e+ sys:    -168 tot:    0.05 n: 935
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 1000:   2:500,  3:500,  
+  t_run    usr:    0.82 sys:       0 tot:    0.68 n: 1810
+  t_wait   usr:    0.01 sys:    0.01 tot:    0.07 n: 1810
+Thread: 1
+  tot_cnt: 1000:   1:500,  0:500,  
+  t_run    usr:     0.7 sys:    0.02 tot:    0.53 n: 1810
+  t_wait   usr: -6.41e+ sys:    -264 tot:    0.09 n: 1810
+
+Total time: usr:    27.3 sys:    0.07 tot:    34.9 n: 1
+78.88user 0.37system 1:01.84elapsed 128%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+15967minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_500_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 750000:   1:500000,  3:250000,  
+  t_run    usr:    22.7 sys:       0 tot:    22.8 n: 935
+  t_wait   usr:       0 sys:    0.02 tot:    7.24 n: 935
+Thread: 1
+  tot_cnt: 500000:   2:500000,  0:0,  
+  t_run    usr:    23.9 sys:    0.02 tot:    23.6 n: 935
+  t_wait   usr: -2.31e+ sys:    -198 tot:    0.05 n: 935
+
+Total time: usr:      28 sys:    0.02 tot:    35.2 n: 1
+78.86user 0.33system 1:02.29elapsed 127%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2115major+15966minor)pagefaults 0swaps

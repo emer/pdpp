@@ -1,0 +1,75 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SGI - native CC (MIPSpro C++), IRIX 6.4
+
+# NOTES for making:  2 gnu things needed are libreadline (i used 4.0)
+# and gnu make (3.77).  iberty stuff was not needed.
+# i'm also using gnus cpp for maketa, BECAUSE /lib/cpp didn't work
+# this means you have to either install gcc or locate the cpp on your
+# system (use gcc -v to find the home of gcc, which will tell you where
+# cpp is)
+
+# need to use the gnu make program -- built in one doesn't work
+# you may need to put in full path unless you have it in your path
+MAKE = gmake
+
+# use gnu cccp instead cuz it works!
+# NOTE: this is not a standard location and must be changed for
+# different installs!!
+cppC = /usr/pif/lib/gcc-lib/mips-sgi-irix6.4/2.8.1/cpp -lang-c++ -nostdinc++
+
+# this is nonstandard: points to libraries not installed in /usr/local/lib
+LDIRS_EXTRA = -L/usr/csbmb/modeling/lib/
+
+# use opt malloc (otherwise get mysterious bug)
+GENERIC_LIB = -lm -lC -lmalloc
+#GENERIC_LIB = -lm -lC
+
+# use the CC includes
+IOS_INCLUDES = CC-3.1
+
+#include CC iostream stuff, and interviews (under include here)
+IDIRS_EXTRA = -I/usr/include/CC -I/usr/csbmb/modeling/include
+
+# these are needed by interviews..
+MACH_FLAGS = -DHAVE_POSIX_SIGNALS=1 -DRETSIGTYPE=void
+
+# DEFINES = -DNO_SIGNED -DNO_BUILTIN_BOOL -DCONST_48_ARGS
+DEFINES = -DNO_SIGNED
+
+# shared is default compilation mode, so these are the same..
+CXX_SHARED = CC -woff 3134,1110 -n32 -mips4 -G 4
+CC_SHARED = gcc -fPIC -U__GNUG__ -nostdinc -I/usr/include
+CXX_NONSHARED = CC -woff 3134,1110  -n32 -mips4 -G 4
+CC_NONSHARED = gcc -U__GNUG__ -nostdinc -I/usr/include
+
+# doesn't need ranlib
+RANLIB = ls
+AR_CMD_SHARED = CC -n32 -mips4 -G 4 -multigot -shared -IPA -o 
+LIB_EXT_SHARED = so
+
+# using shared libraries
+CC = $(CC_SHARED)
+CXX = $(CXX_SHARED)
+LIB_EXT = $(LIB_EXT_SHARED)
+AR_CMD = $(AR_CMD_SHARED)
+
+# need to use gcc instead of CC
+DEP_CXX = $(CC)
+
+# not using TI
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+DEBUG_FLAG = -g
+DEBUG_OPT_FLAG = 
+# fast uses ipa which takes a long time!
+#OPT_FLAG = -Ofast
+OPT_FLAG = -O
+
+# vt file *NOT* needed 
+
+
+
+

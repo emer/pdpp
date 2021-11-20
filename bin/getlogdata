@@ -1,0 +1,6 @@
+#!/bin/csh
+foreach i ($*)
+	echo ".logd " $i
+	set fl = $i:r
+	fgrep '_D:' <$i | cut -f 2-100 >$fl.logd
+end

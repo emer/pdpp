@@ -1,0 +1,34 @@
+pdp++/demo/bench
+
+This directory contains a variety of benchmarking code:
+
+aptest:	       Array vs. pointer test -- runs basic netin (dot product)
+	       computation loops in either array or pointer format.
+	       This is the simplest, most basic benchmark.
+
+pdp++bench:    Uses core code extracted from pdp++ to implement backprop
+	       for benchmarking.  Provides a very realistic benchmark
+	       for actual pdp++ performance, while also being much easier
+	       to run on a novel platform than compiling all of pdp++!
+	       This is the main benchmark to use.
+
+actual_pdp++:  Uses actual pdp++ projects to run simple benchmarks,
+	       also has comparison projects for old pdp software.
+
+d_pdp++_bench: A version of pdp++bench for distributed memory (MPI)
+	       benchmarking.  This version may not accurately reflect 
+	       actual implementation in pdp++ -- was for early testing.
+
+dmem_bench:    Distributed memory benchmarks (MPI) using actual pdp++
+	       projects.  This is the main distributed memory benchmark
+	       directory.
+
+petsc_bench:   A simple test of the petsc parallel computing package
+	       (runs on top of MPI) -- was not used in pdp++.
+
+pthread_bench: Parallel threads benchmarks -- this was the form of
+	       parallel processing supported prior to dmem/MPI, but is
+	       no longer supported in the 3.0 release.  Results were
+	       rarely better than .75 speedup on 2 procs, compared to
+	       a .5 or better(!) speedup with dmem for large nets.
+

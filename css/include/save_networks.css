@@ -1,0 +1,19 @@
+// save networks 
+// put this in the loop_stats of the training process
+// and set the mod value to be how often you want to save the networks
+
+void S_Code() {
+  String batval = "0";
+  Process_MGroup* procs = GetOwner(Process_MGroup);
+  if(procs != NULL) {
+    BatchProcess* bproc = (BatchProcess*)procs->FindLeafType(BatchProcess);
+    if(bproc != NULL)
+      batval = taMisc::LeadingZeros(bproc->batch.val, 2);
+  }
+  String netnm = network->name + "." + batval +
+    "." + taMisc::LeadingZeros(network->epoch,3) + ".net.gz";
+  network->Save(netnm);
+}
+
+S_Code();
+

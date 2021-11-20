@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-bp-xor</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_18.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_20.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.1.4  The XOR Problem</A></H3>
+
+<P>
+XOR is about the simplest problem requiring a hidden
+layer of units between the inputs and the outputs.  For this reason,
+it has become something of a paradigm example for the back propagation
+learning algorithm.  The problem is to learn a set of weights that
+takes two-element input patterns, where each element is a 1 or a 0,
+and computes the exclusive-or (XOR) of these inputs.  XOR is a boolean
+function which takes on the value '1' if either of the input bits is a
+1, but not if both are 1:
+
+</P>
+<PRE>Table [XOREvents]:
+
+       Input  Output
+
+        0 0     0
+        0 1     1
+        1 0     1
+        1 1     0
+</PRE>
+
+<P>
+The output should be 1 if one of the inputs is 1; if neither is 1 or
+if both is 1, the output should be 0. 
+
+</P>
+<P>
+The environment for learning XOR consists of four events, one for each
+of the input-output pairs that specify the XOR function.   In the
+standard training regime, each pattern is presented once per epoch,
+and training continues until the total squared error, summed across
+all four input-output pairs falls below a criterion value.  The value
+is usually set to something like .04.  With this criterion, all the
+none of the cases can be off by more than about .2.
+
+</P>
+<P>
+Various network configurations can be used, but for this example we will
+use the configuration shown in Figure [XORNet].  In this configuration, the
+input layer consists of two units, one for each input element; the
+output layer consists of a single unit, for the result of the XOR
+computation; and the hidden layer consists of two units.  The output
+unit receives connections from both hidden units and each hidden unit
+receives connections from both input units.  The hidden and output
+units also have modifiable biases, shown in the figure as with
+arrows labeled with 'b' coming in from the side.
+
+</P>
+<PRE>Figure [XORNet]:
+
+           Output Unit &#60;- b
+            ^      ^
+            |       \
+            |        \
+            ^         ^
+    b -&#62;   Left      Right  &#60;- b
+           Hidden   Hidden
+            ^    ^  ^    ^   
+            |     \/     |
+            |     /\     |
+            |    /  \    |
+            ^   ^    ^   ^
+           Left      Right
+           Input     Input
+
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_18.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_20.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

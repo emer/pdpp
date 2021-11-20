@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-analyze</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_144.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_146.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX844" HREF="pdp-user_toc.html">11.9  Environment Analysis Functions</A></H2>
+<P>
+<A NAME="IDX845"></A>
+
+</P>
+<P>
+The following functions are available on the <B>Environment</B> object
+(in the <I>Analyze</I> menu) for analyzing the patterns in the
+environment.  Some of these functions can also be called from the
+<B>Log</B> objects in their own <I>Analyze</I> menu
+(see section <A HREF="pdp-user_185.html">13.3.1  The LogView Class</A>), and by the <B>DispDataEnvProc</B> process
+that automatically analyzes data collected in an environment from a
+statistic (see section <A HREF="pdp-user_166.html">12.6.5  Miscellaneous other Process Types</A>).
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>DistMatrix(ostream&#38; strm, int pat_no, metric, norm, tol, format, precision)</CODE>
+<DD>
+<A NAME="IDX846"></A>
+This produces a distance matrix between all events for given pattern to
+a file specified by strm.  The metric and associated parameters
+determine how distance is computed.  Norm is whether to normalize entire
+distance, and tol is a unit-wise tolerance, below which dist = 0.  The
+output format can be varied according to the format and precision
+parameters.
+<DT><CODE>DistMatrixGrid(GridLog* disp_log, metric, norm, tol)</CODE>
+<DD>
+<A NAME="IDX847"></A>
+This produces a distance matrix between all events for given pattern,
+and sends it to the given GridLog for immediate display (if NULL, a new
+GridLog is created).  
+<DT><CODE>CmpDistMatrix(ostream&#38; strm, int pat_no, Environment* cmp_env, int cmp_pat_no, metric, norm, tol, format)</CODE>
+<DD>
+<A NAME="IDX848"></A>
+This produces a distance matrix between all events across two different
+environments, for given pattern on each.
+<DT><CODE>CmpDistMatrixGrid(ostream&#38; strm, int pat_no, Environment* cmp_env, int cmp_pat_no, metric, norm, tol, format)</CODE>
+<DD>
+<A NAME="IDX849"></A>
+This produces a distance matrix between all events across two different
+environments, for given pattern on each, and displays the results in a
+grid log.
+<DT><CODE>ClusterPlot(GraphLog* disp_log, int pat_no, metric, norm, tol)</CODE>
+<DD>
+<A NAME="IDX850"></A>
+This produces a cluster plot of the distance matrix between all events
+for given pattern, and sends it to the given GraphLog for immediate
+display.  The clusterplot recursively groups the most similar items
+together, and uses the average of the individual cluster element
+distances to compute the distance to a cluster, instead of computing
+an average vector for a cluster and using that to compute distances.
+This makes the algorithm somewhat more computationally intensive, but
+also produces nicer results (the distance metric is cached so
+distances are only computed once, so it should handle relatively large
+numbers of events).
+<DT><CODE>CorrelMatrixGrid(GridLog* disp_log, int pat_no)</CODE>
+<DD>
+<A NAME="IDX851"></A>
+Generates a correlation matrix for all patterns in <CODE>pat_no</CODE> in
+the environment and plots the result in grid log (NULL = new log).
+The correlation matrix is defined by taking a vector of each pattern
+value (e.g., the first element in the pattern) across all events, and
+computing the correlation of this vector of values with those of all
+the other such value vectors.  As such, it measures the degree to
+which the variation of one pattern value (across events) correlates
+with the variation of another pattern value (across events).
+<DT><CODE>PCAEigenGrid(GridLog* disp_log, int pat_no, bool print_eigen_vals)</CODE>
+<DD>
+<A NAME="IDX852"></A>
+Performs principal components analysis (PCA) of the correlations of
+patterns in <CODE>pat_no</CODE> across events, plotting all eigenvectors in the
+grid log (NULL = new log).  The eigenvectors are the orthogonal
+components of the correlations ordered in terms of how much
+variability they account for.  The first principal component
+(eigenvector) accounts for the greatest amount of variability in the
+correlation matrix, etc.  Note that the eigenvectors are arranged from
+left-to-right, bottom-to-top, such that the first component is at the
+bottom-left.
+<DT><CODE>PCAPrjnPlot(GraphLog* disp_log, int pat_no, int x_axis_component, int y_axis_component, bool print_eigen_vals)</CODE>
+<DD>
+<A NAME="IDX853"></A>
+Performs principal components analysis of the correlations of patterns
+in <CODE>pat_no</CODE> across events, and then plots projections of all the
+patterns onto two of the principal components in the graph log (NULL =
+new log).  This provides a means of representing the similarities of
+the different patterns with each other in a two-dimensional space.
+The X-axis of the graph represents how similar the patterns are along
+the first selected component, and the Y-axis represents how similar
+they are along the second selected component.
+<DT><CODE>MDSPrjnPlot(GraphLog* disp_log, int pat_no, int x_axis_component, int y_axis_component, metric, norm, tol, bool print_eigen_vals)</CODE>
+<DD>
+<A NAME="IDX854"></A>
+Performs multidimensional scaling (MDS) on the distance matrix
+(computed according to metric, norm, tol parameters) of patterns in
+pat_no across events in the graph log (NULL = new log).
+Multidimensional scaling takes a set of dissimilarities and returns a
+set of points such that the distances between the points are
+approximately equal to the dissimilarities.  The results of this are
+typically very similar to PCA, even though the method is somewhat
+different, operating on the distance matrix instead of the correlation
+matrix.  The classical (metric) form of MDS is used, computed
+according to the algorithm developed by Torgerson, W. S. (1958).
+<I>Theory and Methods of Scaling</I>. New York: Wiley, as extracted from
+the <TT>`cmdscale.R'</TT> function from the <B>R</B> statistical program.
+<DT><CODE>EventPrjnPlot(Event* x_axis_event, Event* y_axis_event, int pat_no, GraphLog* disp_log, metric, norm, tol)</CODE>
+<DD>
+<A NAME="IDX855"></A>
+Projects all events according to their smiliarity to the two specified
+events using given distance metrics.  This allows one to obtain a 2-d
+plot of the similarity of all events to two selected events.
+<DT><CODE>EnvToGrid(GridLog* disp_log, int pat_no, ev_x, y, pt_x, y)</CODE>
+<DD>
+<A NAME="IDX856"></A>
+This dumps the entire set of events worth of a given pattern into a grid
+log for more efficient viewing and for more control over the display
+layout.  The ev_x, ev_y parameters control the geometry of the events,
+and the pt_x, pt_y control the geometry of the pattern values within
+each event.
+<DT><CODE>PatFreqText(float act_thresh, bool proportion, ostream&#38; strm)</CODE>
+<DD>
+<A NAME="IDX857"></A>
+Reports frequency (proportion) of pattern values greater than
+act_thresh across events, to a text output (this is most useful if
+pattern values are named in value_names).  This can be useful for
+verifying that an environment has expected probabilities of different
+inputs. 
+<DT><CODE>PatFreqGrid(GridLog* disp_log, float act_thresh, bool proportion)</CODE>
+<DD>
+<A NAME="IDX858"></A>
+Reports frequency (proportion) of pattern values greater than
+act_thresh across events, to a grid log (if NULL, new log is made).
+<DT><CODE>PatAggText(Aggregate&#38; agg, ostream&#38; strm)</CODE>
+<DD>
+<A NAME="IDX859"></A>
+Reports aggregate (SUM, AVG, etc) of pattern values across events, to
+a text output (this is most useful if pattern values are named in
+value_names).  This can be useful for identifying the overall
+properties of events.
+<DT><CODE>PatAggGrid(GridLog* disp_log, float act_thresh, bool proportion)</CODE>
+<DD>
+<A NAME="IDX860"></A>
+Reports aggregate (SUM, AVG, etc) of pattern values across events, to
+a grid log (NULL = make a new log).  This can be useful for
+identifying the overall properties of events.
+<DT><CODE>EventFreqText(bool proportion, ostream&#38; strm)</CODE>
+<DD>
+<A NAME="IDX861"></A>
+Reports frequency (proportion) of event names in the environment.
+Also useful for validating that the environment contains what you
+think it should.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_144.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_146.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

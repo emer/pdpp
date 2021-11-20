@@ -1,0 +1,16 @@
+get network opdp_bp_bench_10.net
+get patterns 10x10x10.pat
+set nepochs 10000
+set ecrit .000
+set dlevel 3
+set slevel 1
+set lflag 1
+set mode lgrain pattern
+set mode follow 0
+set param lrate .25
+set param momentum .9
+set step epoch
+newstart
+ptrain
+q y
+

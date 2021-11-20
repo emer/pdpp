@@ -1,0 +1,24 @@
+all: problem1 problem2 pneural
+
+CC	         = /tools/opt/SUNWspro/SC5.0/bin/cc
+CLINKER	         = /tools/opt/SUNWspro/SC5.0/bin/cc
+
+include ${PETSC_DIR}/bmake/common/base
+
+problem1.o: problem1.c
+	/tools/opt/SUNWspro/SC5.0/bin/cc -KPIC -dalign -xtarget=native -c -g -xs -I/nfs/home/cia/cai/petsc-2.1.2 -I/nfs/home/cia/cai/petsc-2.1.2/bmake/solaris -I/nfs/home/cia/cai/petsc-2.1.2/include -I/home/cia/cai/mpich-1.2.3/include -DPETSC_HAVE_X11 -DPETSC_USE_LOG -DPETSC_USE_BOPT_O problem1.c
+
+problem2.o: problem2.c
+	/tools/opt/SUNWspro/SC5.0/bin/cc -KPIC -dalign -xtarget=native -c -g -xs -I/nfs/home/cia/cai/petsc-2.1.2 -I/nfs/home/cia/cai/petsc-2.1.2/bmake/solaris -I/nfs/home/cia/cai/petsc-2.1.2/include -I/home/cia/cai/mpich-1.2.3/include -DPETSC_HAVE_X11 -DPETSC_USE_LOG -DPETSC_USE_BOPT_O problem2.c
+
+problem1: problem1.o
+	 /tools/opt/SUNWspro/SC5.0/bin/cc -g -xs -R/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris  -o problem1 problem1.o -L/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris -lpetscsles -lpetscdm -lpetscmat -lpetscvec -lpetsc -L/usr/openwin/lib -lX11 -lsunperf -L/home/cia/cai/mpich-1.2.3/lib -lpmpich -lmpich -lsocket -lnsl -lF77 -lM77 -lfsu -lsunmath -lnsl -lsocket -lgen -ldl  -lm
+
+problem2: problem2.o
+	 /tools/opt/SUNWspro/SC5.0/bin/cc -g -xs -R/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris  -o problem2 problem2.o -L/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris -lpetscsles -lpetscdm -lpetscmat -lpetscvec -lpetsc -L/usr/openwin/lib -lX11 -lsunperf -L/home/cia/cai/mpich-1.2.3/lib -lpmpich -lmpich -lsocket -lnsl -lF77 -lM77 -lfsu -lsunmath -lnsl -lsocket -lgen -ldl  -lm
+
+pneural: pneural.o
+	 /tools/opt/SUNWspro/SC5.0/bin/cc -g -xs -R/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris  -o pneural pneural.o -L/nfs/home/cia/cai/petsc-2.1.2/lib/libg/solaris -lpetscsles -lpetscdm -lpetscmat -lpetscvec -lpetsc -L/usr/openwin/lib -lX11 -lsunperf -L/home/cia/cai/mpich-1.2.3/lib -lpmpich -lmpich -lsocket -lnsl -lF77 -lM77 -lfsu -lsunmath -lnsl -lsocket -lgen -ldl  -lm
+
+pneural.o: pneural.c
+	/tools/opt/SUNWspro/SC5.0/bin/cc -KPIC -dalign -xtarget=native -c -g -xs -I/nfs/home/cia/cai/petsc-2.1.2 -I/nfs/home/cia/cai/petsc-2.1.2/bmake/solaris -I/nfs/home/cia/cai/petsc-2.1.2/include -I/home/cia/cai/mpich-1.2.3/include -DPETSC_HAVE_X11 -DPETSC_USE_LOG -DPETSC_USE_BOPT_O pneural.c

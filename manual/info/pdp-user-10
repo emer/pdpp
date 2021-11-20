@@ -1,0 +1,930 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: net-con,  Next: net-view,  Prev: net-unit,  Up: net
+
+Connections
+===========
+
+   The Connection class contains the weights which represent the
+strengths of the relationship between units.  Since there are
+typically many more connections than any other type of object in a
+simulation, these objects are treated specially to speed up
+processing speed and reduce their memory consumption.
+
+   The main way in which connections are different than other
+objects, like Units, for example, is that they are usually operated
+on in a group.  Thus, the Con_Group class becomes very important to
+determining how connections behave, which is not the case with a
+Unit_Group, for example.
+
+   The Con_Group, and not each connection, contains a pointer to the
+ConSpec which governs the behavior of all of the connections in the
+group.  Also, Con_Groups can contain algorithm-specific parameters,
+and in general algorithms define their own type of Con_Group.  When
+connections are created by projections, a new Con_Group is created to
+hold all of the connections for each projection.
+
+   The basic Connection class (which is often abbreviated Con when
+new types are defined based on it, e.g. BpCon) has only the weight
+value, `wt'.  Other algorithms will add other variables as needed.
+
+   The basic ConSpec connection specification has parameters for
+determining how a connection's weights are to be initialized.  The
+`rnd' field, which is of type Random (*note obj-random::), allows for
+weights to be initialized with random values.  To get a specific
+weight value, use `UNIFORM' with a `mean' of the value you want and a
+`var' of zero.  The `NONE' type of randomization will simply not do
+anything to the weight value.  Note that this may be ignored if the
+ProjectionSpec which created the connections has its `init_wts' flag
+set (but most projection specs just use the ConSpec initialization
+anyway) (*note net-prjn::).
+
+   Each ConSpec also has a WeightLimit object which controls how the
+weights are constrained. This object has MIN and MAX fields and a
+controling field called TYPE which can have the following values:
+`NONE'
+     no weight limitations (default).
+
+`GT_MIN'
+     constrain weights to be greater than min value.
+
+`LT_MAX'
+     constrain weights to be less than max value.
+
+`MIN_MAX'
+     constrain weights to be within min and max values.
+
+   In addition the ConSpec has a boolean field called SYM which if
+true, symmetrizes (sets to the same value) the initial weights across
+two different connections that reciprocally connect the same two
+units.
+
+   The ConSpec is the place to look for parameters that determine how
+weights are updated, for example learning rate, etc.  These are all
+defined in algorithm-specific versions of the ConSpec.
+
+   Note: the following information should be useful to those who wish
+to program in PDP++, but is not necessary for the average user to
+understand.
+
+* Menu:
+
+* net-con-impl::                 Implementational Details About Connections
+
+
+File: pdp-user,  Node: net-con-impl,  Prev: net-con,  Up: net-con
+
+Implementational Details About Connections
+------------------------------------------
+
+   The is a general policy regarding the organization of functions and
+parameters for connections, connection groups, and connection
+specifications:
+
+   Only those functions that relate to the computational processing
+done by the connections should be defined in the connection spec,
+while the "structural" or other "administrative" functions should be
+defined in the connection group object so that the spec can be
+invariant with respect to these kinds of differences.  The idea is
+that the spec defines _functional_ aspects while the object defines
+various implementational aspects of an object's function (i.e. how the
+connections are arranged, etc..).
+
+   Thus, the Con_Group type has a large number of functions that are
+useful for making, finding, and removing connections.  See the header
+file `src/pdp/netstru.h' for a listing of these.  The Con_Group has a
+special way of representing connectivity.  The group itself contains
+Connection objects, which define the state variables associated with
+the connection itself.  However, the pointer to the unit on the other
+side of the connection (the sending unit in the case of receiving
+connections, and the receiving unit in the case of sending
+connections), is kept in a separate list, which is in one-to-one
+correspondence with the connection objects.  This arrangement allows
+for the same connection state variables to be shared across
+connections between different units.  Indeed, the sending and
+receiving connection groups from the same projection share a single
+connection object between them.  Some of the projection types (*note
+net-prjn-tessel::, *Note net-prjn-misc::) define additional forms of
+connection sharing.
+
+   Note that only one side of the connection is actually saved when a
+network is saved.  This is the receiving side by default.  Thus, after
+loading a project in from disk, the projection which manages the
+connections has to perform a `ReConnect_Load' function which builds
+the sending connections that correspond to the receiving connections
+that were just loaded in.  A similar kind of operation must take place
+after copying a network.
+
+   For the functions that are defined in the ConSpec, a convention has
+been established regarding the division of labor between iterating
+through the connections in a group, and processing a given connection.
+Thus, there are two versions of each function defined in the con spec,
+one to apply to a single connection and another to apply to an entire
+Con_Group.  The one which applies to a single connection has the name
+`C_XXX' where `XXX' is the name of the Con_Group version.  Since some
+implementations of algorithms use bias weights, which are represented
+by a connection without a surrounding connection group, it is
+sometimes necessary to define a bias-weight version of a
+connection-specific function.  Such a function will have the name
+`B_XXX'.
+
+   Note that the `C_' version of the function is _not_ declared
+`virtual', while the Con_Group is.  This was done for reasons of
+speed, since the `C_' versions can be inlined within the iteration
+defined in the con-group version.  However, it means that if you
+change one of the `C_' functions, _you must redefined the associated
+con-group version!_
+
+   Also note that the same object type, a Con_Group (and its
+associated ConSpec), is used for both sending and receiving
+connections.  Thus, the ConSpec will have functions that apply to
+both cases.
+
+   As with the unit specs, a standard way of breaking up neural
+computations has been established by defining some basic functions on
+the con spec.  Only the Con_Group version of these functions are
+listed below, but a C_ version is also defined.  Also note that the
+C_ versions of these functions typically take a connection pointer,
+receiving unit, and sending unit arguments.  The functions are as
+follows:
+
+`InitWtState(Con_Group* cg, Unit* ru)'
+     Initialize state variables (i.e. at beginning of training).
+
+`InitWtDelta(Con_Group* cg, Unit* ru)'
+     Initialize variables that change every delta-weight computation.
+     This clears any existing weight change computations.
+
+`float Compute_Net(Con_Group* cn, Unit* ru)'
+     Computes the net input from the connections in this group,
+     assuming that they are receiving connections.
+
+`Send_Net(Con_Group* cg, Unit* su)'
+     Adds the net input contribution from the given sending unit to
+     all of the receiving units on the other side of these
+     connections.  This assumes that the con group is a sending
+     connection group of unit `su'.
+
+`float Compute_Dist(Con_Group* cg, Unit* ru)'
+     Returns the distance (squared difference) between the unit
+     activations and connection weights for all connections in group.
+     This assumes it is a receiving group.
+
+`Compute_dWt(Con_Group* cg, Unit* ru)'
+     Computes the delta-weight change for all connections in the
+     group.  This is typically called on the receiving connections,
+     and is defined by specific algorithms.
+
+`UpdateWeights(Con_Group* cg, Unit* ru)'
+     Updates the weights of the all the connections in the group.
+     This again is defined by specific algorithms, but is called by
+     generic functions up the network hierarchy.
+
+
+File: pdp-user,  Node: net-view,  Next: net-build,  Prev: net-con,  Up: net
+
+Network Viewer
+==============
+
+   Figure of: <The Network Viewer> here
+
+   The Network Viewer (NetView) provides an interactive pseudo-3D
+view of the network structure. A default view is associated with each
+network object, although networks may have as many additional
+NetViews as is necessary. The NetView can be spatially divided into
+four regions: Actions, Members, View, and Scale.
+
+* Menu:
+
+* net-view-actions::            The Action Region
+* net-view-members::            The Member Region
+* net-view-view::               The View Region
+* net-view-scale::              The Scale region
+
+   The NetView contains the following variables which control some of
+the display features of View and Scale Regions:
+
+NetView Variables
+=================
+
+`int  skew'
+     The skew controls the pseudo-3d depth dimension of the NetView's
+     units.  A skew of zero provides no perceived depth (2D). The
+     default is 0.15.
+
+`UnitShape shape'
+     Controls the shape of the units in the NetView and how their
+     values are graphically displayed.  This is also available as the
+     Disp Md menu on the right-hand side of the NetView.  The
+     possible choices are:
+
+
+    `COLOR'
+          A rectangular shape filled with a color from the colorscale
+          corresponding to its value. If the unit's value is less
+          than the minimum value of the colorscale then it will
+          appear as stippled version of the minimum color. Similar
+          stippling will occur it is greater than the maximum value
+          of the colorscale. If the unit contains no value for the
+          selected member it will be displayed as a stippled version
+          of the View Region's  background color.
+
+
+    `AREA'
+
+    `LINEAR'
+          A rectangular shape filled with a background color
+          corresponding to the midpoint value of the colorscale and a
+          foreground rectangular spiral shape of with an area
+          corresponding to the ratio of the unit's value to maximum
+          range on the scalebar. Unit values above the scalebar's
+          midpoint have spirals filled with the color of the maximum
+          value of the scalebar, while units with values less than
+          the scalebar's midpoint have spirals filled with the color
+          of the minimum value of the scalebar. AREA spirals scale
+          the size of their area with respect their value/scalebarmax
+          ratio.  LINEAR spirals scale their width and height
+          linearly with respect to their value/scalebarmax ratio.
+
+
+    `FILL'
+          FILL is similar to the AREA UnitShape but instead of a
+          centered spiral area the FILL UnitShape begins covering an
+          area at the bottom of the Unit and "fills" the unit left to
+          right and bottom to top, covering a percentage area of the
+          unit equal to the units value/scalebarmax ratio.
+
+
+    `DIR_FILL'
+          This is similar to FILL except that the unit is divided
+          with a horizontal line across the middle. Unit values
+          greater than the midpoint of the colorscale fill the upper
+          half of the unit only, while values less than the midpoint
+          of the colorscale only fill the lower half the unit.
+
+
+    `THREE_D'
+          THREE_D Units utilize the pseudo-3D nature of the View
+          Region to create a varying rectangular height field
+          perspective of the unit's value. Unit values greater than
+          the midpoint of the colorscale rise "above" the 3-D plane
+          of the unit and unit values less than the midpoint of the
+          colorscale sink below the 3-D plane of the unit. The units
+          are colored in the same was as the COLOR UnitShape.
+
+
+    `ROUND'
+          Round units have a circular or oval shape and are colored
+          in the same way as the COLOR UnitShape.
+
+
+    `HGT_FIELD'
+          Like THREE_D, but each of the four corners of a unit are
+          placed at the average height computed from the four
+          adjacent units to that corner.  This produces a
+          smoothly-shaped field of height corresponding to average
+          values of units.  The units are colored in the same was as
+          the COLOR UnitShape.
+
+
+    `HGT_PEAKS'
+          The same as HGT_FIELD, except that the center of the unit
+          has a peak that is exactly the height corresponding to the
+          value of the units.
+
+
+`ColorScale* colorspec'
+     Controls the color spectrum used by the colorscale.  (*note
+     gui-colors::).
+
+`float prjn_arrow_size'
+     Controls the size of the arrowheads at the end of the
+     projections.
+
+`float prjn_arrow_angle'
+     Controls the angle (sharpness) of the arrowheads at the end of
+     the projections.  Smaller values = sharper arrowheads.
+
+`FontSpec layer_font'
+     The X11 specification for the font to use in drawing the layer
+     names in the View Region
+
+`FontSpec unit_font'
+     The X11 specification for the font to use in drawing the unit
+     names and values in the View Region.
+
+`Label_Group labels'
+     This group contains the arbitrary network labels visible in the
+     View Region. Labels are usually created and place using the "New
+     Label" button in the Action Region, however the can also be
+     directly created in this group. Editing these labels allows the
+     user to change the text or font of the label, using a standard
+     XWindows font specification string.
+
+`NetViewGraph_Group idraw_graphics'
+     This group contains the idraw graphics included in the network
+     display - the menus Load Graphic and Remove Graphic manipulate
+     these objects.
+
+`UnitTextDisplay unit_text'
+     Controls whether or not the unit's names and values are
+     overlayed on top of the unit. This variable is also accessible
+     directly in the NetView's Scale Region.
+
+`SplitUnitLayout unit_layout'
+     Controls how the units are split when multiple members are
+     selected for display in the Member Region of the NetView.
+
+`bool auto_scale'
+     Controls whether or not the range of the scale in the Scale
+     Region automatically adjust to range of values currently on
+     display in the View Region. This variable is also accessible
+     directly in the NetView's Scale Region as a toggle box.
+
+`FloatGeometry spacing'
+     Controls the spacing of the units and layers in the View Region.
+     Useful values range from "0" to "1.0".
+
+   The NetView provides the following functions on its Action Menu:
+
+`SetColorSpec(ColorScaleSpec* colors)'
+     Set the color spectrum to use for color-coding values (NULL =
+     use default).
+
+`AutoPositionPrjnPoints()'
+     Initialize the positions of all of the projection arrows
+     according to the automatic positioning algorithm.  If the
+     positions are not quite ideal, the projections may be
+     repositioned using the Move Mode (and this function removes any
+     existing custom repositioning!)
+
+`AutoPositionLayerNames()'
+     Initialize the the size and position of the Layer names to fit
+     in the lower left-hand corner of the layer (removes any custom
+     positioning!)
+
+`ZoomLayer(Layer* lay, float mag_factor_x, float mag_factor_y)'
+     Set the magnification factors (zooming) for the display of a
+     given layer.
+
+`ResetLayerZoom()'
+     Reset (remove) any magnification/zooming (rescaling) of the
+     display of layers in the netview (made via the Zoom button or
+     ZoomLayer menu).
+
+`FreezeNetZoom()'
+     Freeze (save) current network zooming/magnification (rescaling or
+     repositioning) - it will no longer auto-resize to fit entire
+     network in display.
+
+`AutoNetZoom()'
+     Clear any frozen/saved magnification/zooming (rescaling or
+     repositioning) of the network display, enabling auto-zooming to
+     fit entire network in display.  This is the default.
+
+`SetLayerFontSize(int point_size)'
+     Set the point size of the layer name font.
+
+`SetUnitFontSize(int point_size)'
+     Set the point size of the unit name/value font .
+
+`LoadGraphic(File name, float scale)'
+     Loads and Idraw image file of name `name' and scales it by
+     `scale'. The image is displayed in background of the the View
+     Region.
+
+`RemoveGraphics()'
+     Removes all included graphics.
+
+   In addition the NetView provides a Selection menu with two sets of
+complementary functions.  The Set version of these sets a given
+parameter or specification of the objects selected in the NetView.
+The Show version selects those objects in the NetView which have a
+given parameter or specification.  These are very useful for
+constructing the network, and providing visual feedback about its
+state.
+
+`Set/ShowUnitSpec(UnitSpec* spec)'
+     The unit specification, for units, groups of units, or layers.
+
+`Set/ShowConSpec(ConSpec* spec)'
+     The Connection specification, for projections.
+
+`Set/ShowPrjnSpec(PrjnSpec* spec)'
+     The Projection specification, for projections.
+
+`Set/ShowPrjnConType(TypeDef* con_type)'
+     The type of Connection object to be created by the projection
+     (`con_type' of Projection).
+
+`Set/ShowPrjnConGpType(TypeDef* con_gp_type)'
+     The type of Con_Group to be created by the projections
+     (`con_gp_type' of Projection).
+
+`Set/ShowLayerSpec(LayerSpec* spec)'
+     The Layer specification, for layers.
+
+`Set/ShowLayerUnitType(TypeDef* unit_type)'
+     The type of units to be created by the layer (`el_type' of the
+     layer).
+
+
+File: pdp-user,  Node: net-view-actions,  Next: net-view-members,  Prev: net-view,  Up: net-view
+
+The Action Region
+-----------------
+
+   Figure of: <The NetView Actions Region> here
+
+   The Actions region in the upper left contains a set of buttons
+which perform actions on the view. At the very top of the region is a
+toggle switch which provides convenient switching on and off of the
+display.  When the display is switched off, the View and Scale
+regions will not be updated by the processes in the view's updater
+list, regardless of changes to the state of the network. (*note
+gui-win-view::).
+
+   To the right of the Display toggle is the Coordinate Box. The
+Coordinate Box displays the current location (X,Y,Z) of objects when
+they are moved and the size of objects when they are reshaped. At
+other times, the box remains empty.
+
+   Below the display toggle and Coordinate Box are Mode Buttons:
+Select, View, Move, ReShape, Zoom, and Rotate.  These buttons are
+mutually exclusive, so only one may be pressed at a given time.
+Selecting one of these buttons enables a different mode of
+interaction with the View Region, and are described further in that
+section of the manual.  (*note net-view-view::)
+
+   Below the Mode Buttons are the Major Action Buttons: Build All,
+Connect All, Update, and Init. Each of these buttons performs an
+action when the button is released.  Sometimes one or more of these
+buttons will be hi-lighted, suggesting that the button's action
+should probably be performed due to the current state of the network.
+
+   The Build All button creates units in all of the networks layers in
+accordance with the `n_units' field of the Layer and the Layer's
+geometry. The Connect All button creates connections on all the units
+in accordance with projections and projection specs of the network's
+layers (*note net-net::).
+
+   The Update button refreshes the View to reflect the current state
+of the network. In most cases the network will have communicated its
+changes to the NetView, however if the NetView appears to be out of
+sync, the "Update" button will update it accordingly. The Init button
+resets the view so that the network is scaled to fit in the window.
+Zoom operations on the network objects as well as Move and Zoom
+operations on the view region itself are undone when the "Init"
+button is pressed, unless you run Actions/FreezeNetZoom - this
+freezes the current zooming/move status of the netview until a
+subsequent AutoNetZoom is run. To reinitialize the projection points
+or the positions of the Layers' names select the corresponding
+function from the Actions menu of the NetView.  (*note gui-actions::).
+
+   Below the Major Action Buttons are the Minor Action Buttons. The
+names of these buttons change to reflect the possible actions to be
+performed on the objects currently selected in the View Region. In
+most cases the lower two buttons will provide Remove and Edit actions
+for the selected objects. The upper two buttons typically provide
+actions used for creating new network objects and connecting them.
+For more information on how to use these buttons to build networks,
+see *Note net-build::.
+
+   At the bottom of the Action region is the Monitor Values menu. This
+menu provides a set of actions used for monitoring the values
+displayed in the NetView. To monitor values the user needs to create a
+MonitorStat statistic which handles the sampling and logging of the
+monitored values. To create the MonitorStat, the user first selects
+the network objects in the View Region to be monitored. Then after a
+member of the "Member Region" is selected, the user may select New
+from the Monitor Values menu. A dialog is then presented which asks
+the user for the process grain at which the values are to be
+monitored. The process grain is used to determine when the values are
+sampled from the network. In addition the process determines which
+Logs the sampled values are stored in. The dialog also asks the user
+for the network aggregation operator and whether or not aggregate
+statistics should be created in higher level processes. For simple
+monitoring, the default values of `COPY' and "NO" respectively will
+suffice. For more complicated monitoring the behavior of these
+variables is further explained in the statistics section of this
+manual (*note proc-stats-monitor::).
+
+   The Monitor Values menu also provides selections which allow the
+user to Edit, Remove, or change the objects or variables of
+previously created MonitorStats. To change the network objects which a
+MonitorStat is monitoring, simply select the objects in the "View
+Region" and choose Set Objects from the menu. To change the variable
+which is being monitored simply select the desired variable from the
+"Member Region" of the NetView and choose Set Variable from the menu.
+
+
+File: pdp-user,  Node: net-view-members,  Next: net-view-view,  Prev: net-view-actions,  Up: net-view
+
+The Member Region
+-----------------
+
+   Figure of: <The NetView Member Region> here
+
+   Below the Action region, in the lower left corner of the NetView
+is the Member Region. This region contains a vertical scrollbox of
+buttons which are labeled with the names of the member fields of the
+units and their connections in the NetView. If there are more member
+field buttons than can fit in the Member Region, the vertical
+scrollbar on the left of the Member Region will allow the user to
+scroll through all the desired member fields.
+
+   By pressing one of the member buttons, the View Region will update
+to reflect the values of that member on the units it is associated
+with. In the case of connection member buttons, the user will need to
+pick a unit from which the connections are to be viewed. In this
+case, the View Mode action button in the Action Region will be
+automatically selected so that the user may pick a target unit. When
+The View Mode action button is selected the cursor will change to a
+pointing hand with which the user can pick units in the View Region.
+If the user chooses a unit member button instead of a connection
+member button, the display will revert to the default "Select" mode,
+and the "Select" Action button in the Action Region will be selected.
+In the "Select" mode, the pointer is usually an arrowhead.
+
+   By using the middle mouse button the user may select multiple
+member values to be displayed. When more than one member value is
+selected, the selected member buttons are numbered in the order of
+selection. The units in the "View Region" will split in to multiple
+sections each representing one of the selected member values. The
+units may split horizontally or vertically depending upon the setting
+of the `unit_layout' member of the NetView.
+
+   Selecting a member button with the right mouse button will provide
+a more detailed description of member variable.
+
+
+File: pdp-user,  Node: net-view-view,  Next: net-view-scale,  Prev: net-view-members,  Up: net-view
+
+The View Region
+---------------
+
+   Figure of: <The NetView View Region> here
+
+   The View Region is the core of the NetView and provides a
+multitude of configurable options to the user. The network's layers,
+units, and connections can be viewed, manipulated, scaled, and
+arranged as the user desires. In addition, arbitrary descriptive
+labels can be placed in the View Region to annotate the network. The
+user has full control over the colors used to view the network and
+can print the View Region itself using the PrintData() command on the
+NetView. Idraw image files may also be loaded into the View Region's
+background.
+
+   Non-obvious actions you can perform on objects in the NetView:
+Single-click with left-mouse-button (LMB)
+     Will select or deselect item, and update the action buttons at
+     the left of the display.
+
+Single-click with right-mouse-button (RMB)
+     Will bring up the edit dialog for that object (for Layer names
+     and labels).
+
+Shift-LMB or middle-mouse-button
+     Extends the selection to include multiple items.
+
+   Layers are displayed in the View Region as a rectangular boxes.
+The position of the layers is controlled by their `pos' member and the
+layer's size is controlled by the layer's `geom' member variable.
+
+   Within the Layer Box, Units are displayed as smaller rectangular
+boxes. The unit's `pos' variable controls its relative offset from
+the layer's position. If there are Unit_Groups within the layer, they
+are represented with their own box which surrounds the units they
+contain, and there are also two boxes associated with the layer in
+this case.  One box represents the default size of each subgroup of
+units in the layer, and is the primary one that is selected and
+manipulated in the interface.  An additional box surrounds all of the
+unit groups, and identifies the extent of the layer as whole.
+
+   Projections are displayed as arrows starting at the sending
+layer's Layer Box and pointing at the receiving layer's LayerBox. In
+addition units and layers may have text near them which display their
+name or current value.
+
+   The actions of the mouse in the View Region are dependent upon the
+mode of the region selected by the Mode Buttons in the Action Region
+of the NetView.
+
+   In Select Mode the pointer is a small arrow. Clicking the left or
+right mouse button on an object selects the object under the pointer
+and unselects all other object. Clicking the middle mouse button
+selects also selects the object, but does not unselect the other
+selected objects. When an object is selected its border is drawn with
+a dashed line. Re-Selecting an already selected object Un-Selects the
+object.  When a Layer or Unit_Group is selected, it will be displayed
+as grid instead of an outlined box. The grid provides the user with a
+depiction of how many units the layer or group contains, as well as
+the size and spacing of the units.
+
+   The names of the Minor Action Buttons in the Action Region will
+change is accordance with the objects which are selected. Since
+layers, unit groups, and units overlap, a special selection method is
+implemented for deciding which object is selected. On the first click
+of the mouse button, the layer is selected. On the second click, the
+layer is unselected and the unit group is selected. On the third
+click, an individual unit is selected. On the fourth click the
+individual unit is unselected.
+
+   In View Mode the pointer becomes a small pointing hand. This mode
+is used for selecting units from which to view sending or receiving
+weight values. View mode is orthogonal to select mode and is
+illustrated by a dotted line surrounding an object. Thus objects can
+be both selected and/or viewed at the same time. Since it is only
+useful to View individual units, clicking on a layer bypasses the
+Layer and Unit_Group selection of Select Mode and directly hi-lights
+a unit for viewing.  Indeed, only units can be viewed.  Clicking with
+the middle mouse button invokes the split unit mode and shows the
+sending or receiving values for multiple units.
+
+   In the other four modes, selection of objects occurs as in select
+mode.  Each level of selection occurs on the up release of the mouse
+button, and these modes always operate on the currently selected
+object if there is one.
+
+   Therefore, to Move a layer, simply click on the layer and hold down
+the mouse button and move the layer.
+
+   To move a unit group, click on the layer and release, so that the
+unit group is selected.  Then, the next down press will grab the unit
+group for moving - press and hold and move.
+
+   To move a unit, click twice, once to get through the layer, again
+to get through the unit group, at which point the unit will be
+selected and grabbed for moving upon the next down click.
+
+   In each of the following action modes, when the action is
+finished, the selected object is unselected. If no action was taken
+(i.e., the mouse button was clicked, but the mouse was not moved) the
+object remains selected. In this way, the user can select objects for
+editing and other Actions without being forced to re-choose the
+Select Mode button. In addition the View Region itself my be
+manipulated by clicking the mouse in the background of the View
+Region and not selecting any objects.
+
+   In Move Mode layers, unit groups, and units are repositioned on a
+coordinate grid with spacing set at the size of an individual unit. As
+the layer or unit object is moved, the object will jump to the fixed
+grid position instead of moving smoothly with the mouse. As a layer or
+unit is moved, its position will be displayed in the Coordinate Box at
+the top of the Actions Region of the NetView. Using the left or middle
+mouse button moves the layer or unit objects in their x-y plane. Using
+the right mouse button allows movement in the x-z planes.
+
+   The head and tail of a projection arrow can be repositioned in
+Move mode as well. Although the position of a projection's head or
+tail is not constrained to the same grid like movement of the layer
+and units, it is constrained to lie within the layer it is connected
+to.  Layer names and the arbitrary network labels may be moved
+without constraint.  Moving the View Region itself is accomplished by
+clicking in the background area of the view. The pointer will change
+to a flat hand and the View Region will "slide" as the user moves the
+mouse. Pressing the middle mouse button constrains the movement to be
+horizontal, while pressing the right mouse button constrains the
+movement to be vertical.
+
+   Reshape Mode is used exclusively for changing the geometry of a
+layer or unit group.  By clicking and dragging on a layer or unit
+group, the geometry (and number of units if there are no actual units
+created yet) of the displayed grid changes as the mouse moves. The
+geometry of the layer or unit group is displayed in the Coordinate
+Box at the top of the Action Region.  If a layer or group already
+contains units, its area is constrained to be equal to or greater
+than the number of unit's in the layer or group. Thus a layer with
+100 units could be sized to be 10x10 or 20x5, but not 4x3.  Further
+reshaping a layer or group with units already in it will not change
+the number of units in the layer, while this will occur if there are
+no actual units.
+
+   Zoom Mode is used to change the magnification (zooming) of objects
+in the View Region, or the overall view itself. It is primarily used
+to rescale layers for maximum visibility when you have a really big
+network.  You can reset the zooming of a layer with
+Actions/ResetLayerZoom, or impose a specific amount of zooming with
+Actions/ZoomLayer.  If the mouse is pressed in the background of the
+View Region, the entire View Region can be scaled. Dragging the mouse
+upward zooms in on the region at which the mouse was first pressed.
+Dragging downward likewise zooms outward. If the middle mouse button
+is pressed only the horizontal dimension is scaled. If the right
+mouse button is pressed only the vertical dimension is scaled. The
+Init Button in the Action Region can be used to undo background
+scaling and recenter the Network, and Actions/FreezeNetZoom will lock
+in the current overall view zooming until a subsequent
+Actions/AutoNetZoom.
+
+   The Rotate mode is somewhat frivolous but can be used to further
+customize the objects in the View Region, or to manipulate imported
+Idraw graphics.
+
+
+File: pdp-user,  Node: net-view-scale,  Prev: net-view-view,  Up: net-view
+
+The Scale region
+----------------
+
+   Figure of: <The NetView Scale Region> here
+
+   The Scale Region is on the right edge of the NetView. At the top
+of the scale region is the Unit Text selector. This menu allows the
+user to directly access the NetView's `unit_text' member which
+controls whether or not unit names and/or values are displayed on the
+units.
+
+   Next is the display mode selector, which directly accesses the
+`shape' member of the NetView, controlling how the unit values are
+displayed.
+
+   Beneath this is the Auto Scale toggle. When the Auto Scale toggle
+is on, the values of the scalebar adjust to the positive and negative
+range of the the maximum of the value of the field selected in the
+Member Region.  When the Auto Scale toggle is off, the up and down
+arrow buttons above and below the scalebar can be used to increase or
+decrease the range of the scale respectively. This can be used to
+"zoom" in on the differences between unit or connection values. In
+addition the user can click the mouse in the number region of the
+scalebar and type in the precise scale range by hand if so desired.
+The colors in the colorscale are determined by the `colorspec' field
+of the NetView.
+
+
+File: pdp-user,  Node: net-build,  Prev: net-view,  Up: net
+
+Building Networks Using the Viewer
+==================================
+
+   The network viewer (*note net-view::) can be used to build networks
+easily and rapidly.  The Minor Action Buttons in the action region
+(*note net-view-actions::) in particular provide a series of actions
+that can be performed on objects selected in the view region (*note
+net-view-view::) that allow one to build the network.  Also note that
+the tutorial covers some of the following material (*note
+tut-config-networks::).
+
+   The first step in building the network is creating the layers.  The
+New Layer(s) button is highlighted when there are no layers in the
+network, and it is usable when nothing else is selected.  It will
+prompt for the number of layers to create.  After they are created,
+they show up in the view region.  Note that they might appear
+off-screen depending on how many were created, so you might have to
+hit the Init button to see them all.
+
+   The ReShape button is used to shape layers into their desired size.
+Note that the size of the layer is displayed in the coordinate area at
+the very top of the "actions" region (*note net-view-actions::).  The
+default assumption of the software is to create as many units as will
+fit in the shape of the layer (i.e., `n_units = X * Y').  Whenever
+you use ReShape and there are no units in the layer currently, it
+will reset the `n_units' to fill the layer box completely. However,
+if you use ReShape and there _are_ units in the layer, the value of
+`n_units' is not changed.  Note, however, that it will be impossible
+to shape the layer to a size that is smaller than that which will
+contain all of the existing units.  For more info on layer
+parameters, see *Note net-layer::.
+
+   There are two ways of specifying a number of units that is less
+than the size of the layer.  One is to select the layer box, at which
+time, if it is empty, the New Unit(s) action button will become
+highlighted.  This action will prompt you for the number of units to
+create (the default being the number that will fill the box
+completely).  By entering a number that is less than this default
+value, you will simultaneously create the units in the layer, and set
+the `n_units' value to be that number.  Thus, any subsequent `Build'
+actions on this layer will create that many units if they are not
+already there.
+
+   The units within the layer can be moved around.  However, they
+must stay within the layer box.  Thus, you must reshape the layer to
+a larger size if you wish to move the units beyond the box.
+
+   If the units within a layer are grouped into sub-groups, these
+constitute a distinct selection level, so that all the units in the
+group can be selected together.
+
+   Note that the Build All button is highlighted whenever there is a
+layer that does not have its full complement of `n_units' units in
+it.  Pressing Build All will create units in all the layers which
+need them, and ensure that the units in the existing layers are of the
+type specified in the `units' group on the layer.
+
+   After creating layers and units within them, the next step is to
+specify the connectivity between layers.  Alternatively, though less
+commonly (and more effortfully), connectivity can be specified on a
+unit-by-unit basis.  This is covered later in this section.  As was
+discussed above (*note net-prjn::), it is easier to specify
+connectivity in terms of projections between layers.
+
+   To create a new projection you select the _receiving layer first_.
+Then, "extend" select the sending layer(s) (use the middle mouse
+button or hold down the shift key while selecting, which adds the
+selected item to the list of those things selected, instead of making
+it the only thing selected).  The New Prjn(s) button will be
+highlighted, and pressing it will create a projection into the
+first-selected receiving layer from the subsequently selected sending
+layer(s).
+
+   Note that you can also create _bi-directional projections_ instead.
+Just use the New BiPrjns button instead of New Prjn(s), and this will
+create a reciprocal projection into the sending layer from the
+receiving layer.
+
+   To _self-connect_ a layer, simply select one layer, and press the
+New Self Prjn button.
+
+   Just as with units in layers, one can create connections in
+projections either all at once with the Connect All button, or
+individually by selecting the projection and using the Fill Prjn(s)
+button, which will be highlighted if the projection does not yet have
+any connections associated with it.
+
+   To connect units on an individual basis, one simply selects the
+receiving unit first and then the sending unit(s), and selects the
+Connect Units button (or the BiCon Units to bidirectionally-connect
+them).  The connections made in this way will be associated with a
+CustomPrjnSpec, which basically just ensures that the connectivity
+pattern will not be reset when the Connect All button is pressed
+(i.e., it has no `Connect' function because the connections are made
+one-by-one).
+
+   The specifications associated with the objects in the network can
+be viewed and changed by using the Selections menu of the network
+viewer.  This allows one to associate different parameters or types of
+processing with different components of the network (e.g., projections
+with different patterns of connectivity, units with different
+activation functions or parameters, connections with different
+learning rates, etc..)
+
+   Note that each layer has a default UnitSpec associated with it,
+which is applied to any new units created in the layer or when Build
+is performed.  Thus, if all of the units in the layer will be using
+the same unit spec, it is a good idea to just select the layer itself
+and then use Selections/Set Unit Spec to set the spec.  This will
+automatically apply this spec to all of the units in the layer.
+
+   Also note that connection specifications (ConSpecs) are associated
+with projections.  Thus, projections will be selected when
+Selections/Show Con Spec is performed, and you should select
+projections when doing the Selections/Set Con Spec.
+
+   Finally, all objects can be Removed and Edited by selecting them
+and pressing the appropriate action button.  When editing a group of
+objects (i.e., after having multiply selected them and pressed Edit),
+these objects should remain the only ones selected until the dialog
+is either Oked or Canceled, since changing what is selected affects
+what the edit dialog thinks its editing, and you won't be able to
+Apply your editing changes if the selections change.
+
+
+File: pdp-user,  Node: env,  Next: proc,  Prev: net,  Up: Top
+
+Environments, Events, and Patterns
+**********************************
+
+   Conceptually, a network always acts in an environment of some
+kind. For example, back propagation and pattern associator networks
+act in an environment of input-output patterns. An unsupervised
+learning network operates in an environment consisting of input
+patterns.
+
+   In PDP++, the object of type Environment contains all the
+information that specifies the kinds of stimuli or patterns that the
+network will be tested or trained on.  The role of the environment is
+to represent all of the data, structured so that the data can be
+interpreted by the processes and presented to the network
+appropriately.  Thus, it is like a database or a library.  The
+environment does not specify things like the _order_ with which
+events will be presented to the network-this is the job of the
+processes, which, to continue the metaphor, act like librarians in
+providing the interface between the data (the environment) and the
+consumer (the network).
+
+   There is a special relationship between the EventSpec, which
+specifies properties of events, and the Event objects themselves.
+Any changes made to the event spec (or its pattern specs), for example
+in the number of patterns per event or size of one of the patterns,
+are automatically propagated to all of the events that use the event
+spec.  Thus, the EventSpec acts much like a dynamic template for
+events, which is a different role for a spec object.  This design
+makes it very easy to modify environments once they've been created.
+
+   The EnviroView enables you to interactively configure the event
+specs for the events, much in the same way the net view allows one to
+configure networks.  In the standard color scheme, environment objects
+are colored green (like the great outdoors!).
+
+* Menu:
+
+* env-env::                     Environment
+* env-event::                   Events, Patterns, and their Specs
+* env-seq::                     Representing Sequences of Events
+* env-view::                    The EnviroView
+* env-import::                  Importing Environments from Text Files
+* env-gen::                     Environment Generation Functions
+* env-analyze::                 Environment Analysis Functions
+* env-freq::                    Frequency Environments and Events
+* env-other::                   Other Environment Types
+

@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-special-seq</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_161.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_163.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX960" HREF="pdp-user_toc.html">12.6.1  Processes for Sequences of Events</A></H3>
+<P>
+<A NAME="IDX961"></A>
+<A NAME="IDX962"></A>
+<A NAME="IDX963"></A>
+<A NAME="IDX964"></A>
+
+</P>
+<P>
+As discussed in section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>, environments can be constructed that
+specify sequences of events.  Certain algorithms can learn temporal
+contingencies between events, so it is important to be able to present
+the events in the proper sequence.  There are two specialized types of
+schedule processes that handle the presentation of sequences of events
+to the network, the <B>SequenceEpoch</B>, and the <B>SequenceProcess</B>.
+
+</P>
+<P>
+<A NAME="IDX965"></A>
+The <B>SequenceEpoch</B> is a version of the epoch process
+(see section <A HREF="pdp-user_156.html">12.4.3  Iterating over Trials: EpochProcess</A>) which, instead of iterating over individual
+events, iterates over <EM>groups</EM> of events.  Thus, this process uses
+the <CODE>GroupCount()</CODE> and <CODE>GetGroup()</CODE> functions on the
+environment instead of the event-wise ones (see section <A HREF="pdp-user_136.html">11.1  Environments</A>).  Each
+group of events represents a collection of events that form a sequence.
+The sequence epoch adds a <CODE>cur_event_gp</CODE> field, which contains a
+pointer to the current event group that is being processed.
+
+</P>
+<P>
+See section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A> for how these processes operate under
+distributed memory parallel processing.
+
+</P>
+<P>
+The <CODE>order</CODE> field on the sequence version of the epoch process now
+refers to the order of presentation of the groups (sequences) of events,
+and not the order of individual events within the sequences.  Also, the
+<CODE>SMALL_BATCH</CODE> mode of <CODE>wt_update</CODE> in the sequence epoch 
+can now take on one of two different possible meanings, depending on
+the state of the <CODE>small_batch</CODE> field.  In <CODE>SEQUENCE</CODE> mode,
+it means that weight changes are applied after <CODE>batch_n</CODE>
+sequences are processed.  In <CODE>EVENT</CODE> mode, it means that weight
+changes are applied after every <CODE>batch_n</CODE> events within the
+sequence (as in a standard EpochProcess).  Also, an additional weight
+update is performed at the end of the sequence in this mode to ensure
+that the weights are always updated at sequence boundaries, because
+the batch_n counter starts over at the start of each sequence.
+
+</P>
+<P>
+The <B>SequenceProcess</B> is typically created as a child of the
+<B>SequenceEpoch</B>, and it is the one that iterates over the particular
+events within a given group or sequence.  It obtains the current group
+of events from its parent sequence epoch process, and iterates over
+them.  It can control the order of presentation of events within the
+sequence, and has options for initializing the activation state of the
+network at the start of the sequence:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Counter tick</CODE>
+<DD>
+<A NAME="IDX966"></A>
+Each presentation of an event within a sequence is called a "tick", and
+this member counts the number of ticks that have gone by.  The
+<CODE>max</CODE> for this counter is automatically set to be the number of
+events in the current sequence.
+<DT><CODE>Event* cur_event</CODE>
+<DD>
+<A NAME="IDX967"></A>
+This is a pointer to the current event being processed.
+<DT><CODE>Event_MGroup* cur_event_gp</CODE>
+<DD>
+<A NAME="IDX968"></A>
+This is a pointer to the current event group (sequence) being processed.
+It is obtained from the parent <B>SequenceEpoch</B>.
+<DT><CODE>Order order</CODE>
+<DD>
+<A NAME="IDX969"></A>
+This determines the order of presentation of the events within a
+sequence.  While sequences are usually presented in <CODE>SEQUENTIAL</CODE>
+order, it is conceivable that one might want <CODE>PERMUTED</CODE> or
+<CODE>RANDOM</CODE> orders as well, which are available (these work just like
+the equivalent in the epoch process, see section <A HREF="pdp-user_156.html">12.4.3  Iterating over Trials: EpochProcess</A>).
+<DT><CODE>StateInit sequence_init</CODE>
+<DD>
+<A NAME="IDX970"></A>
+This determines if and how the activation state of the network is
+initialized at the start of the sequence.  <CODE>DO_NOTHING</CODE> means that
+no initialization is done, <CODE>INIT_STATE</CODE> means that the
+<CODE>InitState</CODE> function is called, and <CODE>MODIFY_STATE</CODE> means that
+the <CODE>ModifyState</CODE> function is called, which allows for
+algorithm-specific ways of changing state between sequences (e.g.
+decaying the activations).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_161.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_163.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

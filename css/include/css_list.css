@@ -1,0 +1,171 @@
+// this implements Lists in css
+
+#ifndef List_def
+#define List_def
+
+class ListEl {
+  // helper class for class List
+  // this is needed because "new void*[n]" is not supported
+  void* el;                    // #HIDDEN pointer to the element
+};
+
+class List {
+  // generic container class for css objects
+public:
+  int          size;           // #IV_READ_ONLY number of elements in list
+  int          alloc_size;     // #HIDDEN number of allocated slots
+  ListEl*      el;             // #HIDDEN storage for the elements
+
+  List();
+
+  void         Alloc(int n);
+  // allocate for up to n elements
+  void         ReAlloc(int n);
+  // reallocate preserving common positions
+  void         Reset();
+  // #BUTTON remove all elements from list
+  void         Copy(List& cpy);
+  // #HIDDEN copy elements from another list
+
+  void*        El(int idx);
+  // #HIDDEN get idxth element
+  void*        FastEl(int idx);
+  // #HIDDEN get idxth element
+  void         Add(void* it);
+  // #HIDDEN add element to end of list
+  void         Insert(void* it, int idx);
+  // #HIDDEN insert element before idx
+  void         Push(void* it);
+  // #HIDDEN push an element on list
+  void*        Pop();
+  // #HIDDEN pop an element off list
+  void*        Peek();
+  // #HIDDEN get element off top without removing
+
+  void         Edit();
+  // #HIDDEN edit list
+  void         EditEl(int idx);
+  // #BUTTON edit list element
+
+  void         Print();
+  // print pretty using printf
+};
+
+
+List::List() {
+  alloc_size = 0;
+  size = 0;
+}
+
+void List::Alloc(int n) {
+  if (alloc_size >= n)
+    return;
+
+  // round up n
+  alloc_size = 4;
+  while (alloc_size <= n) alloc_size *= 2;
+  el = new ListEl[alloc_size];
+  size = 0;
+}
+
+void List::ReAlloc(int n) {
+  int oldsize = size;
+  void* oldel = el;
+  Alloc(n);
+  if (oldsize > n) oldsize = n;
+  size = oldsize;
+  while (--oldsize >= 0) el[oldsize].el = oldel[oldsize].el;
+  delete oldel;
+}
+
+void List::Reset() {
+  while (size != 0) {
+    el[--size].el = NULL;
+  }
+}
+
+void List::Copy(List& cpy) {
+  Reset();
+  ReAlloc(cpy.size);
+  while (size < cpy.size) {
+    el[size].el = cpy.el[size].el;
+    size++;
+  }
+}
+
+void* List::El(int idx) {
+  if (idx < 0 || idx >= size) {
+    taMisc::Error("List::El(): index out of range");
+    return NULL;
+  }
+  return el[idx].el;
+}
+
+void* List::FastEl(int idx) {
+  return el[idx].el;
+}
+
+void List::Add(void* it) {
+  if (size >= alloc_size) ReAlloc(size+1);
+  el[size++].el = it;
+}
+
+void List::Insert(void* it, int idx) {
+  if (idx == -1 || idx == size) {
+    Add(it);
+    return;
+  }
+  if (idx < 0 || idx > size) {
+    taMisc::Error("List::Insert(): invalid idx");
+    return;
+  }
+  if (size == alloc_size) ReAlloc(size+1);
+  int i;
+  for (i = size; i > idx; i--)
+    el[i].el = el[i-1].el;
+  el[i].el = it;
+  size++;
+}
+
+void List::Push(void* it) {
+  Add(it);
+}
+
+void* List::Pop() {
+  if (size == 0) {
+    taMisc::Error("List::Pop(): List is empty");
+    return NULL;
+  }
+  void* retval = el[--size].el;
+  el[size].el = NULL;
+  return retval;
+}
+
+void* List::Peek() {
+  if (size == 0) {
+    taMisc::Error("List::Pop(): List is empty");
+    return NULL;
+  }
+  return el[size-1].el;
+}
+
+void List::Edit() {
+  EditObj(*this);
+}
+
+void List::EditEl(int idx) {
+  void* obj = El(idx);
+  if (obj != NULL)
+    EditObj(*obj);
+}
+
+void List::Print() {
+  printf("(List) {\n\tsize = ", size, "\n\telements = {\n");
+  int i;
+  for (i = 0; i < size; i++)
+    printf(FastEl(i), "\n");
+  printf("\n}\n}\n");
+}
+
+#endif // List_def
+

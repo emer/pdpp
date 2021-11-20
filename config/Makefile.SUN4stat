@@ -1,0 +1,77 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SUN4solaris - native SunOS 5.6 Solaris using the compiler in /opt/SUNWspro/SC4.2
+
+# CPU should be set to SUN4 and this file copied/linked to Makefile.SUN4
+# (this is what interviews still calls these systems)
+
+# NOTES for making: 2 gnu things needed are libreadline (i used 2.2)
+# and gnu make (3.77).  iberty stuff was not needed.
+# i'm also using gnus cpp for maketa, but it is possible that the
+# native one will work, but I couldn't locate it.
+# the src/ta/ios-SC4.2 files had to be modified to avoid some
+# maketa errors, (search on #if[n]def __MAKETA__)
+# other than that, everything works!
+
+# using gnu make -- sun make doesn't support VPATH stuff 
+# if gmake is 1st in path, this isn't necessary..
+MAKE = /usr/local/pdp++/gmake
+
+# use the CC includes
+IOS_INCLUDES = SC4.2
+
+LIBCC_INCLUDE_DIR = -I/opt/SUNWspro/SC4.2/include/CC
+MAKETA_FLAGS_CPU = $(LIBCC_INCLUDE_DIR)
+
+# interviews installed under pdp++, not in standard /usr/local/interviews
+IV = /usr/local/pdp++/iv-install
+
+# get rid of /usr/local/lib cuz it has libIV in it..
+LDIRS_XX = -L$(PDPDIR)/lib/$(CPU) -L$(IV)/lib
+
+LDIRS_EXTRA = -L$(PDPDIR)/lib/$(CPU)
+
+# these are needed by interviews..
+MACH_FLAGS = -DHAVE_POSIX_SIGNALS=1 -DRETSIGTYPE=void
+
+DEFINES = -DSUN4 -DSOLARIS -Dsparc -Dsun -DSVR4 -DNO_SIGNED -DNO_BUILTIN_BOOL
+
+GENERIC_LIB = -lsocket -lnsl -lm
+
+CXX_SHARED = CC -noex -features=no%rtti -instances=static
+CC_SHARED = cc 
+CXX_NONSHARED = CC -noex -features=no%rtti -instances=static
+CC_NONSHARED = cc
+
+# no vt file needed for e0/e1 stuff
+
+#AR_CMD_SHARED = CC -G -ztext -o
+#LIB_EXT_SHARED = so
+
+# use gnu cccp instead cuz it works!
+# could't locate native one
+#cppC = /opt/GCC281/lib/gcc-lib/sparc-sun-solaris2.6/2.8.1/cpp -lang-c++ -nostdinc++ 
+cppC = /usr/local/pdp++/cpp -lang-c++ -nostdinc++
+
+# these don't work!
+#cppC = /usr/ccs/lib/cpp -B
+#cppC = CC -E
+
+# don't! use shared libs
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+
+# not using TI
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+DEBUG_FLAG = -O
+DEBUG_OPT_FLAG =
+OPT_FLAG = -O
+DEP_FLAG = -xM
+

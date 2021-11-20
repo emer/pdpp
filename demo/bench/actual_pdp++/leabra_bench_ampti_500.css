@@ -1,0 +1,53 @@
+// script to control benchmarking of leabra++ (pdp++)
+// run with following command:
+// leabra++ -nogui -f leabra_bench_ampti_500.css
+
+// include standard functions (usually in /usr/local/pdp++/css/include)
+#include "startup_fctns.css"
+
+float BenchIt(int proc_no) {
+  .processes[proc_no].time_used.rec = true;
+  .processes[proc_no].ReInit();
+  .processes[proc_no].Run();
+
+  float ticks_per = 1.0e2;
+  float tot_time = .processes[proc_no].time_used.tot / ticks_per;
+
+  Network* net = *(.processes[proc_no].network);
+  Environment* env = *(.processes[proc_no].environment);
+
+  float n_units = net.layers[0].n_units; // assume square network
+  float n_wts = n_units * n_units * 2;   // 2 fully connected layers
+
+  float n_pats = env.events.size;
+  float n_epcs = .processes[proc_no].epoch.max;
+
+  float n_tot_pats = n_pats * n_epcs;
+
+  float n_cycles = .processes.SettleProcess.cycle.max;
+  
+  // effective number of connection traversals..
+  float n_con_trav = ((n_cycles * 2.0) + 2.0) * n_wts * n_tot_pats;
+
+  float con_trav_sec = (n_con_trav / tot_time) / 1.0e6;
+
+  cout << net->name << ": \tweights: " << n_wts << " \tpats: " << n_tot_pats
+       << " \tcon_trav: " << n_con_trav << "\n";
+  cout << "secs:\tMcon/sec:\n";
+  cout << tot_time << "\t" << con_trav_sec << "\n";
+  return tot_time;
+}
+  
+void RunBench() {
+  .projects.Load("leabra_bench_ampti_500.proj.gz");
+  .networks[0].Build();
+  .networks[0].Connect();
+  .networks[0]->name = "Leabra 500";
+
+  Start_LogFile("Epoch_0_GraphLog", "leabra_bench_ampti_500", ".epc.log");
+
+  float n_secs = BenchIt(0);
+//   cout << n_secs << "\n";
+}
+
+RunBench();

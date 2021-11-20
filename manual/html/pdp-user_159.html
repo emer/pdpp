@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-levels-settle</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_158.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_160.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX953" HREF="pdp-user_toc.html">12.5.2  Iterating over Cycles: SettleProcess</A></H3>
+<P>
+<A NAME="IDX954"></A>
+<A NAME="IDX955"></A>
+<A NAME="IDX956"></A>
+
+</P>
+<P>
+The <B>SettleProcess</B> is a base type of process that is used to iterate
+over cycles of activation updating.  Thus, it typically has a
+<B>CycleProcess</B> as its sub-process.  In algorithms with recurrent
+connectivity, it is typically necessary to iteratively update the
+activation states of the units for some number of cycles.  This process
+controls this settling procedure.  Particular algorithms will derive
+their own version of the settle process.
+
+</P>
+<P>
+<A NAME="IDX957"></A>
+The <CODE>cycle</CODE> counter records the number of cycles of updating that
+have been performed.  Setting the <CODE>max</CODE> for this counter will limit
+settling to this number of cycles.  In addition, some algorithms use a
+<CODE>loop_stat</CODE> that measures the change in activation.   When this
+stat goes below its criterion threshold, the settle process will stop.
+Thus, the stat determines when the settling has reached an equilibrium
+state.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_158.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_160.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

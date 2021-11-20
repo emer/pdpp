@@ -1,0 +1,29 @@
+#!/bin/csh
+
+if($#argv != 1) then
+	echo
+	echo "copyrightify requires stub of name of copyright file"
+	echo "with full path information relative to current directory"
+	echo "there must be two files with this name, one with extension"
+	echo ".txt, which is the new text, and one with extension .old"
+	echo "which is the old text to remove, if necessary"
+	echo
+	exit(1)
+endif
+
+foreach i (*.[h,c,y] *.cc)
+	set ocpy_lns=`wc -l <$1.old`
+	head -$ocpy_lns $i | cmp -s - $1.old
+	if($status == 0) then
+		echo "Removing old Copyright for: " $i
+		set fl_lns=`wc -l <$i`
+		@ body_lns=($fl_lns - $ocpy_lns)
+		cat $1.txt > copyrightify.xxx
+		tail -$body_lns $i >>copyrightify.xxx
+	else
+		echo "New Copyright for: " $i
+		cat $1.txt $i > copyrightify.xxx
+	endif
+	rm $i
+	mv copyrightify.xxx $i
+end

@@ -1,0 +1,13 @@
+u#!/bin/csh
+# script to make tar file of src files changed since a certain date
+
+echo  "Files changed since " `cat TARDATE` ":"
+gnutar -N " `cat TARDATE` " -cvf pdp++new.src.tar.gz -z /usr/local/pdp++ \
+                    --exclude HP800 --exclude SUN4  --exclude SUN4debug \
+                    --exclude SGI   --exclude LINUX --exclude iv \
+                    --exclude TAGS --exclude TARDATE \
+                    --exclude pdp++new.src.tar.gz \
+                    | egrep -v '/$'
+
+echo `date` > TARDATE
+

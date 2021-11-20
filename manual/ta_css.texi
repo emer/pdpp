@@ -1,0 +1,211 @@
+\input texinfo
+@c give us a figure counter
+@iftex
+@tex
+\newcount\texfigno\
+\global\parskip 4pt
+\setleading{12pt}
+@end tex
+@end iftex
+@setfilename ta_css
+@settitle The TypeAccess/CSS Manual
+@setchapternewpage on
+@headings double-sided
+
+@titlepage
+@title The TypeAccess/CSS Manual
+@subtitle Version 3.0 (@today{})
+@author Chadley K. Dawson, Randall C. O'Reilly
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1995-2003 Randall C. O'Reilly, Chadley K. Dawson,
+and Carnegie Mellon University
+
+@end titlepage
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node Top, copyright, (dir), (dir)
+
+@heading Welcome to the TypeAccess/CSS Manual
+
+This describes version 3.0 of the software.
+
+Manual revision date: @today{}.
+
+@menu
+* copyright::           Copyright Information
+* intro::               Introduction to TypeAccess/CSS
+* inst::                Installation Guide
+* css::                 Guide to the Script Language (CSS)
+* prog::                Programming with TypeAccess
+* gui::                 Guide to the Graphical User Interface (GUI)
+* obj::                 Object Basics and Basic Objects
+* conceptindex::        Index of Key Concepts
+* typeindex::           Index of Class Types
+* varindex::            Index of Variables
+* funcindex::           Index of Functions
+@end menu
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node copyright, intro, Top, Top
+@chapter Copyright Information
+
+Manual Copyright @copyright{} 1995 Chadley K. Dawson, Randall C. O'Reilly, 
+James L. McClelland, and Carnegie Mellon University
+
+Software Copyright @copyright{} 1995 Randall C. O'Reilly, Chadley K. Dawson,
+James L. McClelland, and Carnegie Mellon University
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose is hereby granted without fee, provided
+that the above copyright notice and this permission notice appear in all
+copies of the software and related documentation.
+
+Note that the PDP++ software package, which contains this package, has a
+more restrictive copyright, which applies only to the PDP++-specific
+portions of the software, which are labeled as such.
+
+Note that the taString class, which is derived from the GNU String
+class, is Copyright @copyright{} 1988 Free Software Foundation, written
+by Doug Lea, and is covered by the GNU General Public License, see
+ta_string.h.  The iv_graphic library and some iv_misc classes were
+derived from the InterViews morpher example and other InterViews code,
+which is Copyright @copyright{} 1987, 1988, 1989, 1990, 1991 Stanford
+University Copyright @copyright{} 1991 Silicon Graphics, Inc.
+
+THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE FOR ANY SPECIAL,
+INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
+OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+OF THIS SOFTWARE.
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  intro, inst, copyright, Top
+@chapter Introduction to TypeAccess/CSS
+
+TypeAccess (TA) and CSS were developed in order to automate the
+interface to a neural-network simulation package called PDP++.  This
+manual is simply a subset of the PDP++ software manual, and it has a
+number of references to PDP++ specific objects and issues.  Just ignore
+these.
+
+The TA/CSS system was designed to provide an automatic interface to C++
+objects.  The members and functions on the objects define what the user
+can do, and the GUI (graphical user interface) and script-level
+interface simply provides a way of accessing the members and methods of
+these objects.  Also, a generic, automatic way of saving and loading
+objects and structures of objects to disk is provided.
+
+The TypeAccess system makes this possible by automatically parsing the
+header files in an application directory and creating a record of the
+critical type information needed to make the GUI and script interfaces
+to these objects.  This type information is also available for the
+programmer, as with all RTTI (run-time type information) systems.
+
+Unlike most RTTI systems, TA also records the comments from the source
+code, which provides the prompts and "comment directives" for the
+automatic interface.  The comment directives control how the member or
+function is presented to the user, making the interface quite versatile.
+
+CSS is an interpreted script language that uses the C/C++ syntax.  It
+implements most of C and much of the basics of C++.  See
+@ref{css-c++-diff} and @ref{css-c-diff} for details on the
+discrepancies.  It has a built-in command system for controlling
+the execution and debugging of programs.
+
+CSS is implemented in C++ as a set of objects that basically know how to
+"run" themselves, convert themselves into other types, etc.  TypeAccess
+can generate a set of "stub" functions for class member functions which
+take CSS object arguments, and return a CSS object.  These stub
+functions provide the basis for the CSS interface to hard-coded
+classes, and for GUI buttons and pull-down menus which call member
+functions.
+
+The same kind of automatic GUI is also available for classes defined in
+CSS.  Thus, it is possible to create entire applications with automatic
+GUI interfaces without compiling a line of code.  This same code can
+then be compiled with C++ when the application is stable enough to
+warrant compiling.
+
+CSS can also be used as a stand-alone program like Perl or TCL.  This
+provides the ability to write shell-like scripts in C/C++ instead of
+learning a complicated new language (use the complicated language you
+already know..).  The basic version of CSS has the GNU libg++ String
+object as a basic type, as well as standard stream-based I/O, and all of
+the usual functions from @file{unistd.h} and @file{math.h}, plus some
+additional special math functions.  It would be fairly simple to parse a
+good C++ matrix library under TA/CSS (this is on the 'todo' list), or
+some classes that provide faster I/O primitives for doing specific
+file-processing tasks, network protocols, etc.
+
+The distribution includes a number of low-level objects which provide
+transparent access to the TA type information, and basic container
+functions like List, Group, and Array, as well as a host of other object
+types that were used to implement the PDP++ software.
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  inst, css, intro, Top
+@chapter Installation Guide
+@include pdp-user-inst.texi
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node css, prog, inst, Top
+@chapter Guide to the Script Language (CSS)
+@include pdp-user-css.texi
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node prog, gui, css, Top
+@chapter Programming with TypeAccess
+@include pdp-user-prog.texi
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node gui, obj, prog, Top
+@chapter Guide to the Graphical User Interface (GUI)
+@include pdp-user-gui.texi
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node obj, conceptindex, gui, Top
+@chapter Object Basics and Basic Objects
+@include pdp-user-obj.texi
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node conceptindex, typeindex, obj, Top
+@unnumbered Concept Index
+@printindex cp
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node typeindex, varindex, conceptindex, Top
+@unnumbered Class Type Index
+@printindex tp
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node varindex, funcindex, typeindex, Top
+@unnumbered Variable Index
+@printindex vr
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node funcindex,  , varindex, Top
+@unnumbered Function Index
+@printindex fn
+
+@c ***************************************
+@shortcontents
+@contents
+@bye

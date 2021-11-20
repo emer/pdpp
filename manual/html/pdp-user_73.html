@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-extend</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_72.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_74.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.3.3  Extensions Available in CSS</A></H3>
+
+<P>
+There are several "extensions" of the C/C++ language available in CSS.
+The most obvious one is the ability to shorten the path to refer to a
+particular hard-coded object by skipping those elements that are the
+first of a given group.  Thus, if referring to a unit in the first layer
+of a network, in the first project, one can say: <CODE>.units[x]</CODE>
+instead of <CODE>.projects[0].networks[0].layers[0].units[x]</CODE>.
+
+</P>
+<P>
+Also, one can often avoid the use of a type specifier when initializing
+a new variable, because CSS can figure out the type of the variable from
+the type of the initializing expression:
+
+</P>
+<PRE>  var1 = "a string initializer";          // type is inferred from initializer
+  //        instead of
+  String var2 = "a string initializer";   // instead of explicitly declared  
+</PRE>
+
+<P>
+When referring to a hard-coded type, CSS will automatically use the
+actual type of the object if the object derives from the <CODE>ta_Base</CODE>
+class which is aware of its own type information.
+
+</P>
+<P>
+CSS does not pay attention to the distinction between <CODE>ptr-&#62;mbr</CODE>
+and <CODE>obj.mbr</CODE>.  It knows if the object in question is an object
+itself or a pointer to an object, and can figure out how to access the
+members appropriately.
+
+</P>
+<P>
+All of the basic CSS types (see section <A HREF="pdp-user_80.html">7.4.5  Basic Types in CSS</A>) know how to convert
+themselves into the other types automatically, without even casting
+them.  However, you can use an explicit cast if you want the code to
+compile properly in standard C/C++.
+
+</P>
+<P>
+Also, all script variables for hard-coded objects are implicitly
+pointers, even if not declared as such.  This is because script objects
+are not the same thing as hard-coded ones, and can only act at best as
+reference variables for them (i.e., essentially as pointers, but you can
+use the <CODE>obj.mbr</CODE> notation, see previous paragraph).  Thus, while
+you can write CSS code that would also compile as C++ code by using
+<CODE>ptr-&#62;mbr</CODE> notation to refer to hard-coded objects, you can also
+cheat and use the simpler <CODE>obj.mbr</CODE> notation even when <CODE>obj</CODE>
+is a pointer.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_72.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_74.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-monitor</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_172.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_174.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1041" HREF="pdp-user_toc.html">12.8.2  Monitoring Network State Variables</A></H3>
+<P>
+<A NAME="IDX1042"></A>
+<A NAME="IDX1043"></A>
+<A NAME="IDX1044"></A>
+<A NAME="IDX1045"></A>
+
+</P>
+<P>
+In order to be able to view network stat variables (e.g., unit
+activations) in one of the log displays (or record them to disk files),
+these state variables need to be monitored with a <B>MonitorStat</B>.
+
+</P>
+<P>
+The <B>NetView</B> provides a convenient interface for creating monitor
+stats and selecting which objects to monitor and what values to monitor
+from them (see section <A HREF="pdp-user_130.html">10.7.1  The Action Region</A>), as does the <B>Wizard</B> object
+(see section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>).
+
+</P>
+<P>
+<A NAME="IDX1046"></A>
+<A NAME="IDX1047"></A>
+There are basically two parameters of relevance in the monitor stat.
+One is the <CODE>objects</CODE> that are being monitored.  This is a group
+which has links to the objects (see section <A HREF="pdp-user_91.html">8.2  Groups</A> for information on
+links).  The other is the <CODE>variable</CODE> to record from these objects.
+Note that if the variable is one found on units, but the object(s) are
+layers, then the stat will automatically get the unit variable from all
+of the units in the layer.  Similarly, if the variable is one on
+connections, but the object(s) are projections, all of the connections
+in the projection will be used.
+
+</P>
+<P>
+Typically, the <CODE>net_agg</CODE> operator <CODE>COPY</CODE> is used.  This
+results in a separate column of data for each object being monitored.
+This data is stored in the <CODE>mon_vals</CODE> group on the monitor stat.
+When these values are graphed or displayed in the grid log
+(see section <A HREF="pdp-user_188.html">13.3.4  The Graph LogView</A>, section <A HREF="pdp-user_194.html">13.3.5  The Grid LogView</A>), they appear as one big
+group that shares the same axis on the graph and is part of the same
+sub-grid on the grid.
+
+</P>
+<P>
+However, one can compute any kind of network aggregation from the
+monitored statistics, including MAX, AVG, etc.  These aggregations
+produce a single value in the <CODE>mon_vals</CODE> group.
+
+</P>
+<P>
+<A NAME="IDX1048"></A>
+It is also possible to perform three steps of pre-processing on the
+monitored values before they are recorded or aggregated into the monitor
+stat.  This pre-processing is controlled by the <CODE>pre_proc_1,2,3</CODE>
+members, which specify an operation and, optionally, arguements to that
+operation in the <CODE>arg</CODE> member.  Note that the thresholding function
+<CODE>THRESH</CODE> compares the value to the <CODE>arg</CODE>, and gives a result
+of <CODE>hi</CODE> if it is greater-than-or-equal, and <CODE>lo</CODE> if it is
+less-than the arg.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_172.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_174.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

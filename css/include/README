@@ -1,0 +1,10 @@
+css/include:
+
+This is the standard include directory for css script code.
+It is included by default in the include paths of css and pdp++ software.
+Thus, code here can be included with a simple #include "xxx.css" in your
+css script code.  The environmental variables CSSDIR and PDPDIR (depending
+on which application you are running) should be set to the base install
+directory (typically /usr/local/pdp++) and this directory should be
+PDPDIR/css/include.
+

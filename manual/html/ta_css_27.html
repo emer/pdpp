@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - css-hard</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_26.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_28.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX179" HREF="ta_css_toc.html">5.6  Compiling CSS files as C++ Hard Code</A></H2>
+<P>
+<A NAME="IDX180"></A>
+<A NAME="IDX181"></A>
+
+</P>
+<P>
+Because they use the standard C++ syntax, CSS script files can be
+compiled into "hard" code that runs (fast) as a stand-alone application.
+Of course, the files must not use any of the CSS shortcuts, and must
+otherwise be standard C++ code (i.e., no executable code outside of
+functions, using the correct <CODE>.</CODE> or <CODE>-&#62;</CODE> operator, etc).
+
+</P>
+<P>
+There are three main steps that are needed to compile your CSS code.
+The first, which need only be done once, is the creation of the
+appropriate libraries that will be linked with the C++ compiled code to
+produce an executable.  The second is formatting your file so that it
+can be both run by CSS and compiled by C++.  The third is creating a
+Makefile which will allow C++ to compile your file.  An example of this
+is provided in the directory <TT>`demo/css'</TT>.
+
+</P>
+<P>
+There are two special libraries that are linked into your C++
+executable, one in the <TT>`src/ta'</TT> directory, and one in the
+<TT>`src/css'</TT> directory.  Both can be made using top-level Makefile
+commands, or by going into the directories separately.  <SAMP>`make
+LibMin'</SAMP> makes a library which contains the minimal type-access stuff
+from the <TT>`src/ta'</TT> directory of the distribution, and it makes the
+<TT>`libtypea_min'</TT> library.  <SAMP>`make hard_css'</SAMP> makes a library of
+special functions in <TT>`src/css'</TT> (e.g., the "special math" functions
+which have been added into CSS and are not part of the standard C
+library, and the Dir and ReadLine functions).  This library is
+<TT>`libhard_css'</TT>.  Both of these libraries will be visible to the C++
+compiler using the makefiles as described below.
+
+</P>
+<P>
+The CSS file needs to have a couple of conditially-included elements
+that resolve the basic differences between CSS and C++.  Basically, this
+amounts to including a header file that estabilshes some defines and
+includes some commonly-used standard library headers, which are
+automatically present in CSS.  This is the <TT>`css/hard_of_css.h'</TT>
+file.  It is only included when compiling by making it conditional on
+the pre-processor define <CODE>__CSS__</CODE>, which is automatically defined
+by CSS.  Also, <TT>`hard_of_css.h'</TT> defines a <CODE>main</CODE> function which
+calls a function called <CODE>s_main</CODE>, which is the actual main function
+that should be defined in your script.
+
+</P>
+<P>
+The following example illustrates these elements, and can be used as a
+template for making your own CSS files compilable (see <TT>`demo/css'</TT>
+for a larger example):
+
+</P>
+<PRE>#ifndef __CSS__
+#include &#60;css/hard_of_css.h&#62;
+#endif
+
+void s_main(int ac, String* av) {
+  // do stuff here..
+}
+
+// in css, call our main function as the thing we actually run..
+#ifdef __CSS__
+s_main(argc, argv);
+#endif
+</PRE>
+
+<P>
+In order to make the C++ compiling environment as similar to CSS as
+possible, a variant of the same Makefile can be used.  This assumes that
+the makefiles for your CPU type are correct (i.e., those used in
+installing the PDP++/CSS source-code distribution (see section <A HREF="ta_css_3.html">4  Installation Guide</A>,
+section <A HREF="ta_css_5.html">4.7  Installing the Programmers Version</A>)).  The following steps will result in a Makefile that
+will enable you to compile your CSS code.
+
+</P>
+<P>
+1) Copy the sample makefile in <TT>`config/Makefile.hard_of_css'</TT> into
+the directory where your CSS file is to be compiled, and name it
+<TT>`Makefile.in'</TT>.
+
+</P>
+<P>
+2) Edit this file and ensure that the PDPDIR path is pointing to the
+installed pdp++ distribution.
+
+</P>
+<P>
+3) Then, do a <CODE>make -f Makefile.in InitMakefile</CODE>, which will make a
+<TT>`Makefile'</TT> in the current directory that can be used to compile
+your file.
+
+</P>
+<P>
+4) To compile, just type <CODE>make &#60;filenm&#62;</CODE>, where <CODE>&#60;filenm&#62;</CODE> is
+the CSS file without any extension (i.e., the name of the executable
+that will be produced.  Some C++ compilers will complain if the file
+does not end in a "standard" C++ extension like .cc or .C, so you may
+have to rename it or create a symbolic link from your .css file (CSS
+does not care about using a non .css extension, as long as you specify
+the entire file name).
+
+</P>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_26.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_28.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

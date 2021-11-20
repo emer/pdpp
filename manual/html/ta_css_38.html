@@ -1,0 +1,150 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - comdir-membs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_37.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_39.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX242" HREF="ta_css_toc.html">6.3.2  Member Directives</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>#HIDDEN</CODE>
+<DD>
+Hides member from user's view in edit dialogs and CSS type information
+printouts. 
+<DT><CODE>#HIDDEN_INLINE</CODE>
+<DD>
+Hides member when inlined in another object, but not when edited itself.
+This only applies to members of #INLINE objects.
+<DT><CODE>#SHOW</CODE>
+<DD>
+Always show this member in the edit dialog (i.e., even if it was marked
+#READ_ONLY).
+<DT><CODE>#IGNORE</CODE>
+<DD>
+Does not register this member in the type information for this class.
+<DT><CODE>#DETAIL</CODE>
+<DD>
+Flags this member as a level of detail that the user usually does not
+need to deal with -- can be viewed by changing the Show setting in the
+edit dialog.
+<DT><CODE>#NO_SAVE</CODE>
+<DD>
+This member is not saved when dumping to a file.
+<DT><CODE>#NO_SAVE_PATH_R</CODE>
+<DD>
+Don't create these objects in the 1st pass of the dump file (e.g., they
+will be created automatically by something else, usually an
+#IMMEDIATE_UPDATE UpdateAfterEdit function on a parent object).  This
+can be used to speed up saving and loading of large numbers of
+repetitive objects which can be created instead.
+<DT><CODE>#READ_ONLY</CODE>
+<DD>
+Allows the user to see but not edit this item.  By default the gui edit
+dialog will not show these items.  This prevents the member from being
+changed in CSS as well.
+<DT><CODE>#IV_READ_ONLY</CODE>
+<DD>
+Like READ_ONLY, but user can modify the value via CSS (which is
+prevented by READ_ONLY).
+<DT><CODE>#LIST_xxx</CODE>
+<DD>
+Sets the Lookup List for this element.  This is used mainly for pointers
+to functions, where one wants the gui to show a list of top-level
+functions that have been scanned by maketa (see section <A HREF="ta_css_40.html">6.3.4  Top-Level Function Directives</A>).
+<DT><CODE>#TYPE_xxx</CODE>
+<DD>
+Sets the default type for members which are pointers to TypeDef objects.
+This also works for MemberDef pointers.  If xxx is 'this', then the 
+type of the current object is used.
+<DT><CODE>#TYPE_ON_xxx</CODE>
+<DD>
+For object, TypeDef, or MemberDef pointers: use member xxx of this
+object to anchor the listing of possible types, tokens, or members.
+<DT><CODE>#FROM_GROUP_xxx</CODE>
+<DD>
+For token pointers, use given member xxx as the group from which to
+select token options (xxx can be a pointer to a group).
+<DT><CODE>#GROUP_OPT_OK</CODE>
+<DD>
+For FROM_GROUP_xxx mbrs, allows group itself as an option (else not
+allowed).
+<DT><CODE>#SUBTYPE_xxx</CODE>
+<DD>
+Sets this token pointer member to be only subitems (objects owned by
+this one) of type xxx.  A recursive scan of members on this object is
+performed to search for objects of the given type as possible values for
+this field.
+<DT><CODE>#NO_SUBTYPE</CODE>
+<DD>
+Don't search this ptr for possible subitems (use if this ptr might point
+"up", causing a endless loop of searching for subitems).
+<DT><CODE>#NO_FIND</CODE>
+<DD>
+Don't search this member for the recursive FindMembeR function which
+searches recursively through objects (use if this ptr might point up in
+the hierarchy, which might cause an endless loop).
+<DT><CODE>#NO_SCOPE</CODE>
+<DD>
+Don't use scope for tokens for a token pointer member.  See SCOPE object directive
+<DT><CODE>#LABEL_xxx</CODE>
+<DD>
+Set the label for item (or menu or button) to be xxx.
+<DT><CODE>#OWN_POINTER</CODE>
+<DD>
+For a pointer to an object, when loading, set the owner of the obj to be
+this object.  Thus, this pointer is always created and owned by this
+object. 
+<DT><CODE>#NULL_OK</CODE>
+<DD>
+A null value is ok as an option for the user (else not) for pointer to a
+type, and SUBTYPE tokens.
+<DT><CODE>#NO_NULL</CODE>
+<DD>
+A null value is not ok (for tokens) (else ok).
+<DT><CODE>#NO_EDIT</CODE>
+<DD>
+Don't include Edit as an option on a token pointer menu (else ok).
+<DT><CODE>#POS_ONLY</CODE>
+<DD>
+Only positive (non-negative) integers, this controls behavior of the
+stepper for integer types.
+<DT><CODE>#LINK_GROUP</CODE>
+<DD>
+This group member only has linked items (doesn't allow user to create
+new tokens in this group).
+<DT><CODE>#IN_GPMENU</CODE>
+<DD>
+This members' items should appear in the group menu. The member must be
+a <B>taGroup_impl</B> descendent type, and the class must have a
+MEMB_IN_GPMENU option set.
+<DT><CODE>#CONDEDIT_xxx</CODE>
+<DD>
+This makes editing a member conditional on the value of another member.
+For example: #CONDEDIT_OFF_type:NONE,LT_MAX specifies that this member
+is to be not editable (OFF) when the type enum variable is either NONE
+or LT_MAX.  One alternatively specify ON for conditions when it should
+be editable.  The comparison is based on the string representation of
+the member value -- sub-paths to members within contained objects can
+also be used.
+<DT><CODE>#DEF_xxx</CODE>
+<DD>
+Specifies a default value for the member.  If the field is set to a
+value other than this default value, it will be highlighted in yellow to
+indicate that the value is different from default.  This should only be
+used where there are clear default values that are typically not
+changed.
+<DT><CODE>#AKA_xxx</CODE>
+<DD>
+This allows old project files etc to be loaded correctly after changing
+the name of a field or enum by matching xxx to the new field/enum.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_37.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_39.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

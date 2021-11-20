@@ -1,0 +1,1203 @@
+This is ta_css, produced by makeinfo version 4.1 from ta_css.texi.
+
+
+File: ta_css,  Node: gui-colors,  Next: gui-file-requester,  Prev: gui-settings,  Up: gui
+
+Color Scale Specifications
+==========================
+
+   Color scales are used in PDP++ to display the values of variables
+graphically in various types of displays.  The choice of color scale
+depends on personal preferences as well as what type of display the
+user has available.  There are a number of different types of color
+scales that come with the software, and the user can create their own
+custom colorscales.
+
+   A color scale is specified by creating a set of different color
+points.  The actual scale is just the linear interpolation between
+each of these points, where the points are distributed evenly through
+the range of values covered by the scale.  Thus, if there were three
+such points in a color specification that goes from -1 to 1, the
+first point would represent the value -1, the middle one would
+represent 0, and the last one would represent 1.  Values in between
+would be represented by intermediate colors between these points.
+The actual number of colors created in a given color scale is
+determined by the `color_scale_size' setting parameter for color
+displays, and `mono_scale_size' for monochrome displays (*note
+gui-settings::).
+
+   The PDPRoot object contains a group of color specifications called
+`.colorspecs', which is where the default color scales and any new
+ones the user creates are located.  The default element (*note
+obj-group::) of this group represents the default color scale to use
+when creating a new display that uses color scales. The defaults are
+as follows:
+
+`C_ColdHot'
+     interpolates from violet->blue->grey>->red->yellow
+
+`C_BlueBlackRed'
+     interpolates from blue->black-red
+
+`C_BlueGreyRed'
+     interpolates from blue->grey->red
+
+`C_BlueWhiteRed'
+     interpolates from blue->white->red
+
+`C_BlueGreenRed'
+     interpolates from blue->green->red
+
+`C_Rainbow'
+     interpolates from violet->blue->green->yellow->red
+
+`C_ROYGBIV'
+     interpolates from violet->indigo->blue->green->yellow->red
+
+`C_DarkLight'
+     interpolates from black->white
+
+`C_LightDark'
+     interpolates from white->black
+
+`M_DarkLight'
+     dithers from black->white
+
+`M_LightDark'
+     dithers from white->black
+
+`M_LightDarkLight'
+     dithers from white->black->white
+
+`P_DarkLight'
+     dithers from black->white with a white background for printing
+
+`P_DarkLight_bright'
+     dithers from black->white with a white background for printing,
+     having a brighter overall tone than the basic one (a lighter
+     zero value).
+
+`P_LightDark'
+     dithers from white->black with a white background for printing
+
+`P_DarkLightDark'
+     same as M_DarkLightDark with a white background for printing
+
+`P_LightDarkLight'
+     same as M_LightDarkLight with a white background for printing
+
+   The ColorScaleSpec is the object that specifies the color scale.
+It contains a group of RGBA objects, each of which is used to specify
+a point on the colorscale range based on the Red, Green, and Blue
+values, plus a "transparency" parameter Alpha. The ColorScaleSpec
+object has one primary function.
+
+`GenRanges (ColorGroup* cl, int nper)'
+     This function creates a range of colors in the ColorGroup by
+     linearly interpolating nper colors for each RGBA set point value
+     in the ColorScaleSpec.
+
+   The RGBA object has the following fields:
+
+`String name'
+     The name of the color
+
+`float r'
+     Amount of red in the color (0.0 - 1.0)
+
+`float g'
+     Amount of green in the color (0.0 - 1.0)
+
+`float b'
+     Amount of blue in the color (0.0 - 1.0)
+
+`float a'
+     Alpha intensity value (ratio of foreground to background) This
+     is used primarily for monochrome displays.
+
+   If the name field of an RGBA object is set, then it will try to
+lookup the name to find the r,g, and b values for that color.
+
+   Thus, to create your own color scale specification, just create a
+new ColorScaleSpec object, and then create some number of RGBA
+objects in it.  Then, edit your views (e.g., the network view, *Note
+net-view::), and set their `colorspec' to point to your new
+specification.  In order to see changes you make to your color spec,
+you need to switch the `colorspec' pointer to a different one and
+then back to yours after making the changes.
+
+
+File: ta_css,  Node: gui-file-requester,  Next: gui-obj-chooser,  Prev: gui-colors,  Up: gui
+
+File Requester
+==============
+
+   The File Requester Dialog is used for choosing filename for
+reading and writing to files. The directions for the file
+manipulation are listed at the top of the dialog. Typically the
+directions will ask the user to "Select a File for xxx" where xxx is
+one of "Opening", "Appending", "Writing", etc. Under the directions
+is the prompt "Enter Filename", and a FieldEditor where the user can
+type in the name of the file.
+
+   Below the FieldEditor is a vertical scrollbox of filenames in the
+current directory. If there are more names than will fit in the
+window, the scrollbar on the right edge of the scrollbox can be used
+to scroll through the full listing. A filename can be chosen by
+clicking on the name in the scrollbox. Subdirectories are listed with
+a slash ('/') following the name, and can be read in by
+double-clicking on their name.  The "../" directory can be used to
+navigate up a directory level.
+
+   Below the filename scrollbox is a Field Editor for the filename
+filter.  The String listed here is a unix csh filename completion
+string.  Wildcards can be specified using the '*' character. See the
+csh man page for more details. Typically this field will be set by
+PDP++ to limit the range of filenames available to those which
+correspond to the type of file the dialog is to act upon. (e.g., If
+projects are being loaded, then the filter will be set to "*.proj.*"
+to limit the selection to files with ".proj" in the filename.) In
+most cases, compressed files can be loaded and saved as well.
+
+   Below the filter Field Editor are the action buttons. The leftmost
+button will perform the action specified in the directions at the top
+of the dialog. The rightmost button is the "Cancel" button and will
+exit the dialog without performing the action. Double-clicking on a
+filename, or pressing the "return" key, also causes the dialog's
+action to be taken.
+
+
+File: ta_css,  Node: gui-obj-chooser,  Prev: gui-file-requester,  Up: gui
+
+Object Chooser
+==============
+
+   The Object Chooser Dialog is much like the file requester described
+previously, and is used primarily for choosing objects when there are
+too many such objects to fit within a menu.  It can also be used to
+browse the entire hierarchy of objects.  In the simple choosing
+function, just scroll and pick the object - double clicking to select,
+or using the Select button at the bottom.  A name can also be typed
+into the field at the top of the browser.
+
+   By selecting PDP++Root/Browse, the object chooser acts more like a
+file browser.  When you select an object, the default is to descend
+into the sub-objects on that object.  Pressing .. will go back up a
+level (as in the file system).  When you select an object, an edit
+dialog will show up for that object.  This can be used for editing
+things that may not show up in a useful way in standard edit dialogs
+(e.g., the StatVal's in Stats, see *Note proc-stat::).
+
+
+File: ta_css,  Node: obj,  Next: conceptindex,  Prev: gui,  Up: Top
+
+Object Basics and Basic Objects
+*******************************
+
+   PDP++ is written in the computer language C++. C++ extends the C
+language in many ways, but its primary addition is the concept of
+objects and object oriented programming (OOP). Many PDP concepts such
+as Units, Layers, and Networks easily fall into the object paradigm,
+while some other concepts such as Processes and Environments are
+initially difficult to grasp in this framework. The following
+chapters explain the particulars of the PDP concepts in the
+object-based paradigm in greater detail. This chapter establishes a
+number of conventions in PDP++ used for organizing and structuring
+its objects.  It is really only relevant if you will be programming
+with PDP++, either in the script language or directly in C++ -- the
+end user generally need not be concerned with this level of detail.
+
+   In addition to these object basics, this chapter also describes a
+number of basic types of objects that are used in many different
+places within the software.  Examples of these include lists, groups,
+arrays, and specifications.
+
+* Menu:
+
+* obj-basics::                  Object Basics
+* obj-array::                   Arrays
+* obj-group::                   Groups
+* obj-spec::                    Specifications
+* obj-random::                  Random Distributions
+
+
+File: ta_css,  Node: obj-basics,  Next: obj-group,  Prev: obj,  Up: obj
+
+Object Basics
+=============
+
+   The following sections describe some basic ideas about objects and
+general things you can do with them.
+
+* Menu:
+
+* obj-basics-obj::              What is an Object?
+* obj-basics-names::            Object Names
+* obj-basics-files::            Saving and Loading Objects
+
+
+File: ta_css,  Node: obj-basics-obj,  Next: obj-basics-names,  Prev: obj-basics,  Up: obj-basics
+
+What is an Object?
+------------------
+
+   An object has both fields with data and functions (aka methods)
+which it can perform.  A PDP Unit as an object might have the fields
+`activation' and `netinput', and some functions like
+`ComputeActivation()' and `ClearNetInput()'. In C++ this might look
+like:
+
+     class Unit {
+       float         activation;     // this is a member holding activation
+       float         netinput;       // this is a member holding net input
+     
+       virtual void  ComputeActivation(); // this is a function
+       void          ClearNetInput();        // this is a function
+     }
+
+   C++ also provides the mechanisms for object inheritance in which a
+new object can be defined as having the same fields and functions as
+its "parent" object with the addition of a few fields and/or
+functions of its own. In PDP++ the BpUnit object class inherits from
+the parent Unit class and adds fields such as `bias weight' and a
+BackProp version of `ComputeActivation'. In C++ this might look like:
+
+     class BpUnit : public Unit {
+       float         biasweight;     // a new member in addition to others
+     
+       void          ComputeActivation(); // redefining this function
+       void          ClearBiasWeight();  // adding a new function
+     }
+
+   By overloading the ComputeActivation function the BpUnit redefines
+the way in which the activation is computed. Since it doesn't
+overload the ClearNetInput function, the BPUnit clears its net input
+in the exact same way as the standard unit would. The new function
+ClearBiasWeight exists only on the BpUnit and is not available on the
+base Unit class. Through this type of class inheritance, PDP++
+provides a hierarchical class structure for its objects.
+
+   For a slightly more detailed treatment of some of the basic ideas
+in OOP and C++, see *Note css-c++-intro::.
+
+
+File: ta_css,  Node: obj-basics-names,  Next: obj-basics-files,  Prev: obj-basics-obj,  Up: obj-basics
+
+Object Names
+------------
+
+   In PDP++, many objects have a `name' field.  This gives the
+particular object an identifier that can be used to refer to it in the
+CSS script language (*note css-tut-access::), and it makes it easier
+to identify when you need to point to it one of the GUI operations.
+
+   All objects when created are given default names that consist of
+the their type followed by a number which increases for each
+subsequent object of that type which is created.  Thus, the first
+Layer created will be called "Layer_0", and so on.
+
+   Note that the name given to an object is not necessarily the same
+name that object will have when saved to a file.  It is simply a
+value of a particular member of the object.
+
+
+File: ta_css,  Node: obj-basics-files,  Prev: obj-basics-names,  Up: obj-basics
+
+Saving and Loading Objects
+--------------------------
+
+   All PDP++ objects can also be saved to a file and loaded back in
+from that file.  Note that when you save an object that has
+sub-objects in it (i.e. a Layer, which has Units in it), those
+sub-objects are also saved in the file, and loaded back in as well.
+Thus, to save all the elements of a project, one only has to save the
+project object, which will automatically save all of its sub-objects.
+
+   There are two ways in which objects can be loaded back in: in one
+case, you load the file _over_ an existing object.  This corresponds
+to the Load Over menu item that you will frequently see in PDP++.
+This will simply replace the values of the existing object with those
+saved in the file.  This also applies to any sub-objects. Note if the
+existing object has _fewer_ of some kind of sub-object than the saved
+file, new sub-objects will be created as needed.  However, the same
+is not also true if the existing object has _more_ of these
+sub-objects--they are not removed to make the existing object exactly
+the same as that which was saved in the file.  If you want to make
+sure the object is exactly as it was saved, open a new one, do not
+open over an existing one.
+
+   To open a new object from a saved file, use the Open in menu item
+(instead of Load Over).  This is equivalent to opening a new item
+into a parent group object.  For example, the project has a group that
+contains its networks.  If you open a saved network file in this
+group, as opposed to over an existing network in the group, a new
+network will automatically be created (along with all of its saved
+substructure).
+
+   Some types of objects have default "extensions" that are
+automatically added on to the file name to identify the type of file.
+For example, projects are saved with a `.proj' extension.  Further,
+some objects automatically compress the file after saving, (and
+automatically uncompress it before loading) in order to save disk
+space.  This is because the file format objects are saved in is
+actually text-based and human readable.  Thus, it is much more
+efficient to save large files in a compressed form.  These files
+automatically get the compression suffix associated with the type of
+compression used (.gz for gzip, which is the default).
+
+
+File: ta_css,  Node: obj-group,  Next: obj-array,  Prev: obj-basics,  Up: obj
+
+Groups
+======
+
+   Groups are one of the major workhorse objects in the PDP++
+software.  Virtually every object is contained in a group object.
+Thus, groups provide a way of managing other objects, creating them,
+ordering them, and iterating through them.
+
+   A particular group typically manages objects of the same type.
+Thus, a group of units always contains units of one form or another.
+Groups have a _default type_ of object that they expect to contain,
+and this is what they will create if asked to create a new object.
+
+   Groups also have a notion of a _default element_, which can be
+useful.  For example, the default element of the group of color
+specifications on the root object is the default color spec that will
+be used by all windows that need a color spec.
+
+   There are two basic types of groups.  The simpler form of group is
+actually just a List.  A List object manages a single list of
+elements, and does not allow for any sub-grouping of these elements.
+Lists are used to hold simple objects that probably don't need to have
+such subgroups.
+
+   A Group may also contain subgroups, which are similar in type to
+the group itself. The nested structure of subgroups within subgroups
+within groups can be organized into a conceptual "tree" of groups and
+elements.  The initial group comprises the base of the tree with each
+of its subgroups representing a branch. The subgroup's subgroups
+continually branch off until in the end a group is reached without
+any further subgroups. The actual elements of the group are
+conceptually represented as "leaves", and may occur within any group
+at any level of the group tree.
+
+      Ex:
+     
+                             __(initial group)____
+                            /      |       \   \  \
+                 (subgroup1)   (subgroup2) el6 el7 el8
+                   /  |  \         |     \
+        (subgroup11) el2 el3 (subgroup21)(subgroup22)
+               |                   | \
+              el1                  el4 el5
+
+   In this example there are six groups and eight "leaf" elements. The
+leaves are numbered in their Depth First Search retrieval order which
+is used by the `Leaf()' function described in the group functions
+section *Note obj-group-functions::.
+
+   In some cases it useful for the same group element to occur in
+more than one group at time. The parent groups share the element,
+however, one group is assigned to be the owner (usually the initial
+group the element was created within). Usually a group will own all
+of its elements, but sometimes it may contain elements from other
+groups as well. Those elements which are owned by other groups are
+known as _linked_ elements, and are added to a group by using the
+`Link()' function described in the group functions section. When a
+group is deleted, it breaks its link to the linked elements, but does
+not delete them as it does the other elements it owns. Subgroups can
+also be linked.
+
+     Ex:
+             (group1)                  (group2)
+             /   |   \                /    |  \
+     (subgroup1) el1  \.............el2    el3 \
+       /  \                                     \
+     el4   \...................................(subgroup2)
+
+   In this example group1 has a link to element el2 in group2. El2 is
+owned by group2 and is a link element of group1. In addition,
+subgroup1 has a link to subgroup2, which is owned by group2.
+
+   The following sections document the various operations and
+variables of the group types. These are probably of most interest to
+users who will be manipulating groups in the CSS language, or in
+programming in PDP++.  However, some of the group functions are
+available in the Actions menu in the gui, and their function might
+not be fully clear from their name and arguments.
+
+* Menu:
+
+* obj-group-iteration::         Iterating Through Group Elements
+* obj-group-variables::         Group Variables
+* obj-group-functions::         Group Functions
+* obj-group-edit::              Group Edit Dialog
+
+
+File: ta_css,  Node: obj-group-iteration,  Next: obj-group-variables,  Prev: obj-group,  Up: obj-group
+
+Iterating Through Group Elements
+--------------------------------
+
+   The elements in a group with nested sub-structure can be accessed
+as though this structure were "flattened out".  This can be done more
+efficiently using an iterator scheme as opposed to repeatedly calling
+the `Leaf()' function.  The iterator for going through leaves is an
+object that remembers information about where it is in the group
+structure.  This iterator is of type taLeafItr, and a variable should
+be declared of this type before beginning a for loop to iterate.  The
+`FirstEl' and `NextEl' functions use this iterator to traverse
+through the elements of the group.
+
+   There is a macro which makes group traversal relatively painless.
+The following example illustrates its use:
+
+       Unit* u;                      // a pointer to a unit object
+       taLeafItr i;                  // the iterator object
+       FOR_ITR_EL(Unit, u, layer->units., i) {
+         u->DoSomething();
+       }
+
+   The FOR_ITR_EL macro iterates though the leaves of a group. It
+accepts four arguments. The first is the type of object expected at
+the leaf level of the group. The second is a pointer to an object of
+that type.  The third is group followed by its access method. In the
+example, the group is "layer->units", and the access method is the
+"." . If the group was instead a pointer to group called "mygroup"
+then the third argument would be "mygroup->". The fourth argument is
+the iterator object.
+
+   To iterate through all the leaf groups (groups which contain leaf
+elements) the FOR_ITR_GP macro may be used. Its first argument is the
+group type (not the leaf type). The second is a pointer to group of
+that type. The third is pointer group and its access method. And
+again, the fourth argument is the iterator object.
+
+
+File: ta_css,  Node: obj-group-variables,  Next: obj-group-functions,  Prev: obj-group-iteration,  Up: obj-group
+
+Group Variables
+---------------
+
+   The Group class has the following variables:
+
+`String  name'
+     The (optional) name of the group
+
+`int size'
+     Number of elements in the group.
+
+`TypeDef*  el_typ'
+     The "minimum" type of an element in the Group. When objects are
+     created, transferred, or linked in the group, only objects of
+     this type, or objects of a type which inherits from this type
+     are considered for inclusion.
+
+`int el_def'
+     The index of the default element of the group. This element is
+     returned when the `Default_El()' function is called on the group.
+
+`int leaves'
+     The number of leaves of the Group. This is the total sum of all
+     the elements in this group plus all the elements of its
+     subgroups, their subgroups and so on.
+
+`Group gp'
+     This is the group of subgroups.
+
+`Geometry  pos'
+     The Group's position. In some cases, the group is represented
+     graphically and the position provides a relative offset for the
+     elements of the group
+
+`Geometry geom'
+     The Group's geometry. Although the group is accessed linearly,
+     it can be represented graphically in more than one dimension. The
+     geometry specifies the layout of the group's elements.
+
+
+File: ta_css,  Node: obj-group-functions,  Next: obj-group-edit,  Prev: obj-group-variables,  Up: obj-group
+
+Group Functions
+---------------
+
+   Groups have many functions for operating on the elements of the
+group.
+
+   These functions return an element of the group. The element is an
+instance of the group's element type.
+
+
+`El (int i)'
+     Returns the element of the group at index `i'. If the index is
+     out of range, an out of rangeerror is reported, and `NULL' is
+     returned.
+
+`DefaultEl()'
+     Returns the element indexed by the `default_el' variable of the
+     group.
+
+`Leaf (int n)'
+     Performs a depth first search to find the nth leaf of the group
+     tree.
+
+`FirstEl()'
+     Utilizes sets the internal leaf index to zero and return the
+     first leaf.
+
+`NextEl();'
+     Increments the internal leaf index and returns the leaf of that
+     index.
+
+`Pop()'
+     Returns the last element of the group, and removes it from the
+     group as well.
+
+`Peek()'
+     This function is similar to the `Pop()' function, but it does not
+     remove the element.
+
+   These functions return an integer indicating the index of the
+element in the group. In all these functions if no match is found, a
+value of "-1" is returned.
+
+
+`FindEl (inst el)'
+     Returns the index of the element of the group which matches `el'.
+
+`FindName (char* name)'
+     Returns the index of the element which has a name field which
+     matches `name'.
+
+`Find (TypeDef t)'
+     Returns the index of the first element of type `T'.
+
+`FindLeaf (char* name)'
+     Returns the leaf index of the leaf element which has a name
+     field which matches `name'.
+
+`FindLeafEl (inst el)'
+     Returns the leaf index of the leaf element which matches `el'.
+
+   These functions are used to add elements to the group.
+
+`AddEl (inst el)'
+     Adds element `el' to the group
+
+`AddUniqueName (inst el)'
+     Adds an element `el' to the group and adds an instance index to
+     its name if another element in the group has the same name.
+
+`Push (inst el)'
+     Adds element `el' to the end of the group.
+
+`PushUnique (inst el)'
+     Adds element `el' to the end of group only if it is not in the
+     group already.
+
+`PushUniqueName (inst el)'
+     Adds element `el' to the end of the group only if there are no
+     other elements of the group with the same name.
+
+`Insert (inst el, int i)'
+     Inserts element `el' at position `i' in the group.  If the
+     position `i' is out of range, it is added to the beginning or
+     end of the group accordingly.
+
+`Replace (int i ,inst el)'
+     Replaces the element at location `i' with the element `el'.
+
+`ReplaceEl (inst rel, inst el)'
+     Replaces the element `rel' of the group with element `el'. If no
+     match is found, the element `el' is not inserted.
+
+`ReplaceName (char* name, inst el)'
+     Replaces the element with the name `name' with the element `el'.
+     If no match is found, the element `el' is not inserted.
+
+`Transfer (inst el)'
+     Removes `el' from the group or owner it is currently in and adds
+     it to this group.
+
+`Link (inst el)'
+     Adds a link to the object `el' to this group.  There are also
+     corresponding functions (InsertLink, ReplaceLink, etc) which
+     perform as the do the Add functions except they link instead of
+     add (*note obj-group::).
+
+`New (int i, typedef t)'
+     Creates `i' new objects of type `t' in the group.
+
+   These functions are used for removing elements from the group.
+
+
+`Remove (int i)'
+     Removes the element at position i. If the element is owned by
+     the group it deletes the element. If the element is a linked
+     element, it deletes the link.
+
+`Move (int from, int to)'
+     Removes an element from position `from' and inserts at position
+     `to'.
+
+`RemoveName (char* name)'
+     Removes the element with a name matching `name'.
+
+`RemoveLeafName (char* name)'
+     Removes the leaf with a name matching `name'.
+
+`RemoveAll()'
+     Removes all the elements of the group.
+
+   These functions return a subgroup of the group.
+
+
+`Gp (int i)'
+     Returns the subgroup at index(i)
+
+`LeafGp (int n)'
+     Returns the nth subgroup which contains leaves.
+
+`FirstGp()'
+     Sets the group index to zero and returns the first subgroup with
+     leaf elements.
+
+`NextGp()'
+     Increments the group index and return the corresponding subgroup
+     with leaf elements.
+
+
+File: ta_css,  Node: obj-group-edit,  Prev: obj-group-functions,  Up: obj-group
+
+Group Edit Dialog
+-----------------
+
+   The group edit dialog (GED) is in many ways like the the Edit
+dialog for other objects (*note gui-edit::). In the GED however, all
+the elements of the group are editable at one time. The elements are
+represented in a horizontal scrollbox. If there are more elements
+than can be represented in the dialog, dragging the scrollbar under
+the scrollbox will allow access to the other members. The members are
+ordered sequentially from left to right.
+
+   In some cases the elements of the groups may be of different
+types. When this occurs, all the members of all the element types are
+listed in the member names section of the dialog. Elements which do
+not contain a certain member in the member names section will have a
+blank field where the edit field of that member would normally
+appear. The dialog buttons (Ok, Apply, Revert, Cancel) apply to all
+the elements of the group.
+
+   In addition to the standard editing control keys in the Edit
+Dialog, the following keys are are mapped to special functions.
+
+     Meta-f moves the Ibeam forward to the same field in the next
+     group member
+
+     Meta-b moves the Ibeam backward to the same field in the previous
+     group member
+
+   Many of the functions described in the previous section (*note
+obj-group-functions::) are available in the menus of the group edit
+dialog.  Note that if you want to operate on the subgroups (e.g., to
+move them around), you can do EditSubGps which will pull up a dialog
+of these subgroups where the move and other actions apply to them.
+
+
+File: ta_css,  Node: obj-array,  Next: obj-spec,  Prev: obj-group,  Up: obj
+
+Arrays
+======
+
+   Arrays are the data objects for related sequences of simple data
+structures like integers, floating point numbers, or strings. Each of
+these types has its own corresponding array type (ex. floating point
+numbers (floats) are arranged in a float_Array). All array types
+however have the the same structure of variables and access functions.
+
+   The following sections document the various operations and
+variables of the array type. These are probably of most interest to
+users who will be manipulating arrays in the CSS language, or in
+programming in PDP++.  However, some of the array functions are
+available in the Actions menu in the gui, and their function might
+not be fully clear from their name and arguments.
+
+* Menu:
+
+* obj-array-var::               Array Variables
+* obj-array-func::              Array Functions
+* obj-array-edit::              Array Editing
+
+
+File: ta_css,  Node: obj-array-var,  Next: obj-array-func,  Prev: obj-array,  Up: obj-array
+
+Array Variables
+---------------
+
+   The array classes have two important variables:
+
+
+`int size'
+     Indicates the number of elements in the array. Although the array
+     may have allocated additional space, this is the number of
+     elements in use.
+
+`item err'
+     Indicates the value to return when the array is accessed out of
+     range.(ex. If the array had a size of 5 and was asked for
+     element 6 or element -1 then the err value would be returned).
+
+
+File: ta_css,  Node: obj-array-func,  Next: obj-array-edit,  Prev: obj-array-var,  Up: obj-array
+
+Array Functions
+---------------
+
+`Alloc (int x)'
+     Allocates an array with space for x items.
+
+`Reset()'
+     Sets the size of the array to zero, but does not change or free
+     the amount to allocated space.
+
+`Remove(int x)'
+     Removes the array element at index `x'.
+
+`Permute()'
+     Permutes the elements of the array into a random order.
+
+`Sort()'
+     Sorts the array in ascending order.
+
+`ShiftLeft (int x)'
+     Shifts all the elements in the array `x' positions to the left.
+
+`ShiftLeftPct (float f)'
+     Shifts the array to the left by `f' percent.
+
+`El (int x)'
+     Returns the element at index `x', or err if out of range.
+     Indexing starts at zero, therefore an array with five elements
+     would have valid indices for zero to four.
+
+`FastEl (int x)'
+     Fast element return. Returns the element at index `x' with no
+     error checking. Caution: PDP++ may behave unexpectedly if this
+     function is called with an index that is out of range.
+
+`Pop()'
+     Returns and removes the last element in the array.
+
+`Peek()'
+     Returns the last element in the array without removing it.
+
+`Add (item i)'
+     Adds `i' to the array.
+
+`Push (item i)'
+     Pushes (adds) `i' to the the end of the array
+
+`Insert (item i, int num, int loc)'
+     Inserts `num' copies of item `i' at location `loc' in the array.
+
+`Find (item i, int loc)'
+     Returns the index of the first element in the array matching item
+     `i' starting at location `loc'.
+
+`RemoveEl (item i)'
+     Removes the first element matching item `i'. Returns `TRUE' if a
+     match is found and `FALSE' otherwise.
+
+
+File: ta_css,  Node: obj-array-edit,  Prev: obj-array-func,  Up: obj-array
+
+Array Editing
+-------------
+
+   Arrays are editing using an enhanced version of the standard Edit
+Dialog *Note The Edit Dialog: gui-edit. The Array Edit Dialog
+arranges all of the elements of the array horizontally and allows the
+user to scroll though the array elements using a horizontal scroll
+bar at the bottom of the dialog. In addition, number arrays (floats,
+ints, etc..) can be edited using a Color Array Edit Dialog which is
+similar in layout to the Array Edit Dialog, but adds a color palette
+for painting the values *Note gui-colors::.
+
+
+File: ta_css,  Node: obj-spec,  Next: obj-random,  Prev: obj-array,  Up: obj
+
+Specifications
+==============
+
+   One of the important design considerations for the PDP++ software
+was the idea that one should separate state variables from
+specifications and parameters (*note over-spec::).  The attributes of
+an object can often be divided into two types-the first type of
+attributes represent the object's state. These change over time and
+are usually distinct within each instance of an object.  The second
+group of attributes represent parameters of an object that tend to
+remain fixed over time, and often have values that are common among
+instances of the object class. This second group can be thought of as
+a *specification* for the object class.
+
+   For example: The car object class might have two attributes:
+color, and current-speed. The color attribute would be set when the
+car was built, and would (hopefully) not be changing very much. It
+would be classified as a specification parameter. The current-speed
+attribute is likely to be constantly changing as the car accelerates
+and decelerates. It is representative of the car's current state and
+would be classified in the first group, the car's state space. If you
+took a group of cars, chances are that some of them would share the
+same color, but they would probably be moving around at different
+speeds. Rather than have each car carry around an attribute for its
+color, the specification attributes are split off from the car and
+put into a special class called a car-specification or carspec. In
+this way cars with identical colors can share the same specification,
+while still having their own state attributes like current-speed.  By
+changing the color attribute in the specification, all the cars
+sharing that specification would have their color changed. This
+allows easy access to common parameters of an object class in one
+location. Rather than individually setting the color parameter for
+each instance of a car, the attribute can be set in just once in the
+spec.
+
+   This idea is instantiated in a particular class of objects known as
+Specs.  Specs also have special "smart pointers" that objects use to
+refer to them.  These spec pointers or SPtr objects ensure that a
+given object always has a corresponding spec, and that this spec is of
+an appropriate type.
+
+   While specs are basically just classes that have parameters and
+functions that control other object's behavior, there are a couple of
+special properties that specs have which make them more powerful.
+
+   Often when one wants to use two different specs of the same type,
+it is because one spec has one parameter different than the other.
+For example, one spec might specify a learning rate of .01, and the
+other a learning rate of .001.  However, these specs might very well
+share several other parameters.
+
+   To simplify the ability of specs to share some parameters and not
+others, a special system of _spec inheritance_ was developed.
+Basically, each spec has a group on it called `children', in which
+"child" specs can be created.  These child specs inherit all of their
+parameters from the parent spec, except those specifically marked as
+unique to the child.  These fields appear with a check in the
+left-hand check-box when edited in the GUI.  Thus, whenever you
+change a value in the parent, the children automatically get this
+changed value, except if they have a unique value for this field, in
+which case they keep their current value.  For a tutorial
+demonstration of how this works, see (*note tut-config-running::).
+
+   There are a couple of things to know about the "smart" spec
+pointers.  These pointers have both a type field and the actual
+pointer to the spec.  When you change only the `type' field, it will
+automatically find a spec of that type, and set the pointer to that.
+If one does not yet exist, one will be created automatically and the
+pointer set to it.  If however you change the pointer directly to
+point to a different spec, and this spec is of a different type than
+that shown in the `type' field, then the type will prevail over the
+pointer you set.  Thus you have to change both the `type' and `spec'
+fields if you change the latter to point to a different type.
+
+   The reason for this is that the spec pointer object does not know
+which field you actually changed, and for the nice automatic
+properties associated with changing the type field to work, the need
+to update both the type and the spec pointer is an unfortunate
+consequence.
+
+
+File: ta_css,  Node: obj-random,  Prev: obj-spec,  Up: obj
+
+Random Distributions
+====================
+
+   Random distributions in PDP++ are handled by an instance of the
+class Random. This class has a number of functions which return a
+random number from the distribution named by the function.
+Alternately the distribution can be specified in the object itself in
+which case the `Gen()' function returns a value from the specified
+distribution. Many of the distributions require parameters which are
+again either passed to the specific functions or set on the Random
+object itself.
+
+   Random class Variables:
+
+`Type type'
+     Indicates the type of random variable to generate when the
+     `Gen()' function is called. It can have one of the following
+     values:
+    `UNIFORM'
+          A uniform distribution with `var' = half-range
+
+    `BINOMIAL'
+          A binomial distribution with `var' = p, `par' = n
+
+    `POISSON'
+          A Poisson distribution with `var' = lambda
+
+    `GAMMA'
+          A gamma distribution with `var' and `par' = stages
+
+    `GAUSSIAN'
+          A normal gaussian distribution with `var'
+
+    `NONE'
+          Returns the `mean' value
+
+`float mean'
+     The mean of a random distribution
+
+`float var'
+     The "variance" or rough equivalent (half-range)
+
+`float par'
+     An extra parameter used for some distributions
+
+   Random Class Functions
+
+`float ZeroOne()'
+     Returns a uniform random number between zero and one
+
+`float Range(float rng)'
+     Returns a uniform random number with a given range centered at 0
+
+`float Uniform(float half_rng)'
+     Returns a uniform random number with given half-range centered
+     at 0
+
+`float Binom(int n, float p)'
+     Returns a random number from a binomial distribution with `n'
+     trials each of probability `p'
+
+`float Poisson(float l)'
+     Returns a random number from a Poisson distribution with
+     parameter `l'
+
+`float Gamma(float var, int j)'
+     Returns a random number from a Gamma distribution with variance
+     `var' and `par' number of exponential stages
+
+`float Gauss(float var)'
+     Returns a gaussian (normal) random number with a variance `var'
+
+`float Gen()'
+     Returns a random number using the distributions type `type' and
+     the `mean', `var', and `par' variables on the Random object
+     itself.
+
+
+File: ta_css,  Node: conceptindex,  Next: typeindex,  Prev: obj,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* .cssinitrc:                            css-startup.
+* Actions Menu:                          gui-actions.
+* Actions, Makefile:                     prog-make.
+* Arrays:                                obj-array.
+* Base Class, Type-Aware:                prog-typea-base.
+* C++:                                   css-c++-intro.
+* Class Inheritance:                     obj-basics-obj.
+* Class Inheritance, C++:                css-c++-intro.
+* Classes:                               obj-basics-obj.
+* Classes, C++:                          css-c++-intro.
+* Color:                                 gui-colors.
+* Color Scale Specifications:            gui-colors.
+* Color Scales:                          gui-colors.
+* Comment Directives:                    prog-comdir.
+* Compiling CSS:                         css-hard.
+* CSS Commands:                          css-commands.
+* CSS Errors:                            css-errors.
+* CSS Functions:                         css-functions.
+* CSS Shell:                             css-shell.
+* CSS Types:                             css-types.
+* CSS, Compiling:                        css-hard.
+* Customizing, GUI:                      gui-settings.
+* Default Settings:                      gui-settings.
+* Defaults, Edit dialogs:                gui-edit.
+* Dialog, Edit:                          gui-edit.
+* Edit Dialogs:                          css-gui.
+* Editing Objects:                       gui-edit.
+* Errors, CSS:                           css-errors.
+* Group Iteration:                       obj-group-iteration.
+* Group Object:                          obj-group.
+* Group Ownership:                       obj-group.
+* Groups:                                obj-group.
+* GUI, Customizing:                      gui-settings.
+* Inheritance, of Objects:               obj-basics-obj.
+* Inheritance, of Objects, C++:          css-c++-intro.
+* Inheritance, Spec:                     obj-spec.
+* Init Files:                            css-startup.
+* Iteration, Groups:                     obj-group-iteration.
+* Links:                                 obj-group.
+* List Object:                           obj-group.
+* Lists:                                 obj-group.
+* Loading Objects:                       obj-basics-files.
+* Makefile, Actions:                     prog-make.
+* Member Functions:                      obj-basics-obj.
+* Member Functions, C++:                 css-c++-intro.
+* Members:                               obj-basics-obj.
+* Members, C++:                          css-c++-intro.
+* Menu Operation:                        gui-menu-operation.
+* Menu, Actions:                         gui-actions.
+* Menu, Object:                          gui-object.
+* Menu, Subgroup:                        gui-subgroup.
+* Methods:                               obj-basics-obj.
+* Methods, C++:                          css-c++-intro.
+* Methods, Redefining:                   obj-basics-obj.
+* Names, Object:                         obj-basics-names.
+* Object Menu:                           gui-object.
+* Object Names:                          obj-basics-names.
+* Object Oriented Programming:           obj-basics-obj.
+* Object Oriented Programming, C++:      css-c++-intro.
+* Object Save Files:                     obj-basics-files.
+* Objects:                               obj-basics-obj.
+* Objects, C++:                          css-c++-intro.
+* Objects, Editing:                      gui-edit.
+* Objects, Saving and Loading:           obj-basics-files.
+* OOP:                                   obj-basics-obj.
+* OOP, C++:                              css-c++-intro.
+* Overloading:                           obj-basics-obj.
+* Ownership, Groups:                     obj-group.
+* Random Numbers:                        obj-random.
+* Redefining Methods:                    obj-basics-obj.
+* Saving Objects:                        obj-basics-files.
+* Settings:                              gui-settings.
+* Shell, CSS:                            css-shell.
+* Smart Pointer:                         obj-spec.
+* Spec Inheritance:                      obj-spec.
+* Spec Pointer:                          obj-spec.
+* Specifications:                        obj-spec.
+* Specs:                                 obj-spec.
+* Startup Options, CSS:                  css-startup.
+* Subgroup Menu:                         gui-subgroup.
+* Subgroups:                             obj-group.
+* Substructure:                          obj-group.
+* Type-Aware Base Class:                 prog-typea-base.
+* Views:                                 gui-win-view.
+* Window Hierarchy:                      gui-windows.
+* Window Operation:                      gui-win-operation.
+* Xdefaults:                             gui-settings-xdef.
+* XWindow Resources:                     gui-settings-xdef.
+
+
+File: ta_css,  Node: typeindex,  Next: varindex,  Prev: conceptindex,  Up: Top
+
+Class Type Index
+****************
+
+* Menu:
+
+* Array:                                 obj-array.
+* ColorScaleSpec:                        gui-colors.
+* MemberDef:                             prog-typea-stru.
+* MethodDef:                             prog-typea-stru.
+* Random:                                obj-random.
+* RGBA:                                  gui-colors.
+* taBase:                                prog-typea-base.
+* taMisc:                                gui-settings.
+* TypeDef:                               prog-typea-stru.
+* WinBase:                               gui-win-operation.
+* WinView:                               gui-win-view.
+
+
+File: ta_css,  Node: varindex,  Next: funcindex,  Prev: typeindex,  Up: Top
+
+Variable Index
+**************
+
+* Menu:
+
+* addr of MemberDef:                     prog-typea-stru.
+* addr of MethodDef:                     prog-typea-stru.
+* alpha (a) of RGBA:                     gui-colors.
+* arg_names of MethodDef:                prog-typea-stru.
+* arg_types of MethodDef:                prog-typea-stru.
+* auto_edit of taMisc:                   gui-settings-tamisc.
+* auto_revert of taMisc:                 gui-settings-tamisc.
+* base_off of MemberDef:                 prog-typea-stru.
+* blue (b) of RGBA:                      gui-colors.
+* children of Spec:                      obj-spec.
+* children of TypeDef:                   prog-typea-stru.
+* color_scale_size of taMisc:            gui-settings-tamisc.
+* compress_cmd of taMisc:                gui-settings-tamisc.
+* compress_sfx of taMisc:                gui-settings-tamisc.
+* defaults of TypeDef:                   prog-typea-stru.
+* desc of TypeDef:                       prog-typea-stru.
+* display_width of taMisc <1>:           gui-settings-tamisc.
+* display_width of taMisc:               css-settings.
+* el_def of Group:                       obj-group-variables.
+* el_typ of Group:                       obj-group-variables.
+* enum_vals of TypeDef:                  prog-typea-stru.
+* err of Array:                          obj-array-var.
+* formal of TypeDef:                     prog-typea-stru.
+* fun_argc of MethodDef:                 prog-typea-stru.
+* fun_argd of MethodDef:                 prog-typea-stru.
+* fun_overld of MethodDef:               prog-typea-stru.
+* fun_ptr of MemberDef:                  prog-typea-stru.
+* geom of Group:                         obj-group-variables.
+* green (g) of RGBA:                     gui-colors.
+* Group of Group:                        obj-group-variables.
+* help_cmd of taMisc:                    gui-settings-tamisc.
+* help_file_tmplt of taMisc:             gui-settings-tamisc.
+* include_paths of taMisc:               gui-settings-tamisc.
+* inh_opts of TypeDef:                   prog-typea-stru.
+* instance of TypeDef:                   prog-typea-stru.
+* internal of TypeDef:                   prog-typea-stru.
+* is_static of MemberDef:                prog-typea-stru.
+* is_static of MethodDef:                prog-typea-stru.
+* iv of TypeDef:                         prog-typea-stru.
+* iv_verbose_load of taMisc:             gui-settings-tamisc.
+* ive of TypeDef:                        prog-typea-stru.
+* keep_tok of taMisc:                    gui-settings-tamisc.
+* leaves of Group:                       obj-group-variables.
+* lists of TypeDef:                      prog-typea-stru.
+* max_menu of taMisc:                    gui-settings-tamisc.
+* mean of Random:                        obj-random.
+* members of TypeDef:                    prog-typea-stru.
+* methods of TypeDef:                    prog-typea-stru.
+* mono_scale_size of taMisc:             gui-settings-tamisc.
+* name of Group:                         obj-group-variables.
+* name of RGBA:                          gui-colors.
+* name of TypeDef:                       prog-typea-stru.
+* off of MemberDef:                      prog-typea-stru.
+* opts of TypeDef:                       prog-typea-stru.
+* par of Random:                         obj-random.
+* par_cache of TypeDef:                  prog-typea-stru.
+* par_formal of TypeDef:                 prog-typea-stru.
+* par_off of TypeDef:                    prog-typea-stru.
+* parents of TypeDef:                    prog-typea-stru.
+* pos of Group:                          obj-group-variables.
+* pre_parsed of TypeDef:                 prog-typea-stru.
+* ptr of TypeDef:                        prog-typea-stru.
+* red (r) of RGBA:                       gui-colors.
+* ref of TypeDef:                        prog-typea-stru.
+* search_depth of taMisc <1>:            gui-settings-tamisc.
+* search_depth of taMisc:                css-settings.
+* sep_tabs of taMisc <1>:                gui-settings-tamisc.
+* sep_tabs of taMisc:                    css-settings.
+* show of taMisc:                        gui-settings-tamisc.
+* show_iv of taMisc:                     gui-settings-tamisc.
+* size of Array:                         obj-array-var.
+* size of Group:                         obj-group-variables.
+* size of TypeDef:                       prog-typea-stru.
+* spec on SPtr:                          obj-spec.
+* stubp of MethodDef:                    prog-typea-stru.
+* sub_types of TypeDef:                  prog-typea-stru.
+* templ_pars of TypeDef:                 prog-typea-stru.
+* tmp_dir of taMisc:                     gui-settings-tamisc.
+* tokens of TypeDef:                     prog-typea-stru.
+* type of MemberDef:                     prog-typea-stru.
+* type of MethodDef:                     prog-typea-stru.
+* type of Random:                        obj-random.
+* type on SPtr:                          obj-spec.
+* type_info of taMisc <1>:               gui-settings-tamisc.
+* type_info of taMisc:                   css-settings.
+* uncompress_cmd of taMisc:              gui-settings-tamisc.
+* var of Random:                         obj-random.
+* verbose_load of taMisc:                gui-settings-tamisc.
+

@@ -1,0 +1,54 @@
+// limited-overlap random patterns
+// generates patterns at random, tests for overlap with existing, then
+// regenerates if below some minimum distance limit
+
+void Uniform_RndPat(Pattern* pat, int non) {
+  int i;
+  for(i=0; i<non; i++)
+    pat->value[i] = 1;
+  for(;i<pat->value.size;i++)
+    pat->value[i] = 0;
+  pat->value.Permute();
+}
+
+// returns the minimum distance between last (n'th) pattern and previous ones
+float Last_MinDist(Environment* env, int n, int patno) {
+  float rval = 1.0e23;
+  if(n == 0) return rval;
+
+  Pattern* trg_pat = env->events[n].patterns[patno];
+  int i;
+  for(i=0; i<n; i++) {
+    Pattern* pat = env->events[i].patterns[patno];
+    float dst = trg_pat->value.Dist(pat->value, 0, float_RArray::HAMMING);
+    rval = MIN(dst, rval);
+  }
+  return rval;
+}
+
+// makes limited-overlap random patterns (minimum hamming distance)
+void LimOvlp_RndPats(Environment* env, int n, int patno, int non, int min_dist) {
+  int bogus_count = 0;
+  int i;
+  for(i=0; i<n; i++) {
+    Event* evt = env->events[i];
+    int cnt = 10 * (i + 1);	// 10 more for every new stim
+    float min_d;
+    do {
+      Pattern* pat = evt.patterns[patno];
+      Uniform_RndPat(pat, non);
+      min_d = Last_MinDist(env, i, patno);
+      cnt--;
+    } while((min_d < min_dist) && (cnt > 0));
+    
+    if(cnt == 0) {
+      taMisc::Error("event:", evt->name, "dist of:", (String)min_d,
+		     "under dist limit:", (String)min_dist);
+      bogus_count++;
+    }
+    if(bogus_count > 5) {
+      taMisc::Error("Giving up after 5 stimuli under the limit, set limits lower");
+      return;
+    }
+  }
+}

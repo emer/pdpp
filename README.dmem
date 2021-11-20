@@ -1,0 +1,278 @@
+README for distributed memory (dmem) usage of pdp++ (via MPI)
+
+To compile: set the CPU to LINUXdmem or LINUXdmemdbg (debug version)
+these are configured for RedHat 7.3, and you will need to alter
+them as in LINUX.3 for gcc 3.x systems.  They also presume the use
+of the gm library for Myrinet networking.
+
+Use the 'make install_dmem_bins' to make dm_xxx++ links to the
+executables in /usr/local
+
+Running under dmem works in either the standard gui or background
+(nogui) modes.  To run under the gui, it actually records all gui
+actions as equivalent script commands, and then broadcasts these
+commands to all processors, so some things may not work exactly the
+same as in standard single processor gui mode.  If you find something
+broken, turn on dmem_debug flag in root/Settings menu and send an
+email to pdp-discuss@psych.colorado.edu.
+
+The PDP ftp sites have a dmem subdirectory with various programs we
+use to submit jobs on a distributed memory ("beowulf") cluster using
+the Maui/PBS job scheduling software.  These are summarized here:
+
+================================================================
+Our Special Scripts
+================================================================
+
+You must use the following special commands to run simulations on
+dream -- please do not just ssh to a node and start a job manually.
+These commands handle load balancing and provide status information on
+the system load.  At this point we're just using a very basic "first
+come first served" policy and given that we have 30 processors to run
+on, this will probably work fine for the time being.  If things get
+full, we can work on more sophisicated policies to share the load
+evenly.
+
+=======================
+Dream's Design
+=======================
+
+Dream is the name of the whole "beowulf" cluster, and also the name of
+the "master" node on this system.  The cluster is really just 16
+separate computers ("nodes") in one big case, each connected with very
+fast gigabit fiber optic Myrinet network (plus regular 100mbit
+ethernet for file sharing, etc).  These nodes are named dream, node1,
+node2, .... node15.  You can only access the dream node directly from
+the outside world (e.g., ssh dream from any lab system), not the other
+nodes -- they are hidden behind dream in their own separate network.
+
+In general, you should not have any need to access a node directly.
+You run commands on the dream node to start simulations running on the
+other nodes.  The dream node itself does not get allocated any
+simulations at this point, so you can run things interactively there,
+but for any serious number crunching you should definitely run things
+in the background using the following commands.
+
+=======================
+Submitting a job
+=======================
+
+You now submit your jobs to a queue ("qsub") -- you are not guaranteed
+to have your job run immediately if the system is fully loaded!  See
+below for commands to check the load & status of your job.
+
+We have three kinds of scripts for starting jobs on dream:
+
+   sp_qsub = single processor job (e.g., normal simulations)
+   dm_qsub = distributed memory job across multiple procs
+	     (must use dm_leabra++)
+   pb_qsub = parallel batch job, runs different batches
+	     ("subjects") in parallel across multiple procs
+
+These are all you should use.  Here's the specs on how to run:
+
+      <xx> means required argument value to insert (w/out <>)
+      [] means optional argument to insert (w/out [])
+
+sp_qsub <time> <cmd>  (sp_qsub_q is a quick/quiet version, for pb_qsub)
+	<time> is #d (days) | #h (hours) | #m (minutes) and is used for
+	       scheduling your job -- please try to be as accurate as
+	       possible but don't worry about being wrong.
+	<cmd>  is the usual kind of startup command to run the job
+	       e.g., leabra++ -nogui -f startup.css my.proj.gz 100 10
+
+	Examples:
+	sp_qsub 30m leabra++ -nogui -f startup.css my.proj.gz 100 10
+		(runs something taking an estimated 30 minutes,
+		startup args specify 100 epochs and 10 batches)
+        sp_qsub 100h leabra++ -nogui -f startup.ss monster.proj.gz 100 10
+		(runs something taking an estimated 100 hours!)
+
+dm_qsub <np> <time> <cmd>  (dm_qsub_q is a quick/quiet version, for pb_qsub)
+	<np>   is number of processors to spread computation across
+	       from our tests so far, 2 provides a huge speedup for a
+	       fairly large network (200x200x200x200 units, 4 layers)
+	       and you'd need an even bigger net to get something out
+	       of 3+.  if your network is below 100x100x100x100, pls do
+	       not use this as you will actually run slower.
+	<time> is #d (days) | #h (hours) | #m (minutes) and is used for
+	       scheduling your job -- please try to be as accurate as
+	       possible but don't worry about being wrong.
+	<cmd>  is the usual kind of startup command to run the job
+	       e.g., dm_leabra++ -nogui -f startup.css my.proj.gz 100 10
+	       (note that you MUST use dm_ version of executable! --
+	        this is compiled using LINUXdmem CPU).
+
+	Examples:
+	dm_qsub 2 24h dm_leabra++ -nogui -f startup.css my.proj.gz 100 10
+		(runs on 2 procs, taking an estimated 24 hrs to finish)
+	dm_qsub 2 2d dm_leabra++ -nogui -f startup.css my.proj.gz 100 10
+		(runs on 2 procs, taking an estimated 2 days to finish)
+
+pb_qsub <bats> <perjob> <cmd>
+	<bats>   is number of batches total to run
+	<perjob> is number of batches per job (per processor)
+	<cmd>	 is command to start job: MUST INCLUDE sp_qsub or dm_qsub!
+		 and MUST USE startup_pb.css -- a special startup
+		 script that processes args from pb_qsub!  template
+		 for this can be found in:
+		 /usr/local/pdp++/css/include/startup_pb.css
+		 you may have to modify this to suit your project.
+
+	Examples:
+	pb_qsub 10 2 sp_qsub_q :30 leabra++ -nogui -f startup_pb.css my.proj.gz 100 
+		(runs 10 batches total, 2 per job, across 5 jobs in
+		parallel, each job runs on one proc and takes roughly 30
+		minutes, note that you only specify 100 epochs NOT the
+		batches!  using the _q version to start jobs quickly)
+	pb_qsub 5 1 dm_qsub_q 2 24:00 dm_leabra++ -nogui -f startup_pb.css my.proj.gz 100 
+		(runs 5 batches, 1 per job, 5 jobs in parallel, and
+		each job uses 2 processors for dmem, taking 24 hrs)
+
+pb_qsub_cont <st_bat> <bats> <perjob> <cmd>
+	<st_bat> is starting batches number to continue from
+	<bats>   is number of ADDITIONAL batches total to run
+	<perjob> is number of batches per job (per processor)
+	<cmd>	 is command to start job (as per pb_qsub)
+
+	Examples:
+	pb_qsub_cont 10 10 2 sp_qsub_q :30 leabra++ -nogui -f startup_pb.css my.proj.gz 100 
+		(starts at the 10th batch and runs 10 more batches, 2 per job --
+		 continuation of 1st example from pb_qsub)
+
+pb_catlogs [r|s] <file tmplt>*: combine ("cat") separate log files into one 
+	[r|s]	     r = remove original files, s = save original files
+		     default is not to remove files (s)
+	<file tmplt> template for separate files, with 00 in the template
+		     replaced with the appropriate batch number.
+        Examples:
+        pb_catlogs s my.00.epc.log
+		(separate files are my.00.epc.log, my.01.epc.log, etc,
+		 combined file is my.epc.log, and separate files are
+		 not removed)
+        pb_catlogs *.00.epc.log
+		(same as above -- note that this will get ALL pb_qsub log
+		files that might have been created for any projects in the 
+		current directory)
+        pb_catlogs r my.00.epc.log
+		(files are now removed)
+
+=======================
+Checking status of jobs
+=======================
+
+When each job is started, you get a job number, and everything is tied
+to that job number.  For example, here's what happens when I submitted
+a job:
+
+-------------------------
+dream:> sp_qsub 10m leabra++ -nogui -f startup.css ft.proj.gz 10 1
+created: JOB.89.sh
+Allocated Nodes:
+[node15:1]
+
+/usr/local/bin/leabra++ Loaded: ft.proj.gz
+Logging to: ft.epc.log, and ft.bat.log
+Saving network(s) to: ft.#.net.gz
+Epoch max is: 10 (from argv[3]) Batch max is: 1 (from argv[4])
+-------------------------
+
+The job number is 89, and it has been allocated to run on one
+processor on node15 (node15:1).  You have to wait 5 seconds to see
+this information (this is the delay time in the job scheduler), so be
+patient.  Then, if it started right away (usually should) you'll see
+the output of the startup script (depending on how long it takes to
+start, you may not see much at this point).
+
+Three files are created for each job, with # = job no:
+
+JOB.#.sh    the shell script that ran your job for you
+JOB.#.out   the output of the simulation
+JOB.#.jobo  the output of the job control system (only when job finishes)
+
+To check for any later messages from your simulation do this:
+more JOB.#.out (or tail -f JOB.#.out)
+
+If your job finishes unexpetedly, look at .jobo to see if there are
+any messages.
+
+To check on all jobs currently running, do qstat:
+
+-------------------------
+dream:> qstat
+Job id           Name             User             Time Use S Queue
+---------------- ---------------- ---------------- -------- - -----
+89.dream         JOB.89.sh        oreilly                 0 R default
+-------------------------
+
+The S status means its Running; Q=Queued.  If it doesn't show up, it
+finished!
+
+OR use showq -- showq gives more detailed info.
+
+To check on a specific job, do checkjob:
+
+-------------------------
+dream:> checkjob 89
+
+checking job 89
+
+State: Running  (User: oreilly  Group: oreilly  Account: [NONE])
+WallTime: 0:17:23  (Limit: 0:10:00)
+
+QueueTime: Fri Oct 11 14:28:04
+StartTime: Fri Oct 11 14:28:04
+
+Total Tasks: 1
+
+Req[0]  TaskCount: 1  Partition: DEFAULT
+Network: [NONE]  Memory >= 0  Disk >= 0  Features: [NONE]
+Opsys: [NONE]  Arch: [NONE]  Class: [default 1]
+
+Allocated Nodes:
+[node15:1]
+
+IWD: [NONE]  Executable:  [NONE]
+QOS: DEFAULT  Bypass: 0  StartCount: 1
+Partition Mask: [ALL]
+Flags:       RESTARTABLE
+
+Reservation '89' (-0:09:58 -> 0:00:02  Duration: 0:10:00)
+PE:  1.00  StartPriority:  2016
+-------------------------
+
+I'm not too sure what all this means, but look for WARNING or ERROR
+messages if something is not working.  As a further check, you can
+always run commands on the node to check on things:
+
+dream:> rmtnode 14 sims ++
+running: cd /home/oreilly/sims/inhiblearn; sims ++ on node14
+oreilly   5831 99.9  1.5 21100 15728 ?       R    14:41   0:26 /usr/local/bin/leabra++ -nogui -f startup.css ft.proj.gz 100 1
+
+You'll need to get my latest .aliases file to run this command:
+cp ~oreilly/.aliases ~/.
+realias
+
+You can also use xpbsmon to have a gui monitor of node activity.
+
+To clean up all the JOB.* files in a directory, I have an alias:
+cleanjobs  (comes w/ above .aliases file)
+
+===============================================
+using mpirun.ch_gm to run interactively (X11)
+===============================================
+
+see dm_run_leabra and dmg_run_leabra for scripts that do this:
+
+mpirun.ch_gm -np $1 -machinefile machines /usr/local/pdp++/dm_leabra++ $2
+
+Need to make an ~/.ssh/rc file that runs the xauth process only
+on non-processing nodes -- otherwise they all complain about
+locking the .Xauthority file.
+
+shrthost=${HOSTNAME:0:4}
+if [ "$shrthost" != "node" ];
+    then if read proto cookie;
+	then echo "add $DISPLAY $proto $cookie" | xauth -iq -;
+    fi
+fi

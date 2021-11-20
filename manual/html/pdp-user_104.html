@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-viewer</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_103.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_105.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX489" HREF="pdp-user_toc.html">9.2  The Project Viewer</A></H2>
+<P>
+<A NAME="IDX490"></A>
+
+</P>
+<IMG SRC="pics/xor.projview.gif" ALIGN="MIDDLE" ALT="The Project Viewer">
+<P>
+<B> Figure: </B> The Project Viewer
+<P>
+
+<P>
+In its default mode, the project viewer displays all the networks,
+environments, processes, and logs in your project using colored icons
+for each.  By pressing the <CODE>View Specs</CODE> button, it will switch to
+viewing the specs for this project, and then <CODE>View Project</CODE> will
+switch back.  We begin by describing project mode, and then spec mode.
+
+</P>
+
+
+<H3><A NAME="IDX490" HREF="pdp-user_toc.html">9.2.1  Project View Mode</A></H3>
+
+<P>
+In project mode, the following are the default colors:
+
+</P>
+<DL COMPACT>
+
+<DT><B>Pink</B>
+<DD>
+Networks
+<DT><B>Green</B>
+<DD>
+Environments
+<DT><B>Yellow</B>
+<DD>
+Schedule processes
+<DT><B>Light Blue</B>
+<DD>
+Group of statistics within a schedule process
+<DT><B>Slate Blue</B>
+<DD>
+The statistics themselves -- the lighter-colored stats are directly
+computing values while the darker ones are aggregators of others.  If
+you click <CODE>Show Aggs</CODE> then the set of linked aggregators is
+displayed in aquamarine.
+<DT><B>Red</B>
+<DD>
+Statistics with a stopping criterion set
+<DT><B>Wheat</B>
+<DD>
+Group of processes within a schedule process
+<DT><B>Gold</B>
+<DD>
+The sub-processes within a schedule process
+<DT><B>Brown</B>
+<DD>
+Logs
+</DL>
+
+<P>
+Non-obvious actions you can perform on icons:
+<DL COMPACT>
+
+<DT><B>Single-click with left-mouse-button (LMB)</B>
+<DD>
+Will select or deselect item, and update the action buttons at the left
+of the display.
+<DT><B>Double-click with LMB</B>
+<DD>
+On objects with windows (networks, environments, logs), will iconify or
+view the object.  On processes, will iconify or de-iconify the object
+(an iconified process is collapsed so that you can't see all the
+sub-processes below it).  Iconifying processes is important if you have
+many process hierarchies -- they will not all fit in the display at
+once.  Iconified processes are identifiable as being not colored.
+<DT><B>Single-click with right-mouse-button (RMB)</B>
+<DD>
+Will bring up the edit dialog for that object.
+<DT><B>Shift-LMB or middle-mouse-button</B>
+<DD>
+Extends the selection to include multiple items.
+</DL>
+
+<P>
+Note that because much of what happens in the project view concerns
+processes, you may need to read section <A HREF="pdp-user_148.html">12  Processes and Statistics</A> to understand everything that
+goes on in this view.
+
+</P>
+<P>
+Effects of action buttons on left side of display are (note that where
+multiple are listed, the same button does different things depending on
+what is selected -- they are described in order from left-right,
+top-bottom).
+
+</P>
+<DL COMPACT>
+
+<DT><B>Minimize</B>
+<DD>
+<A NAME="IDX491"></A>
+Shrinks the display to the smallest vertical size.  Note that at this
+size, you can re-expand the display later by hitting the top of the
+maximize button, which will be just visible at the bottom of the window.
+<DT><B>Maximize</B>
+<DD>
+<A NAME="IDX492"></A>
+Expands the display vertically to fit all of the items in the display.
+<DT><B>View Specs</B>
+<DD>
+<A NAME="IDX493"></A>
+Switches the display to viewing specs (mode described below).
+<DT><B>Select</B>
+<DD>
+<A NAME="IDX494"></A>
+This is the standard mode -- causes mouse clicks to select objects.
+<DT><B>Move</B>
+<DD>
+<A NAME="IDX495"></A>
+When in this mode, the mouse will move objects to different positions
+within their respective groups (does not work for schedule processes).
+For example, you can rearrange the order of statistics within a schedule
+process by moving them.
+<DT><B>Edit</B>
+<DD>
+<A NAME="IDX496"></A>
+Pulls up an Edit Dialog for selected object(s).
+<DT><B>Init</B>
+<DD>
+<A NAME="IDX497"></A>
+Initializes the display (this is rarely necessary, as the display is
+usually automatically updated when needed).
+<DT><B>Iconify, DeIconify, Iconify All</B>
+<DD>
+<A NAME="IDX498"></A>
+Controls the iconification of windows or processes.
+<DT><B>Show Links, No Links</B>
+<DD>
+<A NAME="IDX499"></A>
+Either shows or turns off showing the links between a selected item and
+other objects -- the links show you how everything is connected up in
+the project.  Links are drawn as solid lines for cases where a process
+uses the object for processing (e.g., The network used by the train
+process is shown as a pink solid line).  Dashed lines indicate that the
+process updates the given object (e.g., the Trial process typically has
+a dashed line to the network, indicating that it updates it).
+<DT><B>Change Type, Rmv Updater, Add Updater</B>
+<DD>
+<A NAME="IDX500"></A>
+If one object is selected, Change Type will allow you to change the type
+of that object.  If an object that can be updated (e.g., a network) and
+a process object are selected, then it will allow you to either add or
+remove an updating link between these objects.
+<DT><B>New Stat, Set Agg, Set Agg Link</B>
+<DD>
+<A NAME="IDX501"></A>
+If a schedule process is selected, New Stat will allow creating a new
+statistic in this object -- you will be prompted for whether to make it
+in the loop or final stats group.  Note that if you know where you want
+to put the new stat, and that stat group (loop_stats or final_stats)
+already appears in the view (because it has other stats in it), then you
+can just click right on the stat group and hit New Stat from there.
+
+If a statistic is selected, Set Agg will allow you to set the kind of
+aggregation this statistic should use.
+
+If two statistics are selected, Set Agg Link will set one statistic to
+aggregate from the other (order can be selected in a subsequent dialog).
+
+<DT><B>Ctrl Panel</B>
+<DD>
+<A NAME="IDX502"></A>
+If a schedule process is selected, this will bring up its control panel.
+<DT><B>New Process, New Agg, Transfer Obj</B>
+<DD>
+<A NAME="IDX503"></A>
+If a schedule process is selected, this will allow you to create a new
+process in a process group (init_procs, loop_procs, final_procs) that
+is not currently shown in the display.  Note that if the group you want
+is already shown in the display, then just click on it and do New
+Process from there.  If a stat is selected, New Agg will create a new
+aggregator of that statistic.  If a stat or non-schedule process
+together with a stat or process subgroup is selected, Transfer Obj will
+transfer the stat/process to the group.  If a stat/process is selected
+together with a schedule process, Transfer Obj will bring up a dialog
+asking for which subgroup of that schedule process to transfer into.
+
+<DT><B>New Scd Proc, New Process, New Stat, New Sub/Super, New Link, Transfer Obj</B>
+<DD>
+<A NAME="IDX504"></A>
+Transfer Obj on Project Viewer
+If nothing is selected, New Scd Proc will create a new schedule process.
+
+If a stat group (loop_stats, final_stats) is selected, New Stat will
+create a new statistic in it.
+
+If a process group (init_procs, loop_procs, final_procs) is selected,
+New Process will create a new process in it.
+
+If one schedule process is selected, this New Sub/Super will prompt for
+creating a new schedule process above (super) or below (sub) the
+selected one in the process hierarchy.
+
+If two schedule processes are selected, New Link will prompt for linking
+one process into a process group (init_procs, loop_procs, final_procs)
+of the other (direction is determined by a dialog, but default is that
+to to-be-linked process is first selected).  Also see next case:
+
+If a schedule process and a process group (init_procs, loop_procs,
+final_procs) on another schedule process are selected, then the schedule
+process will be linked into the process group with a New Link.
+
+If a group and a non-schedule process object are selected, then Transfer
+Obj will transfer the object into the group.
+
+<DT><B>New Proc Gp, Remove Obj(s), Remove Link</B>
+<DD>
+<A NAME="IDX505"></A>
+If nothing is selected, New Proc Gp will create a new process group for
+organizing schedule processes into groups.
+
+Will remove object(s) that are selected, or if two objects are selected
+and they are linked, the link will be severed.
+</DL>
+
+<P>
+In summary, it should be clear that the project viewer enables you to
+establish linkages between different objects, and to perform detailed
+configuration of the process hierarchy.
+
+</P>
+
+
+<H3><A NAME="IDX505" HREF="pdp-user_toc.html">9.2.2  Spec View Mode</A></H3>
+
+<P>
+Spec view mode shares much in common with project view mode.  Specs are
+arranged in the order they appear in the .specs menu, left-to-right and
+then top-to-bottom.  The default colors are:
+
+</P>
+<DL COMPACT>
+
+<DT><B>Violet</B>
+<DD>
+Unit Spec
+<DT><B>Green</B>
+<DD>
+Con Spec
+<DT><B>Orange</B>
+<DD>
+Projection Spec
+<DT><B>Purple</B>
+<DD>
+Layer Spec
+</DL>
+
+<P>
+Many of the the action buttons are similar to those in the project view
+mode, with the following special actions:
+
+</P>
+<DL COMPACT>
+
+<DT><B>Edit</B>
+<DD>
+<DT><B>Set Spec</B>
+<DD>
+<A NAME="IDX506"></A>
+Brings up the view of the default network in the .networks group, and
+applies the selected spec to whatever objects are selected in the
+network view.  This is equivalent to performing Selections/Set XX Spec
+in the NetView (see section <A HREF="pdp-user_134.html">10.8  Building Networks Using the Viewer</A> for more details) where XX is the
+type of Spec that was selected.  This provides a convenient way of
+applying a given spec to selected parts of the network.
+
+<DT><B>Show Spec</B>
+<DD>
+<A NAME="IDX507"></A>
+This is like the inverse of Set Spec -- it selects whatever objects in
+the network are currently using the selected spec.
+
+<DT><B>New Child</B>
+<DD>
+<A NAME="IDX508"></A>
+On either a spec or the <CODE>children</CODE> group of a spec, will prompt for
+creating a new child spec of the selected item.
+
+<DT><B>New Spec</B>
+<DD>
+<A NAME="IDX509"></A>
+Allows one to create a new spec.
+
+<DT><B>New Spec Gp</B>
+<DD>
+<A NAME="IDX510"></A>
+Allows one to create a new spec group for organizing specs into groups.
+
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_103.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_105.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

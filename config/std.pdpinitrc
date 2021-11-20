@@ -1,0 +1,36 @@
+// -*- C++ -*-
+// init file for the PDP++ simulation system
+
+// get the program name that was actually run.  this can be used
+// to set various program-specific defaults
+// in addition, it is possible to create different symbolic links
+// to the same executable to trigger different defaults
+// rbp is an example of this.
+String prognm = argv[0];
+if(prognm.contains("/"))
+  prognm = prognm.after("/",-1);
+if(prognm.contains("++"))	// the distribution version of an executable
+  prognm = prognm.before("++");
+if(prognm.contains("."))	// some kind of extention
+  prognm = prognm.before(".", -1);
+
+// in this standard-issue init file, nothing is actually done with prognm..
+
+// set default color, which is done by setting the default element in the
+// group of color-scale specification objects (root.colorspecs).
+// .colorspecs.SetDefaultElName("C_ColdHot");
+
+// you can also set various settings, most of which are located on
+// an object called taMisc
+// for example, here's how to set the default display width:
+
+// taMisc::display_width = 80;	 // width of the display
+
+// you can also add some paths for finding source (.css and dump) files
+// do this by adding an element to the include_paths variable
+// (which is the same as taMisc::include_paths)
+// note that your home directory, and some directories in the
+// main distribution are already in the include path by default
+
+// include_paths.AddUnique("/home/mymachine/mydir/myextrastuff");
+

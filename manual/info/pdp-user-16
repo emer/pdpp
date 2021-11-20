@@ -1,0 +1,999 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: cs-unit,  Next: cs-proc,  Prev: cs-con,  Up: cs
+
+Cs Unit Specifications
+======================
+
+   The CsUnit is fairly simple.  As was described for backpropagation
+(*note bp-unit::) the bias weight is implemented as a connection
+object on the unit.  It also keeps a record of the minus and plus
+phase activation values, `act_m' and `act_p' (primarily for display
+purposes), and the change in activation state for this unit, `da'.
+
+   All of the different flavors of constraint satisfaction algorithms
+differ only in their activation function.  Thus, each one has a
+different type of unit spec.  However, they all derive from a common
+CsUnitSpec, which has parameters shared by all the different
+algorithms.  This unit spec has the parameters for noise and gain, the
+step size taken in updating activations, and schedules for adapting
+noise and gain over time:
+
+`CsConSpec_SPtr bias_spec'
+     Points the the connection spec that controls the learning of the
+     bias weight on the unit.
+
+`MinMaxRange real_range'
+     The actual range to allow units to be in. Typically, units are
+     kept within some tolerance of the absolute `act_range' values, in
+     order to prevent saturation of the computation of inverse-sigmoid
+     functions and other problems.
+
+`Random noise'
+     These are the parameters of the noise to be added to the unit.
+     `GAUSSIAN' noise with zero mean is the standard form of noise to
+     use.  Noise is always added to the activations in an amount
+     proportional to the square-root of the step size (except in the
+     BoltzUnitSpec, where no noise is added).
+
+`float step'
+     The step size to take in updating activation values.  A smaller
+     step leads to smoother updating, but longer settling times.
+
+`float gain'
+     The sharpness of the sigmoidal activation function, or 1 over
+     the temperature for the Boltzmann units.  A higher gain makes
+     the units act more like binary units, while a lower gain makes
+     them act more continuous and graded.
+
+`ClampType clamp_type'
+     This controls the way in which external inputs (from the
+     environment) are applied to the network.  `HARD_CLAMP' means
+     that the activation is exactly the `ext' value from the
+     environment.  `HARD_FAST_CLAMP' is like hard clamp, but
+     optimized so that all of the inputs from clamped layers are
+     computed once at the start of settling, saving considerable
+     computational overhead.  This should not be used if the inputs
+     are noisy, since this noise will not be included!  `SOFT_CLAMP'
+     means that external inputs are added into the net input to a
+     unit, instead of forcing the activation value to take on the
+     external value.  `SOFT_THEN_HARD_CLAMP' performs soft clamping in
+     the minus phase, and then hard clamping in the plus phase.
+
+`float clamp_gain'
+     When soft clamping, this parameter determines how strongly the
+     external input contributes to the unit net input.  It simply
+     multiplies the value in the `ext' field.
+
+`Random initial_act'
+     Controls the random initialization of unit activations in the
+     `InitState' function.
+
+`bool use_annealing'
+     Controls whether an annealing schedule is used to adapt the
+     variance of the noise distribution over time (`noise_sched').
+
+`Schedule noise_sched'
+     This schedule contains values which are multiplied times the
+     `var' parameter of the `noise' field to get an effective
+     variance level.  The value from the schedule is the linear
+     interpolation of the `cycle' count from the settle process based
+     on points listed in the schedule.  Thus, each point in the
+     schedule gives a variance multiplier for a particular cycle
+     count, and intermediate cycles yield interpolated multiplier
+     values.
+
+`bool use_sharp'
+     Controls whether a sharpening schedule is used to adapt the gain
+     parameter over time (`gain_sched').
+
+`Schedule gain_sched'
+     This is a schedule for the gain multiplier.  The effective gain
+     is the `gain' parameter times the value from this schedule.  The
+     schedule works just like the `noise_sched' described above.
+
+   The basic CsUnitSpec uses the inverse-logistic activation function
+developed by `Movellan and McClelland, 1994'.  Thus, the change in
+activation is a function of the difference between the actual net
+input, and the inverse logistic of the current activation value.  This
+formulation ends up being an exact solution to the objective function
+used in their derivation.
+
+   The SigmoidUnitSpec uses a simple sigmoidal function of the net
+input, which is like the formulation of `Hopfield, 1984', and is also
+the same as the RBp units described in *Note rbp-unit::.  This type
+also has the option with the `time_avg' parameter of computing time
+averaging (i.e., as a function of the `step' parameter) on either the
+`ACTIVATION' or the `NET_INPUT', as was the case with the RBp
+implementation.  As was described there the `NET_INPUT' option allows
+units to settle faster.
+
+   The BoltzUnitSpec implements a binary activation function like that
+used Boltzmann machine and the network of `Hopfield, 1982'.  Here,
+the unit takes on a 0 or 1 value probabilistically as a sigmoidal
+function of the net input.  The gain of this sigmoid can also be
+represented by its inverse, which is known as temperature, by analogy
+with similar systems in statistical physics.  Thus, we have a `temp'
+parameter which is used to update the gain parameter. Noise is
+intrinsic to this function, and is not added in any other way.
+
+   The IACUnitSpec implements the interactive activation and
+competition function.  This requires two new parameters, `rest' and
+`decay'.  If the net input to the unit is positive, the activation is
+increased by `net * (max - act)', and if it is negative it is
+decreased by `net * (act - min)'.  In either case, the activation is
+also decayed towards the resting value by subtracting off a `decay *
+(act - rest)' term.  IAC also has the option of only sending
+activation to other units when it is over some threshold
+(`send_thresh').  Doing this requires a different way of computing
+the net input to units, so it must be selected with the
+`use_send_thresh' flag, and by setting the `update_mode' in the
+CsCycle process to `SYNC_SENDER_BASED'.  Pressing ReInit or NewInit
+at any level of process including and above the CsTrial process will
+check for the consistency of these settings, and prompt to change
+them.
+
+   The LinearCsUnitSpec computes activation as a simple linear
+function of the net input.
+
+   The ThreshLinCsUnitSpec computes activation as a threshold-linear
+function of the net input, where net input below threshold gives an
+activity of 0, and (net - threshold) above that.
+
+
+File: pdp-user,  Node: cs-proc,  Next: cs-stats,  Prev: cs-unit,  Up: cs
+
+Cs Proceses
+===========
+
+   The core set of Cs processes consist of a CsTrial process that
+performs the two phases of contrastive Hebbian learning (CHL), where
+each phase of settling is controlled by a CsSettle process, which in
+turn iterates over a number of individual CsCycle processing steps,
+each of which updates the activation state of the network.  These
+processes fit nicely within the standard settling and cycle processes
+(*note proc-levels::).
+
+   In addition, the CsSample process can be used to sample over trials
+in order to obtain a better sampling of activation states for weight
+updating, which is usually only necessary when trying to match a
+probabalistic output distribution (*note cs-prob-env::).  It is
+created by default if using the `cs_prob_env.def' defaults file, but
+not otherwise.
+
+   The CsTrial process iterates over two loops of settle processing,
+one for each phase.  It has the following variables:
+`Counter phase_no'
+     The counter for this process, it goes from 1 to 2 for the two
+     different phases.
+
+`Phase phase'
+     The phase the process is in, which is just a more readable
+     version of the counter:  `MINUS_PHASE' and `PLUS_PHASE'.
+
+`StateInit trial_init'
+     Indicates what to do at the start of each trial process.
+     Typically, one wants to `INIT_STATE', but it is also possible to
+     `DO_NOTHING' or `MODIFY_STATE', which could be redefined by a
+     unit type to decay the activation state, for example (by default
+     it just does an init state).
+
+`bool no_plus_stats'
+     This flag means that statistics will not be recorded in the plus
+     phase.  This is useful because squared error, for example, is
+     only meaningful in the minus phase, since the correct answer is
+     clamped in the plus phase.
+
+`bool no_plus_test'
+     This flag means that the plus phase will not be run if the epoch
+     process indicates that it is in `TEST' mode (i.e., no learning
+     is taking place).
+
+   The CsSettle process iterates over cycles of settling (activation
+updating).  Like the `trial_init' of the trial process, the
+`between_phases' field of the settle process determines how the
+network state will be initialized between phases.  Some people have
+claimed that learning works better if you do not `INIT_STATE' between
+phases (`Movellan, 1990').  However, the default is set to initialize
+the state, so that settling starts from the same initial conditions
+for both phases.
+
+   Also, the settle process allows the network to settle for some time
+before collecting statistics for learning.  This time, determined by
+the `start_stats' parameter, allows the network to get into a
+stochastic equilibrium before measuring the activation states.  If
+using a deterministic network, however, equilibrium is considered to
+simply be the final state of the network after settling.  Setting the
+`deterministic' flag will only update the weights based on the final
+activation state.
+
+   The settle process will use the `time' field from a TimeEvent as a
+_duration_ to settle on the event.  Note that this is a non-standard
+use of this time field (*note rbp-seq::).
+
+   The CsCycle process updates the activation state of the network.
+This can be done in one of two ways -- either all of the units are
+updated simultaneously (`SYNCHRONOUS' mode), or units are selected at
+random and updated one at a time, which is `ASYNCHRONOUS' mode.  If
+the asynchronous mode is selected, one can perform multiple
+asynchronous updates per cycle.  The number of units updated is
+determined by the `n_updates' variable.  Note that the total number
+of updates performed is the product of `n_updates' and the number of
+cycles made during settling, so be sure to take that into account
+when setting the values of either of these parameters.
+
+   A variation of the synchronous mode is the `SYNC_SENDER_BASED'
+mode, which must be selected if IACUnitSpec's are being used, and the
+`use_send_thresh' flag is set.  In this case, net input is computed
+in a sender-based fashion, meaning that the net input for each unit
+must first be initialized to zero, then accumulated.  In standard
+receiver-based net input computation, the net input can be reset at
+the point an individual unit's net input is computed, so it doesn't
+have to be done for the entire network first.  This is the different
+between SYNC_SENDER_BASED and SYNCHRONOUS.  Asynchronous updating is
+not supported for sender-based updating.  When the CsTrial process is
+ReInit'd or NewInit'd, it will automatically check for the correct
+pairing of the use_send_thresh and update_mode flags, and inform you
+if it needs to be changed.
+
+   The CsSample process has `sample' counter to keep track of the
+number of samples run.  Set the `max' of this counter to 1 if you are
+running a deterministic network, or are not doing learning on
+probability distributions.  This process iterates over the trial
+process, and only needs to be present when learning probabalistic
+output distributions.
+
+
+File: pdp-user,  Node: cs-stats,  Next: cs-defs,  Prev: cs-proc,  Up: cs
+
+Cs Statistics
+=============
+
+   There are several statistics which are specific to the Cs package,
+including one that compute the global "goodness" (aka energy) of the
+network's activation state (CsGoodStat), another set of statistics
+for measuring the probabilities of different activation states
+(CsDistStat, CsTIGstat, CsTargStat), and a statistic that can be used
+to control the length of settling based on the amount of activation
+change (CsMaxDa).
+
+* Menu:
+
+* cs-stats-good::               The Goodness (Energy) Statistic
+* cs-stats-dist::               Statistics for Measuring Probability Distributions
+* cs-stats-maxda::              Measuring the Maximum Delta-Activation
+
+
+File: pdp-user,  Node: cs-stats-good,  Next: cs-stats-dist,  Prev: cs-stats,  Up: cs-stats
+
+The Goodness (Energy) Statistic
+-------------------------------
+
+   The CsGoodStat computes the overall goodness of the activation
+state, which is composed of two terms, the harmony and stress.
+Harmony reflects the extent to which the activations satisfy the
+constraints imposed by the weights.  It is just a sum over all units
+of the product of the activations times the weights:
+
+   H = SUM_j SUM_i a_j w_ij a_i
+
+   The stress term reflects the extent to which unit's activations are
+"stressed" at their extreme values.  It is just the inverse sigmoidal
+function of the unit activation values:
+
+   S = SUM_j f^-1(a_j)
+
+   The total goodness is just the harmony minus the stress. These
+values are stored in the `hrmny', `strss', and `gdnss' stat value
+members of the goodness stat.  Also, there is an option
+(`netin_hrmny') to use the net input to a unit in computing the
+harmony term, since harmony is just the unit's activation times its
+net input.  This should be used whenever it is safe to assume that
+the net input reflects the current activation states (i.e., most of
+the time).  The example project in `demo/cs/figgr.proj.gz' shows how
+the goodness function measures the quality of the constraint
+satisfaction over time in a large-scale constraint satisfaction
+problem.
+
+
+File: pdp-user,  Node: cs-stats-dist,  Next: cs-stats-maxda,  Prev: cs-stats-good,  Up: cs-stats
+
+Statistics for Measuring Probability Distributions
+--------------------------------------------------
+
+   The CsDistStat is used to measure the percentage of time (i.e., the
+probability) that the units in the network which have target patterns
+in the environment spend in any of the possible target patterns.
+This is used when there are multiple possible target states defined
+for any given event (see *Note cs-prob-env::), which means that a
+simple squared-error comparison against any one of these would be
+relatively meaningless -- one wants to know how much time is spent in
+each of the possible states.  The dist stat generates one column of
+data for each possible target pattern, and each column represents the
+probability (proportion of time) that the network's output units were
+within some distance of the target pattern.  The tolerance of the
+distance measure is set with the `tolerance' parameter, which is the
+absolute distance between target and actual activation that will
+still result in a zero distance measure. A network is considered to
+be "in" a particular target state whenever its total distance measure
+is zero, so this tolerance should be relatively generous (e.g., .5 so
+units have to be on the right side of .5).
+
+   The CsTIGstat is essentially a way of aggregating the columns of
+data produced by the CsDistStat.  It is automatically created by the
+dist stat's `CreateAggregates' function (*note proc-stat::) at the
+level of the CsSample process (note that unlike other aggregators, it
+is in the `final_stats' group of the sample process, and it feeds off
+of the aggregator of the dist stat in the `loop_stats' of the same
+process).  The TIG stat measures the total information gain (aka
+cross-entropy) of the probability distribution of target states
+observed in the network (as collected by the dist stat pointed to by
+the `dist_stat' member), and the target probability distribution as
+specified in the probability patterns themselves (*note
+cs-prob-env::).  This measure is zero if the two distributions are
+identical, and it goes up as the match gets worse.  It essentially
+provides a distance metric over probability distributions.
+
+   The CsTargStat, like the TIG stat, provides a way of aggregating
+the distribution information obtained by the dist stat.  This should
+be created in the sample `final_stats' group (just like the TIG stat),
+and its `dist_stat' pointer set to the aggregator of the dist stat in
+the sample process `loop_stats'.  This stat simply records the sum of
+each column of probability data, which provides a measure of how
+often the network is settling into one of the target states, as
+opposed to just flailing about in other random states.
+
+
+File: pdp-user,  Node: cs-stats-maxda,  Prev: cs-stats-dist,  Up: cs-stats
+
+Measuring the Maximum Delta-Activation
+--------------------------------------
+
+   The CsMaxDa statistic computes the maximum delta-activation (change
+in activation) for any unit in the network.  This is used to stop
+settling once the network has reached equilibrium.  The stopping
+criterion for this statistic is the tolerance with which equilibrium
+is measured.  It is created by default if the `deterministic' flag is
+checked in the CsSettle process when it is created, which can be done
+by using the `cs_det.def' defaults (det = deterministic).  This stat
+typically goes in the settle process `loop_stats'.
+
+
+File: pdp-user,  Node: cs-defs,  Next: cs-prob-env,  Prev: cs-stats,  Up: cs
+
+Cs Defaults
+===========
+
+   The following default files (*note proj-defaults::) are available
+for configuring different versions of the Cs objects:
+
+`cs.def'
+     This is the standard defaults file, which uses a
+     SigmoidUnitSpec, and the standard process heirarchy, assuming
+     stochastic processing.
+
+`cs_det.def'
+     This is for deterministic Cs networks, which means that only one
+     sample is made of activation states for computing weight changes
+     at the end of settling, and the CsMaxDa settling stat is created
+     by default.
+
+`cs_prob_env.def'
+     This configures the probabalistic output patterns version of Cs,
+     meaning that the CsSettle process is created, and the
+     environment will create probablistic events (*note
+     cs-prob-env::).
+
+
+File: pdp-user,  Node: cs-prob-env,  Next: cs-impl,  Prev: cs-defs,  Up: cs
+
+The Probability Environment and Cs
+==================================
+
+   An environment can be specified where each event has multiple
+possible target patterns, each of which has an associated probability
+of occurring.  Thus, when an event is presented to the network, one
+out of a set of possible target patterns is chosen according to their
+relative probabilities.  These probabilistic distributions of target
+states can actually be learned in a stochastic constraint
+satisfaction network.
+
+   Probabilities can be associated with different patterns by creating
+ProbPattern objects instead of the usual Pattern ones.  The prob
+pattern has a `prob' field, which contains its probability of
+occurrence.
+
+   However, in order for these probabilities to be used in the
+presentation of patterns, one needs to use a ProbEventSpec, which has
+special code that chooses which pattern to present based on its
+probability.  Not all patterns in an event need to be probabilistic.
+Indeed, the usual setup is to have a deterministic input pattern, and
+then a set of possible outputs that follow from this one input.  The
+determiniation of which patterns are probabilistic and which are
+deterministic is made by putting all of the mutually-exclusive
+probabilistic alternative patterns in a ProbPatternSpec_Group.
+
+   Thus, one needs to make a sub-group in the `patterns' group on the
+ProbEventSpec, and this sub-group has to be of type
+ProbPatternSpec_Group.  Then, regular PatternSpec objects, one for
+each alternative target pattern, should be created in the sub group.
+Make sure to set the `pattern_type' field of these pattern specs to
+be ProbPattern, so that the patterns which are created in the event
+will have probabilities associated with them.
+
+   When events are actually created from a prob event spec, one needs
+to edit the patterns within the sub-group and assign each of them
+probabilities that sum to 1 for all the patterns in the group.  Thus,
+the network will be certain of choosing one of them to present.
+
+
+File: pdp-user,  Node: cs-impl,  Prev: cs-prob-env,  Up: cs
+
+Cs Implementational Details
+===========================
+
+   Note that the weight change operation in Cs is viewed as the
+process of collecting statistics about the coproducts of activations
+across the weights.  Thus, there is a new function at the level of the
+CsConSpec called `Aggregate_dWt', which increments the `dwt_agg'
+value of the connection by the phase (+1.0 for plus phase, -1.0 for
+the minus phase) times the coproduct of the activations.  This
+function is called repeatedly if learning is taking place after the
+`start_stats' number of cycles has taken place.
+
+   The standard `Compute_dWt' function is then called at the end of
+the sample process, and it divides the aggregated weight change value
+by a count of the number of times it was aggregated, so that the
+result is an expected value measure.
+
+   Also, note that the type of momentum used in Cs corresponds to the
+`BEFORE_LRATE' option of backpropagation (*note bp-con::).
+
+   The following is a chart describing the flow of processing in the
+Cs algorithm, starting with the epoch process, since higher levels do
+not interact with the details of particular algorithms:
+
+     EpochProcess: {
+       Init: {                              // at start of epoch
+         environment->InitEvents();          // init events (if dynamic)
+         event_list.Add() 0 to environment->EventCount(); // get list of events
+         if(order == PERMUTE) event_list.Permute();       // permute if necessary
+         GetCurEvent();                      // get pointer to current event
+       }
+       Loop (sample): {                      // loop over samples
+         CsSample: {                         // sample process (one event)
+           Init: {                          // at start of sample
+             cur_event = epoch_proc->cur_event; // get cur event from epoch
+           }
+           Loop (sample): {                 // loop over samples of event
+             CsTrial: {                    // phase process (one phase)
+               Init: {                      // at start of phase
+                 phase = MINUS_PHASE;        // start in minus phase
+                 if(phase_init == INIT_STATE)  network->InitState();
+                 cur_event = epoch_proc->cur_event;  // get cur event from epoch
+                 cur_event->ApplyPatterns(network);  // apply patterns to network
+               }
+               Loop (phase_no [0 to 1]): {  // loop over phases
+                 CsSettle: {                // settle process (one settle)
+                   Init: {                  // at start of settle
+                     if(CsPhase::phase == PLUS_PHASE) {
+                       network->InitState(); // init state (including ext input)
+                       cur_event->ApplyPatterns(network);  // re-apply patterns
+                       Targ_To_Ext();        // turn targets into external inputs
+                     }
+                   }
+                   Loop (cycle): {          // loop over act update cycles
+                     CsCycle: {             // cycle process (one cycle)
+                       Loop (once): {       // only process this once per cycle
+                         Compute_SyncAct() or Compute_AsyncAct(); // see below
+                         if(!deterministic and cycle > start_stats)
+                           Aggregate_dWt();  // aggregate wt changes
+                       }
+                     }
+                   }
+                   Final: {                 // at end of phase
+                     if(deterministic) Aggregate_dWt();  // do at end
+                     PostSettle();           // copy act to act_p or act_m
+                   }
+                 }
+                 phase = PLUS_PHASE;         // change to plus phase after minus
+               }
+             }
+           }
+           Final: {                         // at end of sample (done with event)
+             network->Compute_dWt();         // compute wt changes based on aggs
+           }
+         }
+         if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+           network->UpdateWeights();         // update weights after sample if necc
+         GetCurEvent();                      // get next event to present
+       }
+       Final:                                // at end of epoch
+         if(wt_update == BATCH)  network->UpdateWeights();
+     }
+
+   The activation computing functions are broken down as follows:
+
+     Compute_SyncAct(): {           // compute synchronous activations
+       network->InitDelta();         // initialize net-input terms
+       network->Compute_Net();       // aggregate net inputs
+     
+       network->layers: {           // loop over layers
+         units->Compute_Act(CsSettle::cycle); // compute act from net
+       }                            // (cycle used for annealing, sharpening)
+     }
+
+     Compute_AsyncAct(): {          // compute asynchronous activations
+       for(i=0...n_updates) {       // do this n_updates times per cycle
+         rnd_num = Random between 0 and CsSettle::n_units;  // pick a random unit
+         network->layers: {         // loop over layers
+           if(layer contains rnd_num unit) { // find layer containing unit
+             unit = layer->unit[rnd_num];    // get unit from layer
+             unit->InitDelta();              // initialize net input terms
+             unit->Compute_Net();            // aggregate net inputs
+             unit->Compute_Act(CsSettle::cycle);  // compute act from net
+           }                        // (cycle used for annealing, sharpening)
+         }
+       }
+     }
+
+
+File: pdp-user,  Node: so,  Next: leabra,  Prev: cs,  Up: Top
+
+Self-organizing Learning
+************************
+
+   The defining property of self-organizing learning is that it
+operates without requiring an explicit training signal from the
+environment.  This can be contrasted with error backpropagation,
+which requires target patterns to compare against the output states
+in order to generate an error signal.  Thus, many people regard
+self-organizing learning as more biologically or psychologically
+plausible, since it is often difficult to imagine where the explicit
+training signals necessary for error-driven learning come from.
+Further, there is some evidence that neurons actually use something
+like a Hebbian learning rule, which is commonly used in
+self-organizing learning algorithms.
+
+   There are many different flavors of self-organizing learning.
+Indeed, one of the main differences between self-organizing
+algorithms and error-driven learning is that they need to make more
+assumptions about what good representations should be like, since
+they do not have explicit error signals telling them what to do.
+Thus, different self-organizing learning algorithms make different
+assumptions about the environment and how best to represent it.
+
+   One assumption that is common to many self-organizing learning
+algorithms is that events in the environment can be _clustered_
+together according to their "similarity."  Thus, learning amounts to
+trying to find the right cluster in which to represent a given event.
+this is often done by enforcing a competition between a set of units,
+each of which represents a different cluster.  The _competitive
+learning_ algorithm (CL) of `Rumelhart and Zipser, 1985' is a classic
+example of this form of learning, where the single unit which is most
+activated by the current input is chosen as the "winner" and
+therefore gets to adapt its weights in response to this input pattern.
+
+   The PDP++ implementation of self-organizing learning, called _So_,
+includes competitive learning and several variations of it, including
+"soft" competitive learning `Nowlan, 1990', which replaces the "hard"
+competition of standard competitive learning with a more graded
+activation function.  Also included are a couple of different types of
+modified Hebbian learning rules that can be used with either hard or
+soft activation functions.
+
+   An additional assumption that can be made about the environment is
+that there is some kind of _topology_ or ordered relationship among
+the different clusters.  This notion is captured in the
+_self-organizing map_ (SOM) algorithm of `Kohonen, 1989; 1990; 1995'.
+This algorithm adds to the basic idea of competition among the units
+that represent a cluster the additional assumption that units which
+are nearby in 2-D space should represent clusters that are somehow
+related.  This spatial-relatedness constraint is imposed by allowing
+nearby units to learn a little bit when one of their neighbors wins
+the competition.  This algorithm is also implemented in the So
+package.
+
+   The directory `demo/so' contains two projects which demonstrate the
+use of both the competitive-learning style algorithms, and the
+self-organizing maps.
+
+* Menu:
+
+* so-over::                     Overview of the So Implementation
+* so-con::                      So Connection Specifications
+* so-unit::                     So Unit and Layer Specifications
+* so-proc::                     The So Trial Process
+* so-impl::                     So Implementational Details
+
+
+File: pdp-user,  Node: so-over,  Next: so-con,  Prev: so,  Up: so
+
+Overview of the So Implementation
+=================================
+
+   The So implementation is designed to be used in a mix-and-match
+fashion.  Thus, there are a number of different learning algorithms,
+and several different activation functions, each of which can be used
+with the other.  The learning algorithms are implemented as different
+connection specs derived from a basic SoConSpec type.  They all use
+the same SoCon connection type object.
+
+   Unlike the other algorithms in the PDP++ distribution (Bp and Cs),
+the So implementation uses LayerSpec objects extensively.  These layer
+specifications implement competition among units in the same layer,
+which is central to the self-organizing algorithms.  Thus, there are
+three different layer specs all derived from a common SoLayerSpec
+which implement hard competitive learning (Cl), soft competitive
+learning (SoftCl), and the self-organizing map (Som) activation
+functions.
+
+   There are no new statistics defined for self-organizing learning,
+and only one process object, which performs a simple feed-forward
+processing trial (all of the So algorithms are feed-forward).
+
+
+File: pdp-user,  Node: so-con,  Next: so-unit,  Prev: so-over,  Up: so
+
+So Connection Specifications
+============================
+
+   The basic connection type used in all the algorithms, SoCon has a
+delta-weight variable `dwt' and a previous-delta-weight variable
+`pdw'.  `dwt' is incremented by the current weight change
+computations, and then cleared when the weights are updated.  `pdw'
+should be used for viewing, since `dwt' of often zero.   While it has
+not been implemented in the standard distribution, `pdw' could be
+used for momentum-based updating (*note bp-con::).
+
+   The basic SoConSpec has a learning rate parameter `lrate', and a
+range to keep the weight values in: `wt_range'.  Unlike error-driven
+learning, many self-organizing learning algorithms require the
+weights to be forcibly bounded, since the positive-feedback loop
+phenomenon of associative learning can lead to infinite weight growth
+otherwise.  Finally, there is a variable which determines how to
+compute the average and summed activation of the input layer(s),
+which is needed for some of the learning rules.  If the network is
+fully connected, then one can set `avg_act_source' to compute from the
+`LAYER_AVG_ACT', which does not require any further computation.
+However, if the units receive connections from only a sub-sample of
+the input layer, then the layer average might not correspond to that
+which is actually seen by individual units, so you might want to use
+`COMPUTE_AVG_ACT', even though it is more computationally expensive.
+
+   The different varieties of SoConSpec are as follows:
+HebbConSpec
+     This computes the most basic Hebbian learning rule, which is
+     just the coproduct of the sending and receiving unit activations:
+            cn->dwt += ru->act * su->act;
+     Though it is perhaps the simplest and clearest associative
+     learning rule, its limitations are many, including the fact that
+     the weights will typically grow without bound.  Also, for any
+     weight decrease to take place, it is essential that activations
+     be able to take on negative values.  Keep this in mind when
+     using this form of learning.  One application of this con spec
+     is for simple pattern association, where both the input and
+     output patterns are determined by the environment, and learning
+     occurs between these patterns.
+
+ClConSpec
+     This implements the standard competitive learning algorithm as
+     described in `Rumelhart & Zipser, 1985'.  This rule can be seen
+     as attempting to align the weight vector of a given unit with
+     the center of the cluster of input activation vectors that the
+     unit responds to.  Thus, each learning trial simply moves the
+     weights some amount towards the input activations.  In standard
+     competitive learning, the vector of input activations is
+     _normalized_ by dividing by the sum of the input activations for
+     the input layer, `sum_in_act' (see `avg_act_source' above for
+     details on how this is computed).
+            cn->dwt += ru->act * ((su->act / cg->sum_in_act) - cn->wt);
+     The amount of learning is "gated" by the receiving unit's
+     activation, which is determined by the competitive learning
+     function.  In the winner-take-all "hard" competition used in
+     standard competitive learning, this means that only the winning
+     unit gets to learn.  Note that if you multiply through in the
+     above equation, it is equivalent to a Hebbian-like term minus
+     something that looks like weight decay:
+            cn->dwt += (ru->act * (su->act / cg->sum_in_act)) - (ru->act * cn->wt);
+     This solves both the weight bounding and the weight decrease
+     problems with pure Hebbian learning as implemented in the
+     HebbConSpec described above.
+
+SoftClConSpec
+     This implements the "soft" version of the competitive learning
+     learning rule `Nowlan, 1990'.  This is essentially the same as
+     the "hard" version, except that it does not normalize the input
+     activations.  Thus, the weights move towards the center of the
+     actual activation vector.  This can be thought of in terms of
+     maximizing the value of a multi-dimensional Gaussian function of
+     the distance between the weight vector and the activation
+     vector, which is the form of the learning rule used in soft
+     competitive learning.  The smaller the distance between the
+     weight and activation vectors, the greater the activation value.
+            cn->dwt += ru->act * (su->act - cn->wt);
+     This is also the form of learning used in the self-organizing map
+     algorithm, which also seeks to minimize the distance between the
+     weight and activation vectors.  The receiving activation value
+     again gates the weight change.  In soft competitive learning,
+     this activation is determined by a soft competition among the
+     units.  In the SOM, the activation is a function of the
+     activation kernel centered around the unit with the smallest
+     distance between the weight and activation vectors.
+
+ZshConSpec
+     This implements the "zero-sum" Hebbian learning algorithm (ZSH)
+     `O'Reilly & McClelland, 1992', which implements a form of
+     _subtractive_ weight constraints, as opposed to the
+     _multiplicative_ constraints used in competitive learning.
+     Multiplicative constraints work to keep the weight vector from
+     growing without bound by maintaining the length of the weight
+     vector normalized to that of the activation vector.  This
+     normalization preserves the ratios of the relative correlations
+     of the input units with the cluster represented by a given unit.
+     In contrast, the subtractive weight constraints in ZSH
+     exaggerate the weights to those inputs which are greater than
+     the average input activation level, and diminish those to inputs
+     which are below average:
+            cn->dwt += ru->act * (su->act - cg->avg_in_act);
+     where `avg_in_act' is the average input activation level.  Thus,
+     those inputs which are above average have their weights
+     increased, and those which are below average have them
+     decreased.  This causes the weights to go into a corner of the
+     hypercube of weight values (i.e., weights tend to be either 0 or
+     1).  Because weights are going towards the extremes in ZSH, it
+     is useful to introduce a "soft" weight bounding which causes the
+     weights to approach the bounds set by `wt_range' in an
+     exponential-approach fashion.  If the weight change is greater
+     than zero, then it is multiplied by `wt_range.max - cn->wt', and
+     if it is less than zero, it is multiplied by `cn->wt -
+     wt_range.min'.  This is selected by using the `soft_wt_bound'
+     option.
+
+MaxInConSpec
+     This learning rule is basically just the combination of SoftCl
+     and Zsh.  It turns out that both of these rules can be derived
+     from an objective function which seeks to maximize the input
+     information a unit receives, which is defined as the
+     signal-to-noise ratio of the unit's response to a given input
+     signal `O'Reilly, 1994'.  The formal derivation is based on a
+     different kind of activation function than those implemented
+     here, and it has a special term which weights the Zsh-like term
+     according to how well the signal is already being separated from
+     the noise.  Thus, this implementation is simpler, and it just
+     combines Zsh and SoftCl in an additive way:
+            cn->dwt += ru->act * (su->act - cg->avg_in_act) +
+                       k_scl * ru->act * (su->act - cn->wt);
+     Note that the parameter `k_scl' can be adjusted to control the
+     influence of the SoftCl term.  Also, the `soft_wt_bound' option
+     applies here as well.
+
+
+File: pdp-user,  Node: so-unit,  Next: so-proc,  Prev: so-con,  Up: so
+
+So Unit and Layer Specifications
+================================
+
+   Activity of units in the So implementation is determined jointly
+by the unit specifications and the layer specifications.  The unit
+specifications determine how each unit individually computes its net
+input and activation, while the layer specifications determine the
+actual activation of the unit based on a competition that occurs
+between all the units in a layer.
+
+   All So algorithms use the same unit type, SoUnit.  The only thing
+this type adds to the basic Unit is the `act_i' value, which reflects
+the "independent" activation of the unit prior to any modifications
+that the layer-level competition has on the final activations.  This
+is primarily useful for the soft Cl units, which actually transform
+the net input term with a Gaussian activation function, the
+parameters of which can be tuned by viewing the resulting `act_i'
+values that they produce.
+
+   There are three basic types of unit specifications, two of which
+derive from a common SoUnitSpec.  The SoUnitSpec does a very simple
+linear activation function of the net input to the unit.  It can be
+used for standard competitive learning, or for Hebbian learning on
+linear units.
+
+   The SoftClUnitSpec computes a Gaussian function of the distance
+between the weight and activation vectors.  The variance of the
+Gaussian is given by the `var' parameter, which is not adapting and
+shared by all weights in the standard implementation, resulting in a
+fixed spherical Gaussian function.  Note that the `net' variable on
+units using this spec is the distance measure, not the standard dot
+product of the weights and activations.
+
+   The SomUnitSpec simply computes a sum-of-squares distance function
+of the activations and weights, like the SoftClUnitSpec, but it does
+not apply a Gaussian to this distance.  The winning unit in the SOM
+formalism is the one with the weight vector closest to the current
+input activation state, so this unit provides the appropriate
+information for the layer specification to choose the winner.
+
+   There are three algorithm-specific types of layer specifications,
+corresponding to the Cl, SoftCl, and SOM algorithms, and the parent
+SoLayerSpec type which simply lets the units themselves determine
+their own activity.  Thus, the SoLayerSpec can be used when one does
+not want any competition imposed amongst the units in a layer.  This
+can be useful in the case where both layers are clamped with external
+inputs, and the task is to perform simple pattern association using
+Hebbian learning.  Note that all layer specs do not impose a
+competition when they are receiving external input from the
+environment.
+
+   There is one parameter on the SoLayerSpec which is used by the
+different algorithms to determine how to pick the winning unit.  If
+`netin_type' is set to `MAX_NETIN_WINS', then the unit with the
+maximum net input value wins.  This is appropriate if the net input
+is a standard dot-product of the activations times the weights (i.e.,
+for standard competitive learning).  If it is `MIN_NETIN_WINS', then
+the unit with the minimal net input wins, which is appropriate when
+this is a measure of the distance between the weights and the
+activations, as in the SOM algorithm.  Note that soft competitive
+learning does not explicitly select a winner, so this field does not
+matter for that algorithm.
+
+   The ClLayerSpec selects the winning unit (based on `netin_type'),
+and assigns it an activation value of 1, and it assigns all other
+units a value of 0.  Thus, only the winning unit gets to learn about
+the current input pattern.  This is a "hard" winner-take-all
+competition.
+
+   The SoftClLayerSpec does not explicitly select a winning unit.
+Instead, it assigns each unit an activation value based on a _Soft
+Max_ function:
+
+   a_j = e^g_j / (SUM_k e^g_k)
+
+   Where g_j is the Gaussian function of the distance between the
+unit's weights and activations (stored in `act_i' on the SoUnit
+object).  Thus, the total activation in a layer is normalized to add
+up to 1 by dividing through by the sum over the layer.  The
+exponential function serves to magnify the differences between units.
+There is an additional `softmax_gain' parameter which multiplies the
+Gaussian terms before they are put through the exponential function,
+which can be used to sharpen the differences between units even
+further.
+
+   Note that SoftClLayerSpec can be used with units using the
+SoUnitSpec to obtain a "plain" SoftMax function of the dot product
+net input to a unit.
+
+   Finally, the SomLayerSpec provides a means of generating a
+"neighborhood kernel" of activation surrounding the winning unit in a
+layer.  First, the unit whose weights are closest to the current input
+pattern is selected (assuming the SomUnitSpec is being used, and the
+`netin_type' is set to `MIN_NETIN_WINS').  Then the neighbors of this
+unit are activated according to the `neighborhood' kernel defined on
+the spec.  The fact that neighboring units get partially activated is
+what leads to the development of topological "map" structure in the
+network.
+
+   The shape and weighting of the neighborhood kernel is defined by a
+list of NeighborEl objects contained in the `neighborhood' member.
+Each of these defines one element of the kernel in terms of the offset
+in 2-D coordinates from the winning unit (`off'), and the activation
+value for a unit in this position (`act_val').  While these can be
+created by hand, it is easier to use one of the following built-in
+functions on the SomLayerSpec:
+
+`KernelEllipse(int half_width, int half_height, int ctr_x, int ctr_y)'
+     This makes a set of kernel elements in the shape of an ellipse
+     with the given dimensions and center (typically 0,0).
+
+`KernelRectangle(int width, int height, int ctr_x, int ctr_y)'
+     This makes a rectangular kernel with the given dimensions and
+     center.
+
+`KernelFromNetView(NetView* view)'
+     This makes a kernel based on the currently selected units in the
+     NetView (*note net-view::).  Select the center of the kernel
+     first, followed by the other elements.  Then call this function.
+
+`StepKernelActs(float val)'
+     This assigns the `act_val' values of the existing kernel elements
+     to be all the same value, `val'.
+
+`LinearKernelActs(float scale)'
+     This assigns the `act_val' values of the existing kernel elements
+     as a linear function of their distance from the center, scaled
+     by the given scale parameter.
+
+`GaussianKernelActs(float scale, float sigma)'
+     This assigns the `act_val' values of the existing kernel elements
+     as a Gaussian function of their distance from the center, scaled
+     by the given scale parameter, where the Gaussian has a variance
+     of `sigma'.
+
+   One can see the resulting kernel function by testing the network
+and viewing activations.  Also, there is a demo project that
+illustrates how to set up a SOM network in `demo/so/som.proj.gz'.
+
+
+File: pdp-user,  Node: so-proc,  Next: so-impl,  Prev: so-unit,  Up: so
+
+The So Trial Process
+====================
+
+   The only process defined for the self-organizing algorithms is a
+trial process which simply performs a feed-forward update of the
+unit's net input and activations.  Thus, the layers in the network
+must be ordered in the order of their dependencies, with later layers
+depending on input from earlier ones.
+
+
+File: pdp-user,  Node: so-impl,  Prev: so-proc,  Up: so
+
+So Implementational Details
+===========================
+
+   The following is a chart describing the flow of processing in the
+So algorithm, starting with the epoch process, since higher levels do
+not interact with the details of particular algorithms:
+
+     EpochProcess: {
+       Init: {
+         environment->InitEvents();          // init events (if dynamic)
+         event_list.Add() 0 to environment->EventCount(); // get list of events
+         if(order == PERMUTE) event_list.Permute();       // permute if necessary
+         GetCurEvent();                      // get pointer to current event
+       }
+       Loop (trial): {                      // loop over trials
+         SoTrial: {                         // trial process (one event)
+           Init: {                          // at start of trial
+             cur_event = epoch_proc->cur_event; // get cur event from epoch
+           }
+           Loop (once): {                   // only process this once per trial
+             network->InitExterns();         // init external inputs to units
+             cur_event->ApplyPatterns(network); // apply patterns to network
+             Compute_Act(): {               // compute the activations
+               network->layers: {           // loop over layers
+                 layer->Compute_Net();       // compute net inputs
+                 layer->Compute_Act();       // compute activations from net in
+               }
+             }
+             network->Compute_dWt();         // compute weight changes from acts
+           }
+         }
+         if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+           network->UpdateWeights(); // after trial, update weights if necc
+         GetCurEvent();              // get next event
+       }
+       Final:
+         if(wt_update == BATCH)  network->UpdateWeights(); // batch weight updates
+     }
+
+   The `layer->Compute_Act()' function has several sub-stages for
+different versions of algorithms, as detailed below:
+
+   For non-input layer hard competitive learning units:
+     ClLayerSpec::Compute_Act() {
+       SoUnit* win_u = FindWinner(lay);
+       float lvcnt = (float)lay->units.leaves;
+       lay->avg_act =  // compute avg act assuming one winner and rest losers..
+             (act_range.max / lvcnt) + (((lvcnt - 1) * act_range.min) / lvcnt);
+       win_u->act = act_range.max; // winning unit gets max value
+       win_u->act_i = lay->avg_act;	// and average value goes in _i
+     }
+
+   For non-input layer soft competitive learning units:
+     SoftClLayerSpec::Compute_Act() {
+       float sum = 0;
+       for(units) {                 // iterate over the units
+         unit->Compute_Act();                        // compute based on netin
+         unit->act = exp(softmax_gain * unit->act);  // then exponential
+         sum += unit->act;                           // collect sum
+       }
+       for(units) {                 // then make a second pass
+         unit->act =                 // act is now normalized by sum
+             act_range.min + act_range.range * (unit->act / sum);
+       }
+       Compute_AvgAct();             // then compute average act over layer
+     }
+
+   The code for the SOM case is more complicated than the description,
+which is just that it finds the winner and pastes the kernel onto the
+units surrounding the winner.
+

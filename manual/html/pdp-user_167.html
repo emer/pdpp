@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stat</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_166.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_168.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1007" HREF="pdp-user_toc.html">12.7  The Statistic Process</A></H2>
+<P>
+<A NAME="IDX1008"></A>
+<A NAME="IDX1009"></A>
+
+</P>
+<P>
+The Statistic Process is an extension of the basic Process object which
+is used for computing values that are then made available for recording
+and displaying in logs.  The basic <B>Stat</B> object defines an interface
+for computing and reporting data.  This interface is used by the
+schedule processes, who supervise the running of stats and the
+reporting of their data to the logs.
+
+</P>
+<P>
+Each statistic object can operate in one of two capacities.  The first
+is as the original <EM>computer</EM> (or collector) of some kind of data.
+For example, a squared-error statistic (<B>SE_Stat</B>) knows how to go
+through a network and compute the squared difference between target
+values and actual activations.  Typically, this would be performed after
+every event is presented to the network, since that is when the relevant
+information is available in the state variables of the network.
+
+</P>
+<P>
+The second capacity of a statistic is as an <EM>aggregator</EM> of data
+computed by another statistic.  This is needed in order to be able to
+compute the sum of the squared-errors over all of the trials in an
+epoch, for example.  When operating in aggregation mode, statistics work
+from data in the statistic they are aggregating from, instead of going
+out and collecting data from the network itself.
+
+</P>
+<P>
+Typically, the statistic and its aggregators are all of the same type
+(e.g., they are all <B>SE_Stat</B>s), and the aggregated values appear in
+the same member variable that the originally computed value appears in.
+Thus, this is where to look to set a stopping criterion for an
+aggregated stat value, for example.
+
+</P>
+<P>
+Each statistic knows how to create a series of aggregators all the way
+up the processing hierarchy.  This is done with the
+<CODE>CreateAggregates</CODE> function on the stat, which is available as an
+option when a statistic is created.  Thus, one always creates a
+statistic at the processing level where it will do the original
+computation.  If aggregates of this value are needed at higher levels,
+then make sure the <CODE>CreateAggregates</CODE> field is checked when the
+stat is created, or call it yourself later (e.g., from the <I>Actions</I>
+menu of a stat edit dialog).  You can also <CODE>UpdateAllAggregators</CODE>,
+if you want to make sure their names reflect any changes (i.e., in
+<CODE>layer</CODE> or network aggregation operator), and <CODE>FindAggregator</CODE>
+to find the immediate aggregator of the current stat.
+
+</P>
+<P>
+It is recommend that you use the <I>NewStat</I> menu from the
+<I>.processes</I> menu of the project to create a new statistic, or use the
+Project Viewer (see section <A HREF="pdp-user_104.html">9.2  The Project Viewer</A>).  This will bring up a dialog with
+the default options of where to create the stat (i.e., at what
+processing level) that the stat itself suggested (each stat knows where
+it should do its original computation).
+
+</P>
+<P>
+<A NAME="IDX1010"></A>
+There are several different kinds of aggregation operators that can be
+used to aggregate information over processing levels, including summing,
+averaging, etc.  The operator is selected as part of the <CODE>time_agg</CODE>
+member of the statistic. See below for descriptions of the different
+operators.
+
+</P>
+<P>
+Note that all aggregation statistics reside in the <CODE>loop_stats</CODE>
+group of the schedule processes, since they need to be run after every
+loop of the lower level statistic to collect its values and aggregate
+them over time.
+
+</P>
+<P>
+<A NAME="IDX1011"></A>
+In addition to aggregating information over levels of processing,
+statistics are often aggregating information over objects in the
+network.  Thus, for example, the <B>SE_Stat</B> typically computes the sum
+of all the squared error terms over the output units in the network.
+The particular form of aggregation that a stat performs over network
+objects is controlled by the <CODE>net_agg</CODE> member.  Thus, it is
+possible to have the <B>SE_Stat</B> compute the average error over output
+units instead of the sum by changing this variable.
+
+</P>
+<P>
+<A NAME="IDX1012"></A>
+Finally, the name of a statistic as recorded in the log and as it
+appears in the <CODE>name</CODE> field is automatically set to reflect the
+kinds of aggregation being performed.  The first three-letter prefix (if
+there are two) reflects the <CODE>time_agg</CODE> operator.  The second
+three-letter prefix (or the only one) reflects the <CODE>net_agg</CODE>
+operator.  Further the layer name if the <CODE>layer</CODE> pointer is
+non-NULL is indicated in the name.  The stat <CODE>name</CODE> field is not
+automatically set if it does not contain the type name of the stat, so
+if you want to give a stat a custom name, don't include the type name in
+this. 
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_168.html">1               Aggregation Operators and other Parameters</A>
+<LI><A HREF="pdp-user_169.html">2              Using Statistics to Control Processes</A>
+<LI><A HREF="pdp-user_170.html">3              Implementational Details about Stats</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_166.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_168.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

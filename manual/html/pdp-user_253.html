@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-typea-base</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_252.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_254.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1728" HREF="pdp-user_toc.html">18.2.4  The Type-Aware Base Class <B>taBase</B></A></H3>
+<P>
+<A NAME="IDX1729"></A>
+<A NAME="IDX1730"></A>
+<A NAME="IDX1731"></A>
+
+</P>
+<P>
+There is a basic class type called <B>taBase</B> that uses the TypeAccess
+type information to perform a number of special functions automatically.
+This object is aware of its own type information, and can thus save and
+load itself, etc.  Special code has been written in both the TypeAccess
+system and in CSS that takes advantage of the interface provided by the
+<B>taBase</B> type.  Thus, it is recommended that user's derive all of
+their types from this base type, and use special macros to provide
+derived types with the hooks necessary to get their own type information
+and use it effectively.  The type <B>TAPtr</B> is a <CODE>typedef</CODE> for a
+pointer to a <B>taBase</B> object.  The definition of a <B>taBase</B> object
+and the macros that are used with it are all in <TT>`ta/ta_base.h'</TT>.
+
+</P>
+<P>
+All <B>taBase</B> objects have only one member, which is a reference
+counter.  This provides a mechanism for determining when it is safe to
+delete an object when the object is being referenced or pointed to in
+various different places.  <B>taBase</B> provides a set of referencing and
+pointer-management functions that simplify the use of a reference-count
+based memory management system.  <CODE>Ref</CODE> increments the reference
+count, <CODE>unRef</CODE> decrements it, <CODE>Done</CODE> checks if the refcount is
+zero, and deletes the object if it is, and <CODE>unRefDone</CODE> does both.
+<CODE>Own</CODE> both Ref's an object and sets its owner.  For pointers,
+<CODE>SetPointer</CODE> unrefs any existing object that the pointer points to,
+and sets it to point to the new object.  <CODE>DelPointer</CODE> does an
+<CODE>unRefDone</CODE> on the object pointed to, and sets the pointer to NULL.
+<CODE>OwnPointer</CODE> is like SetPointer except it also sets the owner of
+the pointed-to object to the one given by the argument.  See
+section <A HREF="pdp-user_263.html">18.8.1  Basic Functions</A> and <TT>`ta/ta_base.h'</TT> for more details.
+
+</P>
+<P>
+<A NAME="IDX1732"></A>
+The one essential function that <B>taBase</B> provides is
+<CODE>GetTypeDef()</CODE>, which is a virtual function that returns a pointer
+to the <CODE>TypeDef</CODE> type descriptor for this object. This function is
+defined as part of the basic macro <CODE>TA_BASEFUNS</CODE>, which must be
+included in all classes derived from <B>taBase</B>.  This function makes it
+possible for a generic pointer to a taBase object to find out what type
+of object is really being pointed to.
+
+</P>
+<P>
+There are a number of functions defined on the taBase type that simply
+call the corresponding function on the <B>TypeDef</B> pointer.  These can
+be found in the <TT>`ta/ta_base.h'</TT> header file.  They just make it
+easier to call these commonly-used functions, instead of requiring the
+user to put in a <CODE>GetTypeDef</CODE> function in between.
+
+</P>
+<P>
+<B>taBase</B> also provides a simplified way of managing the construction,
+deletion, and copying of an object.  Basically, construction is broken
+down into a set of functions that <CODE>Initialize</CODE> the member
+variables, <CODE>Register</CODE> the new token with the type if it is keeping
+track of tokens, and it sets the default name of the object based on its
+type name using <CODE>SetDefaultName</CODE>.  The <CODE>TA_BASEFUNS</CODE> macro
+defines a default constructor that calls these three functions in that
+order.  The user thus needs to provide a <CODE>Initialize</CODE> function for
+every class defined, which does the appropriate member initialization.
+Note that if this function is not defined, the one on the parent class
+will be called twice, so its more efficient to include a blank
+Initialize function when there are no members that need to be
+initialized.
+
+</P>
+<P>
+The destructor function is similar to the constructor.  A default
+destructor is defined in <CODE>TA_BASEFUNS</CODE>, which simply calls
+<CODE>unRegister</CODE>, and <CODE>Destroy</CODE>.  Thus, the user needs to provide
+a <CODE>Destroy</CODE> function which frees any additional resources allocated
+by the object, etc.  Like <CODE>Initialize</CODE>, a blank <CODE>Destroy</CODE>
+should be defined when there is nothing that needs to be done to prevent
+the parent function from being called twice.
+
+</P>
+<P>
+Copying, cloning, and making a new token of the given type are also
+supported in the <B>taBase</B> class.  The <CODE>Copy</CODE> function performs
+the basic copy operations for both the copy constructor and the <CODE>=</CODE>
+operator.  This should replace the values of this class and any of its
+existing sub-objects with those of the object passed to it, as it is
+intended for assignment between two existing objects.  In general, the
+<CODE>=</CODE> operator should be used for copying all members, except for the
+case of <CODE>LINK_GROUP</CODE> groups and lists, which should use the
+<CODE>BorrowUnique</CODE> function (since they do not own the items in the list,
+just link them).  <CODE>Copy</CODE> must call the parent's <CODE>Copy</CODE>
+function as well.  As a minor simplification of calling the parent (and
+to provide a copy function for just the items in a given class), it is
+conventional to define a <CODE>Copy_</CODE> function, which does everything
+except for calling the parent copy function.  The macro <CODE>COPY_FUNS</CODE>
+can be used to define a <CODE>Copy</CODE> function which calls the parent
+function and then <CODE>Copy_</CODE>.  The macro <CODE>SIMPLE_COPY</CODE> defines a
+<CODE>Copy_</CODE> function which uses the type-scanned information to do the
+copying.  It is slower than hand-coding things, so it probably shouldn't
+be used on types which will have a lot of tokens or be copied often.
+
+</P>
+<P>
+A <CODE>Clone</CODE> function which returns a <CODE>TAPtr</CODE> to a new duplicate
+of this object is defined in <CODE>TA_BASEFUNS</CODE>, as well as an "unsafe"
+version of <CODE>Copy</CODE> (<CODE>UnSafeCopy</CODE>), which takes a generic
+<CODE>TAPtr</CODE> argument and casts it into their type.  The argument's type
+should thus be tested before calling this function.  A safe interface to
+this function is provided by the <CODE>CopyFrom</CODE> function, which does
+the type checking.  Finally, the <CODE>MakeToken</CODE> function will create a
+new token of the type.
+
+</P>
+<P>
+The <B>taBase</B> class also contains functions for creating and
+manipulating a structure hierarchy of objects.  This is where certain
+objects contain groups of other objects, which contain other objects,
+etc.  For example, the PDP++ software has a structure hierarchy built
+around a root object, which contains projects, which contain lots of
+other objects like networks, projects, environments, etc.  Special
+container objects like <B>taList</B> and <B>taGroup</B> play an important role
+in representing and manipulating this structure (note that it is
+possible to write other types of container objects which could play the
+same role simply by overloading the same functions that these objects
+do).
+
+</P>
+<P>
+When an object is "linked" into the object hierarchy, a function called
+<CODE>InitLinks</CODE> is called.  This function should perform any kind of
+initialization that depends on the object being situated in the
+hierarchy, like being able to know what object "owns" this one.
+<B>taBase</B> has functions for getting and setting the owner of an object.
+For example, when a group (<B>taList</B> or <B>taGroup</B> creates a new
+object and links it into its list of objects, it calls the
+<CODE>SetOwner</CODE> function with a pointer to itself on this new object,
+and then it calls <CODE>InitLinks</CODE>.  Similarly, when the object is
+removed from the group, the <CODE>CutLinks</CODE> function is called, which
+should cut any links that the object has with other objects.
+
+</P>
+<P>
+An object's location in the object hierarchy can be represented by a
+<EM>path</EM> to that object from a global root object.  A given
+application is assumed to have a root object, which contains all other
+objects.  A pointer to that object is kept in <B>tabMisc::root</B>, which
+is used to anchor the path to any given object.  An object can find its
+path with the <CODE>GetPath</CODE> function, and an object can be found from a
+path with the <CODE>FindFromPath</CODE> function.
+
+</P>
+<P>
+Finally, a function for allowing an object to set the values of certain
+members based on changes that might have been made in other members
+after a user edits the object, called <CODE>UpdateAfterEdit</CODE>, is
+provided.  This function is called on most objects after they are loaded
+from a save file (except those with the <CODE>#NO_UPDATE_AFTER</CODE> comment
+directive), and on all objects after the user hits <I>Apply</I> or <I>Ok</I>
+in an edit dialog, and after any member is set through a CSS assign
+statement.  While the object does not know which members were changed
+when <CODE>UpdateAfterEdit</CODE> is called, the object can buffer previous
+state on its own to figure this out if it is needed.
+
+</P>
+<P>
+For a step-by-step guide to making a new class that derives from
+<B>taBase</B>, see section <A HREF="pdp-user_261.html">18.4  Coding Conventions and Standards</A>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_252.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_254.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

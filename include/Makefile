@@ -1,0 +1,405 @@
+######################################################################
+# ta/css/pdp++: Standard Definitions for the makefile (Makefile.defs)
+#
+
+# default make target is specified in Makefile.in
+all:	default
+
+#####################################################################
+#			GLOBAL PATHS 				    #
+#####################################################################
+
+# it is assumed that most things are installed under LOCAL
+LOCAL = /usr/local
+
+# PDPDIR is the path where the distribution is located.  If you change this
+# here, ***BE SURE TO CHANGE IT IN THE TOP-LEVEL 'Makefile'***
+# (i.e., PDPDIR/Makefile)
+PDPDIR = $(LOCAL)/pdp++
+
+# top can be defined to be in a user's home directory: it is where the source is
+TOP = $(PDPDIR)/src
+
+# publicly accessable binary directory for linking executables into (install_bin)
+BIN_DIR = $(HOME)/bin
+
+# this is where the distribution version of interviews is located (for include
+# file paths) this directory should have an "include" subdirectory
+IV = $(LOCAL)/interviews
+
+# LOC_OBJS is a directory physically local to each machine where the 
+# object files/libraries, etc are put to speed compliation in a distributed
+# environment, this directory must be created in advance, and must be given
+# read/write permission to whoever will be compiling the software..
+LOC_OBJS = /usr/user/pdp++
+
+# standard definitions for path-type variables
+# the PROJDIR is the directory the 'project' is in.  This is assumed to be under
+# the TOP directory
+PROJDIR = $(PROJNAME)
+VPATH = $(TOP)/$(PROJDIR)
+
+#####################################################################
+#			EXTERNAL LIBRARIES			    #
+#####################################################################
+
+EXTERNAL_LIBS = $(LIBS)
+
+# this is no longer relevant -- usually the iostream lib is included in std lib
+IOS_LIB = 
+# IOS_LIB = -liostream
+
+# if not using g++, need to use 'myiberty' which has alloca, xmalloc
+IBERTY_LIB = 
+# IBERTY_LIB = -liberty
+# IBERTY_LIB = -lmyiberty
+
+# any other misc libs that need to be included
+GENERIC_LIB = -lm 
+
+# default InterViews Library: now using the Michael Hines version from the
+# NEURON program: http://www.neuron.yale.edu/
+IV_LIB = -lIVhines
+# if you want debugging information
+# IV_LIB = -lIVdhines
+
+# now using zlib for gz de/compression -- just tacking this onto the
+# basic X11 lib so people don't have to change their Makefile.in's! 
+# default X11 library
+X11_LIB = -ljpeg -lX11 -lz
+
+# this must correspond with the version of the iostream library used
+# its for ta which scans modified versions of these include files
+# either Cfront or g++ are supported (and the corresponding files
+# are found in the src/ta directory.  Note that the CC (cfront) ones are
+# symbolic links to /usr/include/CC, and the g++ ones are just copied
+# from the relevant distribution. Newer ones are abstracted from 
+# actual ones to only include relevant info for scanning, as they
+# are never included in actual compiling, only in maketa.
+# IOS_INCLUDES = CC-3.1
+# IOS_INCLUDES = g++-2.8.1
+IOS_INCLUDES = g++-3.1
+
+# these are -I flags for additional include directories
+IDIRS_EXTRA =
+# these are -L flags for additional library directories
+LDIRS_EXTRA =
+
+#####################################################################
+#			COMPILER SETTINGS			    #
+#####################################################################
+
+# make sure the shared library has the right setting (HP uses sl)
+LIB_EXT_NONSHARED = a
+LIB_EXT_SHARED = so
+
+# MSDOS requires a .exe extension on executables..
+EXE_EXT =
+
+# basic compiling command for shared and non-shared making
+# (definitely need PIC or its equivalent for a large GOT)
+# -fno-exceptions is essential -- it is deadly slow and can't really
+# compile with exceptions (takes >512mb of ram for rbp.cc)
+# -fno-rtti saves a bit of disk space, but has no performance conseq.
+# but the code doesn't use it, so might as well save.
+# actually: got rid of -no-rtti because stringstream requires it.
+CC_NONSHARED = gcc -nostdinc
+# CXX_NONSHARED = g++ -fno-implicit-templates -fno-exceptions -fno-rtti
+CXX_NONSHARED = g++ -fno-implicit-templates -fno-exceptions
+CC_SHARED = gcc -nostdinc -fPIC
+# CXX_SHARED = g++ -fPIC -fno-implicit-templates -fno-exceptions -fno-rtti
+CXX_SHARED = g++ -fPIC -fno-implicit-templates -fno-exceptions
+
+# extra flags for compiling, must correspond with appropriate defns
+# for interviews include/Dispatch/dispatcher.h
+MACH_FLAGS = -DHAVE_POSIX_SIGNALS=1 -DRETSIGTYPE=void
+# these are special flags for compiling the huge xxx_TA.cc files
+MACH_TA_CCFLAGS = $(MACH_FLAGS)
+
+# for making libraries
+AR = ar rc
+RANLIB = ranlib
+# command to actually use when making a library
+AR_PRE_CMD_NONSHARED = echo
+AR_CMD_NONSHARED = $(AR)
+RANLIB_CMD_NONSHARED = $(RANLIB)
+
+AR_PRE_CMD_SHARED = echo 
+AR_CMD_SHARED = $(CXX_SHARED) -shared -Wl,-soname,$@ -o 
+RANLIB_CMD_SHARED = echo
+
+# second pass comand for libs
+LIB_PASS2_CMD = echo
+EXTERNAL_LIBS = $(LIBS)
+
+# this is the GNU preprocessor, which always works
+# though it is not standardly installed in /usr/local/bin, so do it yourself
+cppC = /usr/local/bin/cccp -lang-c++
+
+# the following four settings determine if shared or non-shared is default
+# use noshared as a default, since that will always work
+# CC is the C compiler
+CC = $(CC_NONSHARED)
+# CXX is the C++ compiler
+CXX = $(CXX_NONSHARED)
+# this is used to create the binary (linking)
+BIN_CXX = $(CXX)
+# these are used to create the dependency info (-M is added automatically)
+DEP_CC = $(CC)
+DEP_CXX = $(CXX)
+# this is the extension of the library file
+LIB_EXT = $(LIB_EXT_NONSHARED)
+AR_PRE_CMD = $(AR_PRE_CMD_NONSHARED)
+AR_CMD = $(AR_CMD_NONSHARED)
+RANLIB_CMD = $(RANLIB_CMD_NONSHARED)
+
+# this was a way of optimizing sim files when optimiziation caused
+# bugs in shared linking.  not relevant anymore so should be excised
+# completely.  could cause some makefiles to fail..
+# SIM_NONSHARED_CXX = $(CXX)
+# SIM_NONSHARED_AR_CMD = $(AR_CMD)
+# SIM_NONSHARED_LIB_EXT = $(LIB_EXT)
+
+DEBUG_FLAG = -g -Wall -Winline
+# debug flags that can be used with optimization
+DEBUG_OPT_FLAG = 
+# -g tends to eat up a huge amount of space..
+#DEBUG_OPT_FLAG = -g -Wall -Winline
+# -O2 now faster in compiling in gcc 3.x..
+# OPT_FLAG = -O2 -Wall -Winline
+OPT_FLAG = -O2 -Wall
+# get compiler to produce dependencies
+DEP_FLAG = -M -E
+
+# controls the instantiation of virtual tables (cfront)
+# instantiate vtable flag (e.g. +e1 for cfront)
+VT_INST_FLAG = +e1 
+# instantiate vtable file
+VT_INST_FILE = $(PROJNAME)_vt
+# to actually include the vtable file in executable (cfront only)
+#VT_INST_SRC = $(VT_INST_FILE).cc
+#VT_INST_OBJ = $(VT_INST_FILE).o
+#VT_INST_DEP = $(VT_INST_FILE).d
+VT_INST_SRC = 
+VT_INST_OBJ = 
+VT_INST_DEP = 
+
+# controlls the instantiation of templates (g++)
+# instantiate templates flag (maybe not necessary)
+TI_INST_FLAG =
+# instantiate templates file
+TI_INST_FILE = $(PROJNAME)_ti
+# to actually include the template file in executable (g++ only)
+TI_INST_SRC = $(TI_INST_FILE).cc
+TI_INST_OBJ = $(TI_INST_FILE).o
+TI_INST_DEP = $(TI_INST_FILE).d
+# other compiler types should get rid of this TI stuff
+#TI_INST_SRC = 
+#TI_INST_OBJ = 
+#TI_INST_DEP = 
+
+################################
+# less-important compiler stuff
+
+# pipe tends to take too much ram...
+#PIPEFLAG = -pipe
+PIPEFLAG = 
+
+# these defines are passed to every compile stage
+DEFINES =
+DEFINES_XX = -D$(CPU) $(DEFINES)
+
+# these are the basic flags for compiling C++
+CCFLAGS_XX = $(FLAGS) $(IN_FLAGS) $(MACH_FLAGS) $(PIPEFLAG) $(DEFINES_XX)
+# and for regular C
+CFLAGS_XX =  $(MACH_FLAGS) $(PIPEFLAG) $(DEFINES_XX)
+
+DEBUG_FLAGS = $(DEBUG_FLAG)
+OPT_FLAGS = $(DEBUG_OPT_FLAG) $(OPT_FLAG)
+
+# this is the one to set to control optimization vs. debugging
+OPT_DEBUG = $(DEBUG_FLAGS)
+
+# these are actually used during compilation
+CCFLAGS = $(OPT_DEBUG) $(CCFLAGS_XX)
+CFLAGS = $(OPT_DEBUG) $(CFLAGS_XX)
+
+# this is for compiling the _TA.cc file, which is huge..
+TA_CCFLAGS_XX = $(FLAGS) $(IN_FLAGS) $(MACH_TA_CCFLAGS) $(DEFINES_XX)
+
+# if you need to debug it..
+#TA_CCFLAGS = -g $(TA_CCFLAGS_XX)
+TA_CCFLAGS = $(TA_CCFLAGS_XX)
+
+
+#####################################################################
+#			LOCAL PATHS, NAMES			    #
+#####################################################################
+
+# src_include is a hack to make local files in the compilation directory
+# includeable with the <PROJDIR/xxx.h> syntax.  it is a directory with a
+# symbolic link with the name PROJDIR to its parent directory (../)
+# it is automatically made by make cpu_dir
+SRC_INC = src_include/$(PROJDIR)
+
+# basic include directories
+IDIRS_XX = -I./src_include -I./src_include/$(PROJDIR) -I$(PDPDIR)/include/$(CPU)\
+	-I$(IV)/include 
+
+# basic library directories
+LDIRS_XX = -L$(PDPDIR)/lib/$(CPU) -L$(LOCAL)/lib -L$(IV)/lib/$(CPU)
+
+# this is what is actually used when compiling
+IDIRS = $(IDIRS_EXTRA) $(IDIRS_XX) 
+LDIRS = $(LDIRS_EXTRA) $(LDIRS_XX) 
+
+# the name of the executable made in this directory
+EXE = $(PROJNAME)++$(EXE_EXT)
+# this is the 'distribution' executable (i.e. the one that works, not the latest)
+DIST_EXE = $(PROJNAME)++$(EXE_EXT)
+
+# this is the name of the library made in this directory
+LIB = lib$(PROJNAME).$(LIB_EXT)
+
+# extra dependencies for the executable
+EXE_DEPENDS =
+
+# these are the basic dependencies 
+DEPS_XX = $(DEPS) $(VT_INST_DEP) $(TI_INST_DEP)
+
+# path to the 'maketa' type scanning program
+MAKETA = $(PDPDIR)/bin/$(CPU)/maketa
+
+MAKETA_FLAGS = -hx -css -instances
+MAKETA_FLAGS_XX = "-cpp=$(cppC)" $(MAKETA_FLAGS_CPU) $(MAKETA_FLAGS) -I$(PDPDIR)/src/ta/ios-$(IOS_INCLUDES) $(FLAGS) $(IN_FLAGS) $(DEFINES_XX) 
+
+# extra '.hx' file that needs to be copied to the CPU directory  from
+# the proj directory  when the cpu_dir is made (typically from a .y
+# file, 'maketa' files are handled automatically already).
+# DON'T ADD THE .hx HERE!
+
+EXTRA_HX_FILE =
+
+# extra general file that needs to be copied to the CPU directory  from
+# the proj directory  when the cpu_dir is made 
+
+EXTRA_CPU_FILE =
+
+# If your compiler generates a .u file when given the -M flag
+# set  change the following to
+# MAKEDEP_TMP_FILE = /dev/null
+# in your Makefile.CPU file
+
+MAKEDEP_TMP_FILE = `echo $@ | $(SED) 's/\.d/.u/g'`
+
+#####################################################################
+#			STANDARD DEFINES			    #
+#####################################################################
+
+# basic unix commands for manipulating files..
+YACC = bison
+YFLAGS = -dtvy
+
+MAKE = make
+
+RM = rm -f
+MV = mv -f
+CP = /bin/cp
+LN = ln -s
+CAT = cat
+CD = cd
+MKDIR = mkdir
+CMP = cmp -s
+ED = ed
+SED = sed
+TOUCH = touch -c
+COMPRESS = gzip -f
+NICE = nice +10 
+PROOF = proof
+TAR = gnutar
+####################################################
+# machine-dependent stuff and overrides of std defs
+# DARWIN - c++ (g++) 3.1 (os X 10.2)
+####################################################
+
+# this is for Mac OSX, aka darwin.  it is pretty standard (linux-like), except
+# you need to do the following steps:
+
+# all actions below need to be as root (sudo su in osx):
+
+# 0. you need the developer's tools, to get the g++ compiler and all the
+# system headers, etc.  find this on the apple website.
+
+# 1. fake malloc.h
+# touch /usr/include/malloc.h
+
+# 2. readline is not included, so:
+# get readline-4.3.tar.gz from ftp://ftp.gnu.org
+# (or our ftp site in darwin)
+# ./configure --prefix=/usr/local; make; make install 
+# (puts libreadline.a in /usr/local/lib -- the .dylib seems to fail but its ok)
+
+# 3. libjpeg is not included, so: 
+# grab the libjpeg code from the home website:
+# www.ijg.org/files/jpegsrc.v6b.tar.gz
+# (or get it from our ftp server in darwin)
+# ./configure; make; make install-lib
+
+# if you want to compile interviews:
+# 1. requires iv-15.tar.gz
+# 2. ./configure --prefix=/usr/local; make; make install
+
+# That should be it!
+####################################
+
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DLINUX -DDARWIN -std=c++98
+
+IDIRS_EXTRA = -I/usr/X11R6/include
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+#LIBG++_INCLUDE_DIR = -I/usr/include/gcc/darwin/3.1/g++-v3
+#LIBG++_INCLUDE_DIR = -I/usr/include/gcc/darwin/4.0/c++
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# often in /lib/cpp but not on darwin, requires __ppc__ for system includes!
+#cppC = /usr/libexec/gcc/darwin/ppc/3.1/cpp -xc++ -D__ppc__
+cppC = /usr/bin/ -xc++ -D__ppc__
+
+# only within-program dependencies: avoid bug in overflow on no of included files
+DEP_FLAG = -MM
+
+# darwin does not support shared libs yet (apparently..)
+# *NOT* using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar
+###########################################################
+# ta/css/pdp++ makefile: set up the include file links
+# be sure to run make Makefiles in the top level directory
+# first, since this is just a stub makefile
+#
+
+INCLUDE_DIRS = ta_string iv_misc ta ta_lib_min css iv_graphic ta_misc pdp bp cs so leabra oldlba lstm rns
+
+default: includes
+
+includes:
+	-@ $(MKDIR) $(CPU)
+	-@ $(CD) $(CPU);\
+	$(RM) *;\
+	for i in $(INCLUDE_DIRS);\
+	  do $(LN) $(TOP)/$$i/$(CPU)/lib_include $$i;\
+	done;\
+	$(LN) $(TOP)/ta_string/$(CPU)/lib_include/ta_string.h ta_string.h

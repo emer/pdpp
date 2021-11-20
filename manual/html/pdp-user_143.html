@@ -1,0 +1,153 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-import</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_142.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_144.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX831" HREF="pdp-user_toc.html">11.7  Importing Environments from Text Files</A></H2>
+<P>
+<A NAME="IDX832"></A>
+<A NAME="IDX833"></A>
+<A NAME="IDX834"></A>
+
+</P>
+<P>
+To aid in the conversion of environments from the old PDP software to
+the format used in PDP++ (<TT>`.pat'</TT> files), and for generally
+importing training and testing data represented in plain text files, we
+have provided functions on the Environment that read and write text
+files.  These functions are called <CODE>ReadText</CODE> and <CODE>WriteText</CODE>.
+
+</P>
+<P>
+There is also a <B>FromFileEnv</B> that reads event patterns from files
+incrementally during processing (see section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>).
+
+</P>
+<P>
+The format that these functions read and write is very simple,
+consisting of a sequence of numbers, with an (optional) event name at
+the beginning or end of the line.  Note, you must specify using the fmt
+parameter whether there will be a name associated with the events or
+not.  <B>Important: the name must be a contiguous string, without any
+whitespace -- it can however be a number or have any other ASCII
+characters in it.</B>  When reading in a file, ReadText simply reads in
+numbers sequentially for each pattern in each event, so the layout of
+the numbers is not critical.  If the optional name is to be used, it
+must appear at the beginning of the line that starts a new event.
+
+</P>
+<P>
+For example, in the old PDP software, the "xor.pat" file for the XOR
+example looks like this:
+
+</P>
+<PRE>p00 0 0 0
+p01 0 1 1
+p10 1 0 1
+p11 1 1 0
+</PRE>
+
+<P>
+It is critical that the <B>EventSpec</B> and its constitutent
+<B>PatternSpecs</B> (see section <A HREF="pdp-user_137.html">11.2  Events, Patterns and their Specs</A>) are configured in advance for the
+correct number of values in the pattern file.  The event spec for the
+above example would contain two PatternSpecs.  The PatternSpecs would
+look like:
+<PRE>PatternSpec[0] {
+   type = INPUT;
+   to_layer = FIRST;
+   n_vals = 2;
+};
+
+PatternSpec[0] {
+   type = TARGET;
+   to_layer = LAST;
+   n_vals = 1;
+};
+</PRE>
+
+<P>
+So that the first two values (n_vals = 2) will be read into the first
+(input) pattern, and the third value (n_vals = 1) will be read into the
+last (output) pattern.
+
+</P>
+<P>
+The <CODE>ReadText</CODE> function also allows comments in the .pat
+files, as it skips over lines beginning with <TT>#</TT> or <TT>//</TT>.  Further,
+<CODE>ReadText</CODE> allows input to be split on different lines, since it
+will read numbers until it gets the right number for each pattern.
+
+</P>
+<P>
+There is a special comment you can use to control the creation and
+organization of subgroups of events.  To start a new subgroup, put the
+comment <CODE># startgroup</CODE> before the pattern lines for the events in
+your subgroup (note that the <CODE># endgroup</CODE> comments from earlier
+versions are no longer neccessary, as they are redundant with the
+startgroup comments -- they will be ignored).  For example, if you
+wanted 2 groups of 3 events you might have a file that looked like this:
+
+</P>
+<PRE># startgroup
+p01 0 0 0
+p02 0 1 1
+p03 0 1 0
+# startgroup
+p11 1 0 1
+p12 1 1 0
+p13 1 1 1
+</PRE>
+
+<P>
+<A NAME="IDX835"></A>
+
+</P>
+<P>
+<CODE>WriteText</CODE> simply produces a file in the above format for all of
+the events in the environment on which it is called.  This can be useful
+for exporting to other programs, or for converting patterns into a
+different type of environment, one which cannot be used with the CopyTo
+or CopyFrom commands.  For example if events were created originally in
+a TimeEnv environment, but you now want to use them in a FreqEnv
+frequency environment, then you can use WriteText to save the 
+events to a file, and then use ReadText to read them into a
+<CODE>FreqEnv</CODE> which will enable a frequency to be attached to them.
+
+</P>
+<P>
+For Environments that are more complicated than a simple list of events,
+it is possible to use CSS to import text files of these events.  Example
+code for reading events structured into subgroups is included in the
+distribution as <TT>`css/include/read_event_gps.css'</TT>, and can be used
+as a starting point for reading various kinds of different formats.  The
+key function which makes writing these kinds of functions in CSS easy is
+<CODE>ReadLine</CODE>, which reads one line of data from a file and puts it
+into an array of strings, which can then be manipulated, converted into
+numbers, etc.  This is much like the <TT>`awk'</TT> utility.
+
+</P>
+<P>
+The <CODE>read_event_gps.css</CODE> example assumes that it will be read into
+a <CODE>Script</CODE> object in a project, with three <CODE>s_args</CODE> values that
+control the parameters of the expected format.  Note that these
+parameters could instead be put in the top of the data file, and read in
+from there at the start.
+
+</P>
+<P>
+The binary read/write functions (<CODE>ReadBinary</CODE>,
+<CODE>WriteBinary</CODE>) simply read and write a stream of floating point
+numbers in native binary format.  These files are not necessarily
+portable, but are much more compact for large data sets.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_142.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_144.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

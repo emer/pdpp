@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-special-bridge</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_164.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_166.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX978" HREF="pdp-user_toc.html">12.6.4  Linking Networks Together with a Bridge</A></H3>
+<P>
+<A NAME="IDX979"></A>
+<A NAME="IDX980"></A>
+<A NAME="IDX981"></A>
+
+</P>
+<P>
+Most <B>TrialProcess</B> objects are implemented to work with a particular
+set of network objects that are part of a given algorithm.  Thus, the
+<B>BpTrial</B> process expects to operate on <B>BpUnits</B> and <B>BpCon</B>s,
+etc., and crashes otherwise.  This makes processing faster than if it
+had to check the type of every object operated on every time it did a
+computation.
+
+</P>
+<P>
+This situation makes it difficult to implement hybrid networks which
+combine components that operate under two different algorithms.  For
+example, a self-organizing network can be used to pre-process inputs to
+a backprop network.
+
+</P>
+<P>
+The way to do solve this problem in PDP++ is to use a <B>BridgeProcess</B>,
+in conjunction with a <B>SyncEpochProc</B> as described in the previous
+section.  Thus, there are two trial processes that each operate
+synchronously within an epoch on the same events.  The bridge process
+copies activations or any other unit state variable from one network to
+the other, allowing them to act as if they were a single composite
+network.
+
+</P>
+<P>
+An example of a bridge process can be found in the <TT>`demo/bridge'</TT>
+directory.  This example just connects two backprop networks, but the
+principles are the same when you use two different kinds of algorithms.
+
+</P>
+<P>
+The parameters of the bridge process are as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Network* second_network</CODE>
+<DD>
+<A NAME="IDX982"></A>
+This is the other network that is being bridged (the first network is
+the one pointed to by the process <CODE>network</CODE> pointer).
+<DT><CODE>BridgeDirection direction</CODE>
+<DD>
+<A NAME="IDX983"></A>
+This is the direction to copy--network one is the <CODE>network</CODE> pointer
+and network two is the <CODE>second_network</CODE> pointer.  Note that the
+<CODE>network</CODE> pointer is set by the process hierarchy that this process
+is in, which means that it can't be set arbitrarily. This is why one
+might need to switch the direction with this field.
+<DT><CODE>String src_layer_nm</CODE>
+<DD>
+<A NAME="IDX984"></A>
+This is the name of the layer in the source network.  Only entire layers
+can be copied with this process.
+<DT><CODE>String trg_layer_nm</CODE>
+<DD>
+<A NAME="IDX985"></A>
+This is the name of the layer in the target network.
+<DT><CODE>String src_variable</CODE>
+<DD>
+<A NAME="IDX986"></A>
+This is the variable name (e.g. "act") to copy from the unit.
+<DT><CODE>String trg_variable</CODE>
+<DD>
+<A NAME="IDX987"></A>
+This is the variable to copy the value into.  Typically, this is "ext"
+so that the input appears like external input to the unit, which will
+then be treated appropriately by the processing algorithm.
+<DT><CODE>Unit::ExtType trg_ext_flag</CODE>
+<DD>
+<A NAME="IDX988"></A>
+This sets the unit flag on the target units to indicate that external
+input was received, if desired.  Note that the flag on the layer is
+<EM>not</EM> set, which allows this external input to avoid being erased
+by the <CODE>InitExterns</CODE> call which usually precedes application of
+environmental patterns.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_164.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_166.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

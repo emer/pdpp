@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-tut-debug</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_67.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_69.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.2.2  Debugging an Example Program in CSS</A></H3>
+
+<P>
+This section illustrates the use of the debugging facilities within CSS.
+We will use the example program from the previous section, with the
+addition of the two extra lines of code that were added in <CODE>define</CODE>
+mode.  It is important to note that some important aspects of debugging
+like breakpoints can only be used when a program was started with the
+<CODE>run</CODE> command.  Thus, do not set breakpoints if you are going to be
+simply calling a function on the command line.
+
+</P>
+<P>
+There are three primary debugging tools in CSS: <B>breakpoints</B>,
+<B>execution tracing</B>, and <B>single-stepping</B>.  Because CSS is
+basically an interpreted system, all of the facilities for examining
+variables, the stack, source code, etc. which must be added into a real
+debugger come for "free" in CSS.
+
+</P>
+<P>
+To illustrate, we will set a breakpoint in the <CODE>Decode_Number</CODE>
+function (assuming you have loaded this code already):
+
+</P>
+<PRE>css&#62; list Decode_Number
+(String) Decode_Number((Real) number) {
+4         String rval = "The number, " + number + " is: ";
+5         if(number &#60; 0)
+6           rval += "negative";
+7         else if(number &#60; .5)
+8           rval += "less than .5";
+9         else if(number &#60; 1)
+10          rval += "less than 1";
+11        else
+12          rval += "greater than 1";
+13        return rval;
+14      }
+css&#62; setbp 5
+css&#62; showbp
+Decode_Number   5         if(number &#60; 0)
+css&#62;
+</PRE>
+
+<P>
+Note that we first listed the function (referring to it by name), and
+then set a breakpoint with the <CODE>setbp</CODE> command at line number 5.
+We then confirmed this breakpoint with the <CODE>showbp</CODE> command.
+
+</P>
+<P>
+Now, when we <CODE>run</CODE> the program, execution will stop at line 5, and
+we will be returned to the <CODE>css&#62;</CODE> prompt:
+
+</P>
+<PRE>css&#62; run
+2 css&#62;
+</PRE>
+
+<P>
+which has changed to <CODE>2 css&#62;</CODE>, indicating that we are 2 levels deep
+into the execution of the program.  To see where we are, <CODE>list</CODE> and
+<CODE>status</CODE> can be used:
+
+</P>
+<PRE>2 css&#62; list
+
+Listing of Program: css_example.css
+4         String rval = "The number, " + number + " is: ";
+5         if(number &#60; 0)
+6           rval += "negative";
+7         else if(number &#60; .5)
+8           rval += "less than .5";
+9         else if(number &#60; 1)
+10          rval += "less than 1";
+11        else
+12          rval += "greater than 1";
+13        return rval;
+14      }
+28      list
+2 css&#62; status
+
+        Status of Program: css_example.css
+curnt:  Decode_Number   src_ln: 5       pc:     9
+debug:  0       step:   0       depth:  2       conts:  2
+lines:  29      list:   28
+State: shell:   1   run: 0  cont:   0  defn:   0  runlast: 0
+run status:     Waiting
+shell cmd:      None
+2 css&#62;
+</PRE>
+
+<P>
+The <CODE>src_ln</CODE> of the status output tells us which source-code line
+we are at (and what function we are in).  Here, we can use the
+interactive mode of css to determine the values of our variables:
+
+</P>
+<PRE>2 css&#62; print number
+(Real) number = 0.75
+2 css&#62; print rval
+(String) rval = The number, 0.75 is:
+</PRE>
+
+<P>
+The values of all of the variables for the current "frame" (there is one
+frame for every call to a given function, or any expression appearing
+between the curly-brackets) can be viewed at once with the <CODE>frame</CODE>
+command:
+
+</P>
+<PRE>2 css&#62; frame
+
+Elements of Spaces For Program: Decode_Number (frame = 1)
+
+Elements of Space: Autos (3)
+(String) _retv_this =                   (Real) number = 0.75
+(String) rval = The number, 0.75 is:
+
+Elements of Space: Stack (0)
+
+Elements of Space: css_example.css.Static (3)
+(String) Decode_Number((Real) number)   (void) Decode_Random((Int) n_numbers)
+(String) foo = a string
+</PRE>
+
+<P>
+Included in the frame information are the "automatic" variables
+(<CODE>Autos</CODE>), and the contents of the stack.  To get information on
+previous frames in the execution sequence, use the command <CODE>trace</CODE>,
+which gives both a trace of processing and can give a dump of the entire
+stack up to this point if given a higher "trace level", which is an
+optional argument to the <CODE>trace</CODE> command.  The default trace level
+of 0 just shows the frames, 1 also shows the stack, 2 also shows the
+auto variables, and 3 shows all variables.  In addition, just the
+contents of the current stack can be viewed with the <CODE>stack</CODE>
+command (note that the saved stack is what is actually used by the
+program during execution).
+
+</P>
+<P>
+In addition to viewing variables, it is possible to change their
+values:
+
+</P>
+<PRE>2 css&#62; number = 200;
+2 css&#62; print number
+(Real) number = 200
+</PRE>
+
+<P>
+Finally, to continue the program from where it was stopped by the
+breakpoint, use the <CODE>cont</CODE> command:
+
+</P>
+<PRE>2 css&#62; cont
+The number, 0.75 is: greater than 1
+5 css&#62; 
+</PRE>
+
+<P>
+Since we changed the number after it was turned into a string for the
+<CODE>rval</CODE>, but before the <CODE>if</CODE> statements, we got the
+contradictory result printed above.  Also, because the breakpoint is
+still in effect, the program has stopped due to the <CODE>Decode_Random</CODE>
+function calling the <CODE>Decode_Number</CODE> function.  We can continue
+again, or we can disable the breakpoint first, and then continue.  
+
+</P>
+<PRE>5 css&#62; cont
+0       The number, 0.764017 is: less than 1
+5 css&#62; unsetbp 5
+5 css&#62; showbp
+5 css&#62; cont
+1       The number, -1.76456 is: negative
+2       The number, 1.59942 is: greater than 1
+3       The number, -1.34582 is: negative
+4       The number, -1.36371 is: negative
+css&#62;
+</PRE>
+
+<P>
+Note that the breakpoint is referred to by the source-code line number.
+
+</P>
+<P>
+Another way to debug is to get a trace of the running program.  This can
+be done by setting the <CODE>debug</CODE> level, which can have a value from 0
+(normal, quiet operation) through 4, with higher levels giving more
+detail than lower levels.  For most users, levels 0 and 1 are the only
+ones needed, since the higher levels depend on understanding the guts of
+the CSS machine code.  Debug level 1 shows the source-code line
+corresponding to the currently-executing code:
+
+</P>
+<PRE>css&#62; debug 1
+css&#62; run
+31      run
+3       String Decode_Number(float number) {
+17      void Decode_Random(int n_numbers) {
+26      cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+4         String rval = "The number, " + number + " is: ";
+5         if(number &#60; 0)
+5         if(number &#60; 0)
+5         if(number &#60; 0)
+7         else if(number &#60; .5)
+7         else if(number &#60; .5)
+7         else if(number &#60; .5)
+9         else if(number &#60; 1)
+9         else if(number &#60; 1)
+9         else if(number &#60; 1)
+10          rval += "less than 1";
+13        return rval;
+26      cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+The number, 0.75 is: less than 1
+27      Decode_Random(5);
+18        int i;
+19        for(i=0; i&#60;n_numbers; i++) {
+.
+.
+.
+</PRE>
+
+<P>
+Since running proceeds from the top to the bottom, the definitions of
+the functions appear in the trace even though they do not really do
+anything.  Also, some constructs like <CODE>if</CODE> and <CODE>for</CODE> result in
+multiple copies of the same source-code line being printed.  This kind
+of trace is useful for seeing what branches of the code are being taken,
+etc.
+
+</P>
+<P>
+The final kind of debugging is single-stepping, which is like having a
+breakpoint after every line of source code.  Execution continues after
+each point by simply entering a blank line:
+
+</P>
+<PRE>css&#62; debug 0
+31      debug 0
+css&#62; step 1
+css&#62; run
+31      run
+3       String Decode_Number(float number) {
+1 css&#62;
+17      void Decode_Random(int n_numbers) {
+1 css&#62;
+26      cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+4         String rval = "The number, " + number + " is: ";
+2 css&#62; print number
+31      print number
+(Real) number = 0.75
+2 css&#62; print rval
+(String) rval = The number, 0.75 is:
+5         if(number &#60; 0)
+3 css&#62;
+7         else if(number &#60; .5)
+4 css&#62;
+9         else if(number &#60; 1)
+5 css&#62;
+10          rval += "less than 1";
+4 css&#62;
+13        return rval;
+26      cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+The number, 0.75 is: less than 1
+1 css&#62;
+27      Decode_Random(5);
+18        int i;
+2 css&#62;
+19        for(i=0; i&#60;n_numbers; i++) {
+19        for(i=0; i&#60;n_numbers; i++) {
+20          float number = 4.0 * (drand48()-.5);
+4 css&#62;
+</PRE>
+
+<P>
+(note that we turned debugging off, since it is redundant with
+single-stepping).  The <CODE>step</CODE> command takes an argument, which is
+the number of lines to step over (typically 1). Then, when we <CODE>run</CODE>
+the program again, it stops after every line.  If you simply want to
+continue running, you can just hit return and it will continue to the
+next line.
+
+</P>
+<P>
+If at any point during debugging you want to stop the execution of the
+program and return to the top-level (i.e., get rid of that number in
+front of the prompt), use the <CODE>restart</CODE> command.
+
+</P>
+<PRE>4 css&#62; restart
+34      restart
+css&#62;
+</PRE>
+
+<P>
+Be sure not to confuse <CODE>restart</CODE> with <CODE>reset</CODE>, as the latter
+will erase the current program from memory (you can just reload it with
+<CODE>reload</CODE>, so its not so bad if you do).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_67.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_69.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

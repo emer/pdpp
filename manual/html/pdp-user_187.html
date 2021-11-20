@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-net</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_186.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_188.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1127" HREF="pdp-user_toc.html">13.3.3  The Net LogView</A></H3>
+<P>
+<A NAME="IDX1128"></A>
+<A NAME="IDX1129"></A>
+<A NAME="IDX1130"></A>
+
+</P>
+<P>
+The NetLogView is similar to the TextLogView in that it displays the
+log's data in a textual representation. Its main difference however is
+that instead of displaying the values in its own window, it displays
+its data as labels in an associated network's views. Thus the
+NetLogView has one important field, <CODE>network</CODE>, which is the
+network to display into.  By default, the <CODE>network</CODE> is set to the
+one used by the process that updates the log.  The data is displayed
+in each of the network's views by adding labels to the NetViews and
+changing the text in those labels. The labels can be repositioned (as
+a group or individually) and edited in the NetView to change their
+fonts.  The labels are arranged in columns at the upper left of the
+netview.
+
+</P>
+<P>
+The following functions on the <B>Actions</B> menu are available to
+control the display:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>SetNetwork(Network* net)</CODE>
+<DD>
+<A NAME="IDX1131"></A>
+Sets the network to display the log data into.  Goes into the default
+display in this network.
+<DT><CODE>ArrangeLabels(int cols, int rows, int width, float left, float top)</CODE>
+<DD>
+<A NAME="IDX1132"></A>
+Controls positioning by specifying the number of columns and rows,
+their width, and where in the display they should appear (left = 0 =
+left side, 1 = right; top = 0 = bottom, 1 = top).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_186.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_188.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

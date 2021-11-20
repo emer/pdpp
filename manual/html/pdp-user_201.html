@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_200.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_202.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1222" HREF="pdp-user_toc.html">14.1.3  Bp Unit Specifications</A></H3>
+<P>
+<A NAME="IDX1223"></A>
+<A NAME="IDX1224"></A>
+<A NAME="IDX1225"></A>
+
+</P>
+<P>
+The unit in Bp contains a bias weight and the various derivative terms
+that are accumulated during the backpropagation phase:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>BpCon bias</CODE>
+<DD>
+<A NAME="IDX1226"></A>
+Contains the bias weight and its associated derivative and weight
+change values.  The bias weight is controlled by the <CODE>bias_spec</CODE> on
+the <B>BpUnitSpec</B>.
+<DT><CODE>float err</CODE>
+<DD>
+<A NAME="IDX1227"></A>
+Contains the actual error or cost associated with the unit.  It is
+a function of the difference between the activation and the target
+value, so it only shows up for those units that have target activation
+values.  It is not to be confused with the derivative of the activation
+with respect to the error, which is <CODE>dEdA</CODE>.
+<DT><CODE>float dEdA</CODE>
+<DD>
+<A NAME="IDX1228"></A>
+The derivative of the error with respect to the activation of
+the unit.  For output units using the squared-error function, it is
+simply <CODE>(targ - act)</CODE>.  For hidden units, it is the accumulation of
+the backpropagated <CODE>dEdNet</CODE> values times the intervening weights
+from the units to which the unit sends activation.
+<DT><CODE>float dEdNet</CODE>
+<DD>
+<A NAME="IDX1229"></A>
+The derivative of the error with respect to the net input of the
+unit.  It is simply the <CODE>dEdA</CODE> times the derivative of the
+activation function, which is <CODE>act * (1 - act)</CODE> for standard
+sigmoidal units.
+</DL>
+
+<P>
+The unit specifications for Bp control what kind of error function is
+being used, the parameters of the activation function, and the functions
+on the spec orchestrate the computation of the activation and error
+backpropagation phases:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>SigmoidSpec sig</CODE>
+<DD>
+<A NAME="IDX1230"></A>
+These are the parameters of the sigmoidal activation function.  The
+actual range of this activations are determined by the <CODE>act_range</CODE>
+parameters, and the <CODE>sig</CODE> parameters determine the gain and any
+fixed offset of the function (the offset is like a fixed bias term).
+<DT><CODE>float err_tol</CODE>
+<DD>
+<A NAME="IDX1231"></A>
+The error tolerance allows activation values that are sufficiently close
+to the target activation to be treated as though they were equal to the
+target value.  Reasonable values of this parameter are from .02 to .1,
+and its use prevents the large accumulation of weight values that
+happens when the unit keeps trying to get closer and closer to an
+activation of 1 (for example), which is impossible.
+<DT><CODE>BpConSpec_SPtr bias_spec</CODE>
+<DD>
+<A NAME="IDX1232"></A>
+A pointer to a <B>BpConSpec</B> that controls the updating of
+the unit's bias weight.  Typically, this points to the same
+<B>BpConSpec</B> that updates the rest of the weights in the network,
+but it is possible to have special <B>BpConSpec's</B> that do different
+things to the bias weights, like initialize them to moderate negative
+values, for example.
+<DT><CODE>err_fun</CODE>
+<DD>
+<A NAME="IDX1233"></A>
+A pointer to the error function to use in computing error for
+output units that have target values.  The function computes both
+<CODE>err</CODE> and <CODE>dEdA</CODE> values (the former typically being the square
+of the latter).  While the user can define additional error functions,
+the two that come with the standard distribution are
+<CODE>Bp_Squared_Error</CODE> and <CODE>Bp_CrossEnt_Error</CODE>, which compute the
+squared error and cross-entropy error functions, respectively.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_200.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_202.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

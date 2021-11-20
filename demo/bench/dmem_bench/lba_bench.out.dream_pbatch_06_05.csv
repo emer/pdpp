@@ -1,0 +1,12 @@
+procs, 1, units, 50, cons, 12500, MCons, 1500, Mcon/sec,    113.5, secs, 13.22
+procs, 2, units, 50, cons, 12500, MCons, 1500, Mcon/sec,    198.4, secs, 7.56
+procs, 5, units, 50, cons, 12500, MCons, 1500, Mcon/sec,    446.4, secs, 3.36
+procs, 1, units, 100, cons, 50000, MCons, 1500, Mcon/sec,    84.41, secs, 17.77
+procs, 2, units, 100, cons, 50000, MCons, 1500, Mcon/sec,      163, secs, 9.2
+procs, 5, units, 100, cons, 50000, MCons, 1500, Mcon/sec,    371.3, secs, 4.04
+procs, 1, units, 200, cons, 200000, MCons, 1440, Mcon/sec,    91.72, secs, 15.7
+procs, 2, units, 200, cons, 200000, MCons, 1440, Mcon/sec,    177.3, secs, 8.12
+procs, 5, units, 200, cons, 200000, MCons, 1440, Mcon/sec,    397.8, secs, 3.62
+procs, 1, units, 500, cons, 1.25e+06, MCons, 1500, Mcon/sec,    77.88, secs, 19.26
+procs, 2, units, 500, cons, 1.25e+06, MCons, 1500, Mcon/sec,    142.2, secs, 10.55
+procs, 5, units, 500, cons, 1.25e+06, MCons, 1500, Mcon/sec,    322.6, secs, 4.65

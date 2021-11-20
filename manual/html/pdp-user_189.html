@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-graph-fields</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_188.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_190.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX1134" HREF="pdp-user_toc.html">13.3.4.1  The Field Toggle Buttons</A></H4>
+
+<P>
+Each of these fields of data in the GraphLogView's PDPLog are listed
+in a vertical scrollbox of toggle buttons in the lower left of the
+GraphLogView. Initially all the lines are toggled on, except those
+that represent counter data and String data.  By pressing the toggle
+button with the left mouse button, the display of the line
+corresponding to that field is turned on or off. <B>Pressing the
+middle mouse button selects that field to represent the X axis -- a
+second press on a group of data selects Row-wise plotting of data</B>.
+Pressing the right mouse button on the field toggle button brings up
+an edit dialog for the field, where you can specify all the detailed
+parameters controlling its display.
+
+</P>
+<P>
+Initially each of the lines is assigned a default line style and
+color.  The color of the line is displayed as a small line just to the
+left of the toggle button (for String fields, an "-S-" is displayed).
+To the right of the toggle button another small line will indicate the
+color of the line's y-axis, or a "-X-" if the toggle button's field
+represents the X-axis.
+
+</P>
+<P>
+The GraphViewSpec provides the following customizable variables:
+<A NAME="IDX1135"></A>
+<A NAME="IDX1136"></A>
+<DL COMPACT>
+
+<DT><CODE>RGBA line_color</CODE>
+<DD>
+<A NAME="IDX1137"></A>
+The color of the line specified as a color name or Red,Green,Blue,Alpha
+<DT><CODE>LineType line_type</CODE>
+<DD>
+<A NAME="IDX1138"></A>
+Determines if the line is drawn with <CODE>LINES</CODE>, <CODE>POINTS</CODE>, or
+both <CODE>LINES_AND_POINTS</CODE>.  If the data is Strings, <CODE>STRINGS</CODE>
+is selected by default.  <CODE>TRACE_COLORS</CODE> specifies that each trace
+of data gets a different color according to the color scale spectrum
+associated with the graph log.  <CODE>VALUE_COLORS</CODE> specifies that the
+Y axis values are represented by colors using the color scale spectrum
+-- useful for <CODE>vertical = NO_VERTICAL</CODE>. <CODE>THRESH_POINTS</CODE>
+draws points whenever the Y axis data value exceeds the <CODE>thresh</CODE>
+value.
+<DT><CODE>LineStyle line_style</CODE>
+<DD>
+<A NAME="IDX1139"></A>
+Determines the how the line component of the GraphLine is drawn. Style
+choices are <CODE>SOLID (______)</CODE> , <CODE>DOT (......)</CODE>, <CODE>DASH (_ _ _
+)</CODE>, <CODE>DASH_DOT (_._._.)</CODE> . 
+<DT><CODE>PointStyle point_style</CODE>
+<DD>
+<A NAME="IDX1140"></A>
+Determines the how the point component of the GraphLine is drawn. Style
+choices are <CODE>NONE ( )</CODE> , <CODE>SMALL_DOT (.)</CODE>, <CODE>BIG_DOT (o)</CODE>,
+<CODE>TICK (|)</CODE>, <CODE>PLUS (+)</CODE>.
+<DT><CODE>point_mod</CODE>
+<DD>
+<A NAME="IDX1141"></A>
+Specifies spacing of points -- m = modulus value, or number of spaces between
+dots, and off = offset from start of data.
+<DT><CODE>bool negative_draw</CODE>
+<DD>
+<A NAME="IDX1142"></A>
+Determines if a line is drawn from right to left if the values of the
+X-axis decrease (i.e., between traces).
+<DT><CODE>SharedYType shared_y</CODE>
+<DD>
+<A NAME="IDX1143"></A>
+What to do with multiple graph lines that share the Y axis:
+<CODE>OVERLAY_LINES</CODE> overlays shared lines on top of each other, while
+<CODE>STACK_LINES</CODE> stacks shared values on top of each other in a
+non-overlapping manner.
+<DT><CODE>VerticalType vertical</CODE>
+<DD>
+<A NAME="IDX1144"></A>
+How to manage the vertical (Y) axis.  <CODE>FULL_VERTICAL</CODE> means use
+the full vertical axis for displaying Y values, <CODE>STACK_TRACES</CODE>
+means arrange subsequent traces of data (pass through the same X axis
+values) in non-overlapping vertically-arranged stacks,
+<CODE>NO_VERTICAL</CODE> means don't draw any vertical dimension at all (for
+<CODE>line_type = VLAUE_COLORS</CODE> or <CODE>THESH_POINTS</CODE>).
+<DT><CODE>FloatTwoDCoord trace_incr</CODE>
+<DD>
+<A NAME="IDX1145"></A>
+Specifies increments in starting coordinates for each subsequent trace
+of a line across the same X axis values, producing a 3D-like effect.
+For example, x=-2,y=2 means move each subsequent trace to the left and
+upwards.
+<DT><CODE>float thresh</CODE>
+<DD>
+<A NAME="IDX1146"></A>
+The threshold for <CODE>line_type</CODE> = <CODE>THRESH_POINTS</CODE>.
+<DT><CODE>GraphLogViewSpec* axis_spec</CODE>
+<DD>
+<A NAME="IDX1147"></A>
+Determines which GraphLogViewSpec should be used as the Y-Axis for
+this ViewSpec's data to be scaled by.  This can be any other column
+except if this column is used as a Y-axis for other columns.
+<DT><CODE>FixedMinMax range</CODE>
+<DD>
+<A NAME="IDX1148"></A>
+This specifies fixed min or max values for the range of values to be
+plotted.  Values are only applicable if corresponding <CODE>fix</CODE>
+buttons are on.
+<DT><CODE>int n_ticks</CODE>
+<DD>
+<A NAME="IDX1149"></A>
+Maximum number of ticks to use in display of axis number labels
+(actual number may be less depending on the labels).
+<DT><CODE>GraphLogViewSpec* string_coords</CODE>
+<DD>
+<A NAME="IDX1150"></A>
+Column that contains vertical coordinate values for positioning of String data labels.
+</DL>
+
+<P>
+The following functions are also available on the GraphViewSpec:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>PlotRows()</CODE>
+<DD>
+<A NAME="IDX1151"></A>
+Plot the data across rows of grouped columns (x axis = column index, y
+axis = values for each column in one row) instead of down the columns.
+<DT><CODE>PlotCols()</CODE>
+<DD>
+<A NAME="IDX1152"></A>
+Plot the data down columns (standard mode).
+<DT><CODE>GpShareAxis()</CODE>
+<DD>
+<A NAME="IDX1153"></A>
+Make every element in this group share the same Y axis, which is the first in the group.
+<DT><CODE>GpSepAxes()</CODE>
+<DD>
+<A NAME="IDX1154"></A>
+Make every element in this group have its own Y axis.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_188.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_190.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

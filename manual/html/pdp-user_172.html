@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-se</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_171.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_173.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1033" HREF="pdp-user_toc.html">12.8.1  Summed-Error Statistics</A></H3>
+<P>
+<A NAME="IDX1034"></A>
+<A NAME="IDX1035"></A>
+<A NAME="IDX1036"></A>
+<A NAME="IDX1037"></A>
+<A NAME="IDX1038"></A>
+
+</P>
+<P>
+<A NAME="IDX1039"></A>
+<A NAME="IDX1040"></A>
+The <B>SE_Stat</B> object is a stat that iterates over the units that have
+target values in a network, and computes the difference between the
+activation and the target value.  This is useful for monitoring learning
+performance over training.  The current value of this statistic can be
+found in the <CODE>se</CODE> member.  Also, there is a <CODE>tolerance</CODE>
+parameter which causes absolute differences of less than this amount to
+result in zero error.  Thus, if one only was interested in whether the
+network was on the right side of .5, you would set the tolerance to .5
+(assuming a 0 to 1 activation range).
+
+</P>
+<P>
+There is also a <B>CE_Stat</B> and a <B>RBpSE_Stat</B> defined in the Bp
+version of the executable.  These compute the cross-entropy error
+statistic and a version of squared-error that takes into account the
+<CODE>dt</CODE> parameter of the recurrent backprop algorithm.
+
+</P>
+<P>
+<A NAME="IDX1041"></A>
+The <B>MaxActTrgStat</B> computes an error statistic based only on the
+most active unit in the target layer(s).  If this most active unit
+(max act) has a target value of 1, then there is no error, otherwise
+there is an error.  This statistic is useful when there are multiple
+possible correct answers, and the network is expected to just choose
+one of them.  Thus, if its maximum act is a target, it is correct, and
+otherwise it is not.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_171.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_173.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

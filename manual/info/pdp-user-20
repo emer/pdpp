@@ -1,0 +1,838 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: typeindex,  Next: varindex,  Prev: conceptindex,  Up: Top
+
+Class Type Index
+****************
+
+* Menu:
+
+* ActThreshRTStat:                       proc-stats-rt.
+* Aggregate:                             proc-stat-agg.
+* APBpCycle:                             rbp-ap.
+* APBpMaxDa_De:                          rbp-ap.
+* APBpSettle:                            rbp-ap.
+* APBpTrial:                             rbp-ap.
+* Array:                                 obj-array.
+* BatchProcess:                          proc-levels-batch.
+* BpCon:                                 bp-con.
+* BpConSpec:                             bp-con.
+* BpContextSpec:                         bp-srn.
+* BpTrial:                               bp-proc.
+* BpUnit:                                bp-unit.
+* BpUnitSpec:                            bp-unit.
+* BpWizard:                              bp-srn.
+* BumpBpUnitSpec:                        bp-vari.
+* CE_Stat:                               proc-stats-se.
+* ClConSpec:                             so-con.
+* ClearLogProc:                          proc-special-misc.
+* ClLayerSpec:                           so-unit.
+* ClosestEventStat:                      proc-stats-close-event.
+* ColorScaleSpec:                        gui-colors.
+* CompareStat:                           proc-stats-compare.
+* ComputeStat:                           proc-stats-compare.
+* Con_Group:                             net-con.
+* Connection:                            net-con.
+* ConSpec:                               net-con.
+* CopyToEnvStat:                         proc-stats-misc.
+* CsCon:                                 cs-con.
+* CsConSpec:                             cs-con.
+* CsCycle:                               cs-proc.
+* CsDistStat:                            cs-stats-dist.
+* CsGoodStat:                            cs-stats-good.
+* CsMaxDa:                               cs-stats-maxda.
+* CsSample:                              cs-proc.
+* CsSettle:                              cs-proc.
+* CsTargStat:                            cs-stats-dist.
+* CsTIGstat:                             cs-stats-dist.
+* CsTrial:                               cs-proc.
+* CsUnit:                                cs-unit.
+* CsUnitSpec:                            cs-unit.
+* CustomPrjnSpec:                        net-prjn-misc.
+* CycleProcess:                          proc-levels-cycle.
+* CyclesToSettle:                        proc-stats-misc.
+* DA_GraphViewSpec:                      log-views-graph-fields.
+* DA_GridViewSpec:                       log-views-grid-custom.
+* DeltaBarDeltaBpCon:                    bp-vari.
+* DeltaBarDeltaBpConSpec:                bp-vari.
+* DispDataEnvProc:                       proc-special-misc.
+* DispNetWeightsProc:                    proc-special-misc.
+* DT_GridViewSpec:                       log-views-grid-custom.
+* Environment:                           env.
+* EnviroView:                            env-view.
+* EpochCounterStat:                      proc-stats-ctrs.
+* EpochProcess:                          proc-levels-epoch.
+* ErrScaleBpConSpec:                     bp-vari.
+* Event:                                 env-event.
+* EventSpec:                             env-event.
+* ExpBpUnitSpec:                         bp-vari.
+* ForkProcess:                           proc-special-fork.
+* FreqEnv:                               env-freq.
+* FreqEvent:                             env-freq.
+* FreqEvent_MGroup:                      env-freq.
+* FromFileEnv:                           env-other.
+* FullPrjnSpec:                          net-prjn-full.
+* GpFullPrjnSpec:                        net-prjn-unitgp.
+* GpOneToManyPrjnSpec:                   net-prjn-unitgp.
+* GpOneToOnePrjnSpec:                    net-prjn-unitgp.
+* GraphLog:                              log-views-graph.
+* GraphLogView:                          log-views-graph.
+* GraphViewSpec:                         log-views-graph-fields.
+* GridLog:                               log-views-grid.
+* GridLogView:                           log-views-grid.
+* GridSearchBatch:                       proc-levels-batch.
+* HebbBpConSpec:                         bp-vari.
+* HebbConSpec:                           so-con.
+* ImRewLayerSpec:                        leabra-misc.
+* InitWtsProc:                           proc-special-misc.
+* InteractiveEpoch:                      proc-special-inter.
+* InteractiveScriptEnv:                  env-other.
+* Layer:                                 net-layer.
+* LeabraBiasSpec:                        leabra-con.
+* LeabraCon:                             leabra-con.
+* LeabraConSpec:                         leabra-con.
+* LeabraContextLayerSpec:                leabra-misc.
+* LeabraCycle:                           leabra-proc.
+* LeabraGoodStat:                        leabra-stats-good.
+* LeabraLayer:                           leabra-layer.
+* LeabraLayerSpec:                       leabra-layer.
+* LeabraMaxDa:                           leabra-stats-maxda.
+* LeabraNegBiasSpec:                     leabra-misc.
+* LeabraSettle:                          leabra-proc.
+* LeabraTabledConSpec:                   leabra-misc.
+* LeabraTimeConSpec:                     leabra-misc.
+* LeabraTimeUnit:                        leabra-misc.
+* LeabraTimeUnitSpec:                    leabra-misc.
+* LeabraTrial:                           leabra-proc.
+* LeabraUnit:                            leabra-unit.
+* LeabraUnitSpec:                        leabra-unit.
+* LeabraWiz:                             leabra-misc.
+* LebraACLayerSpec:                      leabra-misc.
+* LinearBpUnitSpec:                      bp-vari.
+* LinkPrjnSpec:                          net-prjn-misc.
+* LoadWtsProc:                           proc-special-misc.
+* LogView <1>:                           log-views-logview.
+* LogView:                               log-views.
+* MarkerConSpec:                         leabra-misc.
+* MatrixLayerSpec:                       leabra-misc.
+* MatrixUnitSpec:                        leabra-misc.
+* MaxActTrgStat:                         proc-stats-se.
+* MaxInConSpec:                          so-con.
+* MemberDef:                             prog-typea-stru.
+* MethodDef:                             prog-typea-stru.
+* MonitorStat:                           proc-stats-monitor.
+* MultiEnvProcess:                       proc-special-fork.
+* NameValue:                             proj-objdef.
+* NEpochProcess:                         proc-levels-train.
+* NetLog:                                log-views-net.
+* NetLogView:                            log-views-net.
+* NetView:                               net-view.
+* Network:                               net.
+* NoisyBpUnitSpec:                       bp-vari.
+* NoisyRBpUnitSpec:                      rbp-vari.
+* OneToOnePrjnSpec:                      net-prjn-misc.
+* PatchLayerSpec:                        leabra-misc.
+* Pattern:                               env-event.
+* PatternSpec:                           env-event.
+* PDPLog:                                log.
+* PFCLayerSpec:                          leabra-misc.
+* PhaseOrderEventSpec:                   leabra-misc.
+* PolarRndPrjnSpec:                      net-prjn-random.
+* ProbEventSpec:                         cs-prob-env.
+* ProbPattern:                           cs-prob-env.
+* ProbPatternSpec_Group:                 cs-prob-env.
+* ProcCounterStat:                       proc-stats-ctrs.
+* Project:                               proj.
+* Projection:                            net-prjn-prjn.
+* ProjectionSpec:                        net-prjn-spec.
+* ProjectionStat:                        proc-stats-misc.
+* Random:                                obj-random.
+* RBFBpUnitSpec:                         bp-vari.
+* RBpSE_Stat:                            proc-stats-se.
+* RBpTrial:                              rbp-trial.
+* RBpUnitSpec:                           rbp-unit.
+* RewPredLayerSpec:                      leabra-misc.
+* RGBA:                                  gui-colors.
+* SaveNetsProc:                          proc-special-misc.
+* SaveWtsProc:                           proc-special-misc.
+* ScalarValLayerSpec:                    leabra-misc.
+* SchedProcess:                          proc-sched.
+* Script:                                proj-scripts.
+* ScriptEnv:                             env-other.
+* ScriptPrjnSpec:                        net-prjn-misc.
+* ScriptStat:                            proc-stats-misc.
+* SE_Stat:                               proc-stats-se.
+* SelectEdit:                            proj-seledit.
+* SequenceEpoch:                         proc-special-seq.
+* SequenceProcess:                       proc-special-seq.
+* SettleProcess:                         proc-levels-settle.
+* SimLog:                                proj-basics.
+* SNcLayerSpec:                          leabra-misc.
+* SoCon:                                 so-con.
+* SoCon_Group:                           so-con.
+* SoConSpec:                             so-con.
+* SoftClConSpec:                         so-con.
+* SoftClLayerSpec:                       so-unit.
+* SoftClUnitSpec:                        so-unit.
+* SoftMaxBpUnitSpec:                     bp-vari.
+* SomLayerSpec:                          so-unit.
+* SomUnitSpec:                           so-unit.
+* SoUnit:                                so-unit.
+* SoUnitSpec:                            so-unit.
+* Stat:                                  proc-stat.
+* StatVal:                               proc-stat-crit.
+* StochasticBpUnitSpec:                  bp-vari.
+* SymmetricPrjnSpec:                     net-prjn-misc.
+* SyncEpochProc:                         proc-special-fork.
+* taBase:                                prog-typea-base.
+* taMisc:                                gui-settings.
+* TdModUnit:                             leabra-misc.
+* TdModUnitSpec:                         leabra-misc.
+* TessEl:                                net-prjn-tessel.
+* TesselPrjnSpec:                        net-prjn-tessel.
+* TextLog:                               log-views-text.
+* TextLogView:                           log-views-text.
+* ThreshLinBpUnitSpec:                   bp-vari.
+* TimeCounterStat:                       proc-stats-ctrs.
+* TimeCounterStatResetProc:              proc-special-misc.
+* TimeEnvironment:                       rbp-seq.
+* TimeEvent:                             rbp-seq.
+* TimeEvent_MGroup:                      rbp-seq.
+* TrainProcess:                          proc-levels-train.
+* TrialProcess:                          proc-levels-trial.
+* TypeDef:                               prog-typea-stru.
+* TypeDefault:                           proj-objdef.
+* UniformRandomPrjnSpec:                 net-prjn-random.
+* Unit:                                  net-unit.
+* Unit_Group:                            net-layer.
+* UnitActRFStat:                         proc-stats-actrf.
+* UnitActRFStatResetProc:                proc-special-misc.
+* UnitSpec:                              net-unit.
+* WinBase:                               gui-win-operation.
+* WinView:                               gui-win-view.
+* Wizard:                                how-wizard.
+* XYPattern:                             env-other.
+* XYPatternSpec:                         env-other.
+* ZshConSpec:                            so-con.
+
+
+File: pdp-user,  Node: varindex,  Next: funcindex,  Prev: typeindex,  Up: Top
+
+Variable Index
+**************
+
+* Menu:
+
+* a of LeabraUnit:                       leabra-unit.
+* a of LeabraUnitSpec:                   leabra-unit.
+* a_dt of LeabraLayerSpec:               leabra-layer.
+* a_thr of LeabraUnitSpec:               leabra-unit.
+* abs of LeabraConSpec:                  leabra-con.
+* acc of LeabraUnit:                     leabra-unit.
+* acc of LeabraUnitSpec:                 leabra-unit.
+* act of LeabraUnit:                     leabra-unit.
+* act of LeabraUnitSpec:                 leabra-unit.
+* act of Unit:                           net-unit.
+* act_avg of LeabraUnit:                 leabra-unit.
+* act_dif of LeabraUnit:                 leabra-unit.
+* act_eq of LeabraUnit:                  leabra-unit.
+* act_fun of LeabraUnitSpec:             leabra-unit.
+* act_i of SoUnit:                       so-unit.
+* act_m of CsUnit:                       cs-unit.
+* act_m of LeabraUnit:                   leabra-unit.
+* act_p of CsUnit:                       cs-unit.
+* act_p of LeabraUnit:                   leabra-unit.
+* act_range of LeabraUnitSpec:           leabra-unit.
+* act_range of UnitSpec:                 net-unit.
+* act_reg of LeabraUnitSpec:             leabra-unit.
+* active_membs of TypeDefault:           proj-objdef.
+* acts of LeabraLayer:                   leabra-layer.
+* acts_dif of LeabraLayer:               leabra-layer.
+* acts_m of LeabraLayer:                 leabra-layer.
+* acts_p of LeabraLayer:                 leabra-layer.
+* adapt_i of LeabraLayerSpec:            leabra-layer.
+* adapt_pt of LeabraLayer:               leabra-layer.
+* addr of MemberDef:                     prog-typea-stru.
+* addr of MethodDef:                     prog-typea-stru.
+* alpha (a) of RGBA:                     gui-colors.
+* apply_background of XYPatternSpec:     env-other.
+* arg_names of MethodDef:                prog-typea-stru.
+* arg_types of MethodDef:                prog-typea-stru.
+* auto_edit of taMisc:                   gui-settings-tamisc.
+* auto_revert of taMisc:                 gui-settings-tamisc.
+* auto_run of Script:                    proj-scripts.
+* auto_scale of EnviroView:              env-view-events.
+* auto_scale of GridLogView:             log-views-grid-logview.
+* auto_scale of NetView:                 net-view.
+* AVG of Aggregate:                      proc-stat-agg.
+* avg_act_source of SoConSpec.:          so-con.
+* axis_spec of GraphLogViewSpec:         log-views-graph-fields.
+* b_dt of LeabraUnitSpec:                leabra-unit.
+* background_value of XYPatternSpec:     env-other.
+* base_off of MemberDef:                 prog-typea-stru.
+* batch of BatchProcess:                 proc-levels-batch.
+* batch_n of EpochProcess:               proc-levels-epoch.
+* between_phases of CsSettle:            cs-proc.
+* bias of BpUnit:                        bp-unit.
+* bias of CsUnit:                        cs-unit.
+* bias of LeabraUnit:                    leabra-unit.
+* bias of Unit:                          net-unit.
+* bias_con_type of LeabraUnitSpec:       leabra-unit.
+* bias_con_type of UnitSpec:             net-unit.
+* bias_spec of BpUnitSpec:               bp-unit.
+* bias_spec of CsUnitSpec:               cs-unit.
+* bias_spec of LeabraUnitSpec:           leabra-unit.
+* bias_spec of UnitSpec:                 net-unit.
+* block_border_size of GridLogView:      log-views-grid-logview.
+* block_size of GridLogView:             log-views-grid-logview.
+* blue (b) of RGBA:                      gui-colors.
+* bp_gap of RBpTrial:                    rbp-trial.
+* can_stop of SchedProcess:              proc-sched-vars.
+* children of Spec:                      obj-spec.
+* children of TypeDef:                   prog-typea-stru.
+* clamp of LeabraLayerSpec:              leabra-layer.
+* clamp_gain of CsUnitSpec:              cs-unit.
+* clamp_phase2 of LeabraLayerSpec:       leabra-layer.
+* clamp_range of LeabraUnitSpec:         leabra-unit.
+* clamp_type of CsUnitSpec:              cs-unit.
+* cmp_type of ClosestEventStat:          proc-stats-close-event.
+* cmp_type of CompareStat:               proc-stats-compare.
+* cnt of StatVal:                        proc-stat-crit.
+* color_scale_size of taMisc:            gui-settings-tamisc.
+* colorspec of GraphLogView:             log-views-graph-variables.
+* colorspec of GridLogView:              log-views-grid-logview.
+* colorspec of NetView:                  net-view.
+* compress_cmd of taMisc:                gui-settings-tamisc.
+* compress_sfx of taMisc:                gui-settings-tamisc.
+* compute_i of LeabraLayerSpec:          leabra-layer.
+* con_gp_type of ProjectionSpec:         net-prjn-prjn.
+* con_spec of ProjectionSpec:            net-prjn-prjn.
+* con_type of Projection:                net-prjn-prjn.
+* COPY of Aggregate:                     proc-stat-agg.
+* copy_vals of Stat:                     proc-stat-agg.
+* cor of LeabraConSpec:                  leabra-con.
+* COUNT of Aggregate:                    proc-stat-agg.
+* cur_event of EpochProcess:             proc-levels-epoch.
+* cur_event of SequenceProcess:          proc-special-seq.
+* cur_event of TrialProcess:             proc-levels-trial.
+* cur_event_gp of SequenceEpoch:         proc-special-seq.
+* cur_event_gp of SequenceProcess:       proc-special-seq.
+* cur_lrate of LeabraConSpec:            leabra-con.
+* cycle of SettleProcess:                proc-levels-settle.
+* d_gain of LeabraLayerSpec:             leabra-layer.
+* d_thr of LeabraUnitSpec:               leabra-unit.
+* da of CsUnit:                          cs-unit.
+* da of LeabraUnit:                      leabra-unit.
+* data of PDPLog:                        log-variables.
+* data_bufsz of PDPLog:                  log-variables.
+* data_env of UnitActRFStat:             proc-stats-actrf.
+* data_range of PDPLog:                  log-variables.
+* data_shift of PDPLog:                  log-variables.
+* decay of BpConSpec:                    bp-con.
+* decay of CsConSpec:                    cs-con.
+* decay of IACUnitSpec:                  cs-unit.
+* decay of LeabraLayerSpec:              leabra-layer.
+* decay_fun of BpConSpec:                bp-con.
+* decay_fun of CsConSpec:                cs-con.
+* dEdA of BpUnit:                        bp-unit.
+* dEdNet of BpUnit:                      bp-unit.
+* dEdW of BpCon:                         bp-con.
+* default_file of PDPRoot:               proj-objdef.
+* default_type of TypeDefault:           proj-objdef.
+* defaults of TypeDef:                   prog-typea-stru.
+* desc of TypeDef:                       prog-typea-stru.
+* deterministic of CsSettle:             cs-proc.
+* direction of BridgeProcess:            proc-special-bridge.
+* display_labels of PDPLog:              log-variables.
+* display_style of DT_GridViewSpec:      log-views-grid-custom.
+* display_style of GridViewSpec:         log-views-grid-custom.
+* display_toggle of LogView:             log-views-logview.
+* display_width of taMisc <1>:           css-settings.
+* display_width of taMisc:               gui-settings-tamisc.
+* dist of ClosestEventStat:              proc-stats-close-event.
+* dist_stat of CsTIGstat:                cs-stats-dist.
+* dist_tol of ClosestEventStat:          proc-stats-close-event.
+* dist_tol of CompareStat:               proc-stats-compare.
+* dist_type of PolarRndPrjnSpec:         net-prjn-random.
+* div_gp_n of LeabraConSpec:             leabra-con.
+* dt of LeabraUnitSpec:                  leabra-unit.
+* dt of RBpTrial:                        rbp-trial.
+* dt of RBpUnitSpec:                     rbp-unit.
+* dur of LeabraUnitSpec:                 leabra-unit.
+* dwt of BpCon:                          bp-con.
+* dwt of LeabraCon:                      leabra-con.
+* dwt of SoCon:                          so-con.
+* dwt_thresh of LeabraXXX:               leabra-con.
+* e of LeabraUnitSpec:                   leabra-unit.
+* e_rev of LeabraUnitSpec:               leabra-unit.
+* EDITOR env variable:                   proj-scripts.
+* el_def of Group:                       obj-group-variables.
+* el_typ of Group:                       obj-group-variables.
+* end_time of TimeEvent_MGroup:          rbp-seq.
+* enum_vals of TypeDef:                  prog-typea-stru.
+* environment of Process:                proc-base.
+* epoch of Network:                      net-net.
+* epoch of TrainProcess:                 proc-levels-train.
+* eq_gain of LeabraUnitSpec:             leabra-unit.
+* err of Array:                          obj-array-var.
+* err of BpUnit:                         bp-unit.
+* err of LeabraConSpec:                  leabra-con.
+* err_fun of BpUnitSpec:                 bp-unit.
+* err_scale of ErrScaleBpConSpec:        bp-vari.
+* err_tol of BpUnitSpec:                 bp-unit.
+* ev_nm of ClosestEventStat:             proc-stats-close-event.
+* event of LeabraLayerSpec:              leabra-layer.
+* event_layout of EnviroView:            env-view-events.
+* event_specs of Environment:            env-env.
+* events of Environment:                 env-env.
+* ext of LeabraUnit:                     leabra-unit.
+* ext of Unit:                           net-unit.
+* ext_flag of Layer:                     net-layer.
+* ext_flag of LeabraLayer:               leabra-layer.
+* ext_flag of LeabraUnit:                leabra-unit.
+* ext_flag of Unit:                      net-unit.
+* ext_gain of LeabraUnitSpec:            leabra-unit.
+* fill_type of GridLogView:              log-views-grid-logview.
+* final_procs of SchedProcess:           proc-sched-vars.
+* final_stats of SchedProcess:           proc-sched-vars.
+* fix of LeabraConSpec:                  leabra-con.
+* fix_savg of LeabraConSpec:             leabra-con.
+* flag of Pattern:                       env-event.
+* flag of StatVal:                       proc-stat-crit.
+* formal of TypeDef:                     prog-typea-stru.
+* freq_level of FreqEnv:                 env-freq.
+* frequency of Freq_MGroup:              env-freq.
+* frequency of FreqEvent:                env-freq.
+* from of Projection:                    net-prjn-prjn.
+* fun_argc of MethodDef:                 prog-typea-stru.
+* fun_argd of MethodDef:                 prog-typea-stru.
+* fun_overld of MethodDef:               prog-typea-stru.
+* fun_ptr of MemberDef:                  prog-typea-stru.
+* g_bar of LeabraUnitSpec:               leabra-unit.
+* g_dt of LeabraUnitSpec:                leabra-unit.
+* gain of CsUnitSpec:                    cs-unit.
+* gain of LeabraConSpec:                 leabra-con.
+* gain of LeabraLayerSpec:               leabra-layer.
+* gain of LeabraUnitSpec:                leabra-unit.
+* gain_sched of CsUnitSpec:              cs-unit.
+* gc of LeabraUnit:                      leabra-unit.
+* geom of DT_GridViewSpec:               log-views-grid-custom.
+* geom of Group:                         obj-group-variables.
+* geom of Layer:                         net-layer.
+* geom of LeabraLayer:                   leabra-layer.
+* geom of PatternSpec:                   env-event.
+* geom of Unit_Group:                    net-layer.
+* global_flags of PatternSpec:           env-event.
+* gp_geom of Layer:                      net-layer.
+* gp_geom of LeabraLayer:                leabra-layer.
+* gp_kwta of LeabraLayerSpec:            leabra-layer.
+* graph_layout of GraphLogView:          log-views-graph-variables.
+* green (g) of RGBA:                     gui-colors.
+* Group of Group:                        obj-group-variables.
+* h of LeabraUnit:                       leabra-unit.
+* h of LeabraUnitSpec:                   leabra-unit.
+* hard of LeabraLayerSpec:               leabra-layer.
+* hard_clamped of LeabraLayer:           leabra-layer.
+* header_on of GridLogView:              log-views-grid-logview.
+* hebb of LeabraConSpec:                 leabra-con.
+* help_cmd of taMisc:                    gui-settings-tamisc.
+* help_file_tmplt of taMisc:             gui-settings-tamisc.
+* hyst of LeabraUnit:                    leabra-unit.
+* hyst of LeabraUnitSpec:                leabra-unit.
+* hysteresis of BpContextSpec:           bp-srn.
+* i of LeabraUnit:                       leabra-unit.
+* i of LeabraUnitSpec:                   leabra-unit.
+* i_kwta_pt of LeabraLayerSpec:          leabra-layer.
+* I_net of LeabraUnit:                   leabra-unit.
+* i_thr of LeabraUnit:                   leabra-unit.
+* i_val of LeabraLayer:                  leabra-layer.
+* idraw_graphics of NetView:             net-view.
+* include_paths of taMisc <1>:           proj-settings.
+* include_paths of taMisc:               gui-settings-tamisc.
+* inh_opts of TypeDef:                   prog-typea-stru.
+* inhib of LeabraConSpec:                leabra-con.
+* inhib_group of LeabraLayerSpec:        leabra-layer.
+* init of LeabraUnitSpec:                leabra-unit.
+* init_procs of SchedProcess:            proc-sched-vars.
+* init_wts of ProjectionSpec:            net-prjn-spec.
+* initial_act of BpContextSpec:          bp-srn.
+* initial_act of CsUnitSpec:             cs-unit.
+* initial_act of RBpUnitSpec:            rbp-unit.
+* initial_val of PatternSpec:            env-event.
+* instance of TypeDef:                   prog-typea-stru.
+* internal of TypeDef:                   prog-typea-stru.
+* interpolate of TimeEnvironment:        rbp-seq.
+* interpolate of TimeEvent_MGroup:       rbp-seq.
+* is_static of MemberDef:                prog-typea-stru.
+* is_static of MethodDef:                prog-typea-stru.
+* ithr_r of LeabraLayer:                 leabra-layer.
+* iv of TypeDef:                         prog-typea-stru.
+* iv_verbose_load of taMisc:             gui-settings-tamisc.
+* ive of TypeDef:                        prog-typea-stru.
+* k of LeabraLayer:                      leabra-layer.
+* k of LeabraLayerSpec:                  leabra-layer.
+* k1_ithr of LeabraLayer:                leabra-layer.
+* k_from of LeabraLayerSpec:             leabra-layer.
+* k_ithr of LeabraLayer:                 leabra-layer.
+* keep_tok of taMisc:                    gui-settings-tamisc.
+* kwta of LeabraLayer:                   leabra-layer.
+* kwta of LeabraLayerSpec:               leabra-layer.
+* l of LeabraLayerSpec:                  leabra-layer.
+* l of LeabraUnit:                       leabra-unit.
+* l of LeabraUnitSpec:                   leabra-unit.
+* labels of GraphLogView:                log-views-graph-variables.
+* labels of NetView:                     net-view.
+* LAST of Aggregate:                     proc-stat-agg.
+* lay_layout of Layout:                  net-net.
+* layer of Stat:                         proc-stat-agg.
+* layer of UnitActRFStat:                proc-stats-actrf.
+* layer_flags of PatternSpec:            env-event.
+* layer_font of NetView:                 net-view.
+* layer_link of LeabraLayerSpec:         leabra-layer.
+* layer_links of LeabraLayer:            leabra-layer.
+* layer_name of PatternSpec:             env-event.
+* layer_num of PatternSpec:              env-event.
+* layers of Network:                     net-net.
+* layout of DT_GridViewSpec:             log-views-grid-custom.
+* learn of LeabraUnitSpec:               leabra-unit.
+* leaves of Group:                       obj-group-variables.
+* lesion of Layer:                       net-layer.
+* lesion of LeabraLayer:                 leabra-layer.
+* line_color of GraphLogViewSpec:        log-views-graph-fields.
+* line_style of GraphLogViewSpec:        log-views-graph-fields.
+* line_type of GraphLogViewSpec:         log-views-graph-fields.
+* link_src of TesselPrjnSpec:            net-prjn-tessel.
+* link_type of TesselPrjnSpec:           net-prjn-tessel.
+* links on LinkPrjnSpec:                 net-prjn-misc.
+* lists of TypeDef:                      prog-typea-stru.
+* lmix of LeabraConSpec:                 leabra-con.
+* log_counter of SchedProcess:           proc-sched-vars.
+* log_file of PDPLog:                    log-variables.
+* log_lines of PDPLog:                   log-variables.
+* log_loop of SchedProcess:              proc-sched-vars.
+* log_proc of PDPLog:                    log-variables.
+* log_stat of Stat:                      proc-stat-agg.
+* loop_procs of SchedProcess:            proc-sched-vars.
+* loop_stats of SchedProcess:            proc-sched-vars.
+* lrate of BpConSpec:                    bp-con.
+* lrate of CsConSpec:                    cs-con.
+* lrate of LeabraConSpec:                leabra-con.
+* lrate of SoConSpec:                    so-con.
+* lrate_decr of DeltaBarDeltaBpConSpec:  bp-vari.
+* lrate_incr of DeltaBarDeltaBpConSpec:  bp-vari.
+* lrate_sched of LeabraConSpec:          leabra-con.
+* MAX of Aggregate:                      proc-stat-agg.
+* max of LeabraConSpec:                  leabra-con.
+* max of LeabraUnitSpec:                 leabra-unit.
+* max of WeightLimit:                    net-con.
+* max_menu of taMisc:                    gui-settings-tamisc.
+* max_retries of PolarRndPrjnSpec:       net-prjn-random.
+* mean of BumpBpUnitSpec:                bp-vari.
+* mean of LeabraConSpec:                 leabra-con.
+* mean of Random:                        obj-random.
+* members of TypeDef:                    prog-typea-stru.
+* methods of TypeDef:                    prog-typea-stru.
+* MIN of Aggregate:                      proc-stat-agg.
+* min of LeabraConSpec:                  leabra-con.
+* min of LeabraUnitSpec:                 leabra-unit.
+* min of WeightLimit:                    net-con.
+* min_cycles of LeabraSettle:            leabra-proc.
+* mod of Process:                        proc-base.
+* mod of Stat:                           proc-stat-agg.
+* momentum of BpConSpec:                 bp-con.
+* momentum of CsConSpec:                 cs-con.
+* momentum_type of BpConSpec:            bp-con.
+* mono_scale_size of taMisc:             gui-settings-tamisc.
+* mx_d of LeabraLayerSpec:               leabra-layer.
+* n_con_groups of GpFullPrjnSpec:        net-prjn-unitgp.
+* n_conns of OneToOnePrjnSpec:           net-prjn-misc.
+* n_sample of FreqEnv:                   env-freq.
+* n_ticks of GraphLogViewSpec:           log-views-graph-fields.
+* n_units of Layer:                      net-layer.
+* n_units of LeabraLayer:                leabra-layer.
+* n_units of Unit_Group:                 net-layer.
+* n_updates of CsCycle:                  cs-proc.
+* n_vals of PatternSpec:                 env-event.
+* name of Group:                         obj-group-variables.
+* name of RGBA:                          gui-colors.
+* name of Stat:                          proc-stat.
+* name of TypeDef:                       prog-typea-stru.
+* negative_draw of GraphLogViewSpec:     log-views-graph-fields.
+* neighborhood of SomLayerSpec:          so-unit.
+* net of LeabraUnit:                     leabra-unit.
+* net of LeabraUnitSpec:                 leabra-unit.
+* net of Unit:                           net-unit.
+* net_agg of Stat:                       proc-stat.
+* netin of LeabraLayer:                  leabra-layer.
+* netin_mod of LeabraSettle:             leabra-proc.
+* netin_type of SoLayerSpec:             so-unit.
+* network of NetLogView:                 log-views-net.
+* network of Process:                    proc-base.
+* no_border of EnviroView:               env-view-events.
+* no_bp_stats of APBpTrial:              rbp-ap.
+* no_bp_test of APBpTrial:               rbp-ap.
+* no_plus_stats of CsTrial:              cs-proc.
+* no_plus_stats of LeabraTrial:          leabra-proc.
+* no_plus_test of CsTrial:               cs-proc.
+* no_plus_test of LeabraTrial:           leabra-proc.
+* noise of CsUnitSpec:                   cs-unit.
+* noise of LeabraUnitSpec:               leabra-unit.
+* noise of NoisyBpUnitSpec:              bp-vari.
+* noise of NoisyRBpUnitSpec:             rbp-vari.
+* noise of PatternSpec:                  env-event.
+* noise_sched of CsUnitSpec:             cs-unit.
+* noise_sched of LeabraUnitSpec:         leabra-unit.
+* noise_type of LeabraUnitSpec:          leabra-unit.
+* norm of ClosestEventStat:              proc-stats-close-event.
+* norm of CompareStat:                   proc-stats-compare.
+* nvar of LeabraUnitSpec:                leabra-unit.
+* objects of MonitorStat:                proc-stats-monitor.
+* off of LeabraConSpec:                  leabra-con.
+* off of MemberDef:                      prog-typea-stru.
+* on of LeabraUnitSpec:                  leabra-unit.
+* opt_thresh of LeabraUnitSpec:          leabra-unit.
+* opts of TypeDef:                       prog-typea-stru.
+* order of EpochProcess:                 proc-levels-epoch.
+* order of SequenceProcess:              proc-special-seq.
+* p_con of PolarRndPrjnSpec:             net-prjn-random.
+* p_con of UniformRandomPrjnSpec:        net-prjn-random.
+* p_dt of LeabraLayerSpec:               leabra-layer.
+* par of LeabraConSpec:                  leabra-con.
+* par of Random:                         obj-random.
+* par_cache of TypeDef:                  prog-typea-stru.
+* par_formal of TypeDef:                 prog-typea-stru.
+* par_off of TypeDef:                    prog-typea-stru.
+* parents of TypeDef:                    prog-typea-stru.
+* pattern_type of PatternSpec:           env-event.
+* patterns of Event:                     env-event.
+* patterns of EventSpec:                 env-event.
+* pct of LeabraLayer:                    leabra-layer.
+* pct of LeabraLayerSpec:                leabra-layer.
+* PDPDIR env variable:                   proj-settings.
+* pdw of LeabraCon:                      leabra-con.
+* pdw of SoCon:                          so-con.
+* permute of UniformRandomPrjnSpec:      net-prjn-random.
+* phase of APBpTrial:                    rbp-ap.
+* phase of CsTrial:                      cs-proc.
+* phase of LeabraLayerSpec:              leabra-layer.
+* phase of LeabraTrial:                  leabra-proc.
+* phase2 of LeabraLayerSpec:             leabra-layer.
+* phase_dif of LeabraUnitSpec:           leabra-unit.
+* phase_dif_ratio of LeabraLayer:        leabra-layer.
+* phase_no of APBpTrial:                 rbp-ap.
+* phase_no of CsTrial:                   cs-proc.
+* phase_no of LeabraTrial:               leabra-proc.
+* phase_order of LeabraTrial:            leabra-proc.
+* point_mod of GraphLogViewSpec:         log-views-graph-fields.
+* point_style of GraphLogViewSpec:       log-views-graph-fields.
+* pos of DT_GridViewSpec:                log-views-grid-custom.
+* pos of GridLogViewSpec:                log-views-grid-custom.
+* pos of Group:                          obj-group-variables.
+* pos of Layer:                          net-layer.
+* pos of LeabraLayer:                    leabra-layer.
+* pos of LeabraUnit:                     leabra-unit.
+* pos of PatternSpec:                    env-event.
+* pos of Unit:                           net-unit.
+* pos of Unit_Group:                     net-layer.
+* pre_parsed of TypeDef:                 prog-typea-stru.
+* pre_proc_1,2,3 of CompareStat:         proc-stats-compare.
+* pre_proc_1,2,3 of MonitorStat:         proc-stats-monitor.
+* prjn_arrow_angle of NetView:           net-view.
+* prjn_arrow_size of NetView:            net-view.
+* prob of ProbPattern:                   cs-prob-env.
+* PROD of Aggregate:                     proc-stat-agg.
+* projections of Layer:                  net-layer.
+* projections of LeabraLayer:            leabra-layer.
+* pthread of Network:                    net-net.
+* ptr of TypeDef:                        prog-typea-stru.
+* range of GraphLogViewSpec:             log-views-graph-fields.
+* re_init of Network:                    net-net.
+* real_range of CsUnitSpec:              cs-unit.
+* real_time of RBpTrial:                 rbp-trial.
+* recv of Unit:                          net-unit.
+* recv_group of TesselPrjnSpec:          net-prjn-tessel.
+* recv_n of TesselPrjnSpec:              net-prjn-tessel.
+* recv_off of TesselPrjnSpec:            net-prjn-tessel.
+* recv_skip of TesselPrjnSpec:           net-prjn-tessel.
+* recv_start of OneToOnePrjnSpec:        net-prjn-misc.
+* red (r) of RGBA:                       gui-colors.
+* ref of TypeDef:                        prog-typea-stru.
+* rel of LeabraConSpec:                  leabra-con.
+* rel of StatVal:                        proc-stat-crit.
+* rest of IACUnitSpec:                   cs-unit.
+* rf_layers of UnitActRFStat:            proc-stats-actrf.
+* rnd of ConSpec:                        net-con.
+* rnd of LeabraConSpec:                  leabra-con.
+* rnd_angle of PolarRndPrjnSpec:         net-prjn-random.
+* rnd_dist of PolarRndPrjnSpec:          net-prjn-random.
+* s_args of Script:                      proj-scripts.
+* s_args on ScriptEnv:                   env-other.
+* same_seed of PolarRndPrjnSpec:         net-prjn-random.
+* same_seed of UniformRandomPrjnSpec:    net-prjn-random.
+* sample of CsSample:                    cs-proc.
+* sample_type of FreqEnv:                env-freq.
+* savg of LeabraConSpec:                 leabra-con.
+* savg_cor of LeabraConSpec:             leabra-con.
+* scale_on of GridViewSpec:              log-views-grid-custom.
+* script_file of Script:                 proj-scripts.
+* script_string of Script:               proj-scripts.
+* se of SE_Stat:                         proc-stats-se.
+* search_depth of taMisc <1>:            css-settings.
+* search_depth of taMisc:                gui-settings-tamisc.
+* second_network of BridgeProcess:       proc-special-bridge.
+* self_con of ProjectionSpec:            net-prjn-spec.
+* send of LeabraUnitSpec:                leabra-unit.
+* send of Unit:                          net-unit.
+* send_border of TesselPrjnSpec:         net-prjn-tessel.
+* send_delta of LeabraSettle:            leabra-proc.
+* send_off of TessEl:                    net-prjn-tessel.
+* send_offs of TesselPrjnSpec:           net-prjn-tessel.
+* send_scale of TesselPrjnSpec:          net-prjn-tessel.
+* send_start of OneToOnePrjnSpec:        net-prjn-misc.
+* send_thresh of IACUnitSpec:            cs-unit.
+* sep_tabs of taMisc <1>:                css-settings.
+* sep_tabs of taMisc:                    gui-settings-tamisc.
+* separate_graphs of GraphLogView:       log-views-graph-variables.
+* sequence_init of SequenceProcess:      proc-special-seq.
+* shape of NetView:                      net-view.
+* shared_y of GraphLogViewSpec:          log-views-graph-fields.
+* show of taMisc:                        gui-settings-tamisc.
+* show_iv of taMisc:                     gui-settings-tamisc.
+* sig of BpUnitSpec:                     bp-unit.
+* size of Array:                         obj-array-var.
+* size of Group:                         obj-group-variables.
+* size of TypeDef:                       prog-typea-stru.
+* skew of NetView:                       net-view.
+* sm_nm of ClosestEventStat:             proc-stats-close-event.
+* soft_clamp of RBpUnitSpec:             rbp-unit.
+* soft_clamp_gain of RBpUnitSpec:        rbp-unit.
+* soft_wt_bound on ZshConSpec:           so-con.
+* softmax_gain of SoftClLayerSpec:       so-unit.
+* spec of Event:                         env-event.
+* spec of LeabraLayer:                   leabra-layer.
+* spec of LeabraUnit:                    leabra-unit.
+* spec of Projection:                    net-prjn-prjn.
+* spec of Unit:                          net-unit.
+* spec on SPtr:                          obj-spec.
+* spike of LeabraUnitSpec:               leabra-unit.
+* spk_amp of LeabraUnit:                 leabra-unit.
+* src of LeabraConSpec:                  leabra-con.
+* src_layer_nm of BridgeProcess:         proc-special-bridge.
+* src_variable of BridgeProcess:         proc-special-bridge.
+* start_stats of CsSettle:               cs-proc.
+* std_dev of BumpBpUnitSpec:             bp-vari.
+* step of CsUnitSpec:                    cs-unit.
+* step of SchedProcess:                  proc-sched-vars.
+* stm_gain of LeabraLayer:               leabra-layer.
+* store_states of RBpUnitSpec:           rbp-unit.
+* string_coords of GraphLogViewSpec:     log-views-graph-fields.
+* stubp of MethodDef:                    prog-typea-stru.
+* sub_proc of SchedProcess:              proc-sched-vars.
+* sub_proc_type of SchedProcess:         proc-sched-vars.
+* sub_types of TypeDef:                  prog-typea-stru.
+* SUM of Aggregate:                      proc-stat-agg.
+* sym of LeabraConSpec:                  leabra-con.
+* sym of WeightLimits:                   net-con.
+* targ of LeabraUnit:                    leabra-unit.
+* targ of Unit:                          net-unit.
+* teacher_force of RBpUnitSpec:          rbp-unit.
+* temp of BoltzUnitSpec:                 cs-unit.
+* templ_pars of TypeDef:                 prog-typea-stru.
+* thr of LeabraUnitSpec:                 leabra-unit.
+* thresh of GraphLogViewSpec:            log-views-graph-fields.
+* thresh of LeabraConSpec:               leabra-con.
+* threshold of ThreshLinBpUnitSpec:      bp-vari.
+* threshold of ThreshLinCsUnitSpec:      cs-unit.
+* tick of SequenceProcess:               proc-special-seq.
+* time of RBpTrial:                      rbp-trial.
+* time of TimeEvent:                     rbp-seq.
+* time_agg of Stat:                      proc-stat.
+* time_avg of RBpUnitSpec:               rbp-unit.
+* time_avg on SigmoidUnitSpec:           cs-unit.
+* time_window of RBpTrial:               rbp-trial.
+* tmp_dir of taMisc:                     gui-settings-tamisc.
+* to_layer of PatternSpec:               env-event.
+* token of TypeDefault:                  proj-objdef.
+* tokens of TypeDef:                     prog-typea-stru.
+* tol of LeabraLayerSpec:                leabra-layer.
+* tolerance of CsDistStat:               cs-stats-dist.
+* tolerance of SE_Stat:                  proc-stats-se.
+* trace_incr of GraphLogViewSpec:        log-views-graph-fields.
+* trg_ext_flag of BridgeProcess:         proc-special-bridge.
+* trg_layer_nm of BridgeProcess:         proc-special-bridge.
+* trg_variable of BridgeProcess:         proc-special-bridge.
+* trial of EpochProcess:                 proc-levels-epoch.
+* trial_init of APBpTrial:               rbp-ap.
+* trial_init of CsTrial:                 cs-proc.
+* trial_init of LeabraTrial:             leabra-proc.
+* type of LeabraConSpec:                 leabra-con.
+* type of LeabraLayerSpec:               leabra-layer.
+* type of MemberDef:                     prog-typea-stru.
+* type of MethodDef:                     prog-typea-stru.
+* type of PatternSpec:                   env-event.
+* type of Projection:                    net-prjn-prjn.
+* type of Random:                        obj-random.
+* type of WeightLimits:                  net-con.
+* type on SPtr:                          obj-spec.
+* type_info of taMisc <1>:               css-settings.
+* type_info of taMisc:                   gui-settings-tamisc.
+* un_g_i of LeabraLayer:                 leabra-layer.
+* uncompress_cmd of taMisc:              gui-settings-tamisc.
+* unit_font of NetView:                  net-view.
+* unit_layout of NetView:                net-view.
+* unit_spec of Layer:                    net-layer.
+* unit_spec of LeabraLayer:              leabra-layer.
+* unit_text of NetView:                  net-view.
+* units of Layer:                        net-layer.
+* units of LeabraLayer:                  leabra-layer.
+* update_mode of CsCycle:                cs-proc.
+* updt_wts of LeabraUnitSpec:            leabra-unit.
+* use_annealing of CsUnitSpec:           cs-unit.
+* use_flags of PatternSpec:              env-event.
+* use_gp_name of DT_GridViewSpec:        log-views-grid-custom.
+* use_send_thresh of IACUnitSpec:        cs-unit.
+* use_sharp of CsUnitSpec:               cs-unit.
+* usr1_save_fmt of Network:              net-net.
+* v_m of LeabraUnit:                     leabra-unit.
+* v_m_init of LeabraUnitSpec:            leabra-unit.
+* v_m_r of LeabraUnitSpec:               leabra-unit.
+* val of StatVal:                        proc-stat-crit.
+* val_disp_mode of EnviroView:           env-view-events.
+* value of Pattern:                      env-event.
+* value of StatVal:                      proc-stat-crit.
+* value_font of EnviroView:              env-view-events.
+* value_names of PatternSpec:            env-event.
+* var of LeabraConSpec:                  leabra-con.
+* var of Random:                         obj-random.
+* var of RBFBpUnitSpec:                  bp-vari.
+* var of SoftClUnitSpec:                 so-unit.
+* variable of MonitorStat:               proc-stats-monitor.
+* vcb of LeabraUnit:                     leabra-unit.
+* verbose_load of taMisc:                gui-settings-tamisc.
+* vertical of GraphLogViewSpec:          log-views-graph-fields.
+* view_bufsz of LogView:                 log-views-logview.
+* view_font of EnviroView:               env-view-events.
+* view_font of GridLogView:              log-views-grid-logview.
+* view_range of LogView:                 log-views-logview.
+* view_shift of LogView:                 log-views-logview.
+* viewspec of LogView:                   log-views-logview.
+* vm of LeabraUnitSpec:                  leabra-unit.
+* vm_range of LeabraUnitSpec:            leabra-unit.
+* width of TextViewSpec:                 log-views-text.
+* wrap of PolarRndPrjnSpec:              net-prjn-random.
+* wrap of SomLayerSpec:                  so-unit.
+* wrap of TesselPrjnSpec:                net-prjn-tessel.
+* wrap of XYPatternSpec:                 env-other.
+* wt of Connection:                      net-con.
+* wt of LeabraCon:                       leabra-con.
+* wt_dt of LeabraUnitSpec:               leabra-unit.
+* wt_limits of ConSpec:                  net-con.
+* wt_limits of LeabraConSpec:            leabra-con.
+* wt_range of SoConSpec:                 so-con.
+* wt_scale of LeabraConSpec:             leabra-con.
+* wt_sig of LeabraConSpec:               leabra-con.
+* wt_update of EpochProcess:             proc-levels-epoch.
+* wt_val of TessEl:                      net-prjn-tessel.
+* x_axis_index of GraphLogView:          log-views-graph-variables.
+

@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-unitgp</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_122.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_124.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX651" HREF="pdp-user_toc.html">10.3.3.4  Unit_Group Based Connectivity</A></H4>
+
+<P>
+There are a couple of classes that specifically pay attention to the
+sub-groups of units within a layer, if these have been created (the
+other types of projections just ignore this level of structure).
+
+</P>
+<P>
+<A NAME="IDX652"></A>
+<A NAME="IDX653"></A>
+There is a sub-class of the full projection called the
+<B>GpFullPrjnSpec</B>, which does the same thing the full prjn spec, but
+creates separate connection groups based on the sending and receiving
+unit-group structure.  Thus, the result is full connectivity, but this
+is broken down so separate unit sub-groups can be treated separately
+(e.g., if there were a weight-based competition between the units in a
+sub-group, or between sub-groups).  The <CODE>n_con_groups</CODE> parameter
+determines whether there is one con-group per <CODE>RECV_SEND_PAIR</CODE>, or
+just one per <CODE>SEND_ONLY</CODE>, which is one con-group per unit-group on
+the sending layer.
+
+</P>
+<P>
+<A NAME="IDX654"></A>
+The <B>GpOneToOnePrjnSpec</B> connects unit groups in two layers in a
+one-to-one fashion, much as the OneToOnePrjnSpec connects units in a
+layer in a one-to-one fashion.
+
+</P>
+<P>
+<A NAME="IDX655"></A>
+The <B>GpOneToManyPrjnSpec</B> connects one or more sending groups to all
+receiving groups.  It can greate these connections in a number of
+separate connection groups, or all in one group, depending on the
+<CODE>n_con_groups</CODE> parameter (see GpFullPrjnSpec above).  Note that the
+<CODE>recv_start</CODE> parameter is ignored, and only the <CODE>send_start</CODE>,
+which determines which sending group to start with, and the
+<CODE>n_conns</CODE>, which determines how many sending groups to use beyond
+the start, are relevant.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_122.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_124.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

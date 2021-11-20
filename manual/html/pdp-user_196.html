@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-grid-custom</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_195.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_197.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX1197" HREF="pdp-user_toc.html">13.3.5.2  Customizing the GridLogView Display</A></H4>
+<P>
+<A NAME="IDX1198"></A>
+<A NAME="IDX1199"></A>
+
+</P>
+<P>
+In addition to the general customization variables available on the
+GridLogView object, the GridViewSpec objects allow precise control
+over the positioning and display style of the data elements in the
+GridLogView.
+
+</P>
+<P>
+Each of the columns of data in the PDPLog has an associated
+GridViewSpec in the GridLogView. Some of the columns of data have
+been grouped together by their generating statistics and will also have a
+DT_GridViewSpec for the entire group of data columns.
+
+</P>
+<P>
+The GridViewSpec provides the following customizable variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>TDGeometry pos</CODE>
+<DD>
+<A NAME="IDX1200"></A>
+Indicates the <B>absolute</B> position in the grid in which this data
+column's values will appear (i.e., even if the GridLogViewSpec is part
+of an associated group of GridLogViewSpecs this variable will indicate
+the absolute position of this column's value). The Z component of the
+position is ignored. (0,0) is in the lower left corner of each line in
+the GridLogView.
+<DT><CODE>DisplayStyle display_style</CODE>
+<DD>
+<A NAME="IDX1201"></A>
+Controls the way in which the Log data values for this
+column are displayed. The choices are:
+<DL COMPACT>
+
+<DT><CODE>TEXT</CODE>
+<DD>
+Display the values as text only
+<DT><CODE>BLOCK</CODE>
+<DD>
+Display the values as a colored block
+<DT><CODE>TEXT_AND_BLOCK</CODE>
+<DD>
+Display the block overlaid with with text
+</DL>
+<DT><CODE>bool scale_on</CODE>
+<DD>
+<A NAME="IDX1202"></A>
+If set, and if the display style includes BLOCK, then this column of
+data will participate in setting the overall scaling of values.
+</DL>
+
+<P>
+For data columns organized into groups (e.g., the output of a
+MonitorStat on a layer's worth of activations), the DT_GridViewSpec
+provides the following variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>TDGeometry pos</CODE>
+<DD>
+<A NAME="IDX1203"></A>
+Indicate the position in the grid in which this group of data columns'
+values will appear. The Z component of the position is ignored. (0,0) is
+in the lower left corner of each line of the GridLogView.
+<DT><CODE>TDGeometry geom</CODE>
+<DD>
+<A NAME="IDX1204"></A>
+Controls the size of the region in which the GridViewSpecs of the this
+DT_GridViewSpec are positioned.
+<DT><CODE>MatrixLayout layout</CODE>
+<DD>
+<A NAME="IDX1205"></A>
+Controls how the individual elements within the group are positioned
+relative to each other, as follows (note this is also used in the
+UpdateLayout function):
+<DL COMPACT>
+
+<DT><CODE>LFT_RGT_BOT_TOP</CODE>
+<DD>
+Increment column first, then decrement row, start at bottom left:
+<PRE> 789
+ 456
+ 123
+</PRE>
+
+<DT><CODE>LFT_RGT_TOP_BOT</CODE>
+<DD>
+Increment column first, then increment row, start at top left:
+<PRE> 123
+ 456
+ 789
+</PRE>
+
+<DT><CODE>BOT_TOP_LFT_RGT</CODE>
+<DD>
+Decrement row first, then increment column, start at bottom left:
+<PRE> 369
+ 258
+ 147
+</PRE>
+
+<DT><CODE>TOP_BOT_LFT_RGT</CODE>
+<DD>
+Increment row first, then increment column, start at top left:
+<PRE> 147
+ 258
+ 369
+</PRE>
+
+</DL>
+
+<DT><CODE>Bool use_gp_name</CODE>
+<DD>
+<A NAME="IDX1206"></A>
+When this variable is set to <CODE>true</CODE> a single label of the name of
+the group's DT_GridViewSpec is used instead of individual labels for all
+the GridViewSpecs of the group.  This also determines whether the
+display_style used will be that of the group or the individual elements.
+<DT><CODE>DisplayStyle display_style</CODE>
+<DD>
+<A NAME="IDX1207"></A>
+Controls how the data is displayed, either TEXT, BLOCK, or both.
+</DL>
+
+<P>
+The DT_GridViewSpec provides the following functions:
+<DL COMPACT>
+
+<DT><CODE>UpdateLayout(MatrixLayout ml)</CODE>
+<DD>
+<A NAME="IDX1208"></A>
+Repositions the GridViewSpecs according to the <CODE>ml</CODE> and the
+<CODE>geom</CODE> variable.  See <CODE>layout</CODE> variable above, which is what
+is used if <CODE>DEFAULT</CODE> is selected for the <CODE>ml</CODE>, for
+descriptions of the layout options.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_195.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_197.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

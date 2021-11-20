@@ -1,0 +1,12 @@
+PDPDIR/src/hard_of_css
+
+This directory provides a demo for compiling a standalone css script
+into an executable program using c++.
+
+See Makefile.in (same as PDPDIR/config/Makefile.hard_of_css) for more
+detailed instructions.
+
+hofcss_demo.css is a demo very simple and useless script that can be compiled.
+
+the .cc version is just a link because g++ won't compile files ending in .css
+

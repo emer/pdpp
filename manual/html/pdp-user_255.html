@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-comdir</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_254.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_256.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1732" HREF="pdp-user_toc.html">18.3  Standard TypeAccess Comment Directives</A></H2>
+<P>
+<A NAME="IDX1733"></A>
+
+</P>
+<P>
+The following sections document comment directives that are recognized
+by the standard TypeAccess GUI and script-language interfaces.  These
+must be placed in comments immediately following the definition of that
+which the apply to.  Thus, an object directive should appear as
+
+</P>
+<PRE>  class whatever : public something {  // #IGNORE comment goes here
+</PRE>
+
+<P>
+for members and methods, it should be as follows:
+<PRE>  class whatever : public something {  // #IGNORE comment goes here
+    int         member_1;       // #HIDDEN comment goes here
+    float       member_2;
+    // #READ_ONLY or here
+    float       get_real();     /* #USE_RVAL note that multi-line
+       old-fashioned c-style comments are legal too! */ 
+</PRE>
+
+
+<UL>
+<LI><A HREF="pdp-user_256.html">1                 Object Directives</A>
+<LI><A HREF="pdp-user_257.html">2                Member Directives</A>
+<LI><A HREF="pdp-user_258.html">3                Method Directives</A>
+<LI><A HREF="pdp-user_259.html">4                 Top-Level Function Directives</A>
+<LI><A HREF="pdp-user_260.html">5                  PDP++ Specific Directives</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_254.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_256.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

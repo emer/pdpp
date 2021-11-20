@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-ap</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_213.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_215.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1314" HREF="pdp-user_toc.html">14.2.7  The Almeida-Pineda Algorithm in RBp</A></H3>
+<P>
+<A NAME="IDX1315"></A>
+<A NAME="IDX1316"></A>
+<A NAME="IDX1317"></A>
+<A NAME="IDX1318"></A>
+<A NAME="IDX1319"></A>
+
+</P>
+<P>
+The Almeida-Pineda backprop (APBp) algorithm is a lot like the recurrent
+backpropagation algorithm just described, except that instead of
+recording the activation trajectory over time, and the backpropagating
+back through it, this algorithm performs activation propagation until
+the change in activation goes below some threshold, and then it performs
+backpropagation repeatedly until the change in error derivatives also
+goes below threshold.
+
+</P>
+<P>
+This algorithm is implemented by using the standard RBp unit and
+connection types, even though APBp doesn't require the activation trace
+that is kept by these units.  Indeed, you should set the
+<CODE>store_states</CODE> flag on the <B>RBpUnitSpec</B> to <CODE>false</CODE> when
+using APBp.
+
+</P>
+<P>
+The only thing that is needed is a set of processes to implement the
+settling process over cycles of activation and error propagation.  Thus,
+three new processes were implemented, including a cycle process
+(see section <A HREF="pdp-user_160.html">12.5.3  Performing one Update: CycleProcess</A>) to perform one cycle of activation or error
+propagation, a settle process (see section <A HREF="pdp-user_159.html">12.5.2  Iterating over Cycles: SettleProcess</A>) to iterate
+over cycles, and a train process (see section <A HREF="pdp-user_155.html">12.4.2  Iterating over Epochs: TrainProcess</A>) to iterate
+over two phases of settling (activation and backpropagation).
+
+</P>
+<P>
+The <B>APBpCycle</B> and <B>APBpSettle</B> processes don't have any
+user-settable parameters.  The <B>APBpTrial</B> adds a couple of options to
+control settling:
+
+</P>
+<P>
+<A NAME="IDX1320"></A>
+<DL COMPACT>
+
+<DT><CODE>Counter phase_no</CODE>
+<DD>
+<A NAME="IDX1321"></A>
+The counter that controls what phase the process is in.
+<DT><CODE>Phase phase</CODE>
+<DD>
+<A NAME="IDX1322"></A>
+The phase, which is either <CODE>ACT_PHASE</CODE> or <CODE>BP_PHASE</CODE>.
+It is essentially just a more readable version of the phase_no counter.
+<DT><CODE>StateInit trial_init</CODE>
+<DD>
+<A NAME="IDX1323"></A>
+Determines what to do at the start of settling.  One can either
+<CODE>DO_NOTHING</CODE> or <CODE>INIT_STATE</CODE>, which initializes the unit
+activation state variables, and is the default thing to do.
+<DT><CODE>bool no_bp_stats</CODE>
+<DD>
+<A NAME="IDX1324"></A>
+This flag, if set, does not collect any statistics during the Bp phase
+of settling.
+<DT><CODE>bool no_bp_test</CODE>
+<DD>
+<A NAME="IDX1325"></A>
+This flag, if set, means that no backpropagation settling phase will be
+computed if the epoch process is in <CODE>TEST</CODE> <CODE>wt_update</CODE> mode.
+</DL>
+
+<P>
+The threshold that determines when the settling is cut off is determined
+by a <B>APBpMaxDa_De</B> statistic object, which measures the maximum
+change in activation or the maximum change in error derivative.  The
+stopping criterion (see section <A HREF="pdp-user_169.html">12.7.2  Using Statistics to Control Process Execution</A>) of this stat determines the
+cutoff threshold.  It assumes that the same threshold is used for
+activation as is used for error, which seems to be reasonable in
+practice.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_213.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_215.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

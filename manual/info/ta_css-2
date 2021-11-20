@@ -1,0 +1,1028 @@
+This is ta_css, produced by makeinfo version 4.1 from ta_css.texi.
+
+
+File: ta_css,  Node: css-tut-debug,  Next: css-tut-access,  Prev: css-tut-run,  Up: css-tut
+
+Debugging an Example Program in CSS
+-----------------------------------
+
+   This section illustrates the use of the debugging facilities
+within CSS.  We will use the example program from the previous
+section, with the addition of the two extra lines of code that were
+added in `define' mode.  It is important to note that some important
+aspects of debugging like breakpoints can only be used when a program
+was started with the `run' command.  Thus, do not set breakpoints if
+you are going to be simply calling a function on the command line.
+
+   There are three primary debugging tools in CSS: breakpoints,
+execution tracing, and single-stepping.  Because CSS is basically an
+interpreted system, all of the facilities for examining variables,
+the stack, source code, etc. which must be added into a real debugger
+come for "free" in CSS.
+
+   To illustrate, we will set a breakpoint in the `Decode_Number'
+function (assuming you have loaded this code already):
+
+     css> list Decode_Number
+     (String) Decode_Number((Real) number) {
+     4         String rval = "The number, " + number + " is: ";
+     5         if(number < 0)
+     6           rval += "negative";
+     7         else if(number < .5)
+     8           rval += "less than .5";
+     9         else if(number < 1)
+     10          rval += "less than 1";
+     11        else
+     12          rval += "greater than 1";
+     13        return rval;
+     14      }
+     css> setbp 5
+     css> showbp
+     Decode_Number   5         if(number < 0)
+     css>
+
+   Note that we first listed the function (referring to it by name),
+and then set a breakpoint with the `setbp' command at line number 5.
+We then confirmed this breakpoint with the `showbp' command.
+
+   Now, when we `run' the program, execution will stop at line 5, and
+we will be returned to the `css>' prompt:
+
+     css> run
+     2 css>
+
+   which has changed to `2 css>', indicating that we are 2 levels deep
+into the execution of the program.  To see where we are, `list' and
+`status' can be used:
+
+     2 css> list
+     
+     Listing of Program: css_example.css
+     4         String rval = "The number, " + number + " is: ";
+     5         if(number < 0)
+     6           rval += "negative";
+     7         else if(number < .5)
+     8           rval += "less than .5";
+     9         else if(number < 1)
+     10          rval += "less than 1";
+     11        else
+     12          rval += "greater than 1";
+     13        return rval;
+     14      }
+     28      list
+     2 css> status
+     
+             Status of Program: css_example.css
+     curnt:  Decode_Number   src_ln: 5       pc:     9
+     debug:  0       step:   0       depth:  2       conts:  2
+     lines:  29      list:   28
+     State: shell:   1   run: 0  cont:   0  defn:   0  runlast: 0
+     run status:     Waiting
+     shell cmd:      None
+     2 css>
+
+   The `src_ln' of the status output tells us which source-code line
+we are at (and what function we are in).  Here, we can use the
+interactive mode of css to determine the values of our variables:
+
+     2 css> print number
+     (Real) number = 0.75
+     2 css> print rval
+     (String) rval = The number, 0.75 is:
+
+   The values of all of the variables for the current "frame" (there
+is one frame for every call to a given function, or any expression
+appearing between the curly-brackets) can be viewed at once with the
+`frame' command:
+
+     2 css> frame
+     
+     Elements of Spaces For Program: Decode_Number (frame = 1)
+     
+     Elements of Space: Autos (3)
+     (String) _retv_this =                   (Real) number = 0.75
+     (String) rval = The number, 0.75 is:
+     
+     Elements of Space: Stack (0)
+     
+     
+     Elements of Space: css_example.css.Static (3)
+     (String) Decode_Number((Real) number)   (void) Decode_Random((Int) n_numbers)
+     (String) foo = a string
+
+   Included in the frame information are the "automatic" variables
+(`Autos'), and the contents of the stack.  To get information on
+previous frames in the execution sequence, use the command `trace',
+which gives both a trace of processing and can give a dump of the
+entire stack up to this point if given a higher "trace level", which
+is an optional argument to the `trace' command.  The default trace
+level of 0 just shows the frames, 1 also shows the stack, 2 also
+shows the auto variables, and 3 shows all variables.  In addition,
+just the contents of the current stack can be viewed with the `stack'
+command (note that the saved stack is what is actually used by the
+program during execution).
+
+   In addition to viewing variables, it is possible to change their
+values:
+
+     2 css> number = 200;
+     2 css> print number
+     (Real) number = 200
+
+   Finally, to continue the program from where it was stopped by the
+breakpoint, use the `cont' command:
+
+     2 css> cont
+     The number, 0.75 is: greater than 1
+     5 css>
+
+   Since we changed the number after it was turned into a string for
+the `rval', but before the `if' statements, we got the contradictory
+result printed above.  Also, because the breakpoint is still in
+effect, the program has stopped due to the `Decode_Random' function
+calling the `Decode_Number' function.  We can continue again, or we
+can disable the breakpoint first, and then continue.
+
+     5 css> cont
+     0       The number, 0.764017 is: less than 1
+     5 css> unsetbp 5
+     5 css> showbp
+     5 css> cont
+     1       The number, -1.76456 is: negative
+     2       The number, 1.59942 is: greater than 1
+     3       The number, -1.34582 is: negative
+     4       The number, -1.36371 is: negative
+     css>
+
+   Note that the breakpoint is referred to by the source-code line
+number.
+
+   Another way to debug is to get a trace of the running program.
+This can be done by setting the `debug' level, which can have a value
+from 0 (normal, quiet operation) through 4, with higher levels giving
+more detail than lower levels.  For most users, levels 0 and 1 are
+the only ones needed, since the higher levels depend on understanding
+the guts of the CSS machine code.  Debug level 1 shows the
+source-code line corresponding to the currently-executing code:
+
+     css> debug 1
+     css> run
+     31      run
+     3       String Decode_Number(float number) {
+     17      void Decode_Random(int n_numbers) {
+     26      cout << Decode_Number(.75) << "\n";
+     4         String rval = "The number, " + number + " is: ";
+     5         if(number < 0)
+     5         if(number < 0)
+     5         if(number < 0)
+     7         else if(number < .5)
+     7         else if(number < .5)
+     7         else if(number < .5)
+     9         else if(number < 1)
+     9         else if(number < 1)
+     9         else if(number < 1)
+     10          rval += "less than 1";
+     13        return rval;
+     26      cout << Decode_Number(.75) << "\n";
+     The number, 0.75 is: less than 1
+     27      Decode_Random(5);
+     18        int i;
+     19        for(i=0; i<n_numbers; i++) {
+     .
+     .
+     .
+
+   Since running proceeds from the top to the bottom, the definitions
+of the functions appear in the trace even though they do not really do
+anything.  Also, some constructs like `if' and `for' result in
+multiple copies of the same source-code line being printed.  This kind
+of trace is useful for seeing what branches of the code are being
+taken, etc.
+
+   The final kind of debugging is single-stepping, which is like
+having a breakpoint after every line of source code.  Execution
+continues after each point by simply entering a blank line:
+
+     css> debug 0
+     31      debug 0
+     css> step 1
+     css> run
+     31      run
+     3       String Decode_Number(float number) {
+     1 css>
+     17      void Decode_Random(int n_numbers) {
+     1 css>
+     26      cout << Decode_Number(.75) << "\n";
+     4         String rval = "The number, " + number + " is: ";
+     2 css> print number
+     31      print number
+     (Real) number = 0.75
+     2 css> print rval
+     (String) rval = The number, 0.75 is:
+     5         if(number < 0)
+     3 css>
+     7         else if(number < .5)
+     4 css>
+     9         else if(number < 1)
+     5 css>
+     10          rval += "less than 1";
+     4 css>
+     13        return rval;
+     26      cout << Decode_Number(.75) << "\n";
+     The number, 0.75 is: less than 1
+     1 css>
+     27      Decode_Random(5);
+     18        int i;
+     2 css>
+     19        for(i=0; i<n_numbers; i++) {
+     19        for(i=0; i<n_numbers; i++) {
+     20          float number = 4.0 * (drand48()-.5);
+     4 css>
+
+   (note that we turned debugging off, since it is redundant with
+single-stepping).  The `step' command takes an argument, which is the
+number of lines to step over (typically 1). Then, when we `run' the
+program again, it stops after every line.  If you simply want to
+continue running, you can just hit return and it will continue to the
+next line.
+
+   If at any point during debugging you want to stop the execution of
+the program and return to the top-level (i.e., get rid of that number
+in front of the prompt), use the `restart' command.
+
+     4 css> restart
+     34      restart
+     css>
+
+   Be sure not to confuse `restart' with `reset', as the latter will
+erase the current program from memory (you can just reload it with
+`reload', so its not so bad if you do).
+
+
+File: ta_css,  Node: css-tut-access,  Prev: css-tut-debug,  Up: css-tut
+
+Accessing Hard-Coded Objects in CSS
+-----------------------------------
+
+   In general, hard-coded objects (and their members and member
+functions) are treated just as they would be in C or C++.  Objects
+that have been created (i.e., Networks, Units, etc) can be referred
+to by their _path_ names, which start with the _root_ object
+(PDPRoot).  While you could type `root.projects[0]', for example, to
+refer to the first project, it is easier to use the abbreviation of a
+preceding period to stand for `root', resulting in: `.projects[0]'.
+
+   The following examples were performed on the XOR example project in
+Bp++. In order to examine the project in CSS, one could simply use the
+`print' command on the path of this object:
+
+     bp++> print .projects[0]
+     .projects[0] Proj (refn=1) {
+       ta_Base*        owner           = .projects;
+       String          name            = Proj;
+       WinBase*        win_owner       = root;
+       WinGeometry     win_pos         = {lft=4: bot=74: wd=535: ht=24: };
+       WinGeometry     root_win_pos    = {lft=9: bot=79: wd=161: ht=23: };
+       TypeDefault_MGroup   defaults           =  Size: 5 (TypeDefault);
+       BaseSpec_MGroup   specs         =  Size: 3 (BaseSpec);
+       Network_MGroup   networks       =  Size: 1 (Network);
+       Environment_MGroup   environments       =  Size: 1 (Environment);
+       Process_MGroup   processes      =  Size: 5 (SchedProcess);
+       PDPLog_MGroup   logs            =  Size: 2 (TextLog);
+       Script_MGroup   scripts         =  Size: 1 (Script);
+     }
+
+   The first network within this project would then be referred to as
+`.projects[0].networks[0]':
+
+     bp++> print .projects[0].networks[0]
+     .projects[0].networks[0] XOR (refn=15) {
+       ta_Base*        owner           = .projects[0].networks;
+       String          name            = XOR;
+       WinBase*        win_owner       = .projects[0];
+       WinGeometry     win_pos         = {lft=4: bot=3: wd=536: ht=390: };
+       WinView_MGroup   views          =  Size: 1 (NetView);
+       Layer_MGroup    layers          =  Size: 3 (Layer);
+       Project*        proj            = .projects[0];
+       TDGeometry      pos             = {x=0: y=0: z=0: };
+       TDGeometry      max_size        = {x=2: y=2: z=3: };
+       int             epoch           = 0;
+       Network::Layer_Layout   lay_layout      = THREE_D;
+     }
+
+   You can also use a shortcut by just typing `.networks[0]', which
+finds the first member with the name `networks' in a search starting
+at the root object and scanning down the _first branch_ of the tree
+of objects (i.e., looking in the first element of every group along
+the way).
+
+   Scoped types such as `Network::Layer_Layout' which appear in the
+above class are referred to just as they would be in C++:
+
+     bp++> .networks[0].lay_layout = Network::TWO_D;
+
+   As you can see, setting the values of hard-coded object variables
+simply amounts to typing in the appropriate C/C++ statement.
+
+   Type information (obtained via the TypeAccess system) about
+hard-coded objects can be obtained with the `type' command:
+
+     bp++> type Network
+     class Network : PDPWinMgr : WinMgr : WinBase : ta_NBase : ta_Base {
+     // The Network
+     
+       // sub-types
+       enum Layer_Layout {   // Visual mode of layer position/view
+         TWO_D            = 0;       // all z = 0, no skew
+         THREE_D          = 1;       // z = layer index, default skew
+       }
+     
+       // members
+       ta_Base*        owner;          //   pointer to owner
+       String          name;           //   name of the object
+       .
+       .
+       TDGeometry      max_size;       //   max size in each dim
+       int             epoch;          //   epoch counter
+       Network::Layer_Layout   lay_layout;     // Visual mode of layer
+     
+       // functions
+       void            UnSafeCopy(ta_Base* na);
+       ta_Base*        GetOwner(TypeDef* tp);
+       .
+       .
+       .
+       void            InitWtState();        // Initialize the weights
+       .
+       .
+       void            Compute_dWt();        // update weights for whole net
+       void            Copy_Weights(const Network* src);
+       void            Enforce_Layout(Network::Layer_Layout layout_type);
+     }
+
+   This shows the inheritance of this object, any sub-types that are
+defined within it, and all of its members and functions (including
+those it inherits from other classes).
+
+   In addition, there is Tab-completion for path names and types in
+the CSS prompt-level script interface.  Thus, as you are typing a
+path, if you hit the Tab key, it will try to complete the path.  If
+there are multiple completions, hitting Tab twice will display them.
+
+   In order to call member functions of hard-coded classes, simply
+give the path to the object, followed by the member function, with
+any arguments that it might require (or none).
+
+     bp++> .networks[0].InitWtState();
+     bp++>
+
+   It is possible to create pointers to hard-coded objects.  Simply
+declare a pointer variable with the appropriate type, and assign it
+to the given object by referring to its path:
+
+     bp++> Unit* un;
+     bp++> un = .networks[0].layers[1].units[0];
+     bp++> print un
+     .projects[0].networks[0].layers[1].units[0] hid_1 (refn=6) {
+       ta_Base*        owner           = .projects[0].networks[0].layers[1].units;
+       String          name            = hid_1;
+       UnitSpec_SPtr   spec            = {type=BpUnitSpec: spec=.specs[0]: };
+       TDGeometry      pos             = {x=0: y=0: z=0: };
+       Unit::ExtType   ext_flag        = NO_EXTERNAL;
+       float           targ            = 0;
+       float           ext             = 0;
+       float           act             = 0;
+       float           net             = 0;
+       Con_Group       recv            =  Size: 0.1.2 (BpCon);
+       Con_Group       send            =  Size: 0.1.1 (BpCon);
+       BpCon           bias            = BpCon;
+       float           err             = 0;
+       float           dEdA            = 0;
+       float           dEdNet          = 0;
+     }
+
+   There are two ways to create new hard-coded objects.  The
+preferred way is to call one of the `New' functions on the group-like
+objects (`List' or `Group', see *Note obj-group::), which will create
+the object and add it to the group, so that it can be referred to by
+its path as just described.
+
+     bp++> .layers[1].units.List();
+     
+     Elements of List:  (2)
+     hid_1   hid_2
+     bp++> .layers[1].units.New(1);
+     bp++> .layers[1].units.List();
+     
+     Elements of List:  (3)
+     hid_1   hid_2
+     bp++> .layers[1].units[2].name = "new_guy";
+     bp++> .layers[1].units.List();
+     
+     Elements of List:  (3)
+     hid_1   hid_2   new_guy
+
+   Finally, it is possible to create new instances of hard-coded
+object types through the C++ `new' operator, which is especially
+useful in order to take advantage of some of the handy built-in types
+like arrays (*note obj-array::):
+
+     bp++> float_RArray* ar = new float_RArray;
+     bp++> print ar
+     [0];
+     
+     bp++> ar.Add(.25);
+     bp++> ar.Add(.55);
+     bp++> ar.Add(.11);
+     bp++> print ar
+     [3] 0.25 0.55 0.11;
+     
+     bp++> print ar.Mean();
+     (Real)  = 0.303333
+     bp++> print ar.Var();
+     (Real)  = 0.101067
+     bp++> ar.Sort();
+     bp++> print ar
+     [3] 0.11 0.25 0.55;
+
+   Remember to `delete' those objects which you have created in this
+fashion:
+
+     bp++> delete ar;
+     bp++> print ar
+     (float_RArray) ar = 0
+
+   (the `ar = 0' means that it is a null pointer).  Be sure _not_ to
+use the `delete' operator on those objects which were created with
+the group's `New' function, which should be `Remove'd from the group,
+not deleted directly (*note obj-group::).
+
+
+File: ta_css,  Node: css-from-c,  Next: css-ref,  Prev: css-tut,  Up: css
+
+CSS For C/C++ Programmers
+=========================
+
+   This section outlines the ways in which CSS differs from C and C++.
+These differences have been kept as small as possible, but nonetheless
+the fact that CSS is an interactive scripting language means that it
+will inevitably differ from compiled versions of the language in some
+respects.
+
+   Note that this manual does not contain an exhaustive description
+of the CSS language -- only differences from standard C/C++.  Thus,
+it is expected that the user who is unfamiliar with these languages
+will purchase one of the hundreds of books on these languages, and
+then consult this section to find out where CSS differs.
+
+* Menu:
+
+* css-c++-diff::                Differences Between CSS and C++
+* css-c-diff::                  Differences Between CSS and ANSI C
+* css-extend::                  Extensions Available in CSS
+* css-c++-intro::               Features of C++ for C Programmers
+
+
+File: ta_css,  Node: css-c++-diff,  Next: css-c-diff,  Prev: css-from-c,  Up: css-from-c
+
+Differences Between CSS and C++
+-------------------------------
+
+   The primary difference between CSS and C++ is that CSS does not
+support the complex set of rules which determine which of a set of
+functions with the same name should be called given a particular set
+of arguments.  Thus, CSS does not allow multiple functions with the
+same name.  By avoiding the function-call resolution problems, CSS is
+much faster and smaller than it otherwise would be.
+
+   One consequence of the lack of name resolution is that only
+default (no argument) constructors can be defined.  This also
+obviates the need for the special parent-constructor calling syntax.
+
+   Also, at the present time, CSS does not support the definition of
+`operator' member functions that redefine the operation of the
+various arithmetic operators.  Further, it does not provide access
+control via the `private', `public', and `protected' keywords, or the
+`const' type control, though these are parsed (and ignored).  Thus,
+it also does not deal with the `friend' constructs either.  While
+these language features could be added, they do not make a great deal
+of sense for the interactive script-level programming that CSS is
+designed to handle.
+
+   CSS _does_ support multiple inheritance, and the overloading of
+derived member functions.  It does not support the inlining of
+functions, which is a compiler-level optimization anyway.  The keyword
+`inline' will be parsed, but ignored.
+
+   Also, note that CSS gives one access to hard-coded classes and
+types (via TypeAccess), in addition to those defined in the script.
+
+   Templates are not supported for script-based classes, but are
+supported in hard-coded classes (via TypeAccess).
+
+   Exception handling is not supported, and probably will not be.
+
+   Since the primary use of CSS is for relatively simple pieces of
+code that glue together more complex hard-coded objects, and not
+implementing large programs, the present limitations of CSS will
+probably not affect most users.
+
+
+File: ta_css,  Node: css-c-diff,  Next: css-extend,  Prev: css-c++-diff,  Up: css-from-c
+
+Differences Between CSS and ANSI C
+----------------------------------
+
+   The design specification for CSS should be the same as ANSI C.
+However, at the present time, some features have not been
+implemented, including:
+
+   The full functionality of `#define' pre-processor macros is not
+supported.  At this point, things are either defined or undefined and
+the `#ifdef' and `#ifndef' functions can be used to selectively
+include or not different parts of code.
+
+   The promotion of types in arithmetic expressions is not standard.
+In CSS, the result of an expression is determined by the left-most
+(first) value in the expression.  Thus, `20 / 3.0' would result in an
+integer value of 6, whereas `20.0 / 3' gives a real value of 6.6667.
+
+   The guarantee that only as much of a logical expression will be
+evaluated as is necessary is not implemented in CSS.  Thus, something
+like `if((a == NULL) || (a->memb == "whatever"))' will
+(unfortunately) not work as it would in C, since the second expression
+will be evaluated even when `a' is `NULL'.
+
+   Initialization of multiple variables of the same type in the same
+statement, is not supported, for example:
+       int var1 = 20, var2 = 10, var3 = 15;
+   and initialization of an array must occur after it has been
+declared (see example below).
+
+   There are a limited number of primitive types in CSS, with the
+others defined in C being equivalent to one of these basic CSS types
+(see *Note css-types::).  This is because everything in CSS is
+actually represented by an object, so the storage-level differences
+between many different C types are irrelevant in the script language.
+
+   Pointers in CSS are restricted to point to an object which lies in
+an array somewhere, or is a single entity.  The pointer is "smart",
+and it is impossible to increment a pointer that points to a single
+entity, which makes all pointer arithmatic safe:
+
+     css> int xxx;
+     css> int* xp = &xxx;
+     css> print xp
+     (Int)* xp --> (Int) xxx = 0
+     css> xp++;
+     Cannot modify a NULL or non-array pointer value
+     >1      xp++;
+     css> print *(xp +1);
+     Cannot modify a NULL or non-array pointer value
+     >1      print *(xp +1);
+
+   but it is possible to increment and perform arithmetic on a pointer
+when it points to an array:
+
+     css> int xar[10];
+     css> xp = xar;
+     css> xar = {0,1,2,3,4,5,6,7,8,9};
+     css> print xar
+     (Int) xar[10] {
+     0       1       2       3       4       5       6       7       8       9
+     }
+     css> print xp
+     (Int)* xp --> (Int) xar[10] {
+     0       1       2       3       4       5       6       7       8       9
+     }
+     css> print *(xp+2);
+     (Int)  = 2
+     css> print *(xp+3);
+     (Int)  = 3
+     css> xp++;
+     css> print *(xp+3);
+     (Int)  = 4
+     css> print *(xp+9);
+     Array bounds exceeded
+     >1      p *(xp+9);
+     (void) Void
+     css> print *(xp+8);
+     (Int)  = 9
+
+   The error that occurred when the `print *(xp+9)' command was issued
+(after `xp' already points to `xar[1]'), illustrates the kind of
+"smart pointers" that are built into CSS, which prevent crashes by
+preventing access to the wrong memory areas.
+
+
+File: ta_css,  Node: css-extend,  Next: css-c++-intro,  Prev: css-c-diff,  Up: css-from-c
+
+Extensions Available in CSS
+---------------------------
+
+   There are several "extensions" of the C/C++ language available in
+CSS.  The most obvious one is the ability to shorten the path to
+refer to a particular hard-coded object by skipping those elements
+that are the first of a given group.  Thus, if referring to a unit in
+the first layer of a network, in the first project, one can say:
+`.units[x]' instead of `.projects[0].networks[0].layers[0].units[x]'.
+
+   Also, one can often avoid the use of a type specifier when
+initializing a new variable, because CSS can figure out the type of
+the variable from the type of the initializing expression:
+
+       var1 = "a string initializer";          // type is inferred from initializer
+       //        instead of
+       String var2 = "a string initializer";   // instead of explicitly declared
+
+   When referring to a hard-coded type, CSS will automatically use the
+actual type of the object if the object derives from the `ta_Base'
+class which is aware of its own type information.
+
+   CSS does not pay attention to the distinction between `ptr->mbr'
+and `obj.mbr'.  It knows if the object in question is an object
+itself or a pointer to an object, and can figure out how to access the
+members appropriately.
+
+   All of the basic CSS types (see *Note css-types::) know how to
+convert themselves into the other types automatically, without even
+casting them.  However, you can use an explicit cast if you want the
+code to compile properly in standard C/C++.
+
+   Also, all script variables for hard-coded objects are implicitly
+pointers, even if not declared as such.  This is because script
+objects are not the same thing as hard-coded ones, and can only act
+at best as reference variables for them (i.e., essentially as
+pointers, but you can use the `obj.mbr' notation, see previous
+paragraph).  Thus, while you can write CSS code that would also
+compile as C++ code by using `ptr->mbr' notation to refer to
+hard-coded objects, you can also cheat and use the simpler `obj.mbr'
+notation even when `obj' is a pointer.
+
+
+File: ta_css,  Node: css-c++-intro,  Prev: css-extend,  Up: css-from-c
+
+Features of C++ for C Programmers
+---------------------------------
+
+   Since more users are likely to be familiar with C than C++, this
+section provides a very brief introduction to the essentials of C++.
+
+   The central feature of C++ is that it extends the `struct'
+construct of C into a full-fledged object oriented programming (OOP)
+language based around a `class'.  Thus, a class or object has data
+members, like a `struct' in C, but it also has functions associated
+with it.  These _member functions_ or _methods_ perform various
+functions associated with the data members, and together the whole
+thing ends up encapsulating a set of related tasks or operations
+together in a single entity.
+
+   The object-oriented notion is very intuitive for neural-network
+entities like units:
+
+     class Unit {    // this defines an object of type Unit
+     public:         // public means that any other object can access the following
+     
+       // these are the data members, they are stored on the object
+       float         net_input;      // this gets computed by the weights, etc.
+       float         activation;     // this is computed by the function below
+       float         target;         // this is set by the environment before hand
+       float         error;          // this gets computed by the function below
+     
+       // these are the member functions, they can easily access the data members
+       // associated with this object
+       virtual void  Compute_Activation()
+       { activation = 1.0 / (1.0 + exp(net_input)); }
+       virtual void  Compute_Error()
+       { error = target - activation; error *= error; }
+     };
+
+   The member functions encapsulate some of the functionality of the
+unit by allowing the unit to update itself by calling its various
+member functions.  This is convenient because different types of
+units might have different _definitions_ of these functions, but they
+all would have a `Compute_Activation()' function that would perform
+this same basic operation.  Thus, if you have an object which is an
+instance or token of the type `Unit', you can set its data members
+and call its member functions as follows:
+
+     Unit un;
+     un.net_input = 2.5;
+     un.target = 1.0;
+     un.Compute_Activation();
+     un.Compute_Error();
+
+   Thus, you use the same basic notation to access data members as
+member functions (i.e., the `obj.mbr' syntax).  To illustrate why this
+encapsulation of functions with objects is useful, we can imagine
+defining a new object type that is just like a unit but has a
+different activation function.
+
+     class TanhUnit : public Unit {          // we're going to inherit from a Unit
+     public:
+       void          Compute_Activation()    { activation = tanh(net_input); }
+     };
+
+   This notation means that the new type, `TanhUnit', is just like a
+`Unit', except that it has a different version of the
+`Compute_Activation()' function.  This is an example of
+_inheritance_, which is central to C++ and OOP in general.  Thus, if
+we have something which we know to be a unit of some type (either a
+`Unit' or a `TanhUnit', or maybe something else derived from a
+`Unit'), we can still call the `Compute_Activation()' function and
+expect it to do the right thing:
+
+     Unit* un;
+     un->Compute_Activation();
+
+   This is an example of a _virtual member function_, because the
+actual function called depends on what actual type of unit you have.
+This is why the original definition of the `Compute_Activation()'
+function has the `virtual' keyword in front of it.  Virtual functions
+are an essential part of C++, as they make it possible to have many
+different definitions or "flavors" of a given operation.  Since these
+differences are all encapsulated within a standard set of virtual
+functions, other objects do not need to have special-case code to deal
+with these differences.  Thus, a very general purpose routine can be
+written which calls all of the `Compute_Activation()' functions on
+all of the units in a network, and this code will work regardless of
+what actual type of units are in the network, as long as they derive
+from the _base type_ of `Unit'.
+
+   While there are a number of other features of C++, the PDP++
+software mainly makes use of the basics just described.  There are a
+couple of basic object types that are used in the software for doing
+file input/output, and for representing character-string values.
+
+   The C++ way of doing file input/output is via the _stream_ concept.
+There is an object that represents the file, called a stream object.
+There are different flavors of stream objects depending on whether you
+are doing input (`istream'), output (`ostream') or both (`iostream').
+To actually open and close a file on a disk, there is a version of
+the `iostream' called an `fstream' that has functions allowing you to
+open and close files.  To send stuff to or read stuff from a file,
+you use something like the "pipe" or i/o redirection concept from the
+standard Unix shells.  The following example illustrates these
+concepts:
+
+     fstream fstrm;     // fstrm is a file stream, which can do input or output
+     
+     // we are opening the file by calling a member function on the
+     // fstream object. the enumerated type ios::out means 'output'
+     // also available are ios::in, ios::app, etc.
+     
+     fstrm.open("file.name", ios::out);
+     
+     // we "pipe" stuff to the fstrm with the << operator, which can deal
+     // with all different types of things (ints, floats, strings, etc.)
+     
+     fstrm << "this is some text " << 10 << 3.1415 << "\n";
+     
+     fstrm.close();     // again, the file is closed with a member fun
+
+   The mode in which the file is opened is specified by an _enumerated
+type_ or an `enum'.  This provides a way of giving a descriptive name
+to particular integer values, and it replaces the use of
+string-valued arguments like "r" and "w" that were used in the
+`open()' function of the standard C library.  The base class of all
+the stream types is something called `ios', and the enum for the
+different modes a file can be opened in are defined in that type,
+which is why they are _scoped_ to the `ios' class by the `ios::'
+syntax.  The definition of this enum in ios is as follows:
+
+       enum open_mode  { in=1, out=2, ate=4, app=010, trunc=020,
+                             nocreate=040, noreplace=0100 };
+
+   which shows that each enum value defines a bit which can be
+combined with others to affect how the file is opened.
+
+   The following example illustrates how file input works with
+streams.  One simply uses the `>>' operator instead of `<<'.  Note
+that the fstream has to be opened in `ios::in' mode as well:
+
+     fstream fstrm;     // fstrm is a file stream, input or output
+     
+     // we are opening the file by calling a member function on the
+     // fstream object. the enumerated type ios::out means 'output'
+     // also available are ios::in, ios::app, etc.
+     
+     fstrm.open("file.name", ios::in);
+     
+     // these variables will hold stuff that is sucked in from the stream
+     String words[4];
+     int number;
+     float pi;
+     // this assumes that the stream was written by the output example
+     // given previously
+     fstrm >> words[0] >> words[1] >> words[2] >> words[3] >> number >> pi;
+     
+     fstrm.close();     // again, the file is closed with a member fun
+
+
+File: ta_css,  Node: css-ref,  Next: css-errors,  Prev: css-from-c,  Up: css
+
+CSS Reference Information
+=========================
+
+   This section of the manual contains reference material on many
+aspects of CSS (excluding the basic C/C++ language itself, for which
+many excellent reference sources exist).
+
+* Menu:
+
+* css-spaces::                  Name and Storage Spaces in CSS
+* css-gui::                     Graphical Editing of CSS Classes
+* css-startup::                 CSS Startup options
+* css-shell::                   The CSS Command Shell
+* css-types::                   Basic Types in CSS
+* css-commands::                CSS Commands
+* css-functions::               CSS Functions
+* css-settings::                Parameters Affecting CSS Behavior
+
+
+File: ta_css,  Node: css-spaces,  Next: css-gui,  Prev: css-ref,  Up: css-ref
+
+Name and Storage Spaces in CSS
+------------------------------
+
+   Like C and C++, CSS has several different places that it can put
+variables and functions.  Some of these amount to ways of organizing
+things that have a similar role in the same list, so that they can all
+be viewed together.  These are essentially transparent to the user,
+and are described in the context of the various commands that print
+out lists of various types of functions and variables.  The remaining
+distinctions have consequences for the programmer, and are described
+below.
+
+   The initial program space in CSS is different than that of C or
+C++, since it can actually contain executable code, whereas the
+compiled languages restrict the basic top-level space to consist of
+definitions only.  Any definitions or variables declared in the
+top-level space are by default considered to be `static', which means
+that they are visible only to other things within that program space.
+Other program spaces (such as those in a `Script' object or a
+`ScriptProcess', `ScriptEnv', etc.) do not have access to these
+variables or functions.  However, the `extern' declaration will make
+a variable or function visible across any other program spaces.
+
+   Within a function, all variables declared as arguments and local
+variables are known as "autos", as they are automatically-allocated.
+These are stored locally on a kind of stack within the same object
+that holds the code for the function, and a new set of them are
+allocated for each invocation of the function.  The exception is for
+variables declared `static', which are also stored on the function
+object, but the same one is used for all invocations of the function.
+
+   All new types that are declared (including enums and classes) are
+put in the global typespace, which is available to all program spaces.
+
+
+File: ta_css,  Node: css-gui,  Next: css-startup,  Prev: css-spaces,  Up: css-ref
+
+Graphical Editing of CSS Classes
+--------------------------------
+
+   A class object defined within CSS can be edited using the `edit'
+command or the `EditObj' function (described below).  Classes offer
+the ability to customize the edit dialog through the use of comment
+directives, which are the same as those used in the hard-coded C++
+classes with the TypeAccess system.  These allow class member
+functions to be associated with a button (using the #BUTTON
+directive) which, when pressed, calls the member function.  By
+default functions are added to an "Actions" menu, but the
+#MENU_ON_menuname directive puts that function on a menu named
+"menuname".  The full list of directives is given in *Note
+prog-comdir::.
+
+
+File: ta_css,  Node: css-startup,  Next: css-shell,  Prev: css-gui,  Up: css-ref
+
+CSS Startup options
+-------------------
+
+   The following startup arguments are interpreted by CSS:
+
+`[-f|-file] <file>'
+     Compile and execute the given file upon startup. The default is
+     to then exit after execution, but this can be overridden by the
+     `-i' flag.
+
+`[-e|-exec] <code>'
+     Compile and execute the given code upon startup.  The code is
+     passed as a single string argument, and should contain CSS code
+     separated by semicolons.  The default is to then exit after
+     execution, but this can be overridden by the `-i' flag.
+
+`[-i|-interactive]'
+     If using `-f' or `-e', CSS will go into interactive (prompt)
+     mode after startup execution.
+
+`-v[<number>]'
+     Run CSS with the initial debug level set to given number
+     (default 1)
+
+`[-b|-bp] <line>'
+     Set an initial breakpoint at the given line of code (only if
+     using `-f').
+
+`[-gui]'
+     Enable the graphical-user-interface to CSS class objects.  This
+     is not activated by default, since most uses of CSS don't
+     involve the gui.
+
+   Any other arguments can be accessed by user script programs by the
+global variables `argv' (an array of strings) and `argc' (an int).
+
+   Note that it is possible to make a self-executing css program by
+putting the following on the very first line of the file:
+     #!/usr/local/pdp++/bin/SUN4/css -f
+
+   In addition to these arguments, CSS looks for a file named
+`.cssinitrc' in the user's home directory, which contains CSS code
+that is run when CSS is started.  This is useful for setting various
+command `alias'es, and defining commonly-used `extern' functions.  An
+example `.cssinitrc' file is located in `config/std.cssinitrc'.
+
+
+File: ta_css,  Node: css-shell,  Next: css-types,  Prev: css-startup,  Up: css-ref
+
+The CSS Command Shell
+---------------------
+
+   The primary interface to CSS is via the command shell, which
+provides a prompt and allows the user to enter commands, etc.  This
+shell has some useful features, including _editing_, _history_, and
+_completion_, all of which are provided by the GNU readline library.
+
+   The current line can be edited using a subset of the emacs editing
+commands, including Ctrl-f, Ctrl-b, Ctrl-a, Ctrl-e, etc.
+
+   A running history of everything that has been entered is kept, and
+can be accessed by using the Ctrl-p and Ctrl-n commands (previous and
+next, respectively).  This makes it easy to repeat previous commands,
+especially when combined with the editing facility.
+
+   Completion occurs when the TAB key is pressed after some
+partially-entered expression, causing the shell to suggest a
+completion to the expression based on the part that has already been
+entered.  If there is more than one possible completion, then the
+shell will beep, and pressing TAB a second time will produce a list
+of all of the possible completions.  Completion is based on all of
+the keywords currently defined (including types, commands, functions,
+user-defined variables and functions, etc), except in the following
+two cases: If the expression starts with a ".", it is interpreted as
+a path, and the next segment of the path to either an object or a
+member function of an object is suggested by the shell.  If the
+expression contains a scoping operator "::", then the completion will
+interpret whatever is in front of the scoping operator as a type
+name, and will suggest the possible members, subtypes, etc. of that
+type as completions.
+
+
+File: ta_css,  Node: css-types,  Next: css-commands,  Prev: css-shell,  Up: css-ref
+
+Basic Types in CSS
+------------------
+
+   There are six basic "primitive" types in CSS: `Int', `Real',
+`char', `String', `bool', and `enum'.  An `Int' is essentially an
+`int', a `Real' is essentially a `double', and a `String' is a C++,
+dynamically-allocating string object.  A `char' is just an int object
+that will convert into its equivalen ASCII character instead of its
+numerical value when converted into a String.  A `bool' has two
+values: `true' and `false'.  An `enum' has defined enumeration
+values, and will convert a string representation of one of those
+values into the corresponding symbolic/numeric value.
+
+   All of the other flavors of `int' in C, including `short', `long',
+`unsigned', etc, are all just defined to be the same as an `Int'.
+Similarly, a `float' and `double' are defined to be the same as a
+`Real'.  The `String' object is the same as the one that comes with
+the GNU libg++ library (slightly modified), which provides all of the
+common string manipulation functions as member functions of the
+`String' object, and handles the allocation of memory for the string
+dynamically, etc.
+
+   In addition to the primitive types, there are reference, pointer,
+and array types.  Also, there are both script-defined and
+TypeAccess-derived hard-coded `class' objects.  Finally, there are
+types that point to hard-coded members of class objects, which
+correspond to all of the basic C types, and, unlike the basic script
+types, are sensitive to the actual size of a `short' vs a `long', etc.
+
+   Finally there is a special `SubShell' type, which allows one to
+have multiple compile spaces (cssProgSpace's) within css.  Thus, one
+could `load' one program into the current shell, and use a SubShell
+to load another one without getting rid of the first.  The two shells
+can communicate via `extern' objects, and they share the same type
+space.  Typical usage is:
+
+     css> extern SubShell sub_shell;
+     css> chsh sub_shell
+
+   The first line defines the object (`extern' is recommended else it
+will be removed when the parent shell is recompiled), and the second
+switches to it.  To exit from the sub shell, just use `exit' or
+`ctrl-D' (and have faith that when you answer 'y' you will be
+returned to the parent shell).
+

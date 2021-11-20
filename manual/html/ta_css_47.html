@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - gui-win-operation</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_46.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_48.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX243" HREF="ta_css_toc.html">7.1.1  How to operate Windows</A></H3>
+<P>
+<A NAME="IDX244"></A>
+
+</P>
+<P>
+PDP++ relies on your window manager for positioning, and iconifying the
+graphical windows of the program. Please refer to your window manager's
+manual for more information on the mouse movements and button presses
+needed to accomplish these tasks. For all the window objects in PDP++
+there are CSS commands which ask the window manager to position or
+iconify the windows associated with the object. It is up to the window
+manager to provide the correct behavior for these "hints". PDP++ WinBase
+Window's position and iconification status can be manipulated with the
+following commands:
+
+</P>
+<P>
+<A NAME="IDX245"></A>
+<DL COMPACT>
+
+<DT><CODE>GetWinPos()</CODE>
+<DD>
+<A NAME="IDX246"></A>
+Stores the window's current position and size on the object. When the object
+is saved the position and size of its window will be saved as well so that the
+window has the correct geometry when the object is loaded at a later time.
+<DT><CODE>ScriptWinPos()</CODE>
+<DD>
+<A NAME="IDX247"></A>
+Generates css script code for positioning the window at its current location
+and prints the code  to the output window or to a recording script.
+<DT><CODE>SetWinPos(float left, float bottom, float width, float height)</CODE>
+<DD>
+<A NAME="IDX248"></A>
+Asks the window manager to resize and move the window to the specified
+parameters. If no parameters are given, this functions uses the parameters
+stored on the object.
+<DT><CODE>Resize (float width, float height)</CODE>
+<DD>
+<A NAME="IDX249"></A>
+Asks the window manager to resize the window to the specified parameters. If
+no parameters are given, this functions uses the parameters stored on the
+object.
+<DT><CODE>Move (float left, float bottom)</CODE>
+<DD>
+<A NAME="IDX250"></A>
+Asks the window manager to move the window to the specified parameters. If no
+parameters are given, this functions uses the parameters stored on the object.
+<DT><CODE>Iconify()</CODE>
+<DD>
+<A NAME="IDX251"></A>
+Asks the window manager to iconify the window.
+<DT><CODE>DeIconify()</CODE>
+<DD>
+<A NAME="IDX252"></A>
+Asks the window manager to deiconify the window.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_46.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_48.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

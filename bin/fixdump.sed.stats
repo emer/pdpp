@@ -1,0 +1,9 @@
+s/ev_specs/event_specs/g
+s/PSpec/PrjnSpec/g
+s/COPY/LAST/g
+s/agg/time_agg/g
+s/net_time_agg/net_agg/g
+s/time_time_agg/time_agg/g
+s/time_time_agg/time_agg/g
+s/SSE/SE/g
+s/sse {/se {/g

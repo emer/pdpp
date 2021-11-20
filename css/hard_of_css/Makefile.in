@@ -1,0 +1,70 @@
+#####################################################
+#
+#  Hardcode CSS Makefile
+#	    
+
+# INSTRUCTIONS: to compile a .css file into binary format, you can use
+# this Makefile together with the libtypea_min and libhard_css
+# libraries.  The steps are as follows:
+# 
+# 1. Make the libraries from the PDPDIR, doing 'make lib_min' and 'make hard_css'
+#    after having done regular compiles.  lib_min will clean out the current make
+#    in the src/ta directory because the same files need to be recompiled with 
+#    a different set of flags.
+#
+# 2. Make sure the definitions of PDPDIR and TOP in this file are correctly set.
+#
+# 3. Copy this file into the compile directory, AS TWO FILES: Makefile.in 
+#    and Makefile.  Then, type 'make init_makefile' to make the actual
+#    initial Makefile, by composing from all the standard makefiles.
+#
+# 4. If your config requires the VT (virtual table) files, then copy
+#    PDPDIR/config/hard_of_css_vt.cc to your compile directory as well.
+# 
+# 5. You should then be able to make an executable from your .css file by
+#    typing 'make fname' where fname is the name of the file (WITHOUT the
+#    .css extension).  You might have to create a link to the .css file 
+#    using a more standard extension if the c++ compiler complains.
+#    For example: ln -s fname.css fname.cc
+# 
+# 6. For a working example, see PDPDIR/src/hard_of_css..
+
+# this must be set to point to the location where pdp++ was actually
+# installed!!
+PDPDIR = /usr/local/pdp++
+
+# this must be set to point to the location where this file is actually
+# located.  
+TOP = $(PDPDIR)/src
+
+# use this command first to actually make the makefile!
+init_makefile:	   InitMakefile
+
+InitMakefile:
+	-@ cp Makefile Makefile.bak;\
+	cat $(PDPDIR)/config/Makefile.defs \
+	$(PDPDIR)/config/Makefile.$(CPU) \
+	$(TOP)/Makefile.user Makefile.in >Makefile
+
+# this is for any _vt or _ti files that might be needed..
+PROJNAME = hard_of_css
+
+LIBS = -lhard_css -ltypea_min -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# usually compiling optimized..
+OPT_DEBUG = $(OPT_FLAGS)
+
+% : %.c
+	$(CC) -o $@ $(CFLAGS) $(LDIRS) $(IDIRS) $<  $(LIBS)
+
+% : %.cc 
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.css
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.o
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+.cc.o:
+	$(CXX) -o $@ $(VT_INST_FLAG) $(IDIRS) $(CCFLAGS) -c $< 

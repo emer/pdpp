@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - obj-random</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_100.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_102.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX470" HREF="pdp-user_toc.html">8.5  Random Distributions</A></H2>
+<P>
+<A NAME="IDX471"></A>
+<A NAME="IDX472"></A>
+
+</P>
+<P>
+Random distributions in PDP++ are handled by an instance of the class
+<B>Random</B>. This class has a number of functions which return a random
+number from the distribution named by the function. Alternately the
+distribution can be specified in the object itself in which case the
+<CODE>Gen()</CODE> function returns a value from the specified
+distribution. Many of the distributions require parameters which are
+again either passed to the specific functions or set on the Random
+object itself.
+
+</P>
+<P>
+Random class Variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Type type</CODE>
+<DD>
+<A NAME="IDX473"></A>
+Indicates the type of random variable to generate when the
+<CODE>Gen()</CODE> function is called. It can have one of the following values:
+<DL COMPACT>
+
+<DT><CODE>UNIFORM</CODE>
+<DD>
+A uniform distribution with <CODE>var</CODE> = half-range
+<DT><CODE>BINOMIAL</CODE>
+<DD>
+A binomial distribution with <CODE>var</CODE> = p, <CODE>par</CODE> = n
+<DT><CODE>POISSON</CODE>
+<DD>
+A Poisson distribution with <CODE>var</CODE> = lambda
+<DT><CODE>GAMMA</CODE>
+<DD>
+A gamma distribution with <CODE>var</CODE> and <CODE>par</CODE> = stages
+<DT><CODE>GAUSSIAN</CODE>
+<DD>
+A normal gaussian distribution with <CODE>var</CODE>
+<DT><CODE>NONE</CODE>
+<DD>
+Returns the <CODE>mean</CODE> value
+</DL>
+<DT><CODE>float mean</CODE>
+<DD>
+<A NAME="IDX474"></A>
+The mean of a random distribution
+
+<DT><CODE>float var</CODE>
+<DD>
+<A NAME="IDX475"></A>
+The "variance" or rough equivalent (half-range)
+
+<DT><CODE>float par</CODE>
+<DD>
+<A NAME="IDX476"></A>
+An extra parameter used for some distributions
+</DL>
+
+<P>
+Random Class Functions
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>float ZeroOne()</CODE>
+<DD>
+<A NAME="IDX477"></A>
+Returns a uniform random number between zero and one
+
+<DT><CODE>float Range(float rng)</CODE>
+<DD>
+<A NAME="IDX478"></A>
+Returns a uniform random number with a given range centered at 0
+
+<DT><CODE>float Uniform(float half_rng)</CODE>
+<DD>
+<A NAME="IDX479"></A>
+Returns a uniform random number with given half-range centered at 0
+
+<DT><CODE>float Binom(int n, float p)</CODE>
+<DD>
+<A NAME="IDX480"></A>
+Returns a random number from a binomial distribution with <CODE>n</CODE> trials
+each of probability <CODE>p</CODE>
+
+<DT><CODE>float Poisson(float l)</CODE>
+<DD>
+<A NAME="IDX481"></A>
+Returns a random number from a Poisson distribution with parameter
+<CODE>l</CODE>
+
+<DT><CODE>float Gamma(float var, int j)</CODE>
+<DD>
+<A NAME="IDX482"></A>
+Returns a random number from a Gamma distribution with variance
+<CODE>var</CODE> and <CODE>par</CODE> number of exponential stages
+
+<DT><CODE>float Gauss(float var)</CODE>
+<DD>
+<A NAME="IDX483"></A>
+Returns a gaussian (normal) random number with a variance <CODE>var</CODE>
+
+<DT><CODE>float Gen()</CODE>
+<DD>
+<A NAME="IDX484"></A>
+Returns a random number using the distributions type <CODE>type</CODE> and the
+<CODE>mean</CODE>, <CODE>var</CODE>, and <CODE>par</CODE> variables on the Random object
+itself.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_100.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_102.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-over</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_207.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_209.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1283" HREF="pdp-user_toc.html">14.2.1  Overview of the RBp Implementation</A></H3>
+<P>
+<A NAME="IDX1284"></A>
+
+</P>
+<P>
+The recurrent backprop implementation (RBp) defines a new set of types
+that are derived from the corresponding Bp versions: <B>RBpConSpec,
+RBpUnit, RBpUnitSpec, RBpTrial, RBpSequence</B>.  Note that RBp uses the
+same Connection type as Bp.  In addition, support for the Almeida-Pineda
+algorithm is made possible by the following set of process types, which
+control the activation and backpropagation phases of that algorithm,
+which otherwise uses the same basic types as RBp: <B>APBpCycle, 
+APBpSettle, APBpTrial, APBpMaxDa_De</B>.
+
+</P>
+<P>
+There are a couple of general features of the version of recurrent
+backprop implemented in PDP++ that the user should be aware of.  First
+of all, the model used is that of a discrete approximation to a
+continuous dynamic system, which is defined by the sigmoidal activation
+of the net input to the units.  The granularity of the discrete
+approximation is controlled by the <CODE>dt</CODE> parameter, which should be
+in the range between 0 and 1, with smaller values corresponding to a
+finer, closer to continuous approximation.  Thus, the behavior of the
+network should be roughly similar for different <CODE>dt</CODE> values, with
+the main effect of <CODE>dt</CODE> being to make updating smoother or rougher.
+
+</P>
+<P>
+Also, there are two ways in which the units can settle, one involves
+making incremental changes to the activation values of units, and the
+other involves making incremental changes to the net inputs.  The latter
+is generally preferred since it allows networks with large weights to
+update activations quickly compared to activation-based updates, which
+have a strict ceiling on the update rate since the maximum activation
+value is 1, while the maximum net input value is unbounded.
+
+</P>
+<P>
+As in standard backpropagation, recurrent backprop operates in two
+phases: activation propagation and error backpropagation.  The
+difference in recurrent backprop is that both of these phases extend
+over time.  Thus, the network is run for some number of activation
+update cycles, during which a record of the activation states is kept by
+each unit, and then a backpropagation is performed that goes all the way
+back in time through the record of these activation states.  The
+backpropagation happens between the receiving units at time t and the
+sending units at the previous time step, time t-1.  Another way of
+thinking about this process is to unfold the network in time, which
+would result in a large network with a new set of layers for each time
+step, but with the same set of weights used repeatedly for each time
+step unfolding.  Doing this, it is clear that the sending units are in
+the previous time step relative to the receiving units.
+
+</P>
+<P>
+The exact length of the activation propagation phase and the timing and
+frequency of the backpropagation phases can be controlled in different
+ways that are appropriate for different kinds of tasks.  In cases where
+there is a clearly-defined notion of a set of distinct temporal
+sequences, one can propagate activation all the way through each
+sequence, and then backpropagate at the end of the sequence.  This is
+the default mode of operation for the processes.
+
+</P>
+<P>
+There are other kinds of environments where there is no clear boundary
+between one sequence and the next.  This is known as "real time" mode,
+and it works by periodically performing a backpropagation operation
+after some number of activation updates have been performed.  Thus,
+there is a notion of a "time window" over which the network will be
+sensitive to temporal contingencies through the weight updates driven by
+a single backpropagation operation.  In addition, these backpropagations
+can occur with a period that is less than the length of the time window,
+so that there is some overlap in the events covered by successive
+backpropagation operations.  This can enable longer-range temporal
+contingencies to be bootstrapped from a series of overlapping 
+backpropagations, each with a smaller time window. 
+
+</P>
+<P>
+There is a simpler variation of a recurrent backpropagation algorithm
+that was invented by Almeida and Pineda, and is named after them.  In
+this algorithm, the activation updating phase proceeds iteratively until
+the maximum change between the previous and the current activation
+values over all units is below some criterion.  Thus, the network
+settles into a stable attractor state.  Then, the backpropagation phase
+is performed repeatedly until it too settles on a stable set of error
+derivative terms (i.e., the maximum difference between the derivative of
+the error for each unit and the previously computed such derivative is
+below some threshold).  These asymptotic error derivatives are then used
+to update the weights.  Note that the backpropagation operates
+repeatedly on the asymptotic or stable activation values computed during
+the first stage of settling, and not on the trajectory of these
+activation states as in the "standard" version of RBp.  The
+Almeida-Pineda form of the algorithm is enabled by using the <B>APBp</B>
+processes, which compute the two phases of settling over cycles of
+either activation propagation or error backpropagation.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_207.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_209.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

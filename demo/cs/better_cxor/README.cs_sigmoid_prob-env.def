@@ -1,0 +1,6 @@
+This defaults file is based on the cs_prob_env.def defaults file, but uses
+SigmoidUnitSpec units instead of CsUnitSpec units.
+
+----------------------------------------------------------------------------
+Karl Pfleger   kpfleger@cs.stanford.edu   http://www.stanford.edu/~kpfleger/
+----------------------------------------------------------------------------

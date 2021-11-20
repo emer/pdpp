@@ -1,0 +1,59 @@
+// this is the basic code that needs to go into the script version
+// of a SchedProcess
+
+void S_Loop() {			// replace existing functions with S_ versions
+  cout << "This is custom loop code!\n";
+  // then run the sub-process
+  if(sub_proc != NULL) sub_proc->Run();
+}
+
+// and call the S_ versions of the function in the big loop of the process..
+
+void S_Code() {
+  bool stop_crit = false;	// a stopping criterion was reached
+  bool stop_force = false;	// either the Stop button was pressed or our Step level was reached
+
+  if(re_init) {			// if its time to re-initialize, then do it
+    Init();			// this sets the counters to zero, etc.
+    InitProcs();		// this runs any initialization processes
+  }
+
+  do {
+    S_Loop();			// user defined code goes here
+    if(!bailing) {
+      UpdateCounters();		// increment the counters (before logging)
+      LoopProcs();		// check/run loop procs (use mod based on counter)
+      LoopStats();		// udpate in-loop stats
+      if(log_loop)
+	UpdateLogs();		// generate log output and update logs
+      UpdateState();		// update process state vars
+
+      stop_crit = Crit();   	// check if stopping criterion was reached
+      if(!stop_crit) {		// if at critera, going to quit anyway, so don't
+	stop_force = StopCheck(); // check for stopping (either by Stop button or Step)
+      }
+    }
+  }
+  while(!bailing && !stop_crit && !stop_force);
+  // loop until we reach criterion (e.g. ctr > max) or are forcibly stopped
+
+  if(stop_crit) {		// we stopped because we reached criterion
+    Final();			// user defined code at end of loop
+    FinalProcs();		// call the final procs
+    FinalStats();		// final statistics after looping
+    if(!log_loop)
+      UpdateLogs();		// if not loggin in loop, logging at end
+    UpdateDisplays();		// update displays after the loop
+    SetReInit(true);		// made it through the loop, so Init next time
+    FinalStepCheck();		// always stop at end if i'm the step process
+  }
+  else {			// we we're forcibly stopped for some reason
+    bailing = true;		// now we're bailing out of all further processing
+  }
+}
+
+S_Code();
+
+
+
+

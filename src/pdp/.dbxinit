@@ -1,0 +1,22 @@
+alias ls list
+alias ib status
+alias showbp status
+alias v file
+dir /usr/local/pdp++/src/tastring
+dir /usr/local/pdp++/src/iv_misc
+dir /usr/local/pdp++/src/ta
+dir /usr/local/pdp++/src/css
+dir /usr/local/pdp++/src/iv_graphic
+dir /usr/local/pdp++/src/ta_misc
+dir /usr/local/pdp++/src/pdp
+dir /usr/local/pdp++/src/bp
+dir /usr/local/pdp++/src/cs
+dir /usr/local/pdp++/src/so
+dir /usr/local/pdp++/src/leabra
+dir /usr/local/iv/iv-3.2a-pdp/src/lib/InterViews
+dir /usr/local/iv/iv-3.2a-pdp/src/lib/IV-look
+dir /usr/local/iv/iv-3.2a-pdp/src/lib/IV-X11
+dir /usr/local/iv/iv-3.2a-pdp/src/include/InterViews
+dir /usr/local/iv/iv-3.2a-pdp/src/include/IV-look
+dir /usr/local/iv/iv-3.2a-pdp/src/include/IV-X11
+

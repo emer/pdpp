@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-typea-args</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_250.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_252.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1674" HREF="pdp-user_toc.html">18.2.2  Startup Arguments for <TT>`maketa'</TT></A></H3>
+
+<P>
+The type-scanning program <TT>`maketa'</TT> takes the following arguments:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>[-v&#60;level&#62;]</CODE>
+<DD>
+Verbosity level, 1-5, 1=results,2=more detail,3=trace,4=source,5=parse.
+<DT><CODE>[-hx | -nohx]</CODE>
+<DD>
+Generate .hx, .ccx files instead of .h, .cc.  This is used in
+conjunction with a makefile that compares the .hx with the .h version of
+a file and only updates the .h if it actually differs from the .hx
+version.  This prevents lots of needless recompiling when the
+type-scanned information is not actually different when a header file
+was touched.
+<DT><CODE>[-css]</CODE>
+<DD>
+Generate CSS stub functions.  The stub functions take <B>cssEl*</B>
+arguments, and call member functions on classes.  These must be present
+to use CSS to call member functions on classes, or to call functions
+from the edit dialog menus and buttons.
+<DT><CODE>[-instances]</CODE>
+<DD>
+Generate instance tokens of types.  Instances are needed to make tokens
+of class objects.
+<DT><CODE>[-class_only | -struct_union]</CODE>
+<DD>
+Only scan for <CODE>class</CODE> types (else <CODE>struct</CODE> and <CODE>union</CODE>
+too). The default is to only scan for <CODE>class</CODE> types because they
+are always used in the definition of a class object.  <CODE>struct</CODE> and
+<CODE>union</CODE> can be used to modify the type name in old-style C code,
+which can throw off the scanner since these don't amount to class
+definitions.
+<DT><CODE>[-I&#60;include&#62;]...</CODE>
+<DD>
+Path to include files (one path per -I).
+<DT><CODE>[-D&#60;define&#62;]...</CODE>
+<DD>
+Define a pre-processor macro.
+<DT><CODE>[-cpp=&#60;cpp command&#62;]</CODE>
+<DD>
+Explicit path for c-pre-processor.  The default is to use
+<TT>`/usr/lib/cpp'</TT>, which doesn't work very well on C++ code, but its
+there.  It is recommended that you use cccp, which is the gnu
+preprocessor that comes with gcc.
+<DT><CODE>[-hash&#60;size&#62;]</CODE>
+<DD>
+Size of hash tables (default 2000), use -v1 to see actual sizes after
+parsing all the types.
+<DT><CODE>project</CODE>
+<DD>
+This is the stub project name (generates
+project_TA[.cc|_type.h|_inst.h]).
+<DT><CODE>files...</CODE>
+<DD>
+These are the header files to be processed.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_250.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_252.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

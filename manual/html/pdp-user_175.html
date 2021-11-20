@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-compare</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_174.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_176.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1057" HREF="pdp-user_toc.html">12.8.4  Comparing or Computing on Stat Values</A></H3>
+<P>
+<A NAME="IDX1058"></A>
+<A NAME="IDX1059"></A>
+<A NAME="IDX1060"></A>
+<A NAME="IDX1061"></A>
+<A NAME="IDX1062"></A>
+<A NAME="IDX1063"></A>
+
+</P>
+<P>
+The <B>CompareStat</B> provides a general way of comparing the results of
+different statistics with each other.  Thus, one can actually use
+statistics to analyze one's data on-line, instead of dumping it all to a
+file and analyzing it after the fact.
+
+</P>
+<P>
+Similarly, the <B>ComputeStat</B> provides a general way of performing
+simple math computations on the results of other stat computations.  It
+can be used on one stat (e.g., for thresholding, absolute-value or other
+single-argument operations), or on two stats (e.g., for multiplying,
+subtracting, etc between two stats).
+
+</P>
+<P>
+The compare stat contains pointers to two other stats, <CODE>stat_1</CODE> and
+<CODE>stat_2</CODE>, which provide the data to compare.  The data consists of
+any stat val data that can be found on these stats.  Ideally, they both
+have the same number of data values, typically in their <CODE>copy_vals</CODE>
+group (e.g., from <B>MonitorStat</B>s that are <CODE>COPY</CODE>ing activations
+from two sets of units that are being compared).
+
+</P>
+<P>
+The types of comparisons are simply different distance functions that
+measure the distances between the two stat's data:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>CompareType cmp_type</CODE>
+<DD>
+<A NAME="IDX1064"></A>
+This is the type of distance function to use in making the comparison:
+<DL COMPACT>
+
+<DT><CODE>SUM_SQUARES</CODE>
+<DD>
+sum of squares distance: sum[(x-y)^2]
+<DT><CODE>EUCLIDIAN</CODE>
+<DD>
+euclidean distance: sqrt(sum[(x-y)^2])
+<DT><CODE>HAMMING_DIST</CODE>
+<DD>
+hamming distance: sum[abs(x-y)]
+<DT><CODE>COVAR</CODE>
+<DD>
+covariance: sum[(x-&#60;x&#62;)(y-&#60;y&#62;)]
+<DT><CODE>CORREL</CODE>
+<DD>
+correlation: sum[(x-&#60;x&#62;)(y-&#60;y&#62;)] / sqrt(sum[x^2 y^2])
+<DT><CODE>INNER_PROD</CODE>
+<DD>
+inner product: sum[x y]
+<DT><CODE>CROSS_ENTROPY</CODE>
+<DD>
+cross entropy: sum[x ln(x/y) + (1-x)ln((1-x)/(1-y))]
+</DL>
+<DT><CODE>float dist_tol</CODE>
+<DD>
+<A NAME="IDX1065"></A>
+This is a tolerance value for distance comparisons, where absolute
+differences below this amount result in a 0 distance component.
+<DT><CODE>bool norm</CODE>
+<DD>
+<A NAME="IDX1066"></A>
+If this flag is checked, and one of the distance comparisons is being
+performed, the values participating in the distance computation will be
+normalized to a zero-one range prior to computation.  If the
+<CODE>INNER_PROD</CODE> is being taken, this will result in a normalized
+inner-product measure (dividing by the magnitudes of the individual
+weight vectors).
+<DT><CODE>SimpleMathSpec pre_proc_1,2,3</CODE>
+<DD>
+<A NAME="IDX1067"></A>
+These allow for three steps of pre-processing on the values before they
+are compared.  These members specify an operation and, optionally,
+arguements to that operation in the <CODE>arg</CODE> member.  Note that the
+thresholding function <CODE>THRESH</CODE> compares the value to the
+<CODE>arg</CODE>, and gives a result of <CODE>hi</CODE> if it is
+greater-than-or-equal, and <CODE>lo</CODE> if it is less-than the arg.
+</DL>
+
+<P>
+The <B>ComputeStat</B> is like the compare stat, except that instead of
+computing the distance, the <CODE>compute_1,2,3</CODE> math operators are
+applied on the stats, and the result is aggregated according to
+<CODE>net_agg</CODE>.  Pre-processing of each stat independently is supported
+as with the compare stat.  To compute something between two stats (e.g.,
+subtract values), then you just set the compute_1 operator <CODE>opr</CODE> to
+<CODE>SUB</CODE>, and stat_2 values are subtracted from stat_1 values, with
+the result going into stat_1.  Subsequent compute_ operators can then
+manipulate this result (e.g, doing the <CODE>SQUARE</CODE>).  Note that they
+don't all have to involve both stats, and you can only use one stat (in
+which case compute_x just works like pre_proc_x).
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_174.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_176.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

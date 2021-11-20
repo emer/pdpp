@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-networks</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_33.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_35.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.2  Making a New Network</A></H3>
+
+<P>
+Now, lets make the <B>Network</B>.  Select <I>.networks</I> / <I>New</I> /
+<I>Network</I> and <I>Ok</I>.  You now have a blank <B>Network</B> object, and a
+<B>NetView</B> window in which to view it.
+
+</P>
+<P>
+Click <I>New Layer(s)</I>, set the <CODE>Number</CODE> to 3 (by editing the number
+field or using the increment/decrement buttons), and hit <I>Ok</I>.  Your
+three layers will appear, but at this point none of them contain any
+units.  The <B>NetView</B> is now in <I>ReShape</I> mode (the corresponding
+mode button is highlighted).  So, if you select "Layer_0", you can start
+to reshape it.  Click and hold in the line you see above the layer label
+(this line is a layer-frame with no space in it yet) and drag the mouse
+to the right; boxes will appear corresponding to unit-spaces.  When you
+have 4, stop and let go.  You've created a frame for four units.  Click
+on the line above "Layer_1" to create a frame for the two hidden units;
+drag right until two boxes appear.  Finally click on the line above the
+"Layer_2" label, and create a frame for the four output units. You now
+have frames but no units; to create the units, in all three layers at
+once, just click on <I>Build All</I>.  The units should all now be visible,
+and the default <I>act</I> variable selected, indicating that your are
+viewing their activation states, which should all be zero.
+
+</P>
+<P>
+You can move the hidden layer to be centered, by selecting <I>Move</I> mode
+then dragging the hidden layer with the mouse.  Note that things move in
+"chunks" of the size of a single unit, so you will have to move the
+mouse a certain amount before the layer itself moves.  It's a good idea
+to go back to Select mode after moving by hitting <I>Select</I>.
+
+</P>
+<P>
+Also, clicking the <I>Init</I> button will adjust the display of the
+network to fill the available space, and generally fix any display
+problems.  It is automatically performed most of the time, but you can
+use the <I>Init</I> button if the display doesn't look right for some
+reason.
+
+</P>
+<P>
+Now we need to make connections.  Actually, you first make
+<B>Projection</B>s then create connections within the projections.  A
+projection is to a connection what a layer is to a unit; it represents a
+bunch of connections that connect units in two layers.  In any case, you
+need to create two projections.  One to the hidden layer from the input
+layer, and one to the output layer from the hidden layer.  In each case:
+
+</P>
+
+<IL>
+<LI>
+
+Select the receiving layer with the left mouse button.  You want to
+see the frame around all of the units highlighted.  This should occur on
+the first click; if that's not what you see, keep clicking until it is; 
+(you're cycling the selection through the layer, all the units, and the
+unit under the mouse).  
+
+<LI>
+
+Add the sending layer to the selection using the "extend-select", which
+can be done with either the middle mouse button, or the Shift key plus
+the left mouse button, depending on whether you come from a Unix or a
+Mac background.  Now both the sending and receiving layers should be
+highlighted. If you make a mistake, click the left mouse button in the
+background area of the NetView between the layers to unselect the layers
+and start over with the previous step.
+
+<LI>
+
+When you have 2 layers selected, click <I>New Prjn(s)</I>, which will be
+highlighted. A Projection arrow should appear between the two layers.
+Note that the arrow head of the projection arrow is unfilled (outline)
+indicating the the actual connections have not been created yet.
+</IL>
+
+<P>
+After you do this for both projections you will have two unfilled
+arrows.  Now click <I>Connect All</I> and your projections will be filled
+with connections to each unit on the receiving end from each unit on the
+sending end. Now the arrow heads of the projections will be solid
+indicating that their connections have indeed been created. You may
+verify this by clicking on the <I>r.wt</I> button and using the finger
+pointer to view the weights of some of the hidden and output units.
+When you are finished looking around, return to viewing the activations
+by pressing <I>act</I>.
+
+</P>
+<P>
+And your network is complete.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_33.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_35.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

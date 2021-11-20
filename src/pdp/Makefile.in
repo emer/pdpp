@@ -1,0 +1,67 @@
+# pdp makefile for ta/css/pdp system
+
+##################################
+# these are the things to set
+#
+
+LIBS = -lpdp_bp -ltamisc -livgraphic -lcss -ltypea -livmisc -lreadline -ltermcap\
+	 -ltastring $(IV_LIB) $(X11_LIB) $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+EXTERNAL_LIBS = -ltamisc -livgraphic -lcss -ltypea -livmisc -lreadline -ltermcap\
+	        -ltastring $(IV_LIB) $(X11_LIB) $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+PROJNAME = pdp
+PROJDIR = pdp
+
+EXE = pdpshell
+
+# "distribution" executable
+DIST_EXE = pdp++
+
+LIB = libpdp.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx -css -instances
+
+TAHEADS = $(VPATH)/declare.h $(VPATH)/base.h \
+	$(VPATH)/spec.h $(VPATH)/spec_tmplt.h \
+	$(VPATH)/netstru.h $(VPATH)/enviro.h \
+	$(VPATH)/process.h $(VPATH)/pdplog.h \
+	$(VPATH)/stats.h $(VPATH)/sched_proc.h \
+	$(VPATH)/net_iv.h $(VPATH)/pdp_iv.h \
+	$(VPATH)/enviro_iv.h \
+	$(VPATH)/netstru_extra.h $(VPATH)/enviro_extra.h \
+	$(VPATH)/procs_extra.h \
+	$(VPATH)/pdpshell.h 
+
+HEADS_TA = declare.h base.h spec.h spec_tmplt.h \
+	netstru.h enviro.h process.h pdplog.h stats.h sched_proc.h \
+	net_iv.h pdp_iv.h enviro_iv.h \
+	netstru_extra.h enviro_extra.h procs_extra.h \
+	pdpshell.h 
+
+HEADS = $(HEADS_TA) $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS =  spec.cc netstru.cc enviro.cc process.cc pdplog.cc stats.cc sched_proc.cc \
+	netstru_extra.cc enviro_extra.cc procs_extra.cc \
+	net_iv.cc enviro_iv.cc pdplog_iv.cc pdp_iv.cc pdpshell.cc pdp_TA.cc
+
+OBJS =  spec.o netstru.o enviro.o process.o pdplog.o stats.o sched_proc.o \
+	netstru_extra.o enviro_extra.o procs_extra.o \
+	net_iv.o enviro_iv.o pdplog_iv.o pdp_iv.o pdpshell.o pdp_TA.o
+
+EXEOBJS = $(OBJS) main.o
+
+# extra dependencies for executables: include bp library..
+EXE_DEPENDS = bp_lib
+
+bp_lib:	$(LIB)
+	$(CD) $(TOP)/bp; $(MAKE) optLib
+
+DEPS =  spec.d netstru.d enviro.d process.d pdplog.d stats.d sched_proc.d \
+	netstru_extra.d enviro_extra.d procs_extra.d \
+	net_iv.d enviro_iv.d pdplog_iv.d pdp_iv.d pdpshell.d pdp_TA.d main.d
+
+default: optLib
+#default: dbgBin
+
+
+

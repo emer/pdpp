@@ -1,0 +1,1271 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: leabra,  Next: prog,  Prev: so,  Up: Top
+
+Leabra
+******
+
+   Leabra stands for "Local, Error-driven and Associative,
+Biologically Realistic Algorithm", and it implements a balance
+between Hebbian and error-driven learning on top of a
+biologically-based point-neuron activation function with inhibitory
+competition dynamics (either via inhibitory interneurons or a fast
+k-Winners-Take-All approximation thereof).  Extensive documentation
+is available from the book: "Computational Explorations in Cognitive
+Neuroscience: Understanding the Mind by Simulating the Brain",
+O'Reilly and Munakata, 2000, Cambridge, MA: MIT Press.  For more
+information, see the website:
+`http://psych.colorado.edu/~oreilly/comp_ex_cog_neuro.html'.
+
+   Hebbian learning is performed using conditional principal
+components analysis (CPCA) algorithm with correction factor for
+sparse expected activity levels.
+
+   Error driven learning is performed using GeneRec, which is a
+generalization of the Recirculation algorithm, and approximates
+Almeida-Pineda recurrent backprop.  The symmetric, midpoint version
+of GeneRec is used, which is equivalent to the contrastive Hebbian
+learning algorithm (CHL).  See `O'Reilly (1996; Neural Computation)'
+for more details.
+
+   The activation function is a point-neuron approximation with both
+discrete spiking and continuous rate-code output.
+
+   Layer or unit-group level inhibition can be computed directly using
+a k-winners-take-all (KWTA) function, producing sparse distributed
+representations, or via inihibitory interneurons.
+
+   The net input is computed as an average, not a sum, over
+connections, based on normalized, sigmoidaly transformed weight
+values, which are subject to scaling on a connection-group level to
+alter relative contributions.  Automatic scaling is performed to
+compensate for differences in expected activity level in the
+different projections.
+
+   Weights are subject to a contrast enhancement function, which
+compensates for the soft (exponential) weight bounding that keeps
+weights within the normalized 0-1 range.  Contrast enhancement is
+important for enhancing the selectivity of self-organizing learning,
+and generally results in faster learning with better overall results.
+Learning operates on the underlying internal linear weight value,
+which is computed from the nonlinear (sigmoidal) weight value prior to
+making weight changes, and is then converted back.  The linear weight
+is always stored as a negative value, so that shared weights or
+multiple weight updates do not try to linearize the already-linear
+value.  The learning rules have been updated to assume that wt is
+negative (and linear).
+
+   There are various extensions to the algorithm that implement things
+like reinforcement learning (temporal differences), simple recurrent
+network (SRN) context layers, and combinations thereof (including an
+experimental versions of a complex temporal learning mechanism based
+on the prefrontal cortex and basal ganglia).  Other extensions
+include a variety of options for the activation and inhibition
+functions, self regulation (accommodation and hysteresis, and
+activity regulation for preventing overactive and underactive units),
+synaptic depression, and various optional learning mechanisms and
+means of adapting parameters.  These features are off by default but
+do appear in some of the edit dialogs -- any change from default
+parameters should be evident in the edit dialogs.
+
+* Menu:
+
+* leabra-over::                     Overview of the Leabra Algorithm
+* leabra-con::                      Leabra Connection Specifications
+* leabra-unit::                     Leabra Unit Specifications
+* leabra-layer::                    Leabra Layer Specifications
+* leabra-proc::                     Leabra Processes
+* leabra-stats::                    Leabra Statistics
+* leabra-defs::                     Leabra Defaults
+* leabra-misc::                     Leabra Misc Special Classes
+* leabra-impl::                     Leabra Implementation Details
+
+
+File: pdp-user,  Node: leabra-over,  Next: leabra-con,  Prev: leabra,  Up: leabra
+
+Overview of the Leabra Algorithm
+================================
+
+   The pseudocode for Leabra is given here, showing exactly how the
+pieces of the algorithm described in more detail in the subsequent
+sections fit together.
+
+     Iterate over minus and plus phases of settling for each event.
+       o At start of settling, for all units:
+         - Initialize all state variables (activation, v_m, etc).
+         - Apply external patterns (clamp input in minus, input & output in
+           plus).
+         - Compute net input scaling terms (constants, computed
+           here so network can be dynamically altered).
+         - Optimization: compute net input once from all static activations
+           (e.g., hard-clamped external inputs).
+       o During each cycle of settling, for all non-clamped units:
+         - Compute excitatory netinput (g_e(t), aka eta_j or net)
+            -- sender-based optimization by ignoring inactives.
+         - Compute kWTA inhibition for each layer, based on g_i^Q:
+           * Sort units into two groups based on g_i^Q: top k and
+             remaining k+1 -> n.
+           * If basic, find k and k+1th highest
+             If avg-based, compute avg of 1 -> k & k+1 -> n.
+           * Set inhibitory conductance g_i from g^Q_k and g^Q_k+1
+         - Compute point-neuron activation combining excitatory input and
+           inhibition
+       o After settling, for all units, record final settling activations
+         as either minus or plus phase (y^-_j or y^+_j).
+     After both phases update the weights (based on linear current
+         weight values), for all connections:
+       o Compute error-driven weight changes with soft weight bounding
+       o Compute Hebbian weight changes from plus-phase activations
+       o Compute net weight change as weighted sum of error-driven and Hebbian
+       o Increment the weights according to net weight change.
+
+Point Neuron Activation Function
+--------------------------------
+
+     Default parameter values:
+     
+     Parameter | Value | Parameter | Value
+     --------------------------------------------
+     E_l       | 0.15  | gbar_l     | 0.10
+     E_i       | 0.15  | gbar_i     | 1.0
+     E_e       | 1.00  | gbar_e     | 1.0
+     V_rest    | 0.15  | Theta      | 0.25
+     tau       | .02   | gamma      | 600
+     k_hebb    | .02   | epsilon    | .01
+
+   Leabra uses a _point neuron_ activation function that models the
+electrophysiological properties of real neurons, while simplifying
+their geometry to a single point.  This function is nearly as simple
+computationally as the standard sigmoidal activation function, but the
+more biologically-based implementation makes it considerably easier to
+model inhibitory competition, as described below.  Further, using this
+function enables cognitive models to be more easily related to more
+physiologically detailed simulations, thereby facilitating
+bridge-building between biology and cognition.
+
+   The membrane potential `V_m' is updated as a function of ionic
+conductances `g' with reversal (driving) potentials `E' as follows:
+
+   Delta V_m(t) = \tau sum_c g_c(t) gbar_c (E_c - V_m(t))
+
+   with 3 channels (c) corresponding to: e excitatory input; l leak
+current; and i inhibitory input.  Following electrophysiological
+convention, the overall conductance is decomposed into a time-varying
+component g_c(t) computed as a function of the dynamic state of the
+network, and a constant gbar_c that controls the relative influence
+of the different conductances.  The equilibrium potential can be
+written in a simplified form by setting the excitatory driving
+potential (E_e) to 1 and the leak and inhibitory driving potentials
+(E_l and E_i) of 0:
+
+   V_m^infty = [g_e gbar_e] / [g_e gbar_e + g_l gbar_l + g_i gbar_i]
+
+   which shows that the neuron is computing a balance between
+excitation and the opposing forces of leak and inhibition.  This
+equilibrium form of the equation can be understood in terms of a
+Bayesian decision making framework `(O'Reilly & Munakata, 2000)'.
+
+   The excitatory net input/conductance g_e(t) or eta_j is computed
+as the proportion of open excitatory channels as a function of sending
+activations times the weight values:
+
+   eta_j = g_e(t) = < x_i w_ij > = 1/n sum_i x_i w_ij
+
+   The inhibitory conductance is computed via the kWTA function
+described in the next section, and leak is a constant.
+
+   Activation communicated to other cells (y_j) is a thresholded
+(Theta) sigmoidal function of the membrane potential with gain
+parameter gamma:
+
+   y_j(t) = 1 / (1 + 1/(\gamma [V_m(t) - Theta]_+))
+
+   where [x]_+ is a threshold function that returns 0 if x<0 and x if
+X>0.  Note that if it returns 0, we assume y_j(t) = 0, to avoid
+dividing by 0.  As it is, this function has a very sharp threshold,
+which interferes with graded learning learning mechanisms (e.g.,
+gradient descent).  To produce a less discontinuous deterministic
+function with a softer threshold, the function is convolved with a
+Gaussian noise kernel (\mu=0, \sigma=.005), which reflects the
+intrinsic processing noise of biological neurons:
+
+   y^*_j(x) = int_-infty^infty 1 / (sqrt(2 pi) sigma) exp(-z^2/(2
+sigma^2)) y_j(z-x) dz
+
+   where x represents the [V_m(t) - \Theta]_+ value, and y^*_j(x) is
+the noise-convolved activation for that value.  In the simulation,
+this function is implemented using a numerical lookup table.
+
+k-Winners-Take-All Inhibition
+-----------------------------
+
+   Leabra uses a kWTA (k-Winners-Take-All) function to achieve
+inhibitory competition among units within a layer (area).  The kWTA
+function computes a uniform level of inhibitory current for all units
+in the layer, such that the k+1th most excited unit within a layer is
+generally below its firing threshold, while the kth is typically
+above threshold.  Activation dynamics similar to those produced by the
+kWTA function have been shown to result from simulated inhibitory
+interneurons that project both feedforward and feedback inhibition
+(OReilly & Munakata, 2000).  Thus, although the kWTA function is
+somewhat biologically implausible in its implementation (e.g.,
+requiring global information about activation states and using sorting
+mechanisms), it provides a computationally effective approximation to
+biologically plausible inhibitory dynamics.
+
+   kWTA is computed via a uniform level of inhibitory current for all
+units in the layer as follows:
+
+   g_i = g^Theta_k+1 + q (g^Theta_k - g^Theta_k+1)
+
+   where 0<q<1 (.25 default used here) is a parameter for setting the
+inhibition between the upper bound of g^Theta_k and the lower bound
+of g^Theta_k+1.  These boundary inhibition values are computed as a
+function of the level of inhibition necessary to keep a unit right at
+threshold:
+
+   g_i^Theta = (g^*_e gbar_e (E_e - Theta) + g_l gbar_l (E_l -
+Theta)) / (Theta - E_i)
+
+   where g^*_e is the excitatory net input without the bias weight
+contribution -- this allows the bias weights to override the kWTA
+constraint.
+
+   In the basic version of the kWTA function, which is relatively
+rigid about the kWTA constraint and is therefore used for output
+layers, g^Theta_k and g^Theta_k+1 are set to the threshold inhibition
+value for the kth and k+1th most excited units, respectively.  Thus,
+the inhibition is placed exactly to allow k units to be above
+threshold, and the remainder below threshold.  For this version, the
+q parameter is almost always .25, allowing the kth unit to be
+sufficiently above the inhibitory threshold.
+
+   In the _average-based_ kWTA version, g^Theta_k is the average
+g_i^Theta value for the top k most excited units, and g^Theta_k+1 is
+the average of g_i^Theta for the remaining n-k units.  This version
+allows for more flexibility in the actual number of units active
+depending on the nature of the activation distribution in the layer
+and the value of the q parameter (which is typically .6), and is
+therefore used for hidden layers.
+
+Hebbian and Error-Driven Learning
+---------------------------------
+
+   For learning, Leabra uses a combination of error-driven and Hebbian
+learning.  The error-driven component is the symmetric midpoint
+version of the GeneRec algorithm `(O'Reilly, 1996)', which is
+functionally equivalent to the deterministic Boltzmann machine and
+contrastive Hebbian learning (CHL).  The network settles in two
+phases, an expectation (minus) phase where the network's actual output
+is produced, and an outcome (plus) phase where the target output is
+experienced, and then computes a simple difference of a pre and
+postsynaptic activation product across these two phases.  For Hebbian
+learning, Leabra uses essentially the same learning rule used in
+competitive learning or mixtures-of-Gaussians which can be seen as a
+variant of the Oja normalization `(Oja, 1982)'.  The error-driven and
+Hebbian learning components are combined additively at each connection
+to produce a net weight change.
+
+   The equation for the Hebbian weight change is:
+
+   Delta_hebb w_ij = x^+_i y^+_j - y^+_j w_ij = y^+_j (x^+_i - w_ij)
+
+   and for error-driven learning using CHL:
+
+   Delta_err w_ij = (x^+_i y^+_j) - (x^-_i y^-_j)
+
+   which is subject to a soft-weight bounding to keep within the 0-1
+range:
+
+   Delta_sberr w_ij = [Delta_err]_+ (1-w_ij) + [Delta_err]_- w_ij
+
+   The two terms are then combined additively with a normalized mixing
+constant k_hebb:
+
+   Delta w_ij = epsilon [k_hebb (Delta_hebb) + (1-k_hebb)
+(Delta_sberr)]
+
+Implementational Overview
+-------------------------
+
+   The Leabra implementation defines a full range of specialized
+network objects, from connections through layers.  Unlike most PDP++
+simulations, Leabra makes extensive use of the LayerSpec type,
+specifically the LeabraLayerSpec, which specifies the
+k-winners-take-all inhibition.
+
+   The new schedule process objects consist of three essential levels
+of processing, starting at the trial level and moving down through
+settling to the cycle, which implements one activation update of the
+network.  Thus, the LeabraTrial process loops over the plus and minus
+phases of settling in the LeabraSettle process, which in turn
+iterates over cycles of the LeabraCycle process, which updates the
+activations of the units in the network.
+
+
+File: pdp-user,  Node: leabra-con,  Next: leabra-unit,  Prev: leabra-over,  Up: leabra
+
+Leabra Connection Specifications
+================================
+
+   The Leabra connection type LeabraCon contains the following
+parameters:
+
+`wt'
+     The weight value (shows up in NetView as r.wt for receiving,
+     s.wt for sending
+
+`dwt'
+     Accumulated change in weight value computed for current trial:
+     this is usually zero by the time NetView is updated
+
+`pdw'
+     Previous dwt weight change value: this is what is visible in
+     NetView.
+
+   The Leabra connection specification LeabraConSpec type contains
+the following parameters:
+
+`rnd'
+     Controls the random initialization of the weights:
+
+    `type'
+          Select type of random distribution to use (e.g., UNIFORM
+          (default), NORMAL (Gaussian)).
+
+    `mean'
+          Mean of the random distribution (mean rnd weight val).
+
+    `var'
+          Variance of the distribution (range for UNIFORM).
+
+    `par'
+          2nd parameter for distributions like BINOMIAL and GAMMA
+          that require it (not typically used).
+
+`wt_limits'
+     Sets limits on the weight values --Leabra weights are
+     constrained between 0 and 1 and are initialized     to be
+     symmetric:
+
+    `type'
+          Type of constraint (GT_MIN = greater than     min, LT_MAX =
+          less than max, MIN_MAX (default) within both min     and
+          max)
+
+    `min'
+          Minimum weight value (if GT_MIN or MIN_MAX).
+
+    `max'
+          Maximum weight value (if LT_MAX or MIN_MAX).
+
+    `sym'
+          Symmetrizes the weights (only done at initialization).
+
+`inhib'
+     Makes the connection inhibitory (net input goes to g_i instead
+     of net).
+
+`wt_scale'
+     Controls relative and absolute scaling of     weights from
+     different projections:
+
+    `abs'
+          Absolute scaling (s_k): directly multiplies weight value.
+
+    `rel'
+          Relative scaling (r_k): effect is normalized by sum of rel
+          values for all incoming projections.
+
+`wt_sig'
+     Parameters for the sigmoidal weight contrast enhancement
+     function:
+
+    `gain'
+          Gain parameter: how sharp is the contrast enhancement.
+          1=linear function.
+
+    `off'
+          Offset parameter: for values >1, how far above .5 is
+          neutral point on contrast enhancement curve (1=neutral is
+          at .5, values <1 not used, 2 is probably the maximum usable
+          value).
+
+`lrate'
+     Learning rate (epsilon).
+
+`cur_lrate'
+     Current learning rate as affected by `lrate_sched': note that
+     this is only updated when the network is actually run (and only
+     for ConSpecs that are actually used in network).
+
+`lrate_sched'
+     Schedule of learning rate over training epochs: to use, create
+     elements in the list, assign start_ctr's to epoch vals when
+     lrate's (given by start_val's) take effect.  These start_val
+     lrates _multiply_ the basic lrate, so use .1 for a cur_lrate of
+     .001 if basic lrate = .01.
+
+`lmix'
+     Sets mixture of Hebbian and err-driven learning:
+    `hebb'
+          Amount of Hebbian learning: unless using pure Hebb (1),
+          values greater than .05 are usually to big.  For large
+          networks trained on many patterns, values as low as .00005
+          are still useful.
+
+    `err'
+          Amount of error-driven: automatically set to be 1-hebb, so
+          you can't set this independently.
+
+`fix_savg'
+     Sets fixed sending avg activity     value for normalizing netin
+     (aka alpha_k): g_e_k = 1 / alpha_k < x_i     w_ij >_k.  This is
+     useful when expected activity of sending     region that
+     projection actually receives is different from that of
+     sending layer     as a whole.
+
+    `fix'
+          Toggle for actually fixing the sending avg activation to
+          value set in savg.
+
+    `savg'
+          The fixed sending average activation value -- should be
+          between 0 and 1.
+
+    `div_gp_n'
+          Divide by group n, not layer n, where group n is the number
+          of actual connections in the connection group that this
+          unit receives from (corresponds to a given projection).
+          Usually, the netinput is averaged by dividing by layer n,
+          so it is the same even with partial connectivity -- use
+          this flag to override where projection n is more meaningful.
+
+`savg_cor'
+     Correction for sending average activation     levels in hebbian
+     learning -- renormalizes weights to use full     dynamic range
+     even with sparse sending activity levels that would
+     otherwise result in generally very small weight values.
+
+    `cor'
+          Amount of correction to apply (0=none, 1=all, .5=half,
+          etc): (aka q_m):     alpha_m = .5 - q_m (.5 - alpha), where
+          m = .5 / alpha_m),     and Delta w_ij = epsilon [y_j x_i (m
+          - wij) + y_j (1-x_i)(0 -     wij)]
+
+    `src'
+          Source of the sending average act for use in
+          correction. SLAYER_AVG_ACT (default) = use actual sending
+          layer     average activation. SLAYER_TRG_PCT = use sending
+          layer target     activation level.  FIXED_SAVG = use value
+          specified in     fix_savg.savg.  COMPUTED_SAVG = use actual
+          computed average     sending activation _for each specific
+          projection_ -- this is     very computationally expensive
+          and almost never used.
+
+    `thresh'
+          Threshold of sending average     activation below which
+          Hebbian learning does not occur -- if the     sending layer
+          is essentially inactive, it is much faster to simply
+          ignore it.  Note that this also has the effect of preserving
+             weight values for projections coming from inactive
+          layers, whereas     they would otherwise uniformly decrease.
+
+   The LeabraBiasSpec connection specification is for bias weight
+(bias weights do not have the normal weight bounding and `wt_limits'
+settings, are initialized to zero with zero variance, and do not have
+a Hebbian learning component).  The parameters are:
+
+`dwt_thresh'
+     Don't change weights if `dwt'   (weight change) is below this
+     value -- this prevents bias weights   from slowly creeping up or
+     down and growing ad-infinitum even when   the network is
+     basically performing correctly -- essentially a   tolerance
+     factor for how accurate the actual activation has to be
+     relative to the target.
+
+
+File: pdp-user,  Node: leabra-unit,  Next: leabra-layer,  Prev: leabra-con,  Up: leabra
+
+Leabra Unit Specifications
+==========================
+
+   The parameters for the LeabraUnit unit object are as follows:
+
+`spec'
+     Determines the spec that controls this unit (not in NetView).
+
+`pos'
+     Determines location of unit within layer (not in NetView).
+
+`ext_flag'
+     Reflects type of external input to unit (not in NetView)
+
+`targ'
+     Target activity value (provided by external input from event).
+
+`ext'
+     External activation value when clamped (provided by external
+     input from event).
+
+`act'
+     Activation value (what is sent to other units, y_j).
+
+`net'
+     Net input value (eta_j) computed as normalized weights   times
+     activations -- excitation only, inhibition is computed
+     separately as g_i `gc.i' either by kWTA or directly by unit
+     inhib.
+
+`bias'
+     The bias weight is a LeabraCon object hanging   off of the unit
+     -- it is managed by its own LeabraBiasSpec in the
+     LeabraUnitSpec.
+
+`act_eq'
+     Rate-code equivalent activity value   (time-averaged spikes when
+     using discrete spiking activation, or   just a copy of `act'
+     when already using rate code activation).
+
+`act_avg'
+     Average activation over long time intervals,   as integrated by
+     time constant in `adapt_thr' (see LeabraUnitSpec).    Useful to
+     see which units are dominating, and to adapt their   thresholds
+     if that is enabled.
+
+`act_m'
+     Minus phase activation value, set after settling in   minus
+     phase and used for learning.
+
+`act_p'
+     Plus phase activation value, set after settling in   plus phase
+     and used for learning.
+
+`act_dif'
+     Difference between plus and minus phase activations   --
+     equivalent to the error contribution for unit (delta_j).
+
+`da'
+     Delta activation: change in activation from one     cycle to the
+     next, used for determining when to stop settling.
+
+`vcb'
+     Voltage-gated channel basis variables that     integrate
+     activation over time to determine if channels should be     open
+     or closed (channels are not active by default) - there are
+     two types: hyst and acc, described next, followed by the
+     parameters common to both.
+
+`hyst'
+     Hysteresis channel (excitatory) basis   variable -- typically
+     hysteresis is triggered after unit achieves   brief sustained
+     level of excitation as reflected in this basis   variable.
+
+`acc'
+     Accommodation channel (inhibitory) basis   variable -- typically
+     accommodation (fatigue) is triggered after   unit is active for
+     a relatively long time period as reflected in   this more
+     slowly-integrating basis variable.
+
+    `gc'
+          Channel conductances for the different input channel
+          types except excitatory input (which is in `net').
+
+    `l'
+          Leak channel conductance (a constant, not visible in
+          NetView).
+
+    `i'
+          Inhibition channel conductance, computed by kWTA or direct
+          unit inhibition.
+
+    `h'
+          Hysteresis (voltage-gated excitation) channel conductance.
+
+    `a'
+          Accommodation (voltage-gated inhibition) channel
+          conductance.
+
+`I_net'
+     Net current produced by all channels: what drives the changes in
+     membrane potential.
+
+`v_m'
+     The membrane potential, integrates over time   weighted-average
+     inputs across different channels, provides basis   for
+     activation output via thresholded, saturating nonlinear
+     function.
+
+`i_thr'
+     Inhibitory threshold value used in computing kWTA (g_i_Theta).
+
+`spk_amp'
+     Amplitude of spiking output (for depressing synapse activation
+     function)
+
+   The LeabraUnitSpec unit-level specifications:
+
+`act_range'
+     Range of activation for units: Leabra units   are bounded
+     between 0 (`min') and 1 (`max').
+
+`bias_con_type'
+     Type of bias connection to make: almost always LeabraCon.
+
+`bias_spec'
+     The LeabraBiasSpec that controls the bias connection on the unit.
+
+`act_fun'
+     The activation function to use:     NOISY_XX1 (default), XX1
+     (not convolved with noise), LINEAR (`act'     is linear function
+     of `v_m' above threshold (0 below threshold)),   SPIKE (discrete
+     spiking).
+
+`act'
+     Specifications for the activation function:
+
+    `thr'
+          The threshold value Theta in: y_j = (gamma [V_m - Theta]_+)
+          / (gamma   [V_m - Theta]_+ + 1).
+
+    `gain'
+          Gain of the activation function (gamma in: y_j = (gamma
+          [V_m - Theta]_+)(gamma   [V_m - Theta]_+ + 1).
+
+    `nvar'
+          Variance of the Gaussian noise kernel for convolving with
+          XX1 function in NOISY_XX1.
+
+`spike'
+     Specifications for the discrete spiking activation function
+     (SPIKE):
+
+    `dur'
+          Spike duration in cycles -- models   extended duration of
+          effect on postsynaptic neuron via opened   channels, etc.
+
+    `v_m_r'
+          Post-spiking membrane potential to   reset to, produces a
+          refractory effect and controls overall rate of   firing (0
+          std).
+
+    `eq_gain'
+          Gain for computing `act_eq'   relative to actual
+          time-average spiking rate (gamma_eq in: y_j^eq = gamma_eq
+          (N_spikes)(N_cycles)).
+
+    `ext_gain'
+          Gain for clamped external inputs,   multiplies the `ext'
+          value before clamping, needed because   constant external
+          inputs otherwise have too much influence compared to
+          spiking ones.
+
+`act_reg'
+     Activity regulation via global weight scaling specifications
+     (not used by default):
+    `on'
+          whether to activity regulation is on (active) or not
+
+    `min'
+          Increase weights for units below this level of average
+          activation
+
+    `max'
+          Decrease weights for units above this level of average
+          activation
+
+    `wt_dt'
+          rate constant for making weight changes to rectify
+          over-activation (dwt ~= wt_dt * wt)
+
+`opt_thresh'
+     Optimization thresholds for speeding up computation:
+
+    `send'
+          Don't send activation when act <= send.
+
+    `learn'
+          Don't learn on recv unit weights when both phase acts <=
+          learn.
+
+    `updt_wts'
+          Whether to apply `learn' threshold to updating weights
+          (otherwise always update).
+
+    `phase_dif'
+          Don't learn when +/- phase     difference ratio (- / +) <
+          phase_dif.  This is off (0) by     default, but can be
+          useful if network is failing to activate     output (e.g.,
+          in a deep network) on minus phase of some trials --
+          learning in this case is just massive increase in all
+          weights, and     tends to produce "hog" units for all the
+          active units.  To use,     set to .8 as a good initial
+          value.
+
+`clamp_range'
+     Range of clamped (external)     activation values (`min, max')
+     -- Don't clamp to 1 because     NOISY_XX1 activations can't
+     reach that value, so use .95 as max.
+
+`vm_range'
+     Membrane potential range (`min, max'), 0-1 for normalized,
+     -90-50 for bio-based.
+
+`v_m_init'
+     Random distribution for initializing the membrane potential
+     (constant by default).
+
+`dt'
+     Time constants for integrating values over time:
+
+`vm'
+     Membrane potential `v_m' time constant: dt_vm in: V_m(t+1) =
+     V_m(t) + dt_vm I_net-.
+
+`net'
+     Net input `net' time constant: dt_net   in: g_e(t) = (1 -
+     dt_net) g_e(t-1) + dt_net ( 1/n_p sum_k g_e_k +   1 / (beta/N)).
+
+`g_bar'
+     Maximal conductances for channels:
+
+    `e'
+          Excitatory (glutamatergic synaptic sodium (Na) channel).
+
+    `l'
+          Constant leak (potassium, K+) channel.
+
+    `i'
+          Inhibitory GABA-ergic channel (computed by kWTA or
+          directly).
+
+    `h'
+          Hysteresis (excitation) voltage-gated channel (Ca++).
+
+    `a'
+          Accommodation (fatigue, inhibition) voltage-gated channel
+          (K+).
+
+    `e_rev'
+          Reversal potentials for each channel (see above, defaults:
+          1, .15, .15, 1, 0).
+
+`hyst'
+     Hysteresis (excitation) voltage-gated channel   specs, see
+     accommodation (`acc') for details, defaults are:   false, .05,
+     .8, .7, .1 and true).
+
+`acc'
+     Accommodation (fatigue, inhibition) voltage-gated channel:
+    `on'
+          Activate use of channel if true.
+
+    `b_dt'
+          Time constant for integrating basis variable,   dt_b_a in:
+          b_a(t) = b_a(t-1) +  dt_b_a (y_j(t) - b_a(t-1)).
+
+    `a_thr'
+          Activation threshold for basis variable, when   exceeded
+          opens the channel, aka Theta_a.
+
+    `d_thr'
+          Deactivation threshold for basis   variable, when less than
+          closes channel (after having been opened),   aka Theta_d.
+
+    `g_dt'
+          Time constant for changing conductance when   activating or
+          deactivating, aka dt_g_a
+
+    `init'
+          If true, initialize basis variables when state is
+          initialized (else with weights).
+
+`noise_type'
+     Where to add noise in the processing (if at all): NO_NOISE
+     (default) = no noise, VM_NOISE = add to `v_m' (most commonly
+     used), NETIN_NOISE = add to `net', ACT_NOISE = add to activation
+     `act'.
+
+`noise'
+     Distribution parameters for random added   noise, default =
+     GAUSSIAN, mean = 0, var = .001.
+
+`noise_sched'
+     Schedule of noise variance over   settling cycles, can be used
+     to make an _annealing_ schedule   (rarely needed), use same
+     logic as `lrate_sched' described in   LeabraConSpec.
+
+
+File: pdp-user,  Node: leabra-layer,  Next: leabra-proc,  Prev: leabra-unit,  Up: leabra
+
+Leabra Layer Specifications
+===========================
+
+   The LeabraLayer layer object has the following variables:
+
+`n_units'
+     Number of units to create with Build command (0=use geometry).
+
+`geom'
+     Geometry (size) of units in layer (or of each subgroup if geom.z
+     > 1).
+
+`pos'
+     Position of layer within network.
+
+`gp_geom'
+     Geometry of subgroups (if geom.z > 1).
+
+`projections'
+     Group of receiving projections for this layer.
+
+`units'
+     Units or groups of units in the layer.
+
+`unit_spec'
+     Default unit specification for units in this     layer: only
+     applied during Build or explicit SetUnitSpec command.
+
+`lesion'
+     Inactivate this layer from processing (reversible).
+
+`ext_flag'
+     Indicates which kind of external input layer received.
+
+`netin'
+     Average and maximum net input (`net') values for   layer (`avg',
+     `max').  These values kept for information   purposes only.
+
+`acts'
+     Avg and max activation values for the layer -- `avg' is used for
+     sending average activation computation in `savg_cor' in the
+     ConSpec.
+
+`acts_p'
+     Plus-phase activation stats for the layer.
+
+`acts_m'
+     Minus-phase activation stats for the layer.
+
+`acts_dif'
+     Difference between plus and minus phase vals above.
+
+`phase_dif_ratio'
+     Phase-difference ratio (`acts_p.avg / acts_m.avg') that can be
+     used with `phase_dif' in UnitSpec to prevent learning when
+     network is inactive in minus phase but active in plus phase.
+
+`kwta'
+     values for kwta - activity levels, etc:
+
+    `k'
+          Actual target number of active units for layer.
+
+    `pct'
+          Actual target percent activity in layer.
+
+    `k_ithr'
+          Inhib threshold for kth most active unit (top k for
+          avg-based).
+
+    `k1_ithr'
+          Inhib threshold for k+1th unit (other units for avg-based).
+
+    `ithr_r'
+          Log of ratio of ithr values, indicates sharpness of
+          differentiation between active and inactive units.
+
+`i_val'
+     Computed inhibition values: `kwta' = kWTA   inhibition, `g_i' =
+     overall inhibition (usually same as kwta,   but not for
+     UNIT_INHIB).
+
+`un_g_i'
+     Average and stdev (not max) values for unit inhib.
+
+`adapt_pt'
+     Adapting kwta point values (if adapting, not by default).
+
+`spec'
+     Determines the spec that controls this layer.
+
+`layer_links'
+     List of layers to link inhibition with (not commonly used).
+
+`stm_gain'
+     Actual stim gain for soft clamping, can be incremented to ensure
+     clamped units active.
+
+`hard_clamped'
+     If true, this layer is actually hard clamped.
+
+   The LeabraLayerSpec layer-level specifications consist of:
+
+`kwta'
+     How to calculate desired activity level:
+
+    `k_from'
+          How is the actual k determined: USE_K =   directly by given
+          k, USE_PCT = by pct times number of units in   layer
+          (default), USE_PAT_K = by number of units where external
+          input `ext' > `.5 (pat_q)'.
+
+    `k'
+          Desired number of active units in the layer   (default is
+          meaningless -- change as appropriate).
+
+    `pct'
+          Desired proportion of activity (used to compute a k value
+          based on layer size).
+
+`gp_kwta'
+     Desired activity level for the unit groups (not     applicable
+     if no unit subgroups in layer, or if not in inhib_group).
+     See `kwta' for values.
+
+`inhib_group'
+     What to consider the inhibitory group.      ENTIRE_LAYER = layer
+     (default), UNIT_GROUPS = unit subgroups     within layer each
+     compute kwta separately, LAY_AND_GPS = do both     layer and
+     subgroup, inhib is max of each value.
+
+`compute_i'
+     How to compute inhibition (g_i):   KWTA_INHIB = basic kWTA
+     between k and k+1 (default),   KWTA_AVG_INHIB = average based,
+     between avg of k and avg of k+1-n,   UNIT_INHIB = units with
+     `inhib' flag send g_i directly.
+
+`i_kwta_pt'
+     Point to place inhibition between k and   k+1 for kwta (.25
+     std), between avg of k and avg of k+1-n for   avg-based (.6 std).
+
+`adapt_i'
+     Adapt either the `i_kwta_pt' point based on   difference between
+     actual and target pct activity level (for   avg-based only, and
+     rarely used), or or g_bar.i for unit-inhib.
+
+    `type'
+          What type of adaptation: NONE = nothing, KWTA_PT = adapt
+          kwta point (i_kwta_pt) based on running-average layer
+          activation as compared to target value, G_BAR_I =  adapt
+          g_bar.i for unit inhibition values based on layer
+          activation at any point in time, G_BAR_IL adapt g_bar.i and
+          g_bar.l for unit inhibition & leak values based on layer
+          activation at any point in time
+
+    `tol'
+          Tolerance around target before changing value.
+
+    `p_dt'
+          Time constant for changing parameter.
+
+    `mx_d'
+          Maximum deviation from initial i_kwta_pt allowed (as
+          proportion of initial)
+
+    `l'
+          Proportion of difference from target activation to allocate
+          to the leak in G_BAR_IL mode
+
+    `a_dt'
+          Time constant for integrating average average activation,
+          which is basis for adapting i_kwta_pt
+
+`clamp'
+     How to clamp external inputs.
+
+    `hard'
+          Whether to hard clamp external inputs     to this layer
+          (directly set activation, resulting in much faster
+          processing), or provide external inputs as extra net input
+          (soft     clamping, if false).
+
+    `gain'
+          tarting soft clamp gain factor (net = gain * ext).
+
+    `d_gain'
+          For soft clamp, delta to increase gain     when target
+          units not >.5 (0 = off, .1 std when used).
+
+`decay'
+     Proportion of decay of activity state vars between   various
+     levels of processing:
+
+    `event'
+          Decay between different events.
+
+    `phase'
+          Decay between different phases.
+
+    `phase2'
+          Decay between 2nd set of phases (if applicable).
+
+    `clamp_phase2'
+          If true, hard-clamp second plus phase activations to prev
+          plus phase (only special layers will then update -
+          optimizes speed).
+
+`layer_link'
+     Link inhibition between layers (with specified gain), rarely
+     used.  Linked layers are in layer objects.    `link' = Whether
+     to link the inhibition,   `gain' = Strength of the linked
+     inhibition.
+
+
+File: pdp-user,  Node: leabra-proc,  Next: leabra-stats,  Prev: leabra-layer,  Up: leabra
+
+Leabra Proceses
+===============
+
+   The core set of Leabra processes consist of a LeabraTrial process
+that performs the two phases of contrastive Hebbian learning (CHL),
+where each phase of settling is controlled by a LeabraSettle process,
+which in turn iterates over a number of individual LeabraCycle
+processing steps, each of which updates the activation state of the
+network.  These processes fit nicely within the standard settling and
+cycle processes (*note proc-levels::).
+
+   The LeabraTrial process iterates over two loops of settle
+processing, one for each phase.  It has the following variables:
+`Counter phase_order'
+     Different orders of phases can be presented, as indicated by the
+     relatively self-explanatory options.  The `MINUS_PLUS_NOTHING'
+     option allows the network to learn to reconstruct its input
+     state by taking away any external inputs in an extra third
+     phase, and using this as a minus phase relative to the
+     immediately preceding plus phase.  The `MINUS_PLUS_PLUS' is used
+     by more complex working-memory/context algorithms for an extra
+     step of updating of context reps after the standard minus-plus
+     learning phases.  Note that the PhaseOrderEventSpec can be used
+     to set the phase order on a trial-by-trial basis.
+
+`Counter phase_no'
+     The counter for this process, it goes from 0 to 1 for the two
+     different phases (or 2 for more phases).
+
+`Phase phase'
+     The phase the process is in, which is just a more readable
+     version of the counter:  `MINUS_PHASE' and `PLUS_PHASE'.
+
+`StateInit trial_init'
+     Indicates what to do at the start of each trial process.
+     Typically, one wants to `DECAY_STATE', but it is also possible to
+     `INIT_NOTHING' or `DO_NOTHING'.  Decay state allows for working
+     memory across trials, as needed by several modifications to
+     Leabra.  The default decay parameters decay 100%, which makes it
+     equivalent to INIT_STATE.
+
+`bool no_plus_stats'
+     This flag means that statistics will not be recorded in the plus
+     phase.  This is useful because squared error, for example, is
+     only meaningful in the minus phase, since the correct answer is
+     clamped in the plus phase.
+
+`bool no_plus_test'
+     This flag means that the plus phase will not be run if the epoch
+     process indicates that it is in `TEST' mode (i.e., no learning
+     is taking place).
+
+   The LeabraSettle process iterates over cycles of settling
+(activation updating).  `min_cycles' ensures that at least this many
+cycles of processing occur.  It also contains several important
+variables that control how activations are computed during settling.
+`netin_mod' allows one to skip computing the net input every other
+cycle (or more), which can result in more efficient computation by
+allowing the membrane potentials to keep up better with netinput
+changes, but values higher than 2 are not recommended and have
+resulted in worse overall learning performance.  `send_delta' is very
+important for large networks - it results in substantially faster
+processing by only sending netinput when the sending activation
+_changes_, instead of sending it all the time.  The amount of change
+that is required is specified in the unit spec `opt_thresh' params.
+
+   The settle process will use the `duration' field from a DurEvent
+to set the max number of cycles to settle on a given event.
+
+   The LeabraCycle process updates the activation state of the
+network.  It has no user-settable parameters.
+
+
+File: pdp-user,  Node: leabra-stats,  Next: leabra-defs,  Prev: leabra-proc,  Up: leabra
+
+Leabra Statistics
+=================
+
+   There are several statistics which are specific to the Leabra
+package, including one that compute the global "goodness" (aka
+energy) of the network's activation state (LeabraGoodStat), another
+set of statistics for measuring the probabilities of different
+activation states (LeabraDistStat, LeabraTIGstat, LeabraTargStat),
+and a statistic that can be used to control the length of settling
+based on the amount of activation change (LeabraMaxDa).
+
+* Menu:
+
+* leabra-stats-good::               The Goodness (Energy) Statistic
+* leabra-stats-maxda::              Measuring the Maximum Delta-Activation
+
+
+File: pdp-user,  Node: leabra-stats-good,  Next: leabra-stats-maxda,  Prev: leabra-stats,  Up: leabra-stats
+
+The Goodness (Energy) Statistic
+-------------------------------
+
+   The LeabraGoodStat computes the overall goodness of the activation
+state, which is composed of two terms, the _harmony_ and _stress_.
+Harmony reflects the extent to which the activations satisfy the
+constraints imposed by the weights.  It is just a sum over all units
+of the product of the activations times the weights:
+
+   H = SUM_j SUM_i a_j w_ij a_i
+
+   The stress term reflects the extent to which unit's activations are
+"stressed" at their extreme values.  It is just the inverse sigmoidal
+function of the unit activation values:
+
+   S = SUM_j f^-1(a_j)
+
+   The total goodness is just the harmony minus the stress. These
+values are stored in the `hrmny', `strss', and `gdnss' stat value
+members of the goodness stat.  The net input to a unit is used for
+computing the harmony term, since harmony is just the unit's
+activation times its net input.
+
+
+File: pdp-user,  Node: leabra-stats-maxda,  Prev: leabra-stats-good,  Up: leabra-stats
+
+Measuring the Maximum Delta-Activation
+--------------------------------------
+
+   The LeabraMaxDa statistic computes the maximum delta-activation
+(change in activation) for any unit in the network.  This is used to
+stop settling once the network has reached equilibrium.  The stopping
+criterion for this statistic is the tolerance with which equilibrium
+is measured.  It is created by default in the LeabraSettle process.
+
+   It can use the change in net current (`INET') in addition to
+actual activation change (`da') so as to not trigger a false alarm
+based on sub-treshold activations not changing (their net currents
+can be changing even if the activations are not).  Once the layer
+average activation goes over `lay_avg_thr', the stat switches over to
+measuring `da' instead of inet.
+
+
+File: pdp-user,  Node: leabra-defs,  Next: leabra-misc,  Prev: leabra-stats,  Up: leabra
+
+Leabra Defaults
+===============
+
+   The following default files (*note proj-defaults::) are available
+for configuring different versions of the Leabra objects:
+
+`leabra.def'
+     This is the standard defaults file.
+
+`leabra_seq.def'
+     Sequence-based processes for doing sequences of events within
+     event groups.
+
+`leabra_ae.def'
+     An auto-encoder configuration for doing MINUS_PLUS_NOTHING kind
+     of learning automatically.
+
+`leabra_seq_ae.def'
+     Sequence plus auto-encoder.
+
+`leabra_seq_time.def'
+     Uses LeabraTimeUnit units that can learn based on temporal
+     differences across sequential trials.  This never worked very
+     well and is superceeded by various context memory approaches.
+
+`leabra_seq_ae_time.def'
+     Sequences plus auto-encoder plus time-based units!
+
+
+File: pdp-user,  Node: leabra-misc,  Next: leabra-impl,  Prev: leabra-defs,  Up: leabra
+
+Leabra Misc Special Classes
+===========================
+
+   Leabra has a number of special derived classes for doing special
+things beyond the standard learning mechanisms.  These are not well
+documented here - interested users should refer to the source code.
+The LeabraWiz wizard object has some specialized functions for
+creating some of these classes, and can also setup unit-based
+inhibition in the network.
+
+   The LebraACLayerSpec implements an Adaptive Critic for performing
+Temporal Differences reinforcement learning.  This implementation is
+not particularly good relative to the new improved RewPredLayerSpec,
+but it is simpler and is widely used.
+
+   The LeabraContextLayerSpec implements a Simple Recurrent Network
+context layer, and can be constructed automatically using the
+LeabraWiz.  The fancier LeabraGatedCtxLayerSpec takes gating control
+signals from an AC (adpative critic) unit uses them to control the
+rate of context updating.  The LeabraACMaintLayerSpec is another
+version of this idea, which uses intrinsic maintenance currents
+(i.e., hysteresis currents) to maintain information in the context
+layer over time, as modulated by the AC signal.  See `Rougier &
+O'Reilly, 2002' for further documentation on this mechanism.
+
+   The PhaseOrderEventSpec allows for an event to control its own set
+of phases that it will use.
+
+   The LeabraTimeConSpec, LeabraTimeUnit, and LeabraTimeUnitSpec
+implement learning across two adjacent events.  The units store prior
+trial minus and plus phase activations (`p_act_m' and `p_act_p') and
+use these for learning.
+
+   The LeabraNegBiasSpec makes the bias weight only learn based on
+negative error derivatives (i.e., the bias weight can only go
+negative).  The `decay' parameter allows this negative bias to
+recover back towards zero.  This is useful for implementing a simple
+form of search, where things that produce errors are made less likely
+to be activated in the near future.
+
+   The LeabraTabledConSpec allows for learning to be driven by a
+lookup table, e.g., for exploring biologically-derived learning rules
+that do not have a simple analytic form.
+
+   The ScalarValLayerSpec implements a layer that represents a single
+scalar value usign a coarse-coded representation, where each unit has
+a designated target value, and it "votes" for this value in
+proportion to its activation strength.  The overall coded value is the
+weighted average of these target values times the unit activations.
+The first unit in the layer contains a convenient readout of the
+represented scalar value, and is otherwise prevented from
+participating in normal network updating.  Clamping a value to this
+first unit causes the rest of the units to be clamped into
+Gaussian-shaped bump representing that value.
+
+   The MarkerConSpec is useful for marking special connections that
+operate according to non-standard functions.  It turns off learning
+and does not contribute to normal netinput computations.
+
+   The TdModUnit and TdModUnitSpec add a temporal-differences
+modulation value to the unit variables.  They also include the
+time-based variables found in the Time classes.  These are used in the
+PFC/BG learning classes.
+
+   The RewPredLayerSpec is an improved version of the AC unit, which
+is based on the ScalarValLayerSpec, so it produces a coarse-coded
+representation of reward expectation.  It also deals with
+non-absorbing rewards much better.
+
+   The following specs implement an experimental version of
+dynamically-gated working memory based on the biology of the
+prefrontal cortex (PFC) and basal ganglia (BG).  See the `HelpConfig'
+button for more specific information.  PatchLayerSpec,
+MatrixLayerSpec, MatrixUnitSpec, ImRewLayerSpec, SNcLayerSpec,
+PFCLayerSpec.
+
+
+File: pdp-user,  Node: leabra-impl,  Prev: leabra-misc,  Up: leabra
+
+Leabra Implementational Details
+===============================
+
+   TBW.  Sorry.
+

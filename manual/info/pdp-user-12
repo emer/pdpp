@@ -1,0 +1,1042 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: env-freq,  Next: env-other,  Prev: env-analyze,  Up: env
+
+Frequency Environments and Events
+=================================
+
+   In the basic model of the environment, all events are equally
+likely to be presented to the network.  However, this is often not
+the case in the real world.  Thus, PDP++ provides a set of
+environmental types that implement frequency-based presentation of
+events.  These are the FreqEvent, the FreqEvent_MGroup, and the
+FreqEnv types.  As discussed above (*note env-seq::, *Note
+env-env::), processes can ask the Environment for a single Event or a
+Group of Events. The FreqEvent is an individual event with its own
+frequency, and the FreqEvent_MGroup is a group of events with an
+associated frequency.
+
+   The frequency model supported by these types has a number between
+zero and 1 associated with each event or event group.  This
+`frequency' value is essentially a probability with which the event
+should be presented.
+
+   A FreqEnv environment type must be used in order for the frequency
+variable associated with events or groups to be used.  This type of
+environment uses the `InitEvents' function to create the list of
+events or groups that will be presented for the current epoch.  There
+are two modes of selecting these events according to their frequency.
+Setting `sample_type' to `RANDOM' results in a random sample of
+events to be presented for each epoch, with the probability of an
+event's inclusion proportional to its frequency value.  The
+`PERMUTED' option instead adds a fixed number of a given event which
+is equal to the frequency of that event times the `n_sample'
+parameter.
+
+   The FreqEnv class also has the following variables which affect
+this sampling process:
+
+`int n_sample;'
+     The number of samples of the Events or EventGroups to make per
+     epoch.  In the `RANDOM' case, this is the number of times to
+     "roll the dice" to determine if a given event gets into the
+     epoch.  An event or group with a frequency of 1 will appear
+     exactly `n_sample' times in a given epoch.  Events with lower
+     frequency will occur less often and with lower probability.  In
+     the `PERMUTED' case, this number is multiplied times the
+     frequency to determine how many copies of an event or group
+     appear in a given epoch.
+
+`FreqLevel freq_level'
+     Has the values `NO_FREQ', `EVENT', or `GROUP'. It controls the
+     level at which the frequency sampling occurs.  If `NO_FREQ' is
+     selected, frequency is ignored and the environment is just like
+     the basic one. The other two options should be selected
+     depending on the type of process that is being used-use `GROUP'
+     for sequence-based processes (*note env-seq::), and otherwise use
+     `EVENT'.
+
+   Note that there is also a FreqTimeEvent, FreqTimeEvent_MGroup, and
+FreqTimeEnv, which are frequency versions of the time-based
+environments described below.
+
+
+File: pdp-user,  Node: env-other,  Prev: env-freq,  Up: env
+
+Other Environment Types
+=======================
+
+   There are a couple of other types of environments that embelish the
+basic model described above.  Two of these are particularly
+appropriate for specific algorithms, and are therefore described in
+the context of these algorithms.  Thus, for information on the
+environment types that associate a particular time with each event
+(TimeEnvironment, TimeEvent_MGroup, and TimeEvent), see the recurrent
+backpropagation part of the manual: *Note rbp-seq::.  However, note
+that the CsSettle process (*note cs-proc::) will use the `time' value
+for determining how long to settle, which is different from the way
+this variable is used in RBp.  For information about the environment
+types that allow individual patterns within an event to be chosen
+probabilistically (ProbEventSpec, ProbPatternSpec_Group,
+PropPattern), see the constraint satisfaction part of the manual:
+*Note cs-prob-env::.
+
+   The XYPattern and XYPatternSpec provide a mechanism for applying
+patterns that move around on a larger input layer.  The offset of a
+pattern is specified by the `offset' member of the pattern, which can
+be updated (e.g., by a script) to move the pattern around on
+subsequent pattern presentations.  The pattern spec provides options
+to determine the way in which the pattern is applied to a network
+layer:
+
+`bool wrap'
+     This controls whether to wrap the pattern around the network
+     layer if it should extend beyond the maximum coordinate for the
+     layer in either the x or y dimension.  The alternative is that
+     it is "clipped" at the maximum, and that portion of the pattern
+     is simply not presented.
+
+`bool apply_background'
+     The portions of the network layer which do not receive input
+     from the pattern can optionally be set to a particular
+     "background" level, by setting this flag.
+
+`float background_value'
+     This is the value to set the background units to, if applicable.
+
+   The ScriptEnv is an environment with a script associated with it.
+The script is called at the beginning of the epoch, when the
+EpochProcess calls the `InitEvents' function on the environment.  The
+ScriptEnv defines this function to run its script, which can contain
+code to build an entire epoch's worth of events dynamically (i.e., as
+the epoch is starting).  This is useful for environments which have a
+probabalistic character which is more complicated than simple
+frequency sampling.  An example of a ScriptEnv is provided in the
+demo of a simple recurrent network, which learns to perform like a
+finite state automaton.  The training events are generated
+probabalistically at run-time using a ScriptEnv from a script version
+of the automaton.  This demo can be found in the `demo/bp_srn'
+directory.
+
+   Note that the ScriptEnv, like other script-based objects, provides
+an array of script args called `s_args' that can be used to control
+the behavior of the script and customize it for particular cases.  The
+meaning of these arguments depends of course on the script that is
+being used, but they should be documented near the top of the script
+code.
+
+   The InteractiveScriptEnv is a script environment that works with
+the interactive model of event construction (See *Note env-env:: and
+*Note proc-special-inter::).  The script is called when the
+InteractiveEpoch calls `GetNextEvent' on the environment, at the
+start of each trial.  At this point, the script should generate a new
+event (based on the network's output to the prior event, for
+example), and set the `next_event' pointer to point to this event.
+If the epoch is over, then next_event should be set to NULL.  The
+script can examine the `event_ctr' variable on the environment to
+determine where it is within the epoch - this value is reset to 0 at
+the start of the epoch.
+
+   For a working example of this technology, see
+`demo/leabra/nav.proj.gz' and its associated `nav_env.css' script
+which is attached to an InteractiveScriptEnv.
+
+   The FromFileEnv environment reads events one epoch of
+`events_per_epc' events (`read_mode = ONE_EPOCH') or one single event
+(`ONE_EVENT') at a time from a file (either text or binary format)
+for presentation to the network.  This should be useful for very
+large environments or very large patterns, or both.  Note that
+events_per_epc events will be loaded into RAM at a time from the
+file, so this number should not be set too large relative to available
+memory, etc.  Reading one event at a time (ONE_EVENT - only one event
+in RAM at any time) uses the "interactive" interface to the
+environment (GetNextEvent) meaning that the InteractiveEpoch epoch
+process (*note proc-special-inter::) must be used.
+
+
+File: pdp-user,  Node: proc,  Next: log,  Prev: env,  Up: Top
+
+Processes and Statistics
+************************
+
+   Processes in PDP++ play the role of orchestrating and coordinating
+the interactions between different object types in order to carry out
+particular tasks.  Processes are objects (*note obj-basics-obj::),
+which means that they can have their own variables and functions. This
+is fundamentally different from the idea of a process as something
+that simply acts on a data structure.  There are many different kinds
+of process objects which have been designed to perform specific kinds
+of tasks.
+
+   The scheduling processes coordinate the overall scheduling of
+processing during training and testing of networks, and are the
+"backbone" of processing system.  They are organized into a hierarchy
+of objects, each of which performs a specific level of processing:
+     TrainProcess (loop over epochs)
+         EpochProcess (loop over trials)
+             TrialProcess (present a single pattern)
+             .
+             .
+         .
+         .
+
+   The rest of the processes hang off of the schedule processes in
+different places, and perform specific tasks.  The largest category of
+such processes are _statistics_, which compute and record data about
+the network, environment or other processes, and make this data
+available to the logs for displaying.
+
+   Statistics often need to be viewed at multiple levels of
+processing.  Thus, one often wants to simultaneously view the
+trial-wise and the aggregated epoch-summed squared error.  This is
+accomplished in PDP++ by having statistics which actually compute the
+squared-error for a given event in the trial process, but also copies
+of this squared-error statistic at subsequent (higher) levels of
+processing which perform the _aggregation_ of the statistic over
+these higher levels.
+
+   Since the different time-grains of processing are represented by
+the schedule process hierarchy, other things like updating displays
+and logging data, which can also happen at different time-grains, are
+tied to the schedule process hierarchy.  Thus, one can decide to log
+data at the TrialProcess, EpochProcess, and/or TrainProcess level,
+and similarly for updating displays like the network viewer.
+
+   The code to control a Process can either be hard-coded C++ code,
+or a pointer to a CSS script file. This means that one can change the
+behavior of a Process simply a writing a CSS script and setting the
+Process to use it (*note proc-css::).
+
+   The best way to interact and configure processes is throught the
+project viewer (*note proj-viewer::).  Processes edit dialogs are
+yellow (`SchedProcess') gold (regular `Process') or slate blue
+(`Stat') in the default color scheme.
+
+   The EpochProcess can also coordinate the processing of different
+events on different _distributed memory processors_ to achieve much
+faster processing on parallel hardware (*note proc-epoch-dmem::).
+
+* Menu:
+
+* proc-base::                   The Basic Features of All Processes
+* proc-sched::                  The Schedule Process (SchedProcess)
+* proc-levels::                 The Different Levels of Schedule Processes
+* proc-special::                Specialized Processes
+* proc-stat::                   The Statistic Process
+* proc-stats::                  Different Types of Statistics
+* proc-css::                    Processes and CSS Scripts
+
+
+File: pdp-user,  Node: proc-base,  Next: proc-sched,  Prev: proc,  Up: proc
+
+The Basic Features of all Processes
+===================================
+
+   The base Process class provides the following variables for
+controlling its behavior:
+
+`Enum type'
+     This can be either `C_CODE' or `SCRIPT', which determines if the
+     Process is going to execute C code or CSS script code.  A script
+     file must be attached to the process to run in `SCRIPT' mode.
+
+`Modulo mod'
+     This object controls how often a process is run.  It is
+     applicable for processes and statistics that are placed in
+     either the `loop_procs' or `loop_stats' groups of a scheduling
+     process, and the modulo function is based on the counter
+     variable of that parent process.  For `final_stats' and
+     `final_procs', the counter variable is that of the parent of the
+     parent schedule process. If the `flag' variable of the `mod'
+     object is not set then the process is never run. Otherwise the
+     process is run if the parent's counter minus the `off' variable
+     modulo the `m' variable is equal to zero (i.e., it is run every
+     `m' times, with a phase determined by the offset `off').
+
+`Network* network'
+     This is a pointer to the Network object on which the Process is
+     acting.  This pointer is copied automatically from the parent
+     process, so it should be changed only at the highest level of
+     the processing hierarchy, which will cause it to change in all
+     the lower-level processes.
+
+`Environment* environment'
+     This is a pointer the Environment in which the Process acts.
+     Like the network pointer, it is automatically copied from
+     higher-level processes, and should be set at the highest level.
+
+   The basic Process class provides the following functions for
+controlling its behavior.  Some of these are available on the Control
+Panel buttons that appear at the bottom of the edit dialog and the
+control panel, and others are in the Actions menu.
+
+`NewInit()'
+     Initializes the process using new random seed.  This seed is
+     saved, and can be recalled using the `ReInit' function, but the
+     previously saved seed is then lost.
+
+`ReInit()'
+     Initializes the process using the previously-saved random seed.
+
+`Run()'
+     This function checks which type of code the Process is supposed
+     to use (C code or script) and executes the appropriate code.
+
+`Step()'
+     Executes one step the process.  For schedule processes, this is
+     controlled by the `step' field, which specifies at what sub-level
+     of the heirarchy to step (e.g., setting step.proc to the trial
+     process will mean that Step executes one step of the trial
+     process - it processes one event per Step).  Schedule processes
+     also have Step Up and Step Dn buttons that are useful for
+     controlling the stepping level within the process hierarchy.
+
+`Stop()'
+     Stops the process when running.
+
+`Step Up()'
+     Moves the stepping level up one step in the heirarchy (e.g.,
+     from cycle up to settle).  Removes updating of the network by
+     the previous stepping level (e.g., cycle no longer updates).
+     This only applies to Sched Processes.
+
+`Step Dn()'
+     Moves the stepping level down one step in the heirarchy (e.g.,
+     from settle to cycle).  Adds updating of the network by the new
+     stepping level (e.g., cycle now updates the network).  This only
+     applies to Sched Processes.
+
+`ControlPanel()'
+     Brings up a small control panel dialog for running the process.
+
+`LoadScript (char* filename)'
+     Sets the script file to be used by the Process to `filename' and
+     compiles the script for execution. This function clears any
+     previous script file being used by the process. It automatically
+     sets the `type' variable to `SCRIPT'.
+
+
+File: pdp-user,  Node: proc-sched,  Next: proc-levels,  Prev: proc-base,  Up: proc
+
+The Schedule Process (SchedProcess)
+===================================
+
+   Instead of putting all the control necessary to iterate over the
+several levels of processing needed to train a network (training,
+epochs, trials, settles, cycles, etc.) into one process object, we
+have divided up the processing hierarchy into a set of nested
+scheduling processes, each of which handles one level of processing.
+This results in a lot of flexibility, since one can then change only
+the code controlling the trial, for example, or easily extend it
+using a CSS script.
+
+   The Schedule Process (or SchedProcess) is an extension of the basic
+Process type. It provides more variables and functions with which one
+can control the execution of the Process.  It has fields for the
+parent and child processes in its hierarchy, support for counters that
+control the iteration of the process over time, places to link in
+View objects and Log objects to be updated, and groups to hold the
+various sub-processes and statistics that can be associated with a
+given level of processing.
+
+   In order to support all of its extended functionality, the schedule
+process has a somewhat complicated execution structure.  However,
+understanding how a schedule process runs should make it easier to
+figure out how to get them to do what you want them to.
+
+   The central function a schedule process performs is one of looping,
+where the process repeated performs some function.  In most cases,
+this function simply involves telling the process below it in the
+hierarchy to run.  Thus, an epoch process repeatedly loops over the
+trial process, for example.  The functions in a schedule process
+center around the main loop of processing,
+
+   The main loop is written so as to be re-entrant.  Thus, something
+can cause the process to pop out of the loop (i.e., the user pressing
+Stop), and when it runs again, it will fall back down to the point
+where it was last running and pick up again where it left off.
+
+   The places where the things that hang off of a schedule process,
+like statistics, logs and displays, can all be seen in the main
+schedule process loop code, which is reproduced here:
+
+     void SchedProcess::C_Code() {
+       bool stop_crit = false;        // a stopping criterion was reached
+       bool stop_force = false;       // either the Stop or Step reached
+     
+       if(re_init) {                // if its time to re-initialize, then do it
+         Init();                     // this sets the counters to zero, etc.
+         InitProcs();                // this runs any initialization processes
+       }
+     
+       do {
+         Loop();                     // user defined code goes here
+         if(!bailing) {
+           UpdateCounters();         // increment the counters (before logging)
+           LoopProcs();              // check/run loop procs (use mod of counter)
+           LoopStats();              // update in-loop statistics
+           if(log_loop)              // can log inside loop or after it...
+             UpdateLogs();           // generate log output and update logs
+           UpdateState();            // update process state vars (current event..)
+     
+           stop_crit = Crit();       // check if stopping criterion was reached
+           if(!stop_crit) {         // if at critera, going to quit anyway, so don't
+             stop_force = StopCheck(); // check for stopping (Stop or Step)
+           }
+         }
+       }
+       while(!bailing && !stop_crit && !stop_force);
+       // loop until we reach criterion (e.g. ctr > max) or are forcibly stopped
+     
+       if(stop_crit) {              // we stopped because we reached criterion
+         Final();                    // user defined code at end of loop
+         FinalProcs();               // call the final procs
+         FinalStats();               // run final_stats at end of loop
+         if(!log_loop)
+           UpdateLogs();             // if not logging in loop, logging at end
+         UpdateDisplays();           // update displays after the loop
+         SetReInit(true);            // made it through the loop, so Init next time
+         FinalStepCheck();           // always stop at end if i'm the step process
+       }
+       else {                       // we we're forcibly stopped for some reason
+         bailing = true;             // now we're bailing out of all further procs
+       }
+     }
+
+   The fall-through character of processing is made possible by
+storing all of the counter state variables on the process object
+itself, so it is preserved even when we pop out of the loop, and by
+only initializing once we make it through the loop (by setting the
+`re_init' flag).
+
+   As you can see, there are two places where statistics get updated,
+inside the loop (`LoopStats()') and after the loop (`FinalStats()').
+While it is more natural to think of computing statistics at the end
+of the loop (e.g., at the end of the trial or the end of the epoch),
+the need to aggregate statistic values over time (e.g., compute the
+sum of the squared-errors over an entire epoch) necessitates
+inside-the-loop statistics.
+
+   Finally, it should be noted that all schedule processes are
+written to allow any number of intervening processes to be added in
+to the hierarchy at any point.  Thus, new and unanticipated levels of
+processing can be introduced by the user without breaking the
+assumptions of the existing process objects.  Basically, any time
+there is a dependency of one level of processing on another (e.g.,
+the trial process looks to its parent epoch process to determine if
+it should be testing or training the network), the dependent process
+searches through the entire hierarchy for the type of process it
+depends on.
+
+* Menu:
+
+* proc-sched-vars::             Variables and Functions used in a SchedProcess
+* proc-sched-stats::            Statistics and Logging in a SchedProcess
+
+
+File: pdp-user,  Node: proc-sched-vars,  Next: proc-sched-stats,  Prev: proc-sched,  Up: proc-sched
+
+Variables and Functions used in a SchedProcess
+----------------------------------------------
+
+   The SchedProcess provides the following variables and functions (in
+addition to the ones already provided by the basic Process):
+
+Variables
+=========
+
+`bool can_stop'
+     This variable is a flag that controls whether the SchedProcess
+     can be interrupted during execution.  This also determines if
+     GUI events are being processed.  Things can be speeded up a bit
+     if this flag is turned off for low-level processes like the
+     `CycleProcess'.
+
+`TypeDef sub_proc_type'
+     This is type of process the `sub_proc' should be. If the
+     `sub_proc' type does not inherit from this type then a new
+     `sub_proc' is created of the correct type.
+
+`SchedProcess* sub_proc'
+     This is a pointer to the child Process (if it exists) of this
+     SchedProcess.  This is the sub process that the process iterates
+     over.
+
+`StepParams step'
+     It is possible to single-step (or multiple step) through
+     processing, and this controls how the Step function behaves. The
+     `step' variable contains a pointer to the sub-process under the
+     current one that represents the time-grain at which stepping
+     should occur.  The number of times this step process is iterated
+     per each Step (i.e., each time the user hits the Step button) is
+     determined by the `n' parameter.
+
+`Stat_Group loop_stats'
+     This is a group that contains the Statistic processes that will
+     be executed within the loop of the schedule process (i.e.,
+     called by `LoopStats()' in the loop code shown above).  Thus,
+     for a epoch process, these stats will be computed after every
+     trial, since the epoch process loops over trials.  These are
+     typically aggregation stats, which are adding up values computed
+     in the trial process.  For example the epoch sum of squares
+     error would be aggregated in the epoch loop stats.
+
+`Stat_Group final_stats'
+     This is a group that contains the Statistic processes that will
+     be executed at the end of the loop for this process.  This is
+     typically where statistics go which are computed for the first
+     time (i.e., not those that are simply aggregating values
+     computed lower down in the hierarchy).
+
+`Process_Group init_procs'
+     This contains miscellaneous processes that get executed when the
+     process is initialized.  Note that these are run only when the
+     process is actually running, _not_ when the ReInit or NewInit
+     buttons are hit.  Thus, if you hit one of these buttons, and
+     then do a Run, the first thing that will happen when the process
+     is run is that the init_procs will be executed.
+
+`Process_Group loop_procs'
+     These are miscellaneous processes that get executed inside the
+     loop of the process.  For example, it is possible to link in a
+     testing epoch process into the `loop_procs' of a training
+     TrainProcess, with a mod value set to 10, for example, which
+     will result in the network being tested after every 10 epochs of
+     training.
+
+`Process_Group final_procs'
+     These are miscellaneous processes that get executed after the
+     loop of the process, just before the final stats are computed.
+
+`bool log_loop'
+     Either the process sends its data at the end of its processing
+     loop, which is the "natural" (and default) way to do things,
+     since it corresponds with the name of the process (the end of
+     the epoch process means once every epoch, while the loop of the
+     epoch process is actually the end of every trial!), or it sends
+     its data inside the loop, which can be useful to see the
+     aggregation of the `loop_stats' statistics over time.  This
+     flag, if checked, means that it logs inside the loop.
+
+`bool log_counter'
+     This flag determines if the counter associated with this process
+     (e.g., the epoch counter in the TrainProcess) is logged along
+     with all the other data that is logged.
+
+   Many of the core functions on the schedule process object were
+documented in the main loop code shown previously.  In addition to the
+functions on the process object, the following functions are available
+in a schedule process (most can be found in the Actions menu of the
+edit dialog or control panel).
+
+`InitMyLogs()'
+     Clear all logs that this process updates.
+
+`InitAllLogs()'
+     Clear all logs that exist in the Project that this SchedProcess
+     is in.
+
+`InitNetwork()'
+     Initialize the weights in the network associated with this
+     process (calls `InitWtState()' on the network).
+
+`InitAll();'
+     Initialize the process, network weights, and logs.
+
+`RemoveFromLogs();'
+     Remove this SchedProcess from all the logs in the `logs' group
+     and clear out the `logs' group.
+
+`RemoveFromDisplays();'
+     Remove this SchedProcess from all the displays in the `displays'
+     group and clear out the `displays' group.
+
+`CheckAllTypes();'
+     This goes through all the objects in the network and makes sure
+     that they are all of the minimum type necessary for all of the
+     processes statistics being computed by this processing
+     hierarchy.  This is done automatically whenever the training
+     process is initialized, but it can be done manually just to make
+     sure.  This check is useful, especially if you are experiencing
+     unexplained crashing, because many process objects assume that
+     the objects in the network are of the appropriate type.
+
+   The following are a set of functions that are particularly useful
+for configuring the processing hierarchy, and appear in the Structure
+menu of a SchedProc.
+
+`MoveToSubGp(const char* gp_name)'
+     This moves the current process and all of its sub-processes to a
+     new sub-group within the `.processes' group of the project.  Run
+     this on the top-level process in a process hierarchy.  This is
+     useful for organizing the menu when several processing
+     hierarchies are present in the same project.
+
+`ChangeNameSuffix(const char* new_name_sufx)'
+     This changes the portion of the sched process names after the
+     underbar (_) to the new specified name.  This is the preferred
+     way to give a whole hierarchy of sched procs the same
+     semantically meaningful tag (e.g., a suffix of "Trn" for
+     training processes, and "Tst" for testing processes.)  Run this
+     on the top level process, as it works on all sub-processes.
+
+`AddSuperProc(TypeDef* type)'
+     This will add a new schedule process above this one, of the
+     given type, while preserving as much of the existing structure
+     as possible.  Thus, any aggregated stats will be aggregated
+     through the new super proc, and it is inserted so that any
+     previous super proc is now the super proc to the new super proc,
+     etc.
+
+`AddSubProc(TypeDef* type)'
+     Like AddSuperProc, but adds a new process below this one.
+
+`RemoveSuperProc(TypeDef* type)'
+     This is effectively the inverse of AddSuperProc - removes parent
+     process and closes up any existing aggregation links, etc.
+
+`RemoveSubProc(TypeDef* type)'
+     This is effectively the inverse of AddSubProc - removes sub
+     process and closes up any existing aggregation links, etc.
+
+
+File: pdp-user,  Node: proc-sched-stats,  Prev: proc-sched-vars,  Up: proc-sched
+
+Statistics and Logging in a SchedProcess
+----------------------------------------
+
+   The relationship between statistics and logging in schedule
+processes is fairly straightforward, but there are some subtleties.
+Basically, a schedule process sends two kinds of data to the log.
+The first is a record of the current state of all the counters in the
+process hierarchy above (and if `log_counter' is checked, from) the
+logging process itself.  This tags the log data with the point in
+time when it was computed.  The other component is a series of
+columns of data that are generated by each of the statistic processes
+in either the loop or final statistics groups.
+
+   This information is sent out to any logging processes that are
+being updated by the schedule process in question.  These logging
+processes then transform the data into the graphical form
+characteristic of the display they are using (e.g. a graph or a grid
+of color squares), and/or dump it to a log file, etc (*note log::).
+
+   Thus, the way to get a log to record some information is to have a
+statistic process which collects the information and sends it along to
+the log when the schedule process tells it to.  For this reason, when
+you want to monitor unit state variables over time, for example, you
+have to create a statistic process which gets these state variables,
+and sends them to the log (*note proc-stats-monitor::).
+
+
+File: pdp-user,  Node: proc-levels,  Next: proc-special,  Prev: proc-sched,  Up: proc
+
+Schedule Processes for Different Time-Grains
+============================================
+
+   Each schedule process handles processing at a different time
+grain.  The following time grains are supported by a standard set of
+schedule processes.  Note that a processing hierarchy typically has
+to start with at least an epoch process since that is what gets the
+events from the environment, and the lower-level processes look to
+the epoch process for the current event.
+
+* Menu:
+
+* proc-levels-batch::           Iterating over Networks: BatchProcess
+* proc-levels-train::           Iterating over Epochs: TrainProcess
+* proc-levels-epoch::           Iterating over Trials: EpochProcess
+* proc-levels-trial::           Presenting a Single Event: TrialProcess
+* proc-levels-settle::          Iterating over Cycles: SettleProcess
+* proc-levels-cycle::           Performing one Update: CycleProcess
+
+
+File: pdp-user,  Node: proc-levels-batch,  Next: proc-levels-train,  Prev: proc-levels,  Up: proc-levels
+
+Iterating over Networks: BatchProcess
+-------------------------------------
+
+   The BatchProcess iterates over the training of networks.  This is
+useful in determining the average learning time for a given problem
+with different random initial weights, for example.  The batch
+process has a `batch' counter object, which records the number of
+networks that have been trained so far.  The appropriate sub-process
+type for a batch process is a TrainProcess, though it is possible to
+have multiple batch processes before the train process, in order to
+have multiple loops of network training (presumably with some
+parameter manipulation in between).
+
+   There is a built-in batch process type that makes it easy to
+perform simple searches of parameter space called the
+GridSearchBatch.  This process increments a single parameter value in
+step with the batch counter, and applies this value to any parameter
+of the user's choosing.  The parameter to be modified is specified by
+giving a CSS-style path to that parameter from the common project
+object (see *Note css-tut-access:: for details).  An example project
+which uses this grid search batch is
+`demo/bp/gridsearch_xor.proj.gz', which can be consulted to see how
+it works in practice.  It also records the current value of the
+parameter to the log file.
+
+
+File: pdp-user,  Node: proc-levels-train,  Next: proc-levels-epoch,  Prev: proc-levels-batch,  Up: proc-levels
+
+Iterating over Epochs: TrainProcess
+-----------------------------------
+
+   The TrainProcess iterates over epochs of training a network.  It
+typically has an EpochProcess as its `sub_proc'.  When this process
+is initialized (e.g. by `ReInit' or `NewInit'), it also initializes
+the weights of the network.  It has an `epoch' counter which is tied
+to the `epoch' counter on the network object, which this process
+increments after every epoch of training.  Note that if the epoch
+process under this training process is in `TEST' mode, then neither
+epoch counter is incremented.
+
+   There is an alternative kind of process which also iterates over
+epochs, called the NEpochProcess, which differs from the TrainProcess
+in that it does not initialize the network when it is initialized.
+Also, it keeps its own `epoch' counter separate from that of the
+network.  Thus, while it will increment the network's counter during
+training (but not turing testing), it _will_ increment its epoch
+counter even during testing.  Thus, it is useful for cases where you
+need to run multiple epochs of testing (e.g., to get multiple samples
+from settling in a stochastic network).
+
+
+File: pdp-user,  Node: proc-levels-epoch,  Next: proc-levels-trial,  Prev: proc-levels-train,  Up: proc-levels
+
+Iterating over Trials: EpochProcess
+-----------------------------------
+
+   The EpochProcess loops over the set of Events in the Environment
+(*note env::). Each presentation of an event is known as a trial, and
+this process typically has a TrialProcess as its `sub_proc', although
+the situation is different when the environment contains sequences of
+events (*note proc-special-seq::).
+
+   The epoch process is responsible for ordering the presentation of
+events to the network.  Thus, at the beginning of the epoch (when the
+process is initialized), it tells the environment to initialize
+itself (using `InitEvents()'), and then obtains the total number of
+events in the environment (using `EventCount()', see *Note
+env-env::).  The epoch process then makes a list of event indexes,
+which represents the order in which events will be presented.
+Depending on the state of the `order' variable, this list will either
+remain sequential or be randomized.
+
+   The epoch process is also responsible for determining when to
+update the weights in the network, since this can usually be done
+either after each event or at the end of the epoch (depending on the
+state of the `wt_update' variable).  The epoch process itself calls
+the `UpdateWeights' function on the network, even when it is doing
+updates after each event.  Thus, lower-level processes should never
+call this function themselves.
+
+   Also see the following information about Epoch Processes:
+
+* Menu:
+
+* proc-epoch-dmem::             Distributed Memory Computation in the EpochProcess
+
+   The following variables are on the EpochProcess:
+
+Variables
+=========
+
+`Counter trial'
+     The number of the current trial being executed.  This is the
+     counter for the epoch process.  It is automatically initialized
+     to be the number of events in the environment.
+
+`Event* cur_event'
+     This is a pointer to the current event being processed. After
+     each trial, the EpochProcess updates this variable to point to
+     the next event based on its list of event indexes.  It gets the
+     event from the environment using the `GetEvent' function of the
+     environment (*note env-env::).
+
+`Order order'
+     Controls the order in which Events are presented to the network.
+     The values for this are:
+    `SEQUENTIAL'
+          Present events in sequential order (i.e. in the order they
+          currently are in the Environment `events' group).
+
+    `PERMUTED'
+          Present events in permuted order.  This ensures that each
+          event is only presented once per epoch, but the order is
+          randomized.
+
+    `RANDOM'
+          This picks an event at random (with replacement) from the
+          list of events.  This does not use the epoch process's list
+          of events, and it allows the same event to be presented
+          multiple times in an epoch, while other events might not be
+          presented at all.
+
+`WtUpdate wt_update'
+     Determines when the network's weights are updated (if at all).
+     The possible values are:
+    `TEST'
+          Don't update weights at all (for testing the network).
+          This also causes the training process to not increment the
+          epoch counter of the network after each epoch, since the
+          epoch counter is supposed to reflect the extent of training
+          experience the network has had.
+
+    `ON_LINE'
+          Update the weights on-line (after every event).
+
+    `BATCH'
+          Update the weights after every epoch (batch mode).
+
+    `SMALL_BATCH'
+          Update the weights after every `batch_n' events.  This
+          allows an intermediate level of batch mode learning which
+          can be parameterized independent of the number of events in
+          the epoch.
+
+`int batch_n'
+     Specifies the number of events between weight updates if
+     `wt_update' is `SMALL_BATCH'.
+
+
+File: pdp-user,  Node: proc-epoch-dmem,  Up: proc-levels-epoch
+
+Distributed Memory Computation in the EpochProcess
+..................................................
+
+   The EpochProcess supports distributed memory (_dmem_) computation
+by farming out events across different distributed memory processors.
+For example, if you had 4 such processors available, and an
+environment of 16 events, each processor could process 4 of these
+events, resulting in a theoretical speedup of 4x.
+
+   In all dmem cases (see *Note net-dmem:: for Network-level dmem)
+each processor maintains its own copy of the entire simulation
+project, and each performs largely the exact same set of functions to
+remain identical throughout the computation process.  Processing only
+diverges at carefully controlled points, and the results of this
+divergent processing are then shared across all processors so they can
+re-synchronize with each other.  Therfore, 99.99% of the code runs
+exactly the same under dmem as it does under a single-process, making
+the code extensions required to support this form of dmem minimal.
+
+   If learning is taking place, the weight changes produced by each of
+these different sets of events must be integrated back together.
+_This is means that weights must be updated in SMALL_BATCH or BATCH
+mode when using dmem._
+
+   Epoch-wise distributed memory computation can be combined with
+network-wise dmem (*note net-dmem::).  The Network level
+`dmem_nprocs' parameter determines how many of the available
+processors are allocated to the network.  If there are multiples of
+these numbers of processors left over, they are allocated to the
+Epoch-level dmem computation, up to a maximum specified by the
+EpochProcess `dmem_nprocs' (which defaults to 1024, essentially
+saying, take all the remaining processors available).  For example, if
+there were 8 processors available, and each network was allocated 2
+processors, then there would be 4 sets of networks available for dmem
+processing of events.  Groups of two processors representing a
+complete network would work together on a given set of events.
+
+   If `wt_update' is set to `BATCH', then weights are synchronized
+across processors at the end of each epoch.  Results should be
+identical to those produced by running on a single-processor system
+under BATCH mode.
+
+   If `wt_update' is `SMALL_BATCH', then the `batch_n' parameter is
+_divided_ by the number of dmem processors at work to determine how
+frequently to share weight changes among processors.  If `batch_n' is
+an even multiple of the number of dmem processors processing events,
+then results will be identical to those obtained on a single
+processor.  Otherwise, the effective batch_n value will be different.
+For example, if there are 4 dmem processors, then a value of batch_n
+= 4 means that weights changes are applied after each processor
+processes one event.  However, batch_n = 6 cannot be processed in
+this way: changes will occur as though batch_n = 4.  Similarly,
+batch_n = 1 actually means batch_n = 4.  If batch_n = 8, then weight
+changes are applied after every 2 sets of dmem event processing
+steps, etc.
+
+   Note that `wt_update' cannot be `ONLINE' in dmem mode, and will be
+set to `SMALL_BATCH' automatically by default.
+
+   For the SequenceEpoch process in `SMALL_BATCH' mode, weight
+updates can occur either at the `SEQUENCE' or `EVENT' level as
+determined by the `small_batch' field setting.  At the sequence
+level, each processor gets a different _sequence_ to process (instead
+of a different event), and weight changes are shared and applied
+every `batch_n' _sequences_ (subject to the same principles as for
+events as just described above, to maintain equivalent performance in
+single and dmem processing modes).  At the event level, each
+processor works on a different event within the sequence, and weight
+changes are applied every batch_n events as in a normal epoch
+process.  In addition, it is guaranteed that things are always
+synchronized and applied at the end of the sequence.
+
+   Note that the event-wise model may not be that sensible under dmem
+if there is any state information carried between events in a sequence
+(e.g., a SRN context layer or any other form of active memory), as is
+often the case when using sequences, because this state information is
+NOT shared between processes within a sequence (it cannot be - events
+are processed in parallel, not in sequence).
+
+
+File: pdp-user,  Node: proc-levels-trial,  Next: proc-levels-settle,  Prev: proc-levels-epoch,  Up: proc-levels
+
+Presenting a Single Event: TrialProcess
+---------------------------------------
+
+   The TrialProcess executes a single trial of processing, which
+corresponds to the presentation of a single Event to the network.
+This process is never used in its base form.  Instead, different
+algorithms derive versions of this process which perform
+algorithm-specific computations.
+
+   The trial process obtains the current event to be processed from
+the epoch process, which it finds somewhere above it in the processing
+hierarchy.  It keeps a pointer to this event in its own `cur_event'
+member.  It also typically depends on the epoch process `wt_update'
+field to determine if it should be computing weight changes or just
+testing the network.
+
+   Some types of TrialProcess objects are terminal levels in the
+processing hierarchy, since they perform all of the basic computations
+directly on the network.  This is true of feedforward backpropagation,
+for example (*note bp-proc::).  However, other types of trial process
+have sub-processes which perform iterative setting and cycling
+processes, which are described below.  This is true of the constraint
+satisfaction trial process, for example (*note cs-proc::).
+
+
+File: pdp-user,  Node: proc-levels-settle,  Next: proc-levels-cycle,  Prev: proc-levels-trial,  Up: proc-levels
+
+Iterating over Cycles: SettleProcess
+------------------------------------
+
+   The SettleProcess is a base type of process that is used to iterate
+over cycles of activation updating.  Thus, it typically has a
+CycleProcess as its sub-process.  In algorithms with recurrent
+connectivity, it is typically necessary to iteratively update the
+activation states of the units for some number of cycles.  This
+process controls this settling procedure.  Particular algorithms will
+derive their own version of the settle process.
+
+   The `cycle' counter records the number of cycles of updating that
+have been performed.  Setting the `max' for this counter will limit
+settling to this number of cycles.  In addition, some algorithms use a
+`loop_stat' that measures the change in activation.   When this stat
+goes below its criterion threshold, the settle process will stop.
+Thus, the stat determines when the settling has reached an equilibrium
+state.
+
+
+File: pdp-user,  Node: proc-levels-cycle,  Prev: proc-levels-settle,  Up: proc-levels
+
+Performing one Update: CycleProcess
+-----------------------------------
+
+   The CycleProcess performs algorithm-specific updating functions.
+It processes a single cycle of activation updating, typically.  It is
+usually a sub-process of the SettleProcess.  It is almost always a
+terminal level of processing (it has no sub-processes).
+
+
+File: pdp-user,  Node: proc-special,  Next: proc-stat,  Prev: proc-levels,  Up: proc
+
+Specialized Processes
+=====================
+
+   There are a number of specialized versions of the standard schedule
+processes, and other useful process objects for automating routine
+tasks.  These are discussed in detail in the following sections.
+
+* Menu:
+
+* proc-special-seq::            Processes for Sequences of Events
+* proc-special-inter::          Processes for Interactive Environments
+* proc-special-fork::           Processing Multiple Networks/Environments
+* proc-special-bridge::         Linking Networks Together with a Bridge
+* proc-special-misc::           Miscellaneous other Process Types
+
+
+File: pdp-user,  Node: proc-special-seq,  Next: proc-special-inter,  Prev: proc-special,  Up: proc-special
+
+Processes for Sequences of Events
+---------------------------------
+
+   As discussed in *Note env-seq::, environments can be constructed
+that specify sequences of events.  Certain algorithms can learn
+temporal contingencies between events, so it is important to be able
+to present the events in the proper sequence.  There are two
+specialized types of schedule processes that handle the presentation
+of sequences of events to the network, the SequenceEpoch, and the
+SequenceProcess.
+
+   The SequenceEpoch is a version of the epoch process (*note
+proc-levels-epoch::) which, instead of iterating over individual
+events, iterates over _groups_ of events.  Thus, this process uses
+the `GroupCount()' and `GetGroup()' functions on the environment
+instead of the event-wise ones (*note env-env::).  Each group of
+events represents a collection of events that form a sequence.  The
+sequence epoch adds a `cur_event_gp' field, which contains a pointer
+to the current event group that is being processed.
+
+   See *Note proc-epoch-dmem:: for how these processes operate under
+distributed memory parallel processing.
+
+   The `order' field on the sequence version of the epoch process now
+refers to the order of presentation of the groups (sequences) of
+events, and not the order of individual events within the sequences.
+Also, the `SMALL_BATCH' mode of `wt_update' in the sequence epoch can
+now take on one of two different possible meanings, depending on the
+state of the `small_batch' field.  In `SEQUENCE' mode, it means that
+weight changes are applied after `batch_n' sequences are processed.
+In `EVENT' mode, it means that weight changes are applied after every
+`batch_n' events within the sequence (as in a standard EpochProcess).
+Also, an additional weight update is performed at the end of the
+sequence in this mode to ensure that the weights are always updated
+at sequence boundaries, because the batch_n counter starts over at
+the start of each sequence.
+
+   The SequenceProcess is typically created as a child of the
+SequenceEpoch, and it is the one that iterates over the particular
+events within a given group or sequence.  It obtains the current group
+of events from its parent sequence epoch process, and iterates over
+them.  It can control the order of presentation of events within the
+sequence, and has options for initializing the activation state of the
+network at the start of the sequence:
+
+`Counter tick'
+     Each presentation of an event within a sequence is called a
+     "tick", and this member counts the number of ticks that have
+     gone by.  The `max' for this counter is automatically set to be
+     the number of events in the current sequence.
+
+`Event* cur_event'
+     This is a pointer to the current event being processed.
+
+`Event_MGroup* cur_event_gp'
+     This is a pointer to the current event group (sequence) being
+     processed.  It is obtained from the parent SequenceEpoch.
+
+`Order order'
+     This determines the order of presentation of the events within a
+     sequence.  While sequences are usually presented in `SEQUENTIAL'
+     order, it is conceivable that one might want `PERMUTED' or
+     `RANDOM' orders as well, which are available (these work just
+     like the equivalent in the epoch process, see *Note
+     proc-levels-epoch::).
+
+`StateInit sequence_init'
+     This determines if and how the activation state of the network is
+     initialized at the start of the sequence.  `DO_NOTHING' means
+     that no initialization is done, `INIT_STATE' means that the
+     `InitState' function is called, and `MODIFY_STATE' means that
+     the `ModifyState' function is called, which allows for
+     algorithm-specific ways of changing state between sequences (e.g.
+     decaying the activations).
+

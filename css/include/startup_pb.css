@@ -1,0 +1,47 @@
+// startup and run a project in the background for parallel-batch run (pb)
+// each batch is run on a different process (e.g., on a cluster)
+
+// pdp++ -nogui -f startup_pb.css <myproj> B_START B_END [ctr_max...]
+
+// - replace pdp++ with name of the specific pdp++ executable, e.g., bp++.
+// - <myproj> is the name of your project (with or without the .proj.gz).
+// - B_START is the starting batch number (as given by pb_qsub script)
+// - B_END is the ending batch number
+// - [ctr_max...] are other optional arguments as defined in the script
+//   below, which typically set counter maxima (like epoch.max, etc)
+//   for controlling how many epochs to train.
+
+// include standard functions (usually in /usr/local/pdp++/css/include)
+#include "startup_fctns.css"
+
+void Startup() {
+  if(!Start_ArgCheck(6, "epoch B_START B_END"))
+    return;
+
+  // NOTE: need to change these depending on how many other args precede them..
+  int b_start = argv[4];
+  int b_end = argv[5];
+
+  String b_sufx = "." + taMisc::LeadingZeros(b_start, 2);
+
+  String stub_nm = Start_GetStub();
+  Start_LoadProj(stub_nm);
+
+  // change log file object name if not a graph log, etc
+  Start_LogFile("Epoch_0_GraphLog", stub_nm, b_sufx + ".epc.log");
+  Start_LogFile("Train_0_TextLog", stub_nm, b_sufx + ".bat.log");
+
+  // group where processes are (could be sub group in .processes.gp)
+  Process_MGroup* gp = .processes.gp.Train;
+
+  // set counter maxima, only if you have these processes..
+  Start_CtrMax(gp, "TrainProcess.epoch", 3);	// argv[3]
+  // set the ending batch count to this one
+  Start_CtrMax_Val(gp, "BatchProcess.batch", b_end + 1);
+
+  gp[0].NewInit();		// critical to use new init here..
+  gp[0].GoTo(b_start);		// start at the starting value here..
+  gp[0].Run();
+}
+
+Startup();

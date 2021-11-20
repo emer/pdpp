@@ -1,0 +1,44 @@
+#####################################################
+#
+#  Hardcode CSS Makefile
+#	    
+
+# this is for any _vt or _ti files that might be needed..
+
+PROJNAME = hard_of_css
+
+LIBS = -lspecmath -ltypea_min -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# usually compiling optimized..
+OPT_DEBUG = $(OPT_FLAGS)
+
+NewMakefile:
+	-@ $(CP) Makefile Makefile.bak;\
+	$(CAT) $(PDPDIR)/config/Makefile.defs $(PDPDIR)/config/Makefile.$(CPU) \
+	Makefile.in >Makefile
+
+% : %.c
+	$(CC) -o $@ $(CFLAGS) $(LDIRS) $(IDIRS) $<  $(LIBS)
+
+% : %.cc 
+	$(CXX) -o $@ $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(VT_INST_OBJ) \
+	$(TI_INST_OBJ) $(LIBS)
+
+% : %.css
+	$(CXX) -o $@ $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(VT_INST_OBJ) \
+	$(TI_INST_OBJ) $(LIBS)
+
+% : %.o
+	$(CXX) -o $@ $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(VT_INST_OBJ) \
+	$(TI_INST_OBJ) $(LIBS)
+
+.cc.o:
+	$(CXX) -o $@ `hi$(IDIRS) $(CCFLAGS) -c $< 
+
+.css.o:
+	$(CP) $< $<.cc
+	$(CXX) -o $@ `hi$(IDIRS) $(CCFLAGS) -c $<.cc 
+
+$(VT_INST_FILE).o:	$(VT_INST_FILE).cc
+	$(CXX) -o $@ $(IDIRS) $(TA_CCFLAGS) $(VT_INST_FLAG) -c $< 
+

@@ -1,0 +1,163 @@
+// script to parametrically create mixture of experts nets
+
+class MoeCreate {
+  // Create Mixtures-Of-Experts nets in parametric fashion
+public:
+  int   n_inputs;       // number of input units
+  int   n_experts;	// number of experts to create
+  int   n_expt_hid;	// number of hidden units per expert
+  int   n_gate_hid;	// number of hidden units in gate
+
+  void  CreateStdSpecs();  // #BUTTON create standard specs for moe
+  void  CreateNet();       // #BUTTON create the network
+  MoeCreate();
+};
+
+MoeCreate::MoeCreate() {
+  n_inputs = 2;
+  n_experts = 2;
+  n_expt_hid = 5;
+  n_gate_hid = 5;
+}
+
+void MoeCreate::CreateStdSpecs() {
+  .specs.RemoveAll();
+  BpConSpec* bpcs = .specs.New(1,BpConSpec);
+
+  BpConSpec* fixed1 = bpcs.children.NewEl(1);
+  fixed1.name = "FixedOneWeights";
+  fixed1.SetUnique("rnd", true);
+  fixed1.rnd.mean = 1.0;
+  fixed1.rnd.var = 0;
+  fixed1.SetUnique("lrate", true);
+  fixed1.lrate = 0;
+
+  BpConSpec* zerob = bpcs.children.NewEl(1);
+  zerob.name = "ZeroBiasWeights";
+  zerob.SetUnique("rnd", true);
+  zerob.rnd.mean = 0.0;
+  zerob.rnd.var = 0;
+  zerob.SetUnique("lrate", true);
+  zerob.lrate = 0;
+
+  BpConSpec* gatel = bpcs.children.NewEl(1);
+  gatel.name = "GateWeights";
+
+  BpUnitSpec* bpus = .specs.New(1,BpUnitSpec);
+
+  LinearBpUnitSpec* linus = bpus.children.NewEl(1, LinearBpUnitSpec);
+  linus.name = "LinearBpUnit";
+  linus.SetUnique("act_range", true);
+  linus.act_range.min = -100;
+  linus.act_range.max = 100;
+
+  LinearBpUnitSpec* outus = bpus.children.NewEl(1, LinearBpUnitSpec);
+  outus.name = "OutputUnit";
+  outus.SetUnique("act_range", true);
+  outus.act_range.min = -100;
+  outus.act_range.max = 100;
+  outus.SetUnique("bias_spec", true);
+  outus.bias_spec.SetSpec(zerob);
+
+  MoeGateUnitSpec* mgus = .specs.New(1,MoeGateUnitSpec);
+  MoeOutputUnitSpec* mous = .specs.New(1,MoeOutputUnitSpec);
+  mous.bias_spec.SetSpec(zerob);
+
+  OneToOnePrjnSpec* oneto1 = .specs.New(1,OneToOnePrjnSpec);
+
+  // one projection spec per expert
+  BaseSpec_MGroup* prjn_gp = .specs.NewGp(1);
+  prjn_gp.name = "ExpertPrjns";
+  prjn_gp.NewEl(n_experts, ManyToOnePrjnSpec);
+  int i;
+  for(i=0; i<n_experts; i++) {
+    ManyToOnePrjnSpec* pspc = prjn_gp[i];
+    pspc.n_conns = 1;
+    pspc.recv_start = i;
+    pspc.name = "Expert_" + i;
+  }
+  .projects[0].UpdateMenus();
+}
+
+void MoeCreate::CreateNet() {
+  Network* net = .networks.NewEl(1);
+  Layer* inp = net.layers.NewEl(1);
+  inp.name = "Input";
+  inp.n_units = n_inputs;
+  net.layers.NewEl(n_experts);
+  int i;
+  for(i=0; i<n_experts; i++) {
+    Layer* lay = net.layers[1 + i];
+    lay.name = "Expt_" + i;
+    lay.n_units = n_expt_hid;
+    lay.pos.z = 1;
+    if(i > 0)
+      lay.pos.x = net.layers[i].pos.x + net.layers[i].geom.x + 1;
+    Projection* prjn = lay.projections.NewEl(1);
+    prjn.from_type = Projection::CUSTOM;
+    prjn.from = inp;
+  }
+
+  Layer* exp_out = net.layers.NewEl(1);
+  exp_out.name = "Expt_Out";
+  exp_out.n_units = n_experts;
+  exp_out.pos.z = 2;
+  exp_out.unit_spec.SetSpec(.specs.BpUnitSpec.children.LinearBpUnit);
+  for(i=0; i<n_experts; i++) {
+    Projection* prjn = exp_out.projections.NewEl(1);
+    prjn.from_type = Projection::CUSTOM;
+    prjn.from = net.layers[1 + i];
+    // different spec for each expert output prjn
+    prjn.spec.SetSpec(.specs.gp[0][i]);
+  }
+  
+  Layer* gate_hid = net.layers.NewEl(1);
+  gate_hid.name = "Gate_Hid";
+  gate_hid.n_units = n_gate_hid;
+  gate_hid.pos.z = 2;
+  gate_hid.pos.x = exp_out.geom.x + 2;
+  Projection* prjn = gate_hid.projections.NewEl(1);
+  prjn.from_type = Projection::CUSTOM;
+  prjn.from = inp;
+  
+  MoeGateLayer* gate_lay = net.layers.NewEl(1,MoeGateLayer);
+  gate_lay.name = "Gate_Output";
+  gate_lay.n_units = n_experts;
+  gate_lay.pos.z = 3;
+  gate_lay.pos.x = n_experts + 2;
+  prjn = gate_lay.projections.NewEl(1);
+  prjn.from_type = Projection::CUSTOM;
+  prjn.from = gate_hid;
+
+  MoeOutputLayer* gate_exp = net.layers.NewEl(1,MoeOutputLayer);
+  gate_exp.name = "Gated_Experts";
+  gate_exp.n_units = n_experts;
+  gate_exp.pos.z = 3;
+  prjn = gate_exp.projections.NewEl(1);
+  prjn.from_type = Projection::CUSTOM;
+  prjn.from = exp_out;
+  prjn.spec.SetSpec(.specs.OneToOnePrjnSpec);
+  prjn.con_spec.SetSpec(.specs.BpConSpec.children.FixedOneWeights);
+
+  prjn = gate_exp.projections.NewEl(1);
+  prjn.from_type = Projection::CUSTOM;
+  prjn.from = gate_lay;
+  prjn.spec.SetSpec(.specs.OneToOnePrjnSpec);
+  prjn.con_spec.SetSpec(.specs.BpConSpec.children.FixedOneWeights);
+  
+  Layer* out_lay = net.layers.NewEl(1);
+  out_lay.name = "Output";
+  out_lay.n_units = 1;
+  out_lay.pos.z = 4;
+  out_lay.unit_spec.SetSpec(.specs.BpUnitSpec.children.OutputUnit);
+  prjn = out_lay.projections.NewEl(1);
+  prjn.from_type = Projection::CUSTOM;
+  prjn.from = gate_exp;
+  prjn.con_spec.SetSpec(.specs.BpConSpec.children.FixedOneWeights);
+
+  net.InitAllViews();
+  .projects[0].UpdateMenus();
+}
+
+MoeCreate moe_create;
+EditObj(moe_create);

@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-errors</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_83.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_85.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX367" HREF="pdp-user_toc.html">7.5  Common User Errors</A></H2>
+<P>
+<A NAME="IDX368"></A>
+<A NAME="IDX369"></A>
+
+</P>
+<P>
+The following are common user errors, which you can anticipate and avoid
+by reading about them in advance.
+
+</P>
+<P>
+<STRONG>Forgetting the semicolon:</STRONG> CSS, being essentially like C or C++,
+requires most statements to end with a semicolon (;). This allows one to
+spread statements over multiple lines, since the semicolon and not the
+newline indicates the end of a statement.  However, it is easy to forget
+it when typing stuff in interactively.  The consequences of this are
+that the following command or statement will be treated as if it was
+part of the one where the semicolon was forgotten, usually resulting in
+a <CODE>Syntax Error</CODE>.  Note that commands are exempt from the semicolon
+requirement, and, as a corollary, can not be extened across multiple
+lines. 
+
+</P>
+<P>
+<STRONG>Delayed impact of syntax error:</STRONG>  This happens when the user types
+in something erroneous (i.e., something that will result in a Syntax
+Error), without following it with a semicolon (usually because it was
+supposed to be a command, which does not require a semicolon).
+However, because the entry was neither a command nor followed by a
+semicolon, it treats the following material as being on the same line,
+so that only after the second line has been entered (typically), is the
+first syntax error caught.  The solution is to simply press enter a
+couple of times (or hit the semicolon and press enter), which will clear
+out the preceding line and let you continue on.
+
+</P>
+<P>
+<STRONG>Trying to <CODE>print</CODE> or do something else with a <CODE>void</CODE>:</STRONG> If
+an expression cannot be evaluated (resulting in a <CODE>void</CODE> value), or
+a function is called which returns a type of <CODE>void</CODE> (i.e., nothing
+is returned), and the result of this expression is then printed or
+passed to some other function, the following error will result:
+<CODE>Incomplete argument list for: &#60;function_name&#62;, Should have: 1 Got:
+0</CODE>.  Since the void does not get passed to the function or command which
+is expecting an argument, the function/command (typically <CODE>print</CODE>)
+complains with the above error.
+
+</P>
+<P>
+ 
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_83.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_85.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - gui-file-requester</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_60.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_62.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX334" HREF="ta_css_toc.html">7.19  File Requester</A></H2>
+
+<P>
+The File Requester Dialog is used for choosing filename for reading and
+writing to files. The directions for the file manipulation are listed at
+the top of the dialog. Typically the directions will ask the user to
+"Select a File for xxx" where xxx is one of "Opening", "Appending",
+"Writing", etc. Under the directions is the prompt "Enter Filename", and
+a FieldEditor where the user can type in the name of the file.
+
+</P>
+<P>
+Below the FieldEditor is a vertical scrollbox of filenames in the
+current directory. If there are more names than will fit in the window,
+the scrollbar on the right edge of the scrollbox can be used to scroll
+through the full listing. A filename can be chosen by clicking on the
+name in the scrollbox. Subdirectories are listed with a slash ('/')
+following the name, and can be read in by double-clicking on their name.
+The "../" directory can be used to navigate up a directory level.
+
+</P>
+<P>
+Below the filename scrollbox is a Field Editor for the filename filter.
+The String listed here is a unix csh filename completion string.
+Wildcards can be specified using the '*' character. See the csh man page
+for more details. Typically this field will be set by PDP++ to limit the
+range of filenames available to those which correspond to the type of
+file the dialog is to act upon. (e.g., If projects are being loaded, then
+the filter will be set to "*.proj.*" to limit the selection to files
+with ".proj" in the filename.) In most cases, compressed files can be
+loaded and saved as well.
+
+</P>
+<P>
+Below the filter Field Editor are the action buttons. The leftmost
+button will perform the action specified in the directions at the top of
+the dialog. The rightmost button is the "Cancel" button and will exit
+the dialog without performing the action. Double-clicking on a filename,
+or pressing the "return" key, also causes the dialog's action to be
+taken.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_60.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_62.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,318 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-layer</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_238.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_240.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1569" HREF="pdp-user_toc.html">17.4  Leabra Layer Specifications</A></H2>
+<P>
+<A NAME="IDX1570"></A>
+<A NAME="IDX1571"></A>
+<A NAME="IDX1572"></A>
+
+</P>
+<P>
+The <B>LeabraLayer</B> layer object has the following variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>n_units</CODE>
+<DD>
+<A NAME="IDX1573"></A>
+Number of units to create with Build command (0=use geometry). 
+<DT><CODE>geom</CODE>
+<DD>
+<A NAME="IDX1574"></A>
+Geometry (size) of units in layer (or of each subgroup if geom.z &#62; 1).
+<DT><CODE>pos</CODE>
+<DD>
+<A NAME="IDX1575"></A>
+Position of layer within network.
+<DT><CODE>gp_geom</CODE>
+<DD>
+<A NAME="IDX1576"></A>
+Geometry of subgroups (if geom.z &#62; 1).
+<DT><CODE>projections</CODE>
+<DD>
+<A NAME="IDX1577"></A>
+Group of receiving projections for this layer.
+<DT><CODE>units</CODE>
+<DD>
+<A NAME="IDX1578"></A>
+Units or groups of units in the layer.
+<DT><CODE>unit_spec</CODE>
+<DD>
+<A NAME="IDX1579"></A>
+Default unit specification for units in this
+    layer: only applied during Build or explicit SetUnitSpec command.
+<DT><CODE>lesion</CODE>
+<DD>
+<A NAME="IDX1580"></A>
+Inactivate this layer from processing (reversible).
+<DT><CODE>ext_flag</CODE>
+<DD>
+<A NAME="IDX1581"></A>
+Indicates which kind of external input layer received.
+
+<DT><CODE>netin</CODE>
+<DD>
+<A NAME="IDX1582"></A>
+Average and maximum net input (<CODE>net</CODE>) values for
+  layer (<CODE>avg</CODE>, <CODE>max</CODE>).  These values kept for information
+  purposes only.
+<DT><CODE>acts</CODE>
+<DD>
+<A NAME="IDX1583"></A>
+Avg and max activation values for the layer -- <CODE>avg</CODE> is used for
+sending average activation computation in <CODE>savg_cor</CODE> in the
+ConSpec.
+<DT><CODE>acts_p</CODE>
+<DD>
+<A NAME="IDX1584"></A>
+Plus-phase activation stats for the layer.
+<DT><CODE>acts_m</CODE>
+<DD>
+<A NAME="IDX1585"></A>
+Minus-phase activation stats for the layer.
+<DT><CODE>acts_dif</CODE>
+<DD>
+<A NAME="IDX1586"></A>
+Difference between plus and minus phase vals above.
+<DT><CODE>phase_dif_ratio</CODE>
+<DD>
+<A NAME="IDX1587"></A>
+Phase-difference ratio (<CODE>acts_p.avg / acts_m.avg</CODE>) that can be
+used with <CODE>phase_dif</CODE> in UnitSpec to prevent learning when
+network is inactive in minus phase but active in plus phase.
+<DT><CODE>kwta</CODE>
+<DD>
+<A NAME="IDX1588"></A>
+values for kwta -- activity levels, etc:
+
+<DL COMPACT>
+
+<DT><CODE>k</CODE>
+<DD>
+<A NAME="IDX1589"></A>
+Actual target number of active units for layer.
+<DT><CODE>pct</CODE>
+<DD>
+<A NAME="IDX1590"></A>
+Actual target percent activity in layer.
+<DT><CODE>k_ithr</CODE>
+<DD>
+<A NAME="IDX1591"></A>
+Inhib threshold for kth most active unit (top k for avg-based). 
+<DT><CODE>k1_ithr</CODE>
+<DD>
+<A NAME="IDX1592"></A>
+Inhib threshold for k+1th unit (other units for avg-based). 
+<DT><CODE>ithr_r</CODE>
+<DD>
+<A NAME="IDX1593"></A>
+Log of ratio of ithr values, indicates
+sharpness of differentiation between active and inactive units.
+</DL>
+
+<DT><CODE>i_val</CODE>
+<DD>
+<A NAME="IDX1594"></A>
+Computed inhibition values: <CODE>kwta</CODE> = kWTA
+  inhibition, <CODE>g_i</CODE> = overall inhibition (usually same as kwta,
+  but not for UNIT_INHIB). 
+<DT><CODE>un_g_i</CODE>
+<DD>
+<A NAME="IDX1595"></A>
+Average and stdev (not max) values for unit inhib.
+<DT><CODE>adapt_pt</CODE>
+<DD>
+<A NAME="IDX1596"></A>
+Adapting kwta point values (if adapting, not by default).
+  
+<DT><CODE>spec</CODE>
+<DD>
+<A NAME="IDX1597"></A>
+Determines the spec that controls this layer.
+<DT><CODE>layer_links</CODE>
+<DD>
+<A NAME="IDX1598"></A>
+List of layers to link inhibition with (not commonly used).
+<DT><CODE>stm_gain</CODE>
+<DD>
+<A NAME="IDX1599"></A>
+Actual stim gain for soft clamping, can be incremented to ensure clamped units active.
+<DT><CODE>hard_clamped</CODE>
+<DD>
+<A NAME="IDX1600"></A>
+If true, this layer is actually hard clamped.
+</DL>
+
+<P>
+The <B>LeabraLayerSpec</B> layer-level specifications consist of:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>kwta</CODE>
+<DD>
+<A NAME="IDX1601"></A>
+How to calculate desired activity level:
+
+<DL COMPACT>
+
+<DT><CODE>k_from</CODE>
+<DD>
+<A NAME="IDX1602"></A>
+How is the actual k determined: USE_K =
+  directly by given k, USE_PCT = by pct times number of units in
+  layer (default), USE_PAT_K = by number of units where external
+  input <CODE>ext</CODE> &#62; <CODE>.5 (pat_q)</CODE>.
+<DT><CODE>k</CODE>
+<DD>
+<A NAME="IDX1603"></A>
+Desired number of active units in the layer
+  (default is meaningless -- change as appropriate).
+<DT><CODE>pct</CODE>
+<DD>
+<A NAME="IDX1604"></A>
+Desired proportion of activity (used to compute a k value based on layer size).
+</DL>
+
+<DT><CODE>gp_kwta</CODE>
+<DD>
+<A NAME="IDX1605"></A>
+Desired activity level for the unit groups (not
+    applicable if no unit subgroups in layer, or if not in inhib_group).
+    See <CODE>kwta</CODE> for values. 
+<DT><CODE>inhib_group</CODE>
+<DD>
+<A NAME="IDX1606"></A>
+What to consider the inhibitory group.
+    ENTIRE_LAYER = layer (default), UNIT_GROUPS = unit subgroups
+    within layer each compute kwta separately, LAY_AND_GPS = do both
+    layer and subgroup, inhib is max of each value.
+
+<DT><CODE>compute_i</CODE>
+<DD>
+<A NAME="IDX1607"></A>
+How to compute inhibition (g_i):
+  KWTA_INHIB = basic kWTA between k and k+1 (default),
+  KWTA_AVG_INHIB = average based, between avg of k and avg of k+1-n,
+  UNIT_INHIB = units with <CODE>inhib</CODE> flag send g_i directly.
+<DT><CODE>i_kwta_pt</CODE>
+<DD>
+<A NAME="IDX1608"></A>
+Point to place inhibition between k and
+  k+1 for kwta (.25 std), between avg of k and avg of k+1-n for
+  avg-based (.6 std).
+
+<DT><CODE>adapt_i</CODE>
+<DD>
+<A NAME="IDX1609"></A>
+Adapt either the <CODE>i_kwta_pt</CODE> point based on
+  difference between actual and target pct activity level (for
+  avg-based only, and rarely used), or or g_bar.i for unit-inhib.
+
+<DL COMPACT>
+
+<DT><CODE>type</CODE>
+<DD>
+<A NAME="IDX1610"></A>
+What type of adaptation: NONE = nothing, KWTA_PT = adapt kwta point
+(i_kwta_pt) based on running-average layer activation as compared to
+target value, G_BAR_I =  adapt g_bar.i for unit inhibition values
+based on layer activation at any point in time, G_BAR_IL adapt g_bar.i
+and g_bar.l for unit inhibition &#38; leak values based on layer
+activation at any point in time 
+<DT><CODE>tol</CODE>
+<DD>
+<A NAME="IDX1611"></A>
+Tolerance around target before changing value.
+<DT><CODE>p_dt</CODE>
+<DD>
+<A NAME="IDX1612"></A>
+Time constant for changing parameter.
+<DT><CODE>mx_d</CODE>
+<DD>
+<A NAME="IDX1613"></A>
+Maximum deviation from initial i_kwta_pt allowed (as proportion of initial)
+<DT><CODE>l</CODE>
+<DD>
+<A NAME="IDX1614"></A>
+Proportion of difference from target activation to allocate to the leak in G_BAR_IL mode
+<DT><CODE>a_dt</CODE>
+<DD>
+<A NAME="IDX1615"></A>
+Time constant for integrating average average activation, which is basis for adapting i_kwta_pt
+</DL>
+
+<DT><CODE>clamp</CODE>
+<DD>
+<A NAME="IDX1616"></A>
+How to clamp external inputs.
+
+<DL COMPACT>
+
+<DT><CODE>hard</CODE>
+<DD>
+<A NAME="IDX1617"></A>
+Whether to hard clamp external inputs
+    to this layer (directly set activation, resulting in much faster
+    processing), or provide external inputs as extra net input (soft
+    clamping, if false).
+<DT><CODE>gain</CODE>
+<DD>
+<A NAME="IDX1618"></A>
+tarting soft clamp gain factor (net = gain * ext).
+<DT><CODE>d_gain</CODE>
+<DD>
+<A NAME="IDX1619"></A>
+For soft clamp, delta to increase gain
+    when target units not &#62;.5 (0 = off, .1 std when used).
+</DL>
+  
+<DT><CODE>decay</CODE>
+<DD>
+<A NAME="IDX1620"></A>
+Proportion of decay of activity state vars between
+  various levels of processing:
+
+<DL COMPACT>
+
+<DT><CODE>event</CODE>
+<DD>
+<A NAME="IDX1621"></A>
+Decay between different events.
+<DT><CODE>phase</CODE>
+<DD>
+<A NAME="IDX1622"></A>
+Decay between different phases.
+<DT><CODE>phase2</CODE>
+<DD>
+<A NAME="IDX1623"></A>
+Decay between 2nd set of phases (if applicable). 
+<DT><CODE>clamp_phase2</CODE>
+<DD>
+<A NAME="IDX1624"></A>
+If true, hard-clamp second plus phase activations to prev plus phase
+(only special layers will then update -- optimizes speed).
+</DL>
+
+<DT><CODE>layer_link</CODE>
+<DD>
+<A NAME="IDX1625"></A>
+Link inhibition between layers (with specified gain), rarely used.
+Linked layers are in layer objects.
+  <CODE>link</CODE> = Whether to link the inhibition, 
+  <CODE>gain</CODE> = Strength of the linked inhibition.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_238.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_240.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

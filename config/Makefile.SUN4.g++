@@ -1,0 +1,52 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SUN4 - g++ 3.x
+
+# CPU should be set to SUN4 and this file copied/linked to Makefile.SUN4
+# (this is what interviews still calls these systems)
+
+# NOTES for making: 2 gnu things needed are libreadline (i used 2.2)
+# and gnu make (3.77).  iberty stuff was not needed.
+
+# to compile interviews (iv-15.tar.gz):
+# old CC: doesn't process stringstream, using g++ instead
+# ./configure --prefix=/usr/local/pdp++/iv-install CXX=CC CXXFLAGS=-O2 CC=cc --enable-static
+# for g++ (-pedantic needed to avoid bizzare Xlib.h no-return-type errors):
+#./configure --prefix=/usr/local/pdp++/iv-install --enable-static CXXFLAGS=-pedantic -O2
+
+# using gnu make -- sun make doesn't support VPATH stuff 
+# if gmake is 1st in path, this isn't necessary..
+MAKE = /usr/local/pdp++/gmake
+
+# DEFINES = 
+
+# interviews installed under pdp++, not in standard /usr/local/interviews
+IV = /usr/local/pdp++/iv-install
+
+# just go for static all the way -- platform is old enough that it isn't work it.
+#LDIRS_EXTRA = -static -L/usr/openwin/lib
+# put libstdc++.a here so it doesn't get included as an .so:
+LDIRS_EXTRA = -L$(PDPDIR)/gcc_lib
+
+GENERIC_LIB = -lm -lposix4
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/local/include/c++/3.2
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# /usr/include headerfiles expect sparc to be defined
+cppC = /usr/local/bin/cpp -Dsparc
+
+# NOT using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+# no libg++ for binaries 
+#BIN_CXX = $(CXX)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)

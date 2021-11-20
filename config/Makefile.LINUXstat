@@ -1,0 +1,38 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - g++ (ELF)
+####################################################
+
+# static for distribution purposes (one executable!)
+
+# IMPORTANT: this is for gcc 3.x compiliers: use .2 versions for
+# 2.9x version compilers.
+
+# always emulate basic linux
+DEFINES = -DLINUX 
+
+#IDIRS_EXTRA = 
+LDIRS_EXTRA = -static -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /lib/cpp -D__i386__ 
+
+GENERIC_LIB = -lm -ldl -lpthread
+
+# *NOT* using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

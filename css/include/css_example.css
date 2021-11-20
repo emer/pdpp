@@ -1,0 +1,24 @@
+
+// a function that decodes the number
+String Decode_Number(float number) {
+  String rval = "The number, " + number + " is: ";
+  if(number < 0)
+    rval += "negative";
+  else if(number < .5)
+    rval += "less than .5";
+  else if(number < 1)
+    rval += "less than 1";
+  else
+    rval += "greater than 1";
+  return rval;
+}
+
+// decodes n_numbers randomly generated numbers
+void Decode_Random(int n_numbers) {
+  int i;
+  for(i=0; i<n_numbers; i++) {
+    float number = 4.0 * (drand48()-.5);
+    String decode = Decode_Number(number);  // call our decoding function
+    cout << i << "\t" << decode << "\n";    // c++ style output
+  }
+}

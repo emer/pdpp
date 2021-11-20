@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stat-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_169.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_171.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1033" HREF="pdp-user_toc.html">12.7.3  Implementational Details about Stats</A></H3>
+
+<P>
+If you will be writing your own statistic process, this provides some
+information that might be useful.
+
+</P>
+<P>
+The stat object provides a scaffolding for looping through the various
+objects in a network.  Thus, if you want to do something at the unit
+level, you can simply write a <CODE>Unit_Stat</CODE> function, and the stat
+will automatically iterate over layers and units to call the unit stat
+function on every unit.  This makes it relatively easy to write a new
+statistic.
+
+</P>
+<P>
+See the header file <TT>`src/pdp/stats.h'</TT> for more information about
+how a stat object works.  In particular, notice that there are
+recommended ways of speeding up otherwise generic functions that rely on
+type-scanned information.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_169.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_171.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-bp</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_14.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_16.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX28" HREF="pdp-user_toc.html">4.1  Backpropagation and XOR</A></H2>
+
+<P>
+Backpropagation is the name of a learning algorithm used to train
+multi-layer networks of simple processing units (Rumelhart, Hinton &#38;
+Williams, 1986).  In the simple case we consider in this tutorial, we
+restrict our attention to multi-layer feed-forward networks.  Such
+networks consist of several layers of units, the first (one or more)
+of which are the input layer(s) and the last of which are the output
+layer(s).  Each layer consists of some number of simple connectionist
+units.  Units in lower-numbered layers may send connections to units
+in any higher-numbered layer, but in feedforward networks they cannot
+send connections to units in the same layer or lower-numbered layers.
+
+</P>
+<P>
+The network learns from events it is exposed to by its training
+environment.  Each event consists of an input pattern for each input
+layer and a target output pattern for each output layer.  Henceforth
+we will consider the case of a single input and output layer.  The
+goal of learning is to adjust the weights on the connections among the
+units so as to allow the network to produce the target output pattern
+in response to the given input pattern.  Weights changes are based on
+calculating the derivative of the error in the network's output with
+respect to each weight.  
+
+</P>
+<P>
+Training is organized into a series of epochs.  In each epoch, the
+network is exposed to a set of events, often the entire set of events
+that comprise the training environment.  for each event, processing
+occurs in three phases: an activation phase, a back-propagation phase,
+and a final phase in which weight error derivatives are calculated.
+
+</P>
+<P>
+Training begins by initializing the weights and biases to small random
+values. The process of learning then begins, and continues for some
+number of epochs or until a performance criterion is reached.
+Typically this criterion is given in terms of the total,
+summed over all of the events in the epoch, of some measure of
+performance on each event; the sum squared error, described below,
+is the most frequently used measure.
+
+</P>
+<P>
+We now consider in each of the three phases involved in processing
+each pattern.  
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_16.html">1                  Activation Phase</A>
+<LI><A HREF="pdp-user_17.html">2             BackPropagation Phase</A>
+<LI><A HREF="pdp-user_18.html">3               Weight Error Derivative Phase</A>
+<LI><A HREF="pdp-user_19.html">4                  </A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_14.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_16.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

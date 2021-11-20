@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-group-iteration</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_68.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_70.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX361" HREF="ta_css_toc.html">8.2.1  Iterating Through Group Elements</A></H3>
+<P>
+<A NAME="IDX362"></A>
+<A NAME="IDX363"></A>
+
+</P>
+<P>
+The elements in a group with nested sub-structure can be accessed as
+though this structure were "flattened out".  This can be done more
+efficiently using an iterator scheme as opposed to repeatedly calling
+the <CODE>Leaf()</CODE> function.  The iterator for going through leaves is an
+object that remembers information about where it is in the group
+structure.  This iterator is of type <B>taLeafItr</B>, and a variable
+should be declared of this type before beginning a for loop to iterate.
+The <CODE>FirstEl</CODE> and <CODE>NextEl</CODE> functions use this iterator to
+traverse through the elements of the group.
+
+</P>
+<P>
+There is a macro which makes group traversal relatively painless.  The
+following example illustrates its use:
+
+</P>
+<PRE>  Unit* u;                      // a pointer to a unit object
+  taLeafItr i;                  // the iterator object
+  FOR_ITR_EL(Unit, u, layer-&#62;units., i) {
+    u-&#62;DoSomething();
+  }
+</PRE>
+
+<P>
+The FOR_ITR_EL macro iterates though the leaves of a group. It accepts
+four arguments. The first is the type of object expected at the leaf
+level of the group. The second is a pointer to an object of that type.
+The third is group followed by its access method. In the example, the
+group is "layer-&#62;units", and the access method is the "." . If the group
+was instead a pointer to group called "mygroup" then the third argument
+would be "mygroup-&#62;". The fourth argument is the iterator object.
+
+</P>
+<P>
+To iterate through all the leaf groups (groups which contain leaf
+elements) the FOR_ITR_GP macro may be used. Its first argument is the
+group type (not the leaf type). The second is a pointer to group of that
+type. The third is pointer group and its access method. And again, the
+fourth argument is the iterator object.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_68.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_70.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,599 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-functions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_81.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_83.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX256" HREF="pdp-user_toc.html">7.4.7  CSS Functions</A></H3>
+<P>
+<A NAME="IDX257"></A>
+
+</P>
+<P>
+The following functions are built into CSS, and provide some of the
+basic functionality found in the standard C library.  Note that the
+<CODE>String</CODE> and <CODE>stream</CODE> objects encapsulate many commonly-used C
+library functions, which have not in general been reproduced in CSS
+(with the exception of some of the file functions).
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Int access(String fname, int ac_type)</CODE>
+<DD>
+<A NAME="IDX258"></A>
+This POSIX command determines if the given file name is accessible
+according to the ac_type argument, which should be some bitwise OR of
+the enums <CODE>R_OK W_OK X_OK F_OK</CODE>.  Returns success and sets errno
+flag on failure.
+<DT><CODE>Real acos(Real x)</CODE>
+<DD>
+<A NAME="IDX259"></A>
+The arc-cosine (inverse cosine) -- takes an X coordinate and returns the
+angle (in radians) such that cos(angle)=X.
+<DT><CODE>Real acosh(Real x)</CODE>
+<DD>
+<A NAME="IDX260"></A>
+The hyperbolic arc-cosine.
+<DT><CODE>Int alarm(int seconds)</CODE>
+<DD>
+<A NAME="IDX261"></A>
+Generate an alarm signal in the given number of seconds.  Returns
+success and sets errno flag on failure.
+<DT><CODE>Real asin(Real x)</CODE>
+<DD>
+<A NAME="IDX262"></A>
+The arc-sine (inverse sine) -- takes a Y coordinate and returns the
+angle (in radians) such that sin(angle)=Y. 
+<DT><CODE>Real asinh(Real x)</CODE>
+<DD>
+<A NAME="IDX263"></A>
+The hyperbolic arc-sine.
+<DT><CODE>Real atan(Real x)</CODE>
+<DD>
+<A NAME="IDX264"></A>
+The arc-tangent (inverse tangent) -- takes a Y/X slope and returns angle
+(in radians) such that tan(angle)=Y/X.
+<DT><CODE>Real atan2(Real y, Real x)</CODE>
+<DD>
+<A NAME="IDX265"></A>
+The arc-tangent (inverse tangent) -- takes a Y/X slope and returns angle
+(in radians) such that tan(angle)=Y/X.
+<DT><CODE>Real atanh(Real x)</CODE>
+<DD>
+<A NAME="IDX266"></A>
+The hyperbolic arc-tangent.
+<DT><CODE>Real beta(Real z, Real w)</CODE>
+<DD>
+<A NAME="IDX267"></A>
+The Beta function.
+<DT><CODE>Real beta_i(Real a, Real b, Real x)</CODE>
+<DD>
+<A NAME="IDX268"></A>
+The incomplete Beta function.
+<DT><CODE>Real bico_ln(Int n, Int j)</CODE>
+<DD>
+<A NAME="IDX269"></A>
+The natural logarithm of the binomial coefficient "n choose j".  The
+number of ways of choosing j items out of a set containing n
+elements:
+<PRE>  / n \        n! 
+  |   |  = ------------
+  \ j /      k! (n-k)!
+</PRE>
+
+<DT><CODE>Real binom_cum(Int n, Int j, Int p)</CODE>
+<DD>
+<A NAME="IDX270"></A>
+The cumulative binomial probability of getting j <EM>or more</EM> in n
+trials of probability p.
+<DT><CODE>Real binom_den(Int n, Int j, Real p)</CODE>
+<DD>
+<A NAME="IDX271"></A>
+The binomial probability density function for j "successes" in n trials,
+each with probability p of success.
+<PRE>               / n \   j      (n-j)
+  P(n,j,p) =   |   |  p  (1-p) 
+               \ j /  
+</PRE>
+
+<DT><CODE>Real binom_dev(Int n, Real p)</CODE>
+<DD>
+<A NAME="IDX272"></A>
+The binomial random deviate: produces an integer number of successes for
+a binomial distribution with p probability over n trials.
+<DT><CODE>Int CancelEditObj(obj)</CODE>
+<DD>
+<A NAME="IDX273"></A>
+Cancels the edit dialog for the given object that would have been opened
+by <CODE>EditObj</CODE>.
+<DT><CODE>Real ceil(Real x)</CODE>
+<DD>
+<A NAME="IDX274"></A>
+Rounds up the value to the next-highest integral value.
+<DT><CODE>int chdir(String dir_name)</CODE>
+<DD>
+<A NAME="IDX275"></A>
+Change the current directory to given argument.  Returns success and
+sets errno flag on failure.
+<DT><CODE>Real chisq_p(Real X, Real v)</CODE>
+<DD>
+<A NAME="IDX276"></A>
+Gives the chi-squared statistic P(X^2 | v).
+<DT><CODE>Real chisq_q(Real X, Real v)</CODE>
+<DD>
+<A NAME="IDX277"></A>
+Gives the complement of the chi-squared statistic Q(X^2 | v).
+<DT><CODE>Int chown(String fname, int user, int group)</CODE>
+<DD>
+<A NAME="IDX278"></A>
+Changes the ownership of the given file to the given user and group
+numbers.  Returns success and sets errno flag on failure.
+<DT><CODE>Real clock()</CODE>
+<DD>
+<A NAME="IDX279"></A>
+Returns processor time used by current process in seconds (with
+fractions expressed in decimals).
+<DT><CODE>Real cos(Real x)</CODE>
+<DD>
+<A NAME="IDX280"></A>
+The cosine of angle x (given in radians).  Use <CODE>cos(x / DEG)</CODE> if x
+is in degrees.
+<DT><CODE>Real cosh(Real x)</CODE>
+<DD>
+<A NAME="IDX281"></A>
+The hyperbolic cosine of angle x.
+<DT><CODE>String ctermid()</CODE>
+<DD>
+<A NAME="IDX282"></A>
+Returns the character-id of the current terminal.
+<DT><CODE>String cuserid()</CODE>
+<DD>
+<A NAME="IDX283"></A>
+Returns the character-id of the current user.
+<DT><CODE>String_Array&#38; Dir([String&#38; dir_nm])</CODE>
+<DD>
+<A NAME="IDX284"></A>
+Fills an array with the names of all the files in the given directory
+(defaults to "." if no directory name is passed).  The user should copy
+the array if they want to keep it around, since the one returned is
+just a pointer to an internal array object.
+<DT><CODE>Real drand48()</CODE>
+<DD>
+<A NAME="IDX285"></A>
+Returns a uniformly-distributed random number between 0 and 1.
+<DT><CODE>Int EditObj(&#60;object&#62;, [Int wait])</CODE>
+<DD>
+<A NAME="IDX286"></A>
+This is the function version of the <CODE>edit</CODE> command.  If the GUI
+(graphical user interface) is active (i.e., by using <CODE>-gui</CODE> to
+start up CSS), edit will bring up a graphical edit dialog for the given
+object, which must be either a script-defined or hard-coded <CODE>class</CODE>
+object.  The optional second argument, if TRUE, will cause the system to
+wait for the user to close the edit dialog before continuing execution
+of the script.
+<DT><CODE>Real erf(Real x)</CODE>
+<DD>
+<A NAME="IDX287"></A>
+The error function, which provides an approximation to the integral of
+the normal distribution.
+<DT><CODE>Real erf_c(Real x)</CODE>
+<DD>
+<A NAME="IDX288"></A>
+The complement of the error function.
+<DT><CODE>Real exp(Real x)</CODE>
+<DD>
+<A NAME="IDX289"></A>
+The natural exponential (e to the power x).
+<DT><CODE>css* Extern(String&#38; name)</CODE>
+<DD>
+<A NAME="IDX290"></A>
+Returns the object with the given name on the 'extern' variable list.
+This provides a mechanism for passing arbitrary (i.e., class objects)
+data across different name spaces (i.e., across different instances of
+the css program space), since you can pass the name of the extern class
+object that contains data relevant to another script, and use this
+function to get that object from its name.
+<DT><CODE>Real fabs(Real x)</CODE>
+<DD>
+<A NAME="IDX291"></A>
+The absolute value of x.
+<DT><CODE>Real fact_ln(Int x)</CODE>
+<DD>
+<A NAME="IDX292"></A>
+The natural logarithm of the factorial of x (x!).
+<DT><CODE>void fclose(FILE fh)</CODE>
+<DD>
+<A NAME="IDX293"></A>
+Closes the file, which was opened by <CODE>fopen</CODE>.  The FILE type is not
+actually a standard C FILE, but actually a <CODE>fstream</CODE> type, so
+stream operations can be performed on it.
+<DT><CODE>Real floor(Real x)</CODE>
+<DD>
+<A NAME="IDX294"></A>
+Rounds the value down to the next lowest integral value.
+<DT><CODE>Real fmod(Real x, Real y)</CODE>
+<DD>
+<A NAME="IDX295"></A>
+Returns the value of x modulo y (i.e., <CODE>x % y</CODE>) for floating-point
+values.
+<DT><CODE>FILE fopen(String&#38; file_nm, String&#38; mode)</CODE>
+<DD>
+<A NAME="IDX296"></A>
+Opens given file name in the given mode, where the modes are "r", "w",
+and "a" for read, write and append. The FILE type is not actually a
+standard C FILE, but actually a <CODE>fstream</CODE> type, so stream
+operations can be performed on it.
+<DT><CODE>void fprintf(FILE strm, v1 [,v2...])</CODE>
+<DD>
+<A NAME="IDX297"></A>
+Prints the given arguments (which must be comma separated) to the
+stream.  Values to be printed can be of any type, and are actually
+printed with the <CODE>&#60;&#60;</CODE> operator of the stream classes.  Unlike the
+standard C function, there is no provision for specifying formatting
+information.  Instead, the formatting must be specified by changing the
+parameters of the stream object.  The FILE type is not actually a
+standard C FILE, but actually a <CODE>fstream</CODE> type, so stream
+operations can be performed on it.
+<DT><CODE>Real Ftest_q(Real F, Real v1, Real v2)</CODE>
+<DD>
+<A NAME="IDX298"></A>
+Gives the F probability distribution for P(F | (v1 &#60; v2)).  Useful for
+performing statistical significance tests.  The _q suffix means that
+this is the complement distribution.
+<DT><CODE>Real gamma_cum(Int i, Real l, Real t)</CODE>
+<DD>
+<A NAME="IDX299"></A>
+The cumulative gamma distribution for event i with parameters l=lambda
+and t=time, which is the same as <CODE>gamma_p(j, l * t)</CODE>.
+<DT><CODE>Real gamma_den(Int j, Real l, Real t)</CODE>
+<DD>
+<A NAME="IDX300"></A>
+The gamma probability density function for j events, l=lambda, and
+t=time.
+<PRE>                 j  (j-1)
+                l  t         -lt 
+  P(j,l,t)  =  -----------  e           (t &#62; 0)
+                    j!
+</PRE>
+
+<DT><CODE>Real gamma_dev(Int j)</CODE>
+<DD>
+<A NAME="IDX301"></A>
+A random gamma deviate: how long it takes to wait until j events occur
+with a unit lambda (l=1).
+<DT><CODE>Real gamma_ln(Real z)</CODE>
+<DD>
+<A NAME="IDX302"></A>
+The natural logarithm of the gamma function, which is a generalization
+of (n-1)! to real-valued arguments. Note that this is not the
+gamma probability distribution.
+<PRE>                x
+              /   z-1  -t
+  Gamma(z) =  |  t    e   dt 
+              /
+               0             
+</PRE>
+
+<DT><CODE>Real gamma_p(Real a, Real x)</CODE>
+<DD>
+<A NAME="IDX303"></A>
+The incomplete gamma function:
+<PRE>                          x            
+                1       /   a-1  -t    
+  P(a,x) =  --------    |  t    e   dt          (a &#62; 0)
+            Gamma(a)    /              
+                         0             
+</PRE>
+
+<DT><CODE>Real gamma_q(Real a, Real x)</CODE>
+<DD>
+<A NAME="IDX304"></A>
+The incomplete gamma function as the complement of <CODE>gamma_p</CODE>
+<PRE>                         inf            
+                1       /   a-1  -t    
+  P(a,x) =  --------    |  t    e   dt          (a &#62; 0)
+            Gamma(a)    /              
+                         x             
+</PRE>
+
+<DT><CODE>Real gauss_cum(Real x)</CODE>
+<DD>
+<A NAME="IDX305"></A>
+The cumulative of the Gaussian or normal distribution up to given x
+(sigma = 1, mean = 0).
+<DT><CODE>Real gauss_den(Real x)</CODE>
+<DD>
+<A NAME="IDX306"></A>
+The Gaussian or normal probability density function at x with sigma = 1
+and mean = 0.
+<DT><CODE>Real gauss_inv(Real p)</CODE>
+<DD>
+<A NAME="IDX307"></A>
+Inverse of the cumulative for p: returns z value for given p.
+<DT><CODE>Real gauss_dev()</CODE>
+<DD>
+<A NAME="IDX308"></A>
+Returns a Gaussian random deviate with unit variance and 0 mean.
+<DT><CODE>String getcwd()</CODE>
+<DD>
+<A NAME="IDX309"></A>
+Returns the current working directory path.
+<DT><CODE>String getenv(String var)</CODE>
+<DD>
+<A NAME="IDX310"></A>
+Returns the environment variable definition for varable var.
+<DT><CODE>Int getegid()</CODE>
+<DD>
+<A NAME="IDX311"></A>
+Returns the current effective group id number for this process.
+<DT><CODE>Int geteuid()</CODE>
+<DD>
+<A NAME="IDX312"></A>
+Returns the current effective user id number for this process.
+<DT><CODE>Int getgid()</CODE>
+<DD>
+<A NAME="IDX313"></A>
+Returns the current group id number for this process.
+<DT><CODE>Int getuid()</CODE>
+<DD>
+<A NAME="IDX314"></A>
+Returns the current user id number for this process.
+<DT><CODE>String getlogin()</CODE>
+<DD>
+<A NAME="IDX315"></A>
+Returns the name the current user logged in as.
+<DT><CODE>Int getpgrp()</CODE>
+<DD>
+<A NAME="IDX316"></A>
+Returns the process group id for current process.
+<DT><CODE>Int getpid()</CODE>
+<DD>
+<A NAME="IDX317"></A>
+Returns the process id for current process.
+<DT><CODE>Int getppid()</CODE>
+<DD>
+<A NAME="IDX318"></A>
+Returns the parent process id for current process.
+<DT><CODE>Int gettimesec()</CODE>
+<DD>
+<A NAME="IDX319"></A>
+Returns current time of day in seconds.
+<DT><CODE>Int gettimmesec()</CODE>
+<DD>
+<A NAME="IDX320"></A>
+Returns current time of day in microseconds.
+<DT><CODE>Real hyperg(Int j, Int s, Int t, Int n)</CODE>
+<DD>
+<A NAME="IDX321"></A>
+The hypergeometric probability function for getting j number of the
+"target" items in an environment of size "n", where there are "t"
+targets and a sample (without replacement) of this environment of size
+"s" is taken.
+<DT><CODE>Int isatty()</CODE>
+<DD>
+<A NAME="IDX322"></A>
+Returns true if the current input terminal is a tty (as opposed to a
+file or a pipe or something else).
+<DT><CODE>Int link(String from, String to)</CODE>
+<DD>
+<A NAME="IDX323"></A>
+Creates a hard link from given file to other file.  (see also symlink).
+Returns success and sets errno flag on failure.
+<DT><CODE>Real log(Real x)</CODE>
+<DD>
+<A NAME="IDX324"></A>
+The natural logarithm of x.
+<DT><CODE>Real log10(Real x)</CODE>
+<DD>
+<A NAME="IDX325"></A>
+The logarithm base 10 of x.
+<DT><CODE>Int lrand48()</CODE>
+<DD>
+<A NAME="IDX326"></A>
+Returns a uniformly-distributed random number on the range of the
+integers.
+<DT><CODE>MAX(&#60;v1&#62;, &#60;v2&#62;) or max(&#60;v1&#62;, &#60;v2&#62;)</CODE>
+<DD>
+<A NAME="IDX327"></A>
+<A NAME="IDX328"></A>
+Works like the commonly-used <CODE>#define</CODE> macro that gives the maximum
+of the two given arguments.  The return type is that of the
+maximum-valued argument.
+<DT><CODE>MIN(&#60;v1&#62;, &#60;v2&#62;) or min(&#60;vi&#62;, &#60;v2&#62;)</CODE>
+<DD>
+<A NAME="IDX329"></A>
+<A NAME="IDX330"></A>
+Just like <CODE>MAX</CODE>, except it returns the minimum of the two given
+arguments.
+<DT><CODE>Int pause()</CODE>
+<DD>
+<A NAME="IDX331"></A>
+Pause (wait) until an alarm or other signal is received.  Returns
+success and sets errno flag on failure.
+<DT><CODE>void perror(String prompt)</CODE>
+<DD>
+<A NAME="IDX332"></A>
+Prints out the current error message to stderr (cerr).  The prompt
+argument is printed before the error message.  Also, the global variable
+<CODE>errno</CODE> can be checked.  Further, there is an include file in
+css/include called errno.css that defines an enumerated type for the
+defined values of errno.
+<DT><CODE>Real poisson_cum(Int j, Real l)</CODE>
+<DD>
+<A NAME="IDX333"></A>
+The cumulative Poisson distribution for getting 0 to j-1 events with an
+exected number of events of l (lambda).
+<DT><CODE>Real poisson_den(Int j, Real l)</CODE>
+<DD>
+<A NAME="IDX334"></A>
+The Poisson probability density function for j events given an expected
+number of events of l (lambda).
+<PRE>               j
+              l    -l
+  P(j, l) =  ---- e
+              j!
+</PRE>
+
+<DT><CODE>Real poisson_dev(Real l)</CODE>
+<DD>
+<A NAME="IDX335"></A>
+A random Poisson deviate with a mean of l (lambda).
+<DT><CODE>Real pow(Real x, Real y)</CODE>
+<DD>
+<A NAME="IDX336"></A>
+Returns x to the y power.  This can also be expressed in CSS as x ^ y.
+<DT><CODE>void PrintR(&#60;object&#62;)</CODE>
+<DD>
+<A NAME="IDX337"></A>
+This is the function version of the <CODE>printr</CODE> command.  Prints an
+object and any of its sub-objects in a indented style output.  This can
+be very long for objects near the top of the object hierarchy (i.e., the
+root object), so be careful!
+<DT><CODE>void printf(v1 [,v2...])</CODE>
+<DD>
+<A NAME="IDX338"></A>
+Prints the given arguments (which must be comma separated) to the
+standard output stream.  Values to be printed can be of any type, and
+are actually printed with the <CODE>&#60;&#60;</CODE> operator of the stream classes.
+Unlike the standard C function, there is no provision for specifying
+formatting information.  Instead, the formatting must be specified by
+changing the parameters of the standard stream output object,
+<CODE>cout</CODE>.  The FILE type is not actually a standard C FILE, but
+actually a <CODE>fstream</CODE> type, so stream operations can be performed on
+it.
+<DT><CODE>Int putenv(String env_val)</CODE>
+<DD>
+<A NAME="IDX339"></A>
+Put the environment value into the list of environment values (avail
+through getenv).
+<DT><CODE>Int random()</CODE>
+<DD>
+<A NAME="IDX340"></A>
+Returns a uniformly-distributed random number on the range of the
+integers.  CSS actually uses the <CODE>lrand48</CODE> function to generate the
+number given the limitations of the standard <CODE>random</CODE> generator.
+<DT><CODE>String_Array&#38; ReadLine(istream&#38; strm)</CODE>
+<DD>
+<A NAME="IDX341"></A>
+Reads a line of data from the given stream, and returns a reference to
+an internal array (which is reused upon a subsequent call to ReadLine)
+of strings with elements containing the whitespace-delimited columns of
+the line.  The size of the array gives the number of columns, etc.  This
+allows one to easily implement much of the functionality of awk.  See
+the file <TT>`css_awk.css'</TT> in <TT>`css/include'</TT> for an example.
+<DT><CODE>Int rename(String from, String to)</CODE>
+<DD>
+<A NAME="IDX342"></A>
+Renames given file.  Returns success and sets errno flag on failure.
+<DT><CODE>Int rmdir(String dir_name)</CODE>
+<DD>
+<A NAME="IDX343"></A>
+Removes given directory.  Returns success and sets errno flag on
+failure.
+<DT><CODE>Int setgid(Int id)</CODE>
+<DD>
+<A NAME="IDX344"></A>
+Sets group id for given process to that given.  Note that only the
+super-user can in general do this.  Returns success and sets errno flag
+on failure.
+<DT><CODE>Int setpgid(Int id)</CODE>
+<DD>
+<A NAME="IDX345"></A>
+Sets process group id for given process to that given.  Note that only
+the super-user can in general do this.  Returns success and sets errno
+flag on failure.
+<DT><CODE>Int setuid(Int id)</CODE>
+<DD>
+<A NAME="IDX346"></A>
+Sets user id for given process to that given.  Note that only the
+super-user can in general do this.  Returns success and sets errno flag
+on failure.
+<DT><CODE>Real sin(Real x)</CODE>
+<DD>
+<A NAME="IDX347"></A>
+The sine of angle x (given in radians).  Use <CODE>sin(x / DEG)</CODE> if x is
+in degrees.
+<DT><CODE>Real sinh(Real x)</CODE>
+<DD>
+<A NAME="IDX348"></A>
+The hyperbolic sine of x.
+<DT><CODE>Real sqrt(Real x)</CODE>
+<DD>
+<A NAME="IDX349"></A>
+The square-root of x.
+<DT><CODE>void srand48(Int seed)</CODE>
+<DD>
+<A NAME="IDX350"></A>
+Provides a new random seed for the random number generator.
+<DT><CODE>Int sleep(Int seconds)</CODE>
+<DD>
+<A NAME="IDX351"></A>
+Causes the process to wait for given number of seconds.  Returns success
+and sets errno flag on failure.
+<DT><CODE>Real students_cum(Real t, Real v)</CODE>
+<DD>
+<A NAME="IDX352"></A>
+Gives the cumulative Student's distribution for v degrees of freedom t test.
+<DT><CODE>Real students_den(Real t, Real v)</CODE>
+<DD>
+<A NAME="IDX353"></A>
+Gives the Student's distribution density function for v degrees of freedom t test.
+<DT><CODE>Int symlink(String from, String to)</CODE>
+<DD>
+<A NAME="IDX354"></A>
+Creates a symbolic link from given file to other file.  (see also link).
+Returns success and sets errno flag on failure.
+<DT><CODE>void system(String&#38; cmd)</CODE>
+<DD>
+<A NAME="IDX355"></A>
+Executes the given command in the Unix shell.
+<DT><CODE>Real tan(Real x)</CODE>
+<DD>
+<A NAME="IDX356"></A>
+The tangent of angle x (given in radians).  Use <CODE>tan(x / DEG)</CODE> if x
+is in degrees.
+<DT><CODE>Real tanh(Real x)</CODE>
+<DD>
+<A NAME="IDX357"></A>
+The hyperbolic tangent of x.
+<DT><CODE>Int tcgetpgrp(Int file_no)</CODE>
+<DD>
+<A NAME="IDX358"></A>
+Gets the process group associated with the given file descriptor.
+Returns success and sets errno flag on failure.
+<DT><CODE>Int tcsetpgrp(Int file_no)</CODE>
+<DD>
+<A NAME="IDX359"></A>
+Sets the process group associated with the given file descriptor.
+Returns success and sets errno flag on failure.
+<DT><CODE>String ttyname(Int file_no)</CODE>
+<DD>
+<A NAME="IDX360"></A>
+Returns the terminal name associated with the given file descriptor.
+<DT><CODE>Token(&#60;obj_type&#62;, Int tok_no)</CODE>
+<DD>
+<A NAME="IDX361"></A>
+Returns the token of the given type of object at index <CODE>tok_no</CODE> in
+the list of tokens.  Use the <CODE>tokens</CODE> command to obtain a listing
+of the tokens of a given type of object.
+<DT><CODE>TypeDef Type(String&#38; typ_nm | &#60;obj_type&#62;)</CODE>
+<DD>
+<A NAME="IDX362"></A>
+Returns a type descriptor object (generated by TypeAccess), for the
+given type name or type object (the type object can be used directly in
+some situations, but not all).
+<DT><CODE>Int unlink(String fname)</CODE>
+<DD>
+<A NAME="IDX363"></A>
+Unlinks (removes) the given file name.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_81.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_83.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

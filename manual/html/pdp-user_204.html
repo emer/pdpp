@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-srn</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_203.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_205.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1259" HREF="pdp-user_toc.html">14.1.6  Simple Recurrent Networks in Bp</A></H3>
+<P>
+<A NAME="IDX1260"></A>
+
+</P>
+<P>
+<A NAME="IDX1261"></A>
+<A NAME="IDX1262"></A>
+Simple recurrent networks (SRN) <CITE>Elman, 1988</CITE> involve the use of
+a special set of context units which copy their values from the hidden
+units, and from which the hidden units receive inputs.  Thus, it
+provides a simple form of recurrence that can be used to train
+networks to perform sequential tasks over time.  <B>New for 3.0:</B> the
+<B>BpWizard</B> has a <CODE>Network/SRNContext</CODE> function that will
+automatically build an SRN context layer as described below.
+
+</P>
+<P>
+The implementation of SRN's in PDP++ uses a special version of the
+<B>BpUnitSpec</B> called the <B>BpContextSpec</B>.  This spec overloads
+the activation function to simply copy from a corresponding hidden unit.
+The correspondence between hidden and context units is established by
+creating a single one-to-one projection into the context units from the
+hidden units.  The context units look for the sending unit on the other
+side of their first connection in their first connection group for the
+activation to copy.  This kind of connection should be created with a
+<B>OneToOnePrjnSpec</B> (see section <A HREF="pdp-user_118.html">10.3.2  The Projection Specification</A>).
+
+</P>
+<P>
+<STRONG>Important:</STRONG> The context units should be in a layer that
+<EM>follows</EM> the hidden units they copy from.  This is because the
+context units should provide input to the hidden units before copying
+their activation values.  This means that the hidden units should update
+themselves first.
+
+</P>
+<P>
+The context units do not have to simply copy the activations directly
+from the hidden units.  Instead, they can perform a time-averaging of
+information through the use of an updating equation as described below.
+The parameters of the context spec are as follows:
+
+</P>
+<P>
+<A NAME="IDX1263"></A>
+<DL COMPACT>
+
+<DT><CODE>float hysteresis</CODE>
+<DD>
+<A NAME="IDX1264"></A>
+Controls the rate at which information is accumulated by the context
+units.  A larger hysteresis value makes the context units more sluggish
+and resistant to change; a smaller value makes them incorporate
+information more quickly, but hold onto it for a shorter period of time:
+<PRE>  u-&#62;act = (1.0 - hysteresis) * hu-&#62;act + hysteresis * u-&#62;act;
+</PRE>
+
+<DT><CODE>Random initial_act</CODE>
+<DD>
+<A NAME="IDX1265"></A>
+These parameters determine the initial activation of the context units.
+Unlike other units in a standard Bp network, the initial state of the
+context units is actually important since it provides the initial input
+to the hidden units from the context.
+</DL>
+
+<P>
+Note that the SRN typically requires a sequence model of the
+environment, which means using the sequence processes
+(see section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).  Typically, the activations are initialized
+at the start of a sequence (including the context units), and then a
+sequence of related events are presented to the network, which can then
+build up a context representation over time since the activations are
+not initialized between each event trial.
+
+</P>
+<P>
+The defaults file <TT>`bp_seq.def'</TT> contains a set of defaults for Bp
+that will create sequence processes by default (see section <A HREF="pdp-user_205.html">14.1.7  Bp Defaults</A>).
+
+</P>
+<P>
+The demo project <TT>`demo/bp_srn/srn_fsa.proj.gz'</TT> is an example of a
+SRN network that uses the sequence processes.  It also illustrates the
+use of a <B>ScriptEnv</B> where a CSS script is used to dynamically
+create new events that are generated at random from a finite state
+automaton. 
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_203.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_205.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

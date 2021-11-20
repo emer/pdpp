@@ -1,0 +1,5 @@
+procs, 1,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 25.81,    Mcon/sec, 77.4893
+procs, 1,       units, 100,     weights, 20000,         cycles, 100000,         con_trav, 2e+09,        secs, 24.51,    Mcon/sec, 81.5993
+procs, 1,       units, 500,     weights, 500000,        cycles, 4000,   con_trav, 2e+09,        secs, 25.99,    Mcon/sec, 76.9527
+procs, 1,       units, 1000,    weights, 2e+06,         cycles, 1000,   con_trav, 2e+09,        secs, 25.44,    Mcon/sec, 78.6164
+procs, 1,       units, 5000,    weights, 5e+07,         cycles, 40,     con_trav, 2e+09,        secs, 26.44,    Mcon/sec, 75.643

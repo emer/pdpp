@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - how-wizard</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_44.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_46.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX96" HREF="pdp-user_toc.html">5.5  The Wizard Object</A></H2>
+<P>
+<A NAME="IDX97"></A>
+<A NAME="IDX98"></A>
+
+</P>
+<P>
+The Wizard object is located in the .wizards menu on the project --
+one is automatically created whenever a project is created or opened.
+In the default color scheme, the wizard has a whitish-blue-green
+(azure) background.  There are 6 main categories of actions that the
+wizard can perform, corresponding to the main types of simulation
+objects that can be created, which are arranged as button-menu's along
+the bottom of the Wizard dialog.
+
+</P>
+<P>
+Typically, the wizard actions prompt you for all the information
+required -- the one exception is the Network configuration, which is
+maintained in the values in the wizard dialog (<CODE>n_layers</CODE>,
+<CODE>layer_cfg</CODE>, <CODE>connectivity</CODE>).  The <CODE>Defaults</CODE> menu has
+options for standard configurations of these network parameters.
+
+</P>
+<P>
+So, if you want to make a network other than a simple three-layer
+architecture (the default), select <CODE>Defaults/Multi Layer Net</CODE> and
+specify how many of each type of layer (input, hidden, output) you
+want.
+
+</P>
+<P>
+<B>General usage:</B> in general you can just proceed left-right,
+top-bottom in the menu buttons.  Once you have the configuration of
+the network as desired (either from the Defaults functions or just by
+setting by hand) then <B>Network/Std Network</B> will make the network
+for you.  The other options below this (for some versions) contain
+other optional kinds of network structures that can be constructed.
+For example, <CODE>bp++</CODE> has an option for making an <CODE>SRN
+Context</CODE> layer for simple recurrent networks, and <CODE>leabra++</CODE> has
+a number of options including unit-based inhibition (instead of the
+usual kWTA).
+
+</P>
+<P>
+The <B>Environment/Std Env</B> will construct a standard (basic)
+environment to fit the network configuration.  If you subsequently
+change the network configuration, the <CODE>Update Env Fm Net</CODE> will
+sync them back up.  Other options include making event groups
+(<CODE>Sequence Events</CODE>, <CODE>Time Seq Events</CODE>).  Note that the
+environment object, once constructed, has some useful generation
+functions in the <CODE>Generate</CODE> menu (see section <A HREF="pdp-user_144.html">11.8  Environment Generation Functions</A>).
+
+</P>
+<P>
+The <B>Processes/Std Procs</B> menu will make a standard process
+hierarchy for training your network, starting with a Batch process at
+the highest level.  The easiest way to manipulate these processes once
+created is in the Project view (see section <A HREF="pdp-user_104.html">9.2  The Project Viewer</A>).  However, the
+<CODE>Processes</CODE> menu contains a number of options for commonly-used
+process types such as automatically saving networks (at the end of
+training), setting up an automatic testing process, cross-validation,
+and configuring the processes to deal with sequences of events within
+an epoch (event groups) (see section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).
+
+</P>
+<P>
+The <B>Stats</B> menu can be used to create statistics for monitoring
+the network as it trains.  <CODE>Record Layer Values</CODE> creates a
+<CODE>MonitorStat</CODE> (see section <A HREF="pdp-user_173.html">12.8.2  Monitoring Network State Variables</A>) to record layer data
+in a log associated with a given process.  Functions <CODE>Save Values
+In Data Env</CODE>, <CODE>Auto Analyze Data Env</CODE>, and <CODE>Analyze Net
+Layer</CODE> all support the analysis of recorded values
+(see section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>).  The <CODE>Act Based Receptive Field</CODE> creates
+an <B>UnitActRFStat</B> for recording a receptive field for any layer in
+the network from any other set of layers (even if they are not
+connected) using a "reverse correlation" technique as described in
+section <A HREF="pdp-user_176.html">12.8.5  Activity-based Receptive Fields</A>.  It also automatically displays these weights
+at a higher level of processing.  <CODE>Display Net Weights</CODE> makes a
+<B>DispNetWeightsProc</B> (see section <A HREF="pdp-user_166.html">12.6.5  Miscellaneous other Process Types</A>).  <CODE>Stop On Act
+Thresh</CODE> makes an <B>ActThreshRTStat</B> to stop settling when network
+activations exceed threshold, providing a reaction time measure
+(see section <A HREF="pdp-user_177.html">12.8.6  Reaction-time Based on Crossing an Activation Threshold</A>).  <CODE>Add Counters to Test</CODE> and <CODE>Get
+Stats From Proc</CODE> provide ways of sharing information across different
+process hierarchies (e.g., training and testing).  <CODE>Add Time
+Counter</CODE> creates a <B>TimeCounterStat</B> that generates an
+ever-increasing time counter that cuts across processing hierarchy
+loops, and is initialized by a <B>TimeCounterResetProc</B>
+(see section <A HREF="pdp-user_178.html">12.8.7  Statistics that Provide Counters (Time, Epoch, etc)</A>).
+
+</P>
+<P>
+The <B>Logs/Std Logs</B> menu creates standard logs (trial, epoch and
+batch), while <CODE>Log Process</CODE> provides a way of creating a log for
+a given processing level.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_44.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_46.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

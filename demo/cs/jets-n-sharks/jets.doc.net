@@ -1,0 +1,103 @@
+definitions:
+  nunits 68
+end
+constraints:
+u 1.0
+d 1.0
+v -1.0
+h -1.0
+end
+network:
+
+   01 234 567 890 123 456789012345678901234567890 123456789012345678901234567
+   GN     EDU     OCU                             -----------_name-----------
+      AGE     MAR     -----------NAME------------
+  
+   JS 234 JHC SMD PBB AASCMJGJDLGPFGRPINDNKKEDOLD AASCMJGJDLGPFGRPINDNKKEDOLD
+   EH 000 HSO      uo RLALIIROOAEEREAHKIOEAEAILEA RLALIIROOAEEREAHKIOEAEAILEA
+   TA       L      ro
+   SR              gk
+  
+JE .v ... ... ... ... ........................... ddddddddddddddd............
+SH v. ... ... ... ... ........................... ...............dddddddddddd
+
+20 .. .vv ... ... ... ........................... ..d..ddd.ddddd.......d.....
+30 .. v.v ... ... ... ........................... .d..d...d.....dddddd...dddd
+40 .. vv. ... ... ... ........................... d..d................d.d....
+
+JH .. ... .vv ... ... ........................... dd.ddd.d.dd...d.d..........
+HS .. ... v.v ... ... ........................... ......d.d..dd....d..dddd.dd
+CO .. ... vv. ... ... ........................... ..d..........d.d..dd....d..
+
+SI .. ... ... .vv ... ........................... d.ddd...d..dddd.dd...d...d.
+MA .. ... ... v.v ... ........................... .d....dd.d.....d..ddd.d.d..
+DI .. ... ... vv. ... ........................... .....d....d............d..d
+
+PU .. ... ... ... .vv ........................... d.....d.....dddd.d......d.d
+BU .. ... ... ... v.v ........................... .d...d.d.dd.......d..ddd...
+BO .. ... ... ... vv. ........................... ..ddd...d..d....d..dd....d.
+
+AR .. ... ... ... ... .vvvvvvvvvvvvvvvvvvvvvvvvvv d..........................
+AL .. ... ... ... ... v.vvvvvvvvvvvvvvvvvvvvvvvvv .d.........................
+SA .. ... ... ... ... vv.vvvvvvvvvvvvvvvvvvvvvvvv ..d........................
+CL .. ... ... ... ... vvv.vvvvvvvvvvvvvvvvvvvvvvv ...d.......................
+MI .. ... ... ... ... vvvv.vvvvvvvvvvvvvvvvvvvvvv ....d......................
+JI .. ... ... ... ... vvvvv.vvvvvvvvvvvvvvvvvvvvv .....d.....................
+GR .. ... ... ... ... vvvvvv.vvvvvvvvvvvvvvvvvvvv ......d....................
+JO .. ... ... ... ... vvvvvvv.vvvvvvvvvvvvvvvvvvv .......d...................
+DO .. ... ... ... ... vvvvvvvv.vvvvvvvvvvvvvvvvvv ........d..................
+LA .. ... ... ... ... vvvvvvvvv.vvvvvvvvvvvvvvvvv .........d.................
+GE .. ... ... ... ... vvvvvvvvvv.vvvvvvvvvvvvvvvv ..........d................
+PE .. ... ... ... ... vvvvvvvvvvv.vvvvvvvvvvvvvvv ...........d...............
+FR .. ... ... ... ... vvvvvvvvvvvv.vvvvvvvvvvvvvv ............d..............
+GE .. ... ... ... ... vvvvvvvvvvvvv.vvvvvvvvvvvvv .............d.............
+RA .. ... ... ... ... vvvvvvvvvvvvvv.vvvvvvvvvvvv ..............d............
+PH .. ... ... ... ... vvvvvvvvvvvvvvv.vvvvvvvvvvv ...............d...........
+IK .. ... ... ... ... vvvvvvvvvvvvvvvv.vvvvvvvvvv ................d..........
+NI .. ... ... ... ... vvvvvvvvvvvvvvvvv.vvvvvvvvv .................d.........
+DO .. ... ... ... ... vvvvvvvvvvvvvvvvvv.vvvvvvvv ..................d........
+NE .. ... ... ... ... vvvvvvvvvvvvvvvvvvv.vvvvvvv ...................d.......
+KA .. ... ... ... ... vvvvvvvvvvvvvvvvvvvv.vvvvvv ....................d......
+KE .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvv.vvvvv .....................d.....
+EL .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvvv.vvvv ......................d....
+DI .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvvvv.vvv .......................d...
+OL .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvvvvv.vv ........................d..
+NE .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvvvvvv.v .........................d.
+DA .. ... ... ... ... vvvvvvvvvvvvvvvvvvvvvvvvvv. ..........................d
+
+   01 234 567 890 123 456789012345678901234567890 123456789012345678901234567
+   GN     EDU     OCU                             -----------_name-----------
+      AGE     MAR     -----------NAME------------
+  
+   JS 234 JHC SMD PBB AASCMJGJDLGPFGRPINDNKKEDOLD AASCMJGJDLGPFGRPINDNKKEDOLD
+   EH 000 HSO      uo RLALIIROOAEEREAHKIOEAEAILEA RLALIIROOAEEREAHKIOEAEAILEA
+   TA       L      ro
+   SR              gk
+AR u. ..u u.. u.. u.. u.......................... .hhhhhhhhhhhhhhhhhhhhhhhhhh
+AL u. .u. u.. .u. .u. .u......................... h.hhhhhhhhhhhhhhhhhhhhhhhhh
+SA u. u.. ..u u.. ..u ..u........................ hh.hhhhhhhhhhhhhhhhhhhhhhhh
+CL u. ..u u.. u.. ..u ...u....................... hhh.hhhhhhhhhhhhhhhhhhhhhhh
+MI u. .u. u.. u.. ..u ....u...................... hhhh.hhhhhhhhhhhhhhhhhhhhhh
+JI u. u.. u.. ..u .u. .....u..................... hhhhh.hhhhhhhhhhhhhhhhhhhhh
+GR u. u.. .u. .u. u.. ......u.................... hhhhhh.hhhhhhhhhhhhhhhhhhhh
+JO u. u.. u.. .u. .u. .......u................... hhhhhhh.hhhhhhhhhhhhhhhhhhh
+DO u. .u. .u. u.. ..u ........u.................. hhhhhhhh.hhhhhhhhhhhhhhhhhh
+LA u. u.. u.. .u. .u. .........u................. hhhhhhhhh.hhhhhhhhhhhhhhhhh
+GE u. u.. u.. ..u .u. ..........u................ hhhhhhhhhh.hhhhhhhhhhhhhhhh
+PE u. u.. .u. u.. ..u ...........u............... hhhhhhhhhhh.hhhhhhhhhhhhhhh
+FR u. u.. .u. u.. u.. ............u.............. hhhhhhhhhhhh.hhhhhhhhhhhhhh
+GE u. u.. ..u u.. u.. .............u............. hhhhhhhhhhhhh.hhhhhhhhhhhhh
+RA u. .u. u.. u.. u.. ..............u............ hhhhhhhhhhhhhh.hhhhhhhhhhhh
+PH .u .u. ..u .u. u.. ...............u........... hhhhhhhhhhhhhhh.hhhhhhhhhhh
+IK .u .u. u.. u.. ..u ................u.......... hhhhhhhhhhhhhhhh.hhhhhhhhhh
+NI .u .u. .u. u.. u.. .................u......... hhhhhhhhhhhhhhhhh.hhhhhhhhh
+DO .u .u. ..u .u. .u. ..................u........ hhhhhhhhhhhhhhhhhh.hhhhhhhh
+NE .u .u. ..u .u. ..u ...................u....... hhhhhhhhhhhhhhhhhhh.hhhhhhh
+KA .u ..u .u. .u. ..u ....................u...... hhhhhhhhhhhhhhhhhhhh.hhhhhh
+KE .u u.. .u. u.. .u. .....................u..... hhhhhhhhhhhhhhhhhhhhh.hhhhh
+EL .u ..u .u. .u. .u. ......................u.... hhhhhhhhhhhhhhhhhhhhhh.hhhh
+DI .u .u. .u. ..u .u. .......................u... hhhhhhhhhhhhhhhhhhhhhhh.hhh
+OL .u .u. ..u .u. u.. ........................u.. hhhhhhhhhhhhhhhhhhhhhhhh.hh
+NE .u .u. .u. u.. ..u .........................u. hhhhhhhhhhhhhhhhhhhhhhhhh.h
+DA .u .u. .u. ..u u.. ..........................u hhhhhhhhhhhhhhhhhhhhhhhhhh.
+end

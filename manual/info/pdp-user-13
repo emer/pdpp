@@ -1,0 +1,1031 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: proc-special-inter,  Next: proc-special-fork,  Prev: proc-special-seq,  Up: proc-special
+
+Processes for Interactive Environments
+--------------------------------------
+
+   The InteractiveEpoch is a special epoch process for dealing with
+interactive environments (InteractiveScriptEnv, *Note env-other::),
+where events are created on the fly at the start of each new trial,
+instead of being created entirely at the beginning of the epoch (as
+with a ScriptEnv, *Note env-other::), or just being static, as with
+most environments.
+
+   This process calls `InitEvents()' on the `environment' at the
+start of the epoch, which resets the `event_ctr' on the environment
+to 0.  It then calls `GetNextEvent()' on the environment at the start
+of each new trial.  In standard environments, this just gets the
+event at index event_ctr, and increments the counter.  If event_ctr
+is larger than the number of events, a NULL is returned indicating
+the end of the epoch.  In the InterativeScriptEnv, GetNextEvent()
+calls the associated script, which can then create the next event and
+return it to the epoch process (via the next_event field in the
+environment).
+
+   See `demo/leabra/nav.proj.gz' for an example demonstrating the use
+of InteractiveEpoch and InteractiveScriptEnv.
+
+
+File: pdp-user,  Node: proc-special-fork,  Next: proc-special-bridge,  Prev: proc-special-inter,  Up: proc-special
+
+Processing Multiple Networks/Environments
+-----------------------------------------
+
+   There are times when it is useful to be able to compare two
+different networks as they simultaneously learn the same task, or
+compare the learning of the same network on different environments.
+This can be accomplished by performing multiple streams of processing
+at the same time.
+
+   The SyncEpochProc runs two different sub-processes through the same
+set of events from a common environment.  Thus, it can be used to
+train two different networks, even networks that use different
+algorithms, at the same time.  It essentially just adds a set of
+pointers to a `second_network' and a `second_proc_type' and
+`second_proc', which identify the second branch of the processes to
+run, and which network to run them on.
+
+   The ForkProcess can be used more generically to split processing at
+any level of the hierarchy.  Like the sync epoch process, it adds
+pointers to the second fork of processing, including a
+`second_environment'.
+
+   IMPORTANT NOTE: You need to specifically add small script processes
+to the processes below a fork process that perform initialization and
+other operations on the second network - the standard processes will
+only perform these operations on the first network!
+
+   One use of multiple processing streams is to combine two different
+algorithms to form a hybrid network.  This can be done by
+synchronously running both networks, each with their own
+algorithm-specific training process, and linking them together with a
+BridgeProcess, which is described in the next section.
+
+   The MultiEnvProcess can be used to iterate over multiple
+environments within one processing stream.  This can be useful for
+testing a number of different possible environments.
+
+
+File: pdp-user,  Node: proc-special-bridge,  Next: proc-special-misc,  Prev: proc-special-fork,  Up: proc-special
+
+Linking Networks Together with a Bridge
+---------------------------------------
+
+   Most TrialProcess objects are implemented to work with a particular
+set of network objects that are part of a given algorithm.  Thus, the
+BpTrial process expects to operate on BpUnits and BpCons, etc., and
+crashes otherwise.  This makes processing faster than if it had to
+check the type of every object operated on every time it did a
+computation.
+
+   This situation makes it difficult to implement hybrid networks
+which combine components that operate under two different algorithms.
+For example, a self-organizing network can be used to pre-process
+inputs to a backprop network.
+
+   The way to do solve this problem in PDP++ is to use a
+BridgeProcess, in conjunction with a SyncEpochProc as described in
+the previous section.  Thus, there are two trial processes that each
+operate synchronously within an epoch on the same events.  The bridge
+process copies activations or any other unit state variable from one
+network to the other, allowing them to act as if they were a single
+composite network.
+
+   An example of a bridge process can be found in the `demo/bridge'
+directory.  This example just connects two backprop networks, but the
+principles are the same when you use two different kinds of
+algorithms.
+
+   The parameters of the bridge process are as follows:
+
+`Network* second_network'
+     This is the other network that is being bridged (the first
+     network is the one pointed to by the process `network' pointer).
+
+`BridgeDirection direction'
+     This is the direction to copy-network one is the `network'
+     pointer and network two is the `second_network' pointer.  Note
+     that the `network' pointer is set by the process hierarchy that
+     this process is in, which means that it can't be set
+     arbitrarily. This is why one might need to switch the direction
+     with this field.
+
+`String src_layer_nm'
+     This is the name of the layer in the source network.  Only
+     entire layers can be copied with this process.
+
+`String trg_layer_nm'
+     This is the name of the layer in the target network.
+
+`String src_variable'
+     This is the variable name (e.g. "act") to copy from the unit.
+
+`String trg_variable'
+     This is the variable to copy the value into.  Typically, this is
+     "ext" so that the input appears like external input to the unit,
+     which will then be treated appropriately by the processing
+     algorithm.
+
+`Unit::ExtType trg_ext_flag'
+     This sets the unit flag on the target units to indicate that
+     external input was received, if desired.  Note that the flag on
+     the layer is _not_ set, which allows this external input to
+     avoid being erased by the `InitExterns' call which usually
+     precedes application of environmental patterns.
+
+
+File: pdp-user,  Node: proc-special-misc,  Prev: proc-special-bridge,  Up: proc-special
+
+Miscellaneous other Process Types
+---------------------------------
+
+   The SaveNetsProc and SaveWtsProc will simply save the current
+network or network weights to a file which has a file name composed of
+the name of the network (from its `name' field) plus the current
+values of the epoch and, if present, the batch counters.  This can be
+placed in the `loop_procs' or `final_procs' of the TrainProcess or
+the BatchProcess to save networks during training or after training,
+respectively.  Set the mod parameters to get it to save at different
+intervals (e.g., `m = 25' saves every 25 epochs if in the train loop
+procs).
+
+   The LoadWtsProc will load in a set of weights from a specified
+file, which is useful for example for performing repeated lesion tests
+on a given trained network - build the network, load the weights,
+lesion it, test it, repeat!
+
+   The InitWtsProc will initialize the weights of a network.  The
+TrainProcess does this automatically when it is initialized, but
+there are other possible configurations of processes where you might
+need to initialize the weights at a different point.
+
+   The DispDataEnvProc automatically performs an analysis of a data
+environment (a data environment contains data recorded from the
+network for the purposes of analysis, by the `CopyToEnvStat' stat
+(*note proc-stats-misc::). See *Note how-proc:: for an overview of how
+this analysis process works, and *Note env-analyze:: for the types of
+analyses that can be performed.  The data environment to analyze is
+specified in `data_env' (the regular `environment' pointer points to
+the environment actually used by the entire process hierarchy, and is
+not used).  The type of analysis is specified in the `disp_type'
+field, and the results of the analysis are displayed in the log
+pointed to by the `disp_log' field (if this is NULL, or the wrong
+type, a new one is made).  The remaining parameters are used for
+different analysis routines, as described in greater detail in *Note
+env-analyze::.
+
+   The DispNetWeightsProc automatically displays the weights between
+two layers of the `network' in a grid log.  Useful for monitoring the
+development of the entire set of weights as the network learns (the
+netview can only display the weights to one unit, whereas this
+displays the weights to all units in the layer).  This is just a call
+to the `GridViewWeights' function on the Network (*note net-net::).
+
+   There are a set of processes that reset other processes, stats, or
+logs - these are usually placed at a higher level of the processing
+hierarchy in `init_procs', to initialize things.  They are:
+UnitActRFStatResetProc, TimeCounterStatResetProc, and ClearLogProc -
+their functions should be fairly obvious.
+
+
+File: pdp-user,  Node: proc-stat,  Next: proc-stats,  Prev: proc-special,  Up: proc
+
+The Statistic Process
+=====================
+
+   The Statistic Process is an extension of the basic Process object
+which is used for computing values that are then made available for
+recording and displaying in logs.  The basic Stat object defines an
+interface for computing and reporting data.  This interface is used
+by the schedule processes, who supervise the running of stats and the
+reporting of their data to the logs.
+
+   Each statistic object can operate in one of two capacities.  The
+first is as the original _computer_ (or collector) of some kind of
+data.  For example, a squared-error statistic (SE_Stat) knows how to
+go through a network and compute the squared difference between target
+values and actual activations.  Typically, this would be performed
+after every event is presented to the network, since that is when the
+relevant information is available in the state variables of the
+network.
+
+   The second capacity of a statistic is as an _aggregator_ of data
+computed by another statistic.  This is needed in order to be able to
+compute the sum of the squared-errors over all of the trials in an
+epoch, for example.  When operating in aggregation mode, statistics
+work from data in the statistic they are aggregating from, instead of
+going out and collecting data from the network itself.
+
+   Typically, the statistic and its aggregators are all of the same
+type (e.g., they are all SE_Stats), and the aggregated values appear
+in the same member variable that the originally computed value
+appears in.  Thus, this is where to look to set a stopping criterion
+for an aggregated stat value, for example.
+
+   Each statistic knows how to create a series of aggregators all the
+way up the processing hierarchy.  This is done with the
+`CreateAggregates' function on the stat, which is available as an
+option when a statistic is created.  Thus, one always creates a
+statistic at the processing level where it will do the original
+computation.  If aggregates of this value are needed at higher levels,
+then make sure the `CreateAggregates' field is checked when the stat
+is created, or call it yourself later (e.g., from the Actions menu of
+a stat edit dialog).  You can also `UpdateAllAggregators', if you
+want to make sure their names reflect any changes (i.e., in `layer'
+or network aggregation operator), and `FindAggregator' to find the
+immediate aggregator of the current stat.
+
+   It is recommend that you use the NewStat menu from the .processes
+menu of the project to create a new statistic, or use the Project
+Viewer (*note proj-viewer::).  This will bring up a dialog with the
+default options of where to create the stat (i.e., at what processing
+level) that the stat itself suggested (each stat knows where it
+should do its original computation).
+
+   There are several different kinds of aggregation operators that
+can be used to aggregate information over processing levels,
+including summing, averaging, etc.  The operator is selected as part
+of the `time_agg' member of the statistic. See below for descriptions
+of the different operators.
+
+   Note that all aggregation statistics reside in the `loop_stats'
+group of the schedule processes, since they need to be run after every
+loop of the lower level statistic to collect its values and aggregate
+them over time.
+
+   In addition to aggregating information over levels of processing,
+statistics are often aggregating information over objects in the
+network.  Thus, for example, the SE_Stat typically computes the sum
+of all the squared error terms over the output units in the network.
+The particular form of aggregation that a stat performs over network
+objects is controlled by the `net_agg' member.  Thus, it is possible
+to have the SE_Stat compute the average error over output units
+instead of the sum by changing this variable.
+
+   Finally, the name of a statistic as recorded in the log and as it
+appears in the `name' field is automatically set to reflect the kinds
+of aggregation being performed.  The first three-letter prefix (if
+there are two) reflects the `time_agg' operator.  The second
+three-letter prefix (or the only one) reflects the `net_agg'
+operator.  Further the layer name if the `layer' pointer is non-NULL
+is indicated in the name.  The stat `name' field is not automatically
+set if it does not contain the type name of the stat, so if you want
+to give a stat a custom name, don't include the type name in this.
+
+* Menu:
+
+* proc-stat-agg::               Aggregation Operators and other Parameters
+* proc-stat-crit::              Using Statistics to Control Processes
+* proc-stat-impl::              Implementational Details about Stats
+
+
+File: pdp-user,  Node: proc-stat-agg,  Next: proc-stat-crit,  Prev: proc-stat,  Up: proc-stat
+
+Aggregation Operators and other Parameters
+------------------------------------------
+
+   For both the `time_agg' and the `net_agg' members of a stat, the
+following aggregation operators are defined:
+
+`LAST'
+     This simply copies the last value seen.  This is useful for
+     aggregators that appear in the train and batch levels of
+     processing, which typically just reflect the results of the most
+     recent epoch of processing.  In the network-level aggregation,
+     this would give the value of the last unit, which is not
+     terribly useful.
+
+`SUM'
+     This sums over all values.
+
+`PROD'
+     This gives a product over all values.  When this operator is
+     used, the result variable will be initialized to 1.
+
+`MIN'
+     This gives the minimum value of all seen.  Note that when this
+     is the aggregation operator, the result variable will be
+     initialized to a very large number.
+
+`MAX'
+     This gives the maximum value of all seen.  Note that when this
+     is the aggregation operator, the result variable will be
+     initialized to a very small number.
+
+`AVG'
+     This gives the average of all values seen.  Since aggregation
+     happens on-line, we use the on-line version of averaging, so the
+     result is always the average of what has been seen so far.
+
+`COPY'
+     This results in the collection of individual values, which are
+     kept in the `copy_vals' group of the stat.  Thus, it does not
+     form a single summary number of all the values, instead it
+     simply copies them verbatim.  This is useful for MonitorStat
+     objects, which copy state variables from the network.  It can be
+     used to view per-event values at the end of the epoch by doing a
+     `time_agg' with the `COPY' operator.
+
+`COUNT'
+     This counts up the the number of times the values meet the
+     comparison expression given in the `count' field of the agg
+     member.  The count expression has relational operators and a
+     comparison value, so one could for example count the number of
+     times an error value was below some threshold.
+
+   In addition to the aggregation operator, the `time_agg' member has
+a pointer to the stat that this stat is aggregating `from'.  If this
+is `NULL', then the stat is computing original information instead of
+aggregating.
+
+   It is possible to control when the stat is computed, and if the
+data is logged, independently.  The `mod' member of a stat determines
+when and if it is computed (and when its criterion is checked, when
+it is logged, etc).  For stats located in the `loop_stats' group, this
+mod operator works on the process whose loop_stats the stat is in.
+For stats located in the `final_stats' group, the mod operator works
+on the next higher up process in the hierarchy (i.e., a stat in the
+final_stats of a TrialProcess would use the trial counter from the
+parent EpochProcess).  The `log_stat' flag provides a way of turning
+on or off the logging of a statistic.  If the flag is not checked, a
+stat is not logged, but it is run and its criterion is checked (as
+per the mod settings).  Thus, one can keep lower-level stats which
+might be just collecting data for aggregation from generating too
+much log data.
+
+   Finally, the computation of the stat over the objects in the
+network can be restricted to a given layer by setting the `layer'
+pointer.  The layer name will also appear in the stat log output and
+in the name field of the stat itself.
+
+
+File: pdp-user,  Node: proc-stat-crit,  Next: proc-stat-impl,  Prev: proc-stat-agg,  Up: proc-stat
+
+Using Statistics to Control Process Execution
+---------------------------------------------
+
+   Often, one wants to stop training a network once it has reached
+some criterion of performance.  This can be done by setting the
+criterion values associated with a statistic value.  All statistic
+values are represented by a StatVal object, which has fields for
+representing the stopping criterion.  The criterion is represented
+with a relational operator (less than, equal to, etc.) and a
+comparison value.  The fields are as follows:
+
+`float value'
+     This holds the current computed or aggregated value of the
+     statistic.
+
+`bool flag'
+     This flag indicates if a stopping criterion is active for this
+     statistic.  If it is not checked, the remaining fields are
+     ignored.
+
+`Relation rel'
+     This is the relational operator to compare `value' and `val'.
+
+`float val'
+     This is the comparison value to compare `value' with.
+
+`int cnt'
+     This indicates how many times the relation must be met in order
+     to pass criterion.  This can be useful to make sure a network
+     has reliable performance under criterion by requiring it to pass
+     muster 2 or 3 times in a row, for example.
+
+
+File: pdp-user,  Node: proc-stat-impl,  Prev: proc-stat-crit,  Up: proc-stat
+
+Implementational Details about Stats
+------------------------------------
+
+   If you will be writing your own statistic process, this provides
+some information that might be useful.
+
+   The stat object provides a scaffolding for looping through the
+various objects in a network.  Thus, if you want to do something at
+the unit level, you can simply write a `Unit_Stat' function, and the
+stat will automatically iterate over layers and units to call the
+unit stat function on every unit.  This makes it relatively easy to
+write a new statistic.
+
+   See the header file `src/pdp/stats.h' for more information about
+how a stat object works.  In particular, notice that there are
+recommended ways of speeding up otherwise generic functions that rely
+on type-scanned information.
+
+
+File: pdp-user,  Node: proc-stats,  Next: proc-css,  Prev: proc-stat,  Up: proc
+
+Different Types of Statistics
+=============================
+
+   There are a number of built-in statistic types that come with the
+software.  They are as follows:
+
+* Menu:
+
+* proc-stats-se::               Summed-Error Statistics
+* proc-stats-monitor::          Monitoring Network State Variables
+* proc-stats-close-event::      Finding The Event Closest to the Current Output Pattern
+* proc-stats-compare::          Comparing or Computing on Stat Values
+* proc-stats-actrf::            Activity-based Receptive Fields
+* proc-stats-rt::               Reaction-time Based on Crossing an Activation Threshold
+* proc-stats-ctrs::             Statistics that Provide Counters (Time, Epoch, etc)
+* proc-stats-misc::             Miscellaneous Other Stat Types
+
+
+File: pdp-user,  Node: proc-stats-se,  Next: proc-stats-monitor,  Prev: proc-stats,  Up: proc-stats
+
+Summed-Error Statistics
+-----------------------
+
+   The SE_Stat object is a stat that iterates over the units that have
+target values in a network, and computes the difference between the
+activation and the target value.  This is useful for monitoring
+learning performance over training.  The current value of this
+statistic can be found in the `se' member.  Also, there is a
+`tolerance' parameter which causes absolute differences of less than
+this amount to result in zero error.  Thus, if one only was
+interested in whether the network was on the right side of .5, you
+would set the tolerance to .5 (assuming a 0 to 1 activation range).
+
+   There is also a CE_Stat and a RBpSE_Stat defined in the Bp version
+of the executable.  These compute the cross-entropy error statistic
+and a version of squared-error that takes into account the `dt'
+parameter of the recurrent backprop algorithm.
+
+   The MaxActTrgStat computes an error statistic based only on the
+most active unit in the target layer(s).  If this most active unit
+(max act) has a target value of 1, then there is no error, otherwise
+there is an error.  This statistic is useful when there are multiple
+possible correct answers, and the network is expected to just choose
+one of them.  Thus, if its maximum act is a target, it is correct, and
+otherwise it is not.
+
+
+File: pdp-user,  Node: proc-stats-monitor,  Next: proc-stats-close-event,  Prev: proc-stats-se,  Up: proc-stats
+
+Monitoring Network State Variables
+----------------------------------
+
+   In order to be able to view network stat variables (e.g., unit
+activations) in one of the log displays (or record them to disk
+files), these state variables need to be monitored with a MonitorStat.
+
+   The NetView provides a convenient interface for creating monitor
+stats and selecting which objects to monitor and what values to
+monitor from them (*note net-view-actions::), as does the Wizard
+object (*note how-wizard::).
+
+   There are basically two parameters of relevance in the monitor
+stat.  One is the `objects' that are being monitored.  This is a group
+which has links to the objects (see *Note obj-group:: for information
+on links).  The other is the `variable' to record from these objects.
+Note that if the variable is one found on units, but the object(s) are
+layers, then the stat will automatically get the unit variable from
+all of the units in the layer.  Similarly, if the variable is one on
+connections, but the object(s) are projections, all of the connections
+in the projection will be used.
+
+   Typically, the `net_agg' operator `COPY' is used.  This results in
+a separate column of data for each object being monitored.  This data
+is stored in the `mon_vals' group on the monitor stat.  When these
+values are graphed or displayed in the grid log (*note
+log-views-graph::, *Note log-views-grid::), they appear as one big
+group that shares the same axis on the graph and is part of the same
+sub-grid on the grid.
+
+   However, one can compute any kind of network aggregation from the
+monitored statistics, including MAX, AVG, etc.  These aggregations
+produce a single value in the `mon_vals' group.
+
+   It is also possible to perform three steps of pre-processing on the
+monitored values before they are recorded or aggregated into the
+monitor stat.  This pre-processing is controlled by the
+`pre_proc_1,2,3' members, which specify an operation and, optionally,
+arguements to that operation in the `arg' member.  Note that the
+thresholding function `THRESH' compares the value to the `arg', and
+gives a result of `hi' if it is greater-than-or-equal, and `lo' if it
+is less-than the arg.
+
+
+File: pdp-user,  Node: proc-stats-close-event,  Next: proc-stats-compare,  Prev: proc-stats-monitor,  Up: proc-stats
+
+Finding The Event Closest to the Current Output Pattern
+-------------------------------------------------------
+
+   In order to understand what kinds of errors a network is making,
+or in the case where a network can produce multiple outputs for a
+given input, it is useful to be able to compare the actual output the
+network came up with against all of the possible training events to
+find the one that matches the closest.  The ClosestEventStat does
+exactly that.
+
+   The closest event stat reports both the distance in the `dist'
+field, and the name of the event which was closest to the current
+output pattern in the `ev_nm' field. If the `ev_nm' matches that of
+the currently presented event (`cur_event' of the TrialProcess), then
+`sm_nm' is 1, else it is 0.  The average of this value gives a
+"percent correct" measure for forced-choice performance among the
+different items in the environment.  The distance can be computed in
+several different ways, as described below:
+
+`CompareType cmp_type'
+     This is the type of distance function to use in making the
+     comparison:
+    `SUM_SQUARES'
+          sum of squares distance: sum[(x-y)^2]
+
+    `EUCLIDIAN'
+          euclidean distance: sqrt(sum[(x-y)^2])
+
+    `HAMMING_DIST'
+          hamming distance: sum[abs(x-y)]
+
+    `COVAR'
+          covariance: sum[(x-<x>)(y-<y>)]
+
+    `CORREL'
+          correlation: sum[(x-<x>)(y-<y>)] / sqrt(sum[x^2 y^2])
+
+    `INNER_PROD'
+          inner product: sum[x y]
+
+    `CROSS_ENTROPY'
+          cross entropy: sum[x ln(x/y) + (1-x)ln((1-x)/(1-y))]
+
+`float dist_tol'
+     This is a tolerance value for distance comparisons, where
+     absolute differences below this amount result in a 0 distance
+     component.
+
+`bool norm'
+     If this flag is checked, and one of the distance comparisons is
+     being performed, the values participating in the distance
+     computation will be normalized to a zero-one range prior to
+     computation.  If the `INNER_PROD' is being taken, this will
+     result in a normalized inner-product measure (dividing by the
+     magnitudes of the individual weight vectors).
+
+
+File: pdp-user,  Node: proc-stats-compare,  Next: proc-stats-actrf,  Prev: proc-stats-close-event,  Up: proc-stats
+
+Comparing or Computing on Stat Values
+-------------------------------------
+
+   The CompareStat provides a general way of comparing the results of
+different statistics with each other.  Thus, one can actually use
+statistics to analyze one's data on-line, instead of dumping it all
+to a file and analyzing it after the fact.
+
+   Similarly, the ComputeStat provides a general way of performing
+simple math computations on the results of other stat computations.
+It can be used on one stat (e.g., for thresholding, absolute-value or
+other single-argument operations), or on two stats (e.g., for
+multiplying, subtracting, etc between two stats).
+
+   The compare stat contains pointers to two other stats, `stat_1' and
+`stat_2', which provide the data to compare.  The data consists of
+any stat val data that can be found on these stats.  Ideally, they
+both have the same number of data values, typically in their
+`copy_vals' group (e.g., from MonitorStats that are `COPY'ing
+activations from two sets of units that are being compared).
+
+   The types of comparisons are simply different distance functions
+that measure the distances between the two stat's data:
+
+`CompareType cmp_type'
+     This is the type of distance function to use in making the
+     comparison:
+    `SUM_SQUARES'
+          sum of squares distance: sum[(x-y)^2]
+
+    `EUCLIDIAN'
+          euclidean distance: sqrt(sum[(x-y)^2])
+
+    `HAMMING_DIST'
+          hamming distance: sum[abs(x-y)]
+
+    `COVAR'
+          covariance: sum[(x-<x>)(y-<y>)]
+
+    `CORREL'
+          correlation: sum[(x-<x>)(y-<y>)] / sqrt(sum[x^2 y^2])
+
+    `INNER_PROD'
+          inner product: sum[x y]
+
+    `CROSS_ENTROPY'
+          cross entropy: sum[x ln(x/y) + (1-x)ln((1-x)/(1-y))]
+
+`float dist_tol'
+     This is a tolerance value for distance comparisons, where
+     absolute differences below this amount result in a 0 distance
+     component.
+
+`bool norm'
+     If this flag is checked, and one of the distance comparisons is
+     being performed, the values participating in the distance
+     computation will be normalized to a zero-one range prior to
+     computation.  If the `INNER_PROD' is being taken, this will
+     result in a normalized inner-product measure (dividing by the
+     magnitudes of the individual weight vectors).
+
+`SimpleMathSpec pre_proc_1,2,3'
+     These allow for three steps of pre-processing on the values
+     before they are compared.  These members specify an operation
+     and, optionally, arguements to that operation in the `arg'
+     member.  Note that the thresholding function `THRESH' compares
+     the value to the `arg', and gives a result of `hi' if it is
+     greater-than-or-equal, and `lo' if it is less-than the arg.
+
+   The ComputeStat is like the compare stat, except that instead of
+computing the distance, the `compute_1,2,3' math operators are
+applied on the stats, and the result is aggregated according to
+`net_agg'.  Pre-processing of each stat independently is supported as
+with the compare stat.  To compute something between two stats (e.g.,
+subtract values), then you just set the compute_1 operator `opr' to
+`SUB', and stat_2 values are subtracted from stat_1 values, with the
+result going into stat_1.  Subsequent compute_ operators can then
+manipulate this result (e.g, doing the `SQUARE').  Note that they
+don't all have to involve both stats, and you can only use one stat
+(in which case compute_x just works like pre_proc_x).
+
+
+File: pdp-user,  Node: proc-stats-actrf,  Next: proc-stats-rt,  Prev: proc-stats-compare,  Up: proc-stats
+
+Activity-based Receptive Fields
+-------------------------------
+
+   The UnitActRFStat computes an effective receptive field for units
+based on their activation values when inputs are presented.  The idea
+is to present a wide range of inputs to the network while performing a
+weighted average over these input patterns as a function of the unit's
+activation for each.  When you do this averaging, all the things that
+the unit does not care about wash out, leaving an image of those
+things that reliably activate the unit.  Assuming that the inputs
+span a large enough space and provide for sufficient averaging, the
+resulting receptive field can be much more informative than just
+looking at the weights, since it takes into account any network
+dynamics, etc., and can be computed on units any number of layers
+removed from the inputs.  Finally, the "input" that you average over
+need not literally be the input layer to the network - it could be
+the output, or an intermediate hidden layer (or all of these at once).
+
+   This stat requires a stable database for accumulating the averaged
+receptive fields - an Environment is used for this purpose.  Note
+that you have to do an `InitRFVals' in order to initialize this
+environment before you start collecting the stats.  The statistics
+collect until `InitRFVals' is run again.
+
+   `InitRFVals' can be performed automatically via a
+UnitActRFStatResetProc, which can be put in the `init_procs' of a
+higher processing level in the hierarchy.
+
+   This stat has the following parameters:
+`layer'
+     Set this to point to the units that you want to record the
+     receptive fields for.
+
+`rf_layers'
+     This contains the layer(s) that you want to perform the
+     averaging over (the input in the above description).
+
+`data_env'
+     This points to the Environment that contains the resulting
+     receptive fields, with one Event per unit.
+
+
+File: pdp-user,  Node: proc-stats-rt,  Next: proc-stats-ctrs,  Prev: proc-stats-actrf,  Up: proc-stats
+
+Reaction-time Based on Crossing an Activation Threshold
+-------------------------------------------------------
+
+   The ActThreshRTStat records a reaction time (RT) from the network
+based on when activation levels in given layer (typically the output
+layer) exceed threshold. Experience in a variety of cases has shown
+that human reaction times can be best modeled by recording the number
+of processing cycles it takes for a response/output layer unit to
+exceed some kind of activity threshold.  In contrast, recording RT
+based on the change in activation over time going below a threshold
+(in `cs++' this is CsMaxDa; in `leabra++' it is LeabraMaxDa) is
+typically not such a good measure of human reaction time.
+
+   This stat should typically be created in the `loop_stats' of the
+SettleProcess.  To configure this stat, just set the `layer' pointer
+to point to the response/output layer in the network, and set the
+`act_thresh' to the activation threshold.  Two values are recorded in
+this stat:
+
+   `max_act' records the maximum activation in the response layer,
+and setting a stopcrit on this will actually result in stopping
+settling upon reaching threshold (note that the val of this stopcrit
+is automatically set to be the same as the `act_thresh' value, but
+the stopcrit flag is not active by default, so that it will not stop
+processing).
+
+   `rt_cycles' records the number of settling cycles at the point
+when the maximum activation in the layer exceeded the `max_act'
+threshold (regardless of whether the settle process actually stopped
+at this point).
+
+
+File: pdp-user,  Node: proc-stats-ctrs,  Next: proc-stats-misc,  Prev: proc-stats-rt,  Up: proc-stats
+
+Statistics that Provide Counters (Time, Epoch, etc)
+---------------------------------------------------
+
+   The following statistics all provide counter data, which are useful
+for providing X-axes for graphing and other data analysis.
+
+   The EpochCounterStat records the current epoch number from the
+network.  This is useful for testing process hierarchies which start
+at the epoch level and thus do not have an epoch counter from the
+training process.
+
+   The ProcCounterStat grabs a whole set of counters off of another
+process.  It is used for the same reason an epoch counter stat is
+used, except it also gives one access to batch counters and any other
+counters that might be present on the training process hierarchy.
+
+   The TimeCounterStat simply increments its counter every time it is
+run, providing an ever-incrementing time count that spans across
+multiple loops through a given level of the process hierarchy.  Use
+the TimeCounterResetProc to automatically reset this time counter at
+some higher level of the process hierarchy (e.g., at the start of
+training, in the `TrainProcess' `init_procs').
+
+
+File: pdp-user,  Node: proc-stats-misc,  Prev: proc-stats-ctrs,  Up: proc-stats
+
+Miscellaneous Other Stat Types
+------------------------------
+
+   The CyclesToSettle statistics simply records the number of cycles
+it took to settle.  It should be placed in the `loop_stats' of the
+trial process, where it will be able to grab the final counter value
+from the settle process.  This is useful to record how fast a network
+is settling, which is often used as a proxy for reaction times, etc.
+See also the ActThreshRTStat *Note proc-stats-rt::.
+
+   The ScriptStat is a statistic that is meant to be used with a CSS
+script.  It provides a generic group of `vals' into which the results
+of the statistic can be put, and an array of `s_args' for passing
+arguments to the script to control its behavior.  A very simple
+example script code for computing the difference between two unit
+activations is as follows:
+
+     // this is a sample script stat script
+     
+     void DoStat() {
+       if(vals.size != 1) {  // first, create vals to hold results
+         // anything in vals is automatically logged, etc.
+         vals.EnforceSize(1);  // do whatever is necessary to get 1 val
+         vals[0].name = "act_diff";  // this is the header for the stat val
+       }
+       // get the first unit (note that we can access 'network'
+       // and other member variables from the ScriptStat the script is in)
+       Unit* un1 = network.layers[1].units[0];
+       // and then the second unit
+       Unit* un2 = network.layers[1].units[1];
+     
+       // compute value to put in statistic
+       float diff = un1->act - un2->act;
+     
+       // then store result in the val.  note you can have as many
+       // vals as you want and compute as many things as you want!
+       vals[0].val = diff;
+     }
+     
+     // you *must* call the function so that when the script is run
+     // the above function is actually run!
+     DoStat();
+
+   The CopyToEnvStat takes data from another statistic and copies it
+into a data environment (just a basic environment that holds data for
+later analysis).  This is a key piece of a chain of steps involved in
+analyzing network representations, etc.  See *Note how-proc:: for an
+overview of how this analysis process works, and *Note env-analyze::
+for the types of analyses that can be performed.  The
+`DispDataEnvProc' can automate the performance and display of these
+analysis routines (*note proc-special-misc::).
+
+   The key parameters on this stat are the `stat', which points to
+the statistic to get data from, the `data_env', which points to the
+environment to save the data in, and the `accum_scope', which
+determines how much data to accumulate in the data env (e.g., EPOCH
+accumulates over an entire epoch, etc).
+
+   The ProjectionStat projects data from another statistic (e.g., a
+`MonitorStat') onto a stored vector (`prjn_vector'), and records the
+resulting scalar value in `prjn'.  A projection is just computing the
+distance between two vectors, and the various parameters on this stat
+determine the type of distance computation to perform.  This is
+useful for analyzing network representations as they are generated
+based on for example a principal components analysis performed on
+another batch of previously-generated network activations.  To
+facilitate this, the buttons `VecFmPCA' and `VecFmEvent' provide a
+way to load the prjn vector from either a PCA (principal components
+analysis) performed on a data environment (*note env-analyze::) or
+just from a stored event pattern (e.g., the environment can be used
+to draw a pattern to compare).
+
+
+File: pdp-user,  Node: proc-css,  Prev: proc-stats,  Up: proc
+
+Processes and CSS Scripts
+=========================
+
+   Any kind of process can be configured to use a CSS script instead
+of its original hard-coded functions.  One simply sets the process
+type to `SCRIPT' and opens a script file in the `script_file' member
+of the process.
+
+   When the process is run, it checks to see if it should run the
+script instead.  Note that if you are replacing a schedule process
+with a script, you have to replace the entire C_Code function.  This
+code can be used verbatim in CSS, and an example is given in
+`css/include/script_proc.css'.
+
+   Note that the script is given transparent access to all of the
+members and member functions defined on the script object it is
+attached to.  This allows one to mix existing hard-coded functions
+with script versions by simply calling the existing ones in some
+places, and calling new script-defined ones in other places.
+
+   Where possible, it is generally preferable to use a ScriptStat or
+ScriptProcess instead of replacing an entire existing process with a
+script.  This will tend to be simpler and a more modular solution.
+
+
+File: pdp-user,  Node: log,  Next: bp,  Prev: proc,  Up: Top
+
+Logs and Graphs
+***************
+
+   Logs provide a convenient method of recording information from the
+processes. This information can be as simple as the epoch number of
+training or as complicated as a multi-variable statistic. In PDP++
+logs are stored on the Project, and pointed to by a process. Like the
+network, logs may have many views.  Logs are color-coded brown in the
+default color scheme (get it?).
+
+   Processes interface with a log by sending it both header and data
+information. The header information provides the labels for the
+columns of data. Each line of data provides a row of information for
+each of the fields in header line.
+
+   Logs can record data to log files, which contain columns and rows
+of data in text format.  Each line of the log file contains an
+identifier that indicates the name of the process which generated the
+data (or just _H:) if there is only one updating process. At the
+start of a log file, a row of header information is recorded, which
+identifies the data in the columns.  Both of these identifiers can be
+removed with the shell script `bin/getlogdata', which strips them
+from the file, and writes a new file with a `.logd' extension.
+
+   Note that the log data file is distinct from the object save file,
+which will save the parameters associated with the log object, but not
+the data in the log itself.  Thus, projects do not save any current
+log data.  It has to be specifically saved in a log file.  Functions
+to save and load log files are found in the `Logfile' menu.
+
+   Also, the log object maintains an internal buffer of log data (the
+size of which can be set by editing the log, see next section).  This
+buffer can be directly accessed through the script language to
+perform various data analysis operations.
+
+* Menu:
+
+* log-variables::               PDPLog Variables
+* log-functions::               PDPLog Functions
+* log-views::                   Log Views
+
+
+File: pdp-user,  Node: log-variables,  Next: log-functions,  Prev: log,  Up: log
+
+PDPLog Variables
+================
+
+`File log_file'
+     File to use for saving the log. This field is set by using the
+     File Requester (*note gui-file-requester::), or by using the log
+     function `SetSaveFile()'. This field can be set to `NULL' in
+     which case there is no file i/o.
+
+`int log_lines'
+     The number of lines recorded so far in the log. This number is
+     incremented each time the log receives a new line of input.
+
+`DataTable data'
+     Holds and provides organization for the information sent to the
+     log.
+
+`int data_bufsz'
+     The size in lines of the log buffer. If the log overflows the
+     buffer size, information is dropped from the beginning of the
+     Log and the buffer is "scrolled" by `data_shift' to make room
+     for the new data.
+
+`float data_shift'
+     The percentage of the buffer to shift upon overflow.
+
+`MinMax data_range'
+     A structure containing the minimum and maximum line values of
+     the log s buffer's view of the data in the `log_file'.
+
+`Process_Group log_proc'
+     A link group of processes which log information to this log.
+     Usually, there is just one process that sends data to the log.
+     The menu functions AddUpdater/RemoveUpdater manipulate this
+     information.
+
+`String_Array display_labels'
+     Provides replacement labels for data columns.
+
+
+File: pdp-user,  Node: log-functions,  Next: log-views,  Prev: log-variables,  Up: log
+
+PDPLog Functions
+================
+
+   On all of the following functions, the optional no_dlg arg will
+prevent the popup file requester dialog if true - this dialog comes
+up even when a valid file name is specified.
+
+`Actions/GetHeaders()'
+     Tells all the processes that update this log to send their
+     current headers to this log.  Use this if you have changed the
+     statistics being sent to this log.  Note that it causes all
+     existing data to be removed.  The log will automatically adjust
+     to the addition and removal of statistics, so this isn't
+     necessary in those cases.  However, it won't notice if a name of
+     a statistic has changed.
+
+`LogFile/SetSaveFile(char* file_nm, bool no_dlg = false)'
+     Pulls up a file chooser dialog that allows one to select the
+     file that the log will save data into, or sets the log file to
+     the argument if called from the script language.  This does not
+     save any existing data in the file, it just opens the file so
+     that any new data will be recorded.  Use `BufferToFile' after
+     setting the save file (or by itself without a save file set) to
+     actually save currently buffered data to the file.  Note that
+     this will overwrite any existing file of the same name.
+
+`LogFile/SetAppendFile(char* file_nm, bool no_dlg = false)'
+     This is just like `SetSaveFile', but it appends to an existing
+     file instead of writing over it.
+
+`LogFile/LoadFile(char* file_nm, bool no_dlg = false)'
+     This will load data from a previously-saved log file into this
+     log.  Note that it is possible to load from a log file created
+     by any process, since it will read the header information from
+     the log file itself.  Thus, one can open a new project, create a
+     GraphLog object, and do a Load file on a log from a project that
+     was run in the background, and get a graph of what happened.
+
+`LogFile/CloseFile()'
+     Closes any open files. Note that `LoadFile' does not close the
+     log file, because if the file is longer than the current buffer,
+     it needs to be read from as the user scrolls through the file.
+
+`LogFile/BufferToFile(char* file_nm, bool no_dlg = false)'
+     Sends the entire contents of the currently-buffered log data to
+     a log file.  If there is an open log file and no file name is
+     specified, it sends to this currently open file.  If there is no
+     open file, then it will do a SetSaveFile(file_nm, no_dlg) and
+     then dump the buffer to the file, closing the file afterwards.
+
+
+File: pdp-user,  Node: log-views,  Prev: log-functions,  Up: log
+
+Log Views
+=========
+
+   The PDPLog structure has many options for viewing its data. Each of
+these options is represented by a corresponding LogView object. Like
+the network object, PDPLogs can have multiple views.
+
+   Each of the views has its own methods of interacting with the data,
+however all the views have some properties in common. All the views
+are window's into the data stored in the log's datatable `data'. While
+some of the views may show only a portion of the datatable at a time,
+the maximum amount of data they can show is limited by the size of the
+datatable itself, `data_bufsz'. The `log_file' however records all
+the information sent to log sequentially. Each of the LogViews
+provides four buttons which shift the the view's window on the
+datatable. If the view's window on the datatable moves outside the
+range of the datatable, the datatable is scrolled by moving log's
+`data_range' throughout the `log_file'.
+
+* Menu:
+
+* log-views-logview::           The LogView Class
+* log-views-text::              The Text Log View
+* log-views-net::               The Net Log View
+* log-views-graph::             The Graph Log View
+* log-views-grid::              The Grid Log View
+

@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_115.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_117.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX606" HREF="pdp-user_toc.html">10.3  Projections</A></H2>
+<P>
+<A NAME="IDX607"></A>
+
+</P>
+<P>
+Projections represent a layer's connectivity with another layer.  They
+serve as a "template" for individual connections between units in the
+two layers, thus simplifying the specification of general patterns of
+connectivity.  The connectivity of the projection is specified in terms
+of the layer this projection's layer is receiving from.  Thus if you had
+an input layer connected to a hidden layer, then the hidden layer would
+have a projection with its <CODE>from</CODE> field set to the input layer.
+
+</P>
+<P>
+In addition to the <CODE>from</CODE> field, projections have a
+<B>ProjectionSpec</B> which determines the connectivity patterns to use
+when creating the actual connections between individual units.  There
+are a number of different forms of connectivity that can be specified
+with the different <B>ProjectionSpecs</B>, from the simple full
+connectivity to different forms of random, one-to-one, and "tesselated"
+or repeated patterns of connectivity.
+
+</P>
+<P>
+The projection object itself is primarily concerned with specifying
+<EM>where</EM> to receive connections from, and what kinds of connection
+objects to create.  The <B>ProjectionSpec</B> is responsible for
+determining the <EM>pattern</EM> of connectivity.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_117.html">1               The Projection Class</A>
+<LI><A HREF="pdp-user_118.html">2               The Projection Specification</A>
+<LI><A HREF="pdp-user_119.html">3            Specialized Types of Projection Specs</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_115.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_117.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

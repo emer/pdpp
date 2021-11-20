@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-settings</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_107.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_109.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX516" HREF="pdp-user_toc.html">9.5.1  Settings and the .pdpinitrc and .cssinitrc Files</A></H3>
+<P>
+<A NAME="IDX517"></A>
+<A NAME="IDX518"></A>
+<A NAME="IDX519"></A>
+
+</P>
+<P>
+Every time the PDP++ software starts up, it looks for a
+<TT>`.cssinitrc'</TT> and a <TT>`.pdpinitrc'</TT> file in the user's home
+directory.  These files contain CSS script code that can set various
+default settings, set aliases for CSS commands, etc (see also
+section <A HREF="pdp-user_78.html">7.4.3  CSS Startup options</A>).  A list of the different settings that can be put
+into the <TT>`.pdpinitrc'</TT> file is given in section <A HREF="pdp-user_58.html">6.17  Settings Affecting GUI Behavior</A>.  These
+settings are actually "static" members located in the <B>taMisc</B> object,
+and are set in CSS as in the following example:
+
+</P>
+<PRE>taMisc::display_width = 90;
+</PRE>
+
+<P>
+Another thing that you might want to put in the <TT>`.pdpinitrc'</TT> is
+your default color specification:
+
+</P>
+<PRE>.colorspecs.SetDefaultElName("C_ColdHot");
+</PRE>
+
+<P>
+<A NAME="IDX520"></A>
+<A NAME="IDX521"></A>
+Finally, if you have put a set of PDP++ files (like the defaults files
+described in the next section, for example) in a directory somewhere,
+you can add this directory to the list of those automatically searched
+when loading CSS script files and defaults files.  This is done with the
+<CODE>include_paths</CODE> member of the <B>taMisc</B> object that holds all of
+the other settings parameters.  It is an array of strings, and you
+simply add a new string to it to add a new path:
+
+</P>
+<PRE>taMisc::include_paths.AddUnique("/home/mach/me/pdp++/defaults");
+</PRE>
+
+<P>
+<A NAME="IDX522"></A>
+Note that the environmental variable <CODE>PDPDIR</CODE> should be set to the
+directory in which PDP++ was installed in order to have the default
+include paths be correct.  If <CODE>PDPDIR</CODE> is not set, the default is
+<TT>`/usr/local/pdp++'</TT>.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_107.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_109.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

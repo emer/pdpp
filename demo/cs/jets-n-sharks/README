@@ -1,0 +1,602 @@
+jets-n-sharks.proj.gz
+----------------------
+
+This project is described in the PDP Explorations book.  The basic
+operation here is to click on the one event in the environment window,
+then select the '1' pen at the bottom, and click on the units that you
+want to activate.  then hit the 'Step' button in the control panel,
+and the units will settle according to that input.
+
+The following is a handout from the use of pdp++ for teaching a PDP
+class at CMU, and is not guaranteed to be up-to-date or accurate, but
+should provide plenty of useful additional information.
+------------------------------------------------------------------------
+
+HOMEWORK 1 HANDOUT
+
+OVERVIEW OF EXERCISES
+
+In this section we suggest several different exercises.  Each will
+stretch your understanding of IAC networks in a different way. Ex. 2.1
+focuses primarily on basic properties of IAC networks and their
+application to various problems in memory retrieval and
+reconstruction.  Ex. 2.2 suggests experiments you can do to examine
+the effects of various parameter manipulations.  The exercises also
+provide a tutorial intruduction to the PDP++ software.
+
+Your homework assignment is to carry out all the parts of Exercises
+2.1 and 2.2, and provide written answers to all of the questions in
+these two exercises.  In answering the questions, focus on making
+clear why a certain behavior occurs in the network; the ideas covered
+in the second day of class (Thursday, Jan 18) and in the first part of
+Chapter 2 of the Handbook are all explored in these questions.
+
+Note that in the PDP++ software, we implement "iac" networks as
+discussed in Chapter 2 of the Handbook within a more general program
+called "cs".  
+
+EX. 2.1. RETRIEVAL AND GENERALIZATION
+
+In this exercise you will use the cs program to examine how the
+mechanisms of interactive activation and competition can be used to
+illustrate the following properties of human memory:
+
++ Retrieval by name and by content.
+
++ Assignment of plausible default values when stored information is
+  incomplete.
+
++ Spontaneous generalization over a set of familiar items.
+
+The "data base" for this exercise is the Jets and Sharks data base
+shown in Figure 10 of PDP:1 and reprinted for convenience in Figure
+1 on page 39 of the PDP HandBook.  You are to use the cs program in
+conjunction with this data base to run illustrative simulations of
+these basic properties of memory.  In so doing, you will observe
+behaviors of the network that you will have to explain using the
+analysis of IAC networks presented earlier in the ""Background"
+section.
+
+Minor Changes in the Model
+
+The PDP++ version of the program has slight differences in how it
+computes net inputs and activations.
+
+The net input to a unit is defined as:
+
+   net_i = SUM_j w_ij * o_j + clamp_gain * ext_i
+
+In this version, clamp_gain is equivalent to the old parameter, estr.
+Weights can be positive or negative, and the program dues not keep
+track of them separately; they are simply combined together in the SUM
+term.  One can alter the values of the excitatory and inhibitory
+connection weights selectively, as we will see later.
+
+The activation update equations are:
+
+   If (net_i > 0)
+
+      act_i += step*[(max-act_i)*net_i - (act_i-rest)*decay]
+
+   else
+
+      act_i += step*[(act_i-min)*net_i - (act_i-rest)*decay]
+ 
+This is very similar to the old version; the added step parameter
+simply regulates how quickly values in the network change. You can
+think of it as determining how big a time step to take on each update.
+The smaller the value, the finer the time-resolution of the simulation
+is.  This should not affect the asymptotic activations of units: for
+example in the case of positive net input, for the change in
+activation to be 0, (max-act_i)*net_i must equal (act_i-rest)*decay,
+regardless of the step size.  However, step must be relatively small,
+as we will see later.
+
+Starting up.  Before running this exercise, you must first set up a
+pdp++ directory as described in the handout: "Getting Started ..." If
+you have not already done so, change your working directory to the
+"hw1" directory, and enter
+
+	cs ~psy512/homework/hw1/jets-n-sharks.proj.gz
+
+This causes the program to begin running using the project
+jets-n-sharks.proj.gz.  Inside the project file is a description of the
+network structure and the processes which control the settling of the
+network. The network contains 68 units in seven layers: a layer of
+name units, a layer of gang units, a layer of age units, a layer of
+education units, a layer of marital status units, a layer of
+occupation units, and a layer of instance units.  The name layer
+contains a unit for the name of each person; the gang layer contains a
+unit for each of the gangs the people are members of (Jets and
+Sharks); the age layer contains a unit for each age range; and so
+on. The layer of instance units contains a unit for each individual in
+the set.
+
+The units in the first six layers can be called visible units, since
+all are assumed to be accessible from outside the network.  Those in
+the gang, age, education, marital status, and occupation layers can
+also be called property units.  The instance units are assumed to be
+inaccessible, so they can be called hidden units.
+
+Each unit has an inhibitory connection to every other unit in the same
+layer, and there are excitatory connections between each instance unit
+and the units for its properties, as illustrated in Figure 2 on page
+41 of the PDP Handbook (Figure 11 from PDP:1).  Note that the figure
+is incomplete, in that only some of the name and instance units are
+shown (There is also an error in this figure; the information in the
+Data Base of Figure 1 p. 39 is correct).
+
+The project file also sets the values of the parameters of the
+model.  These values are
+
+   decay = 1
+   clamp_gain = 4
+   step = .1
+   max = 1.0
+   min = 0.2
+   rest = -0.1
+
+The values of the connection weights are all +1 for excitatory weights
+and -1 for inhibitory weights.  These parameters produce behavior
+equivalent to that of the old version of the software.
+
+After the program has read the information contained in the
+jets-n-sharks.proj.gz file, it displays a number of windows. The large
+window above center on the right of the screen is the NetView. This
+window shows the network architecture, and alows you to view various
+network values by selecting one, by clicking a button in the lower
+left region of this window. Currently the "act" variable is selected,
+and the NetView is displaying the activation of all the units in the
+network. To display the net input of the units instead, one can click
+on the "net" button to the right of the "act" button in the
+NetView. You can see that the units have their initial resting
+activations and with netinputs of 0.
+
+The layers of units are organized with the instance units in the
+middle of the display the property units above, and the name units
+below. Note that the labels of the instance units begin with "_"; the
+name unit for Lance is called Lance but the instance unit for Lance is
+called _Lance. The layers are connected by "projections" which are
+represented with arrows indicating the direction of connectivity. Note
+that each property layer has both sending and receiving projections to
+the instance layer, and each layer also has a connection to itself
+representing the negative inhibitiory connections.
+
+To view the weights into a given unit, first select "r.wt" from the
+list of network variables in the lower left corner of the
+display.  Notice that when you select the "r.wt" parameter the
+mouse pointer changes to a small hand. This pointer indicates that you
+are in "view" mode which is used to display connectivity patterns. In
+the upper left corner of the display the "View" button should be
+selected. Now with the hand pointer click on one of the units in the
+display. If the display does not respond, you may have to click twice.
+
+A dotted line should surround the unit, and the values of the other
+units in the display should indicate their connecting weights to the
+"viewed" unit. By clicking on one of the connected units, you can
+verify that that the return connection is of the same value as the
+sending connection. Once you are done viewing weight values, change
+the view to activations by selecting "act" from the list of network
+variables. Since "activation" is not a connectivity variable, the view
+has changed back to "select" mode, and the pointer is now an arrow.
+
+On the bottom of the display is the current cycle number, which
+since we haven't run any cycles yet is set to N/A.
+
+Since everything is set up for you, you are now ready to do each of
+the separate parts of the exercise.  Each part is accomplished by
+using the interactive activation and competition process to do pattern
+completion, given some probe that is presented to the network.  For
+example, to retrieve an individual's properties from his name, you
+simply provide external input to his name unit, then allow the IAC
+network to propagate activation first to the name unit, then from
+there to the instance units, and from there to the units for the
+properties of the instance.
+
+RETRIEVING AN INDIVIDUAL FROM HIS NAME
+
+To illustrate retrieval of the properties of an individual from his
+name, we will use Ken as our example.  To specify external input to
+the name unit for Ken, you need to set up an input event with Ken's
+value active. External inputs are specified in "Events" from an
+"Environment" in the PDP++ software. The Environment is displayed in
+an EnviroView window which should be the lower large window on your
+display.  We have already provided a template event for you to use. To
+view this event, which is simply called "Input", click with the left
+mouse button on the "Input" button you will see at the left side of
+the EnviroView window. The window should fill with boxes in the same
+configuration as the units in the NetView described above.  These
+boxes represent the amount of external input to be given to each unit.
+Currently all the boxes are set to 0, as indicated by their color and
+the matching colorscale at the bottom of the window. The boxes in the
+colorscale are also used to control the value used by the mouse when
+it is serving as a "paintbrush" to change the values of an event.  To
+select a paintbrush value, click on the little color box to the left
+of the desired value, choosing from the values displayed near the
+bottom edge of the window.  (If you don't like the values you can edit
+them but for now choose the value 1).
+
+Move the mouse pointer over the box labeled "Ken" and click the left
+mouse button.  Ken's box should now be colored with the same color as
+the value 1 in the colorscale region below.  Sometimes you have to
+click in just the right spot or click twice to get the value you want.
+
+Notice that the "Apply" button on the left side of the EnviroView is
+now highlighted.  When the "Apply" button is highlighted in the PDP
+software it is indicating that you have altered the contents of a
+displayed window.  The contents of this display are like the contents
+of an editor buffer --- you have to "Apply" the changes before they
+actually affect the underlying values themselves.  So, to implement
+any changes you have selected, you must click 'Apply".  You can make
+multiple changes before hitting the "Apply" button, but be sure to
+press the "Apply" button when you are finished or the changes will not
+take place.  Click with the left mouse button over the "Apply" button
+to confirm our setting of Ken's name property to 1. You are now ready
+to run your first simulation.
+
+Processing is controlled in the PDP++ software by a set of
+"processes".  Processes are arranged hierarchically so that upper
+level processes perform setup and initialization procedures and then
+iterate a number of times over their subprocesses. You will control
+the process flow using a process's control panel window. We have set
+up the process hierarchy for this model and provided you with the
+"Epoch" process's control panel in a smaller window on the left side
+of NetView Window. The Epoch process is responsible for retrieving the
+"Input" event we specified in the EnviroView and applying its values
+to the external inputs of the units in the NetView. It then starts a
+settle process which performs an number of cycles.
+
+To start processing, press the step button near the bottom of the
+ControlPanel window. This causes the program to take 10 steps of the
+Cycle process, as indicated by the step "n", which you will find
+displayed in a numeric field at the middle-right of the control panel.
+In fact stepping takes two parameters, the subprocess over which to
+step, and the number of steps to take each time the step button is
+pressed.  Currently the subprocess is set to "Cycle_0" which is the
+name of the cycling process which performs a netinput and update
+activation calculation for all the units. The stepsize parameter, "n"
+is set to 10. (If you click the the left mouse button on the field-name
+"step" on the left side middle of the control panel, it will give you
+more information about what the step field's parameters are used for.)
+
+As the step function runs each cycle, it will update the screen.  At
+the end of each cycle, the cycle number is displayed numerically at
+the bottom of the window.  If "act" is selected for display, the
+activations of units will be visible, with colors assigned to values
+as indicated by the scale bar shown on the right.  Note that the
+simulator counts from 0, so at the end of the first cycle the cycle
+number displayed is 0, and at the end of the 100th cycle, the number
+displayed is 99.
+
+As the simulation runs, screen updating will generally occur rather
+quickly.  If you'd like to watch the activation process unfold one
+cycle at a time, you can place the program in single-step mode by
+entering a 1 in the step "n" field. This can be done by clicking on
+the up/down button to the right of the "n" field or by clicking on the
+"10" currently in the "n" field and typing in the value 1.  Notice
+again that the "Apply" button is highlighted when you make a change.
+Be sure to press the "Apply" button to confirm your changes.  NOTE:
+There are sometimes minor difficulties altering alphanumeric fields.
+You should be able to click the mouse at the right of the field,
+backspace to delete old contents, and type characters to insert new
+contents.  Alternatively, click in the field, then type \^-u
+(Control-u).  Then enter the new desired value.
+
+Having set the step size to 1, you can continue to step through 
+processing if you wish.  Alternatively, you may want to start over. To
+do that, press the "ReInit" button, then press "Step" again. The
+"ReInit" button resets the activations and netinputs of the units.  It
+also resets the process counters to 0. By pressing "ReInit" you can
+start the simulation over from the beginning.  (In cases where the
+network's behavior has some randomness, you will still be able to
+reproduce the exact prior behavior using "ReInit".  The "NewInit"
+button is used to generate a new random sequence in that case.  Since
+our simulation is deterministic (no random updates or weight changes,
+ect) both NewInit and ReInit accomplish the same task.)
+
+By pressing the step button you can step through the cycles, n at a
+time, and examine at your leisure what happened on each cycle.  If you
+would like to allow processing to go on "to the end", you can simply
+set "n" to a larger number. Alternatively you can press the
+"Run" button which will continue cycling until 100 cycles have been
+completed. If you see some interesting behavior while the process is
+"Running" you can stop the cycling by pressing the "Stop" button on
+the right side of the Control Panel.  If the simulation went to far
+you can always ReInit and watch it again.
+
+[A "feature" of the software in its present version is the fact that if
+the Run button is pressed once the network has reached the maximum
+value of 100 cycles of processing, it automatically re-initializes and
+runs again.]
+
+As you will observe, if you watch the network cycling, activations
+continue to change for many cycles of processing.  Things slow down
+gradually, so that after a while not much seems to be happening on
+each cycle.  Eventually things just about stop changing.  The value we
+have chosen, 100 cycles, is not in fact completely asymptotic, but we
+will treat it as such in what follows.
+
+After 100 cycles you can check to see that the model has indeed
+retrieved the pattern for Ken correctly.  There are also several other
+things going on that are worth understanding.  Try to answer all of
+the following questions (you'll have to refer to the properties of the
+individuals, as given in Figure 1 on page 39 of the PDP Handbook.)
+
+Q.2.1.1.  Why are some of Ken's properties more strongly activated
+          than others?
+
+Q.2.1.2.  None of the other name units were activated, yet several
+          other instance units are active (i.e., their activation is
+	  greater than 0).  Explain why this has happened.
+
+Q.2.1.3.  Why are some of the active instance units more active than
+	  others?
+
+Q.2.1.4.  Consider the age units, "20s" and "30s".  Which units are
+	  exciting each of these units? How much excitation does each
+	  receive overall?  Why is the the "20s" unit more active that
+	  the "30s" unit?  Why will it tend to stay this way?
+
+If you can answer all of these questions correctly, you
+understand the interactive activation and competition process rather
+well.
+
+The last question, in particular, is relatively hard, and you will
+have to work carefully to get it right.  It will be helpful to save the
+state of activations of the netview in a file; with this and your
+knowledge of the weights in the network, you have the information you
+should need to answer these questions.
+
+>> You will also need a copy of the state reached with the name Ken as
+input, so save it now!
+
+SAVING THE NETVIEW
+
+To save a copy of the context of the NetView, just go to the
+"View:Object" menu at the top of the NetView and select "Print Data".
+This will cause the contents of the NetView to be saved to a file in
+".ps" format.  The program should now pop up a File Selection window
+asking you for a name of a file in which to save the data. Type in a
+descriptive name for the file, something like "Ken.Acts", and hit
+"Enter" on the keyboard or press the "Save" button at the bottom of
+the File Selection window.
+
+You can now view this postscript image at your leisure.  To view it on
+screen, from your UNIX shell, you would type:
+
+	ghostview <filename> &
+
+From within the cs program, you can execute the above via the by
+typing the following "shell" command to the "cs>" prompt:
+
+	shell "ghostview <filename> &";
+
+the quote symbols bracket a command that is sent to a UNIX shell; the
+simi-colon terminates the command to the cs program.
+
+COLOR SCALES AND PRINTING
+
+One tradeoff that we face concerns color.  Color, we think, makes the
+network's state information more vivid, but when you go to print it on
+a black-and-white printer, the colors come out as shades of gray and
+their values often become meaningless or misleading.  To address this,
+we have provided different color scales for different purposes.  When
+the "cs" program comes up, shades of red are used for positive values
+and shades of blue are used for inhibitory values, with Gray used for
+neutral (0) values.  This color scale is called "C_RedGrayBlue".  For
+printing, we recomment "P_LightDark", in which white is 1, black is 0,
+and neutral is gray.  This is also acceptable for screen viewing,
+though not quite as nice.
+
+To change to "P_LightDark" for printing, just go to the
+"View:Object" menu at the top of the NetView and select Edit.
+You will get a large window that has a field in the middle labeled
+"C_RedGrayBlue".  Click on this, and a list of alternatives will
+appear.  Select "P_LightDark".  Press Apply.  The netview should now
+reflect the new color scale.  If you save the NetView now, it will look
+the same when you print it in black and white as it looks now on the
+screen.
+
+The method of sending this file to a printer differs depending upon
+your computer setup. On Andrew in the 5th floor computer cluster in
+Wean Hall you can type the following to your UNIX prompt:
+
+	print -Pweh5201-1 <filename>
+
+From inside the PDP++ software you can type
+
+	shell "print -Pweh5201-1 <filename>";
+
+at the "cs>" prompt.
+
+
+RETRIEVAL FROM A PARTIAL DESCRIPTION
+
+Next, we will use the cs program to illustrate how it can retrieve
+an instance from a partial description of its properties.  We will
+continue to use Ken, who, as it happens, can be uniquely described by
+two properties, Shark and in20s.  To do this, go back to the
+EnviroView and click on the "Ken" box that we set to "1" earlier. The
+Ken box should now be set to "0", the same value as all the other
+boxes.  Now set the values of the "Shark" and "in20's" boxes to 1.  When
+you are finished press the "Apply" button. Go back to the Process
+Control Panel, press "ReInit" and then step or "Run" though 100 cycles
+again and take a look at the state of the network.
+
+Q.2.1.5.  Describe the differences between this state and the state at
+	  the end of the previous run.  What are the main differences?
+
+Q.2.1.6.  Explain why the occupation units show partial activations of
+	  units other than Ken's occupation, which is Burglar.  Take
+	  the explanation as far as you can, contrasting the current
+	  case with the previous case as much as possible.
+
+You may wish to print the activations for this case as well as the
+previous case.
+
+GRACEFUL DEGRADATION
+
+What is the effect of erroneous information in the probe supplied to
+an IAC network?  Here we examine how input errors influence the
+ability of the network to retrieve an individual's name from a
+description of his properties.  To begin to explore this issue, run
+the model twice: once activating all of Ken's properties other than
+his name via changing the "Input" event, and once with the same input
+except with JH instead of HS. Be sure to hit the "Apply" button in the
+EnviroView after you have made your changes to the "Input".
+
+Q.2.1.7.  How well does the model do with the "noisy" version of Ken 
+	  compared to the correct version of Ken?  Would it do this
+	  well with all noisy versions?  Why or why not? Explain,
+	  using the results obtained from at least one other
+	  distortion of the input to illustrate your answer.
+
+DEFAULT ASSIGNMENT
+
+Sometimes we do not know something about an individual; for example,
+we may never have been exposed to the fact that Lance is a Burglar,
+yet we are able to give plausible guesses about such missing
+information.  The iac program can do this too.  We illustrate by
+setting the weights between the instance unit for Lance and the
+property unit for Burglar to 0.  First, run 100 cycles, providing
+external input of 1 to Lance, to see what happens before we delete the
+connections.  Then, remove these connections as follows.
+
+In the NetView window, change to "Select" mode by clicking on the
+"Select" button in the upper left corner of the window.  The mouse
+pointer should now be an "arrow" (not the hand pointer from the "View"
+mode). Select the "Burglar" unit by clicking on it 3 times using the
+left mouse button. (The first click selected the "Occupation" layer,
+the second click selected all the units in the laer, and the third
+click selected the individual "Burglar" unit). Although sometimes
+difficult to detect, the object selected is indicating by a dashed
+line surrounding the object. If you make a mistake, you can click in
+the empty background area to unselect and start over.  Now, use the
+MIDDLE mouse button to select a second unit, the "_Lance" instance
+unit.  Again, you have to click three times (MIDDLE mouse button for
+second selection).  You should now have both the "Burglar" and the
+"_Lance" units selected. If not, click in the background with the left
+mouse button and try again.  If you have the units properly selected,
+you should now see two buttons in the middle left of the window which now
+read "Edit SendCon", and "Edit RecvCon".
+
+Click on the "Edit SendCon" button. It will popup a confirmation
+window asking you if indeed you want to edit the connection from
+the unit "Burglar" in the "Occupation" layer to the unit "_Lance" in
+the "Instance" layer. Press on the "yes" button and an Edit window will
+appear for the connection we have selected. The topmost field of this
+Edit window is the weight or "wt" value of the connection. The other
+fields are used for more advanced processing algorithms which we will
+discuss later. Click in the "wt" field next to the number 1, and
+change the weight to 0. The "Apply" button should now be highlighted.
+In this case, since we are done with this window, we will press the
+"OK" button which does an "Apply" and closes the window. If we had
+typed in a new value and then decided that we really did not want to
+change the value, we could hit the "Revert" button which would replace
+the value that we had changed with the actual value of the field on
+the object that we are currently editing. The "Cancel" button is
+similar to the the "Revert" button, but it closes the window after
+reverting. If you have not done so already, press the "Ok" button now.
+
+We have now set the strength of the connection from Burglar to _Lance
+to 0. Since this network is bi-directionally connected, we need to set
+the corresponding weight to the Burglar unit from the _Lance unit to
+zero as well.  The "Edit RecvCon" button does this.  Press "Edit
+RecvCon" and change its weight to 0 as well.  Switch to "Viewing" the
+"r.wt" variable in the netview to confirm the change in weighs that we
+just made.  First while still in "Select" mode click in the background
+of the NetView to unselect the selected units.  Now click on the
+"r.wt" variable button in the lower left of the NetView.  The pointer
+should change to a small hand as before.( In view mode you only need
+to click a unit once since only individual unit weight values can be
+"viewed").  Click once on the _Lance unit and verify that weight to the
+Burglar unit is indeed 0.  You can check the r.wt value for the burglar
+unit as well and verify that it is set to 0 for the _Lance unit.  When
+done checking weights, switch the NetView back to viewing
+activations, Re-Init the network in the Control Panel, and run 100
+cycles again.
+
+
+Q.2.1.8.  Describe how the model was able to fill in what in this
+	  instance turns out to be the correct occupation for Lance. 
+	  Also, explain why the model tends to activate the Divorced
+	  unit as well as the Married unit.
+
+SPONTANEOUS GENERALIZATION
+
+Now we consider the network's ability to retrieve appropriate
+generalizations over sets of individuals--that is, its ability to
+answer questions like "What are Jets like?" or "What are people who
+are in their 20s and have only a junior high education like?"  
+Reset the weights to their initial values by choosing
+"Init WtState" from the Actions menu in the upper left of the NetView
+window.  Once you've done that, you can ask the model to generalize
+about the Jets by providing external input to the Jets unit alone,
+then cycling for 100 cycles; you can ask it to generalize about the
+people in their 20s with a junior high education by providing external
+input to the in20s and JH units.
+
+Q.2.1.9.  Describe the strengths and weaknesses of the IAC model as a
+	  model of retrieval and generalization.  How does it compare
+	  with other models you are familiar with?  What properties do
+	  you like, and what properties do you dislike?  Are there any
+	  general principles you can state about what the model is
+	  doing that are useful in gaining an understanding of its 
+	  behavior?
+
+Q.2.1.10. Briefly discuss the similarities and differences between the
+	  approach to general knowledge in the Jets and Sharks network
+	  and the approach to general knowledge in Rumelhart's model
+	  of knowledge of rooms.  Are units for general categories
+	  necessary?  Why or why not?
+
+EX. 2.2.  EFFECTS OF CHANGES IN PARAMETER VALUES
+
+In this exercise, we will examine the effects of variations of the
+parameters step and decay on the behavior of the iac
+program. 
+
+INCREASING AND DECREASING THE VALUES OF THE STRENGTH PARAMETERS
+
+To explore the effects of adjusting the step 
+and decay parameters, choose Edit->IACUnitSpec_0 from the
+".specs" menu in the Project window. The project window is the long
+horizontal window that contains the menu "Object.defaults .specs
+.networs .environments .processes .logs .scripts". It should be near
+the top of your screen. 
+
+Q.2.2.1.  What effects do you observe from decreasing the value of
+	  step by a factor of 2?  What happens if you set it to twice
+	  its original values?  What happens with 5 times its
+	  original value?  Explain what is happening in each case.
+
+Hint.     For this exercise, you should first consider the asymptotic 
+	  activation of units--what do you expect based on the
+	  discussion in the "Background" section? 
+
+Q.2.2.2.  What effects do you observe from increases and decreases in
+	  the decay parameter?  Explain these effects, with reference
+	  to the balance of exitatory and inhibitory effects.
+
+RELATIVE STRENGTH OF EXCITATION AND INHIBITION
+
+Return all the parameters to their original values, then explore the
+effects of varying the value of the inhibitory weights above and
+below 1.0 (with the step parameter set to .1) , again providing
+external input to the Shark's and in20s units.  Also examine the
+effects on the completion of Lance's properties from external input to
+his name, with and without the connections between the instance unit
+for Lance and the property unit for Burglar.
+
+Q.2.2.3.  Describe the effects of these manipulations and try to 
+	  characterize their influence on the model's adequacy as a 
+	  retrieval mechanism.
+
+To change the inhibitory weights you will need to edit the
+similarly-name specs from the ".specs" menu and change the value of
+the "mean" parameter of the "rnd" field.  Enter the new values, press Apply,
+and then press the Init Weights button before dismissing the window with OK.
+
+
+
+

@@ -1,0 +1,72 @@
+// Evaluates Rafal's objective function
+
+/*
+function error = errorinh2 (x)
+
+[avRT, avER, sdRT] = twodecisioninh (x);
+
+ReqRT = 10; % required reation time
+ReqER = 0.1; % required error rate
+ReqSD = 2;
+
+error = (avRT - ReqRT)^2 / ReqRT^2 + (avER - ReqER)^2 / ReqER^2 + (sdRT - ReqSD)^2 / ReqSD^2;
+global best fbest
+if error<fbest
+ fbest = error;
+ best = x;
+ display('*');
+end;
+disp (sprintf ('a=%f b=%f c=%f d=%f  Error=%f ', x(1), x(2), x(3), x(4), error));
+*/
+
+void DoIt() {
+  FitDataSpec *fs = .specs.FindSpecType(FitDataSpec);
+  if (fs == NULL) {
+	cout << "Error:  FitDataSpec not found\n";
+	return;
+  }
+  FitDataInfo_Group *data = fs.data;
+  FitDataInfo *fd = *owner; // or owner.owner?
+  FitDataInfo *fd2;
+
+  int i;
+  int numTrials = 0;
+  float sumRt=0.0;
+  float sumCorrect = 0.0;
+  float avgRt, sdRt, avgEr;
+  float ssDev =0.0;
+
+  float reqRt = 10.0;
+  float reqER = 0.1;
+  float reqSD = 2.0;
+
+  // get avg RT, avg Err Rate, sd RT
+  for (i=0; i < data.size; i++) {
+	fd2=data->SafeEl(i);
+  	if ((fd2->constraint_type == FitDataInfo::DYN_RT) || 
+		(fd2->constraint_type == FitDataInfo::DYN_CELL_RT)) { //hit
+	    numTrials += 1.0;
+	    sumRt += fd2->actualRt;
+	    if (fd2->isCorrect) sumCorrect += 1.0;
+        }
+  }
+
+  avgRt = sumRt/numTrials;
+  avgEr = 1.0-sumCorrect/numTrials;
+  // now find standard deviation of RT
+  for (i=0; i < data.size; i++) {
+	fd2=data->SafeEl(i);
+  	if ((fd2->constraint_type == FitDataInfo::DYN_RT) || 
+		(fd2->constraint_type == FitDataInfo::DYN_CELL_RT)) { //hit
+	    ssDev += pow((avgRt - fd2->actualRt),2.0);
+        }
+  }
+  sdRt = sqrt(ssDev/(numTrials-1));
+  //cout << avgRt << avgEr << sdRt;
+  // compute obj func, set fitEnergyVal
+  fd->fitEnergyVal = pow((reqRt-avgRt),2)/pow(reqRt,2.0) + 10.0*pow((avgEr-reqER),2.0)/pow(reqER,2.0) + pow((sdRt-reqSD),2.0)/pow(reqSD,2.0);
+  cout << "Avg Rt, sdRt, avgEr = " << avgRt << " " << sdRt << " " << avgEr<< " ";
+  cout << "desired Avg Rt, sdRt, avgEr = " << reqRt << " " << reqSD << " " << reqER << "\n";
+}
+
+DoIt();

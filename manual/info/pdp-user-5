@@ -1,0 +1,1140 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: gui-edit,  Next: gui-settings,  Prev: gui-subgroup,  Up: gui
+
+The Edit Dialog
+===============
+
+   The Edit Dialog allows the user to both visually inspect and
+modify the values of an object's fields. As an inspection tool, the
+user can use and edit dialog to check the values of an object's
+fields, and as an editing tool the user can use the edit dialog to
+change the values of some or all of those fields. For some objects,
+the edit dialog is the only representation available for inspecting,
+or accessing it members.  Other objects may have extended edit
+dialogs or even multiple views which may also allow modification of
+the object's fields. An edit dialog also presents the user with easy
+access to the substructures of an object including editing of its
+subgroups and arrays. In addition the edit dialog may allow access to
+certain member functions on an object.  Edit Dialogs are created by
+choosing "Edit" from an object's menu or by the `EditObj' command in
+css (*note css-commands::).
+
+   The basic layout of the edit dialog includes a list of object
+member names which are listed in a vertical column along the left
+hand side of the display.  Clicking on a member name will popup a
+short description of the member.  Certain members may not appear in
+the edit dialog. This is determined by the `show_iv' field of the
+global settings (*note gui-settings::).  Typically the unshown
+members will not be of interest to the average user, or will contain
+values which are potentially dangerous to change.
+
+   The Show menu on the right-hand side of the menu bar at the top of
+the edit dialog will allow you to control how much stuff to view on a
+case-by-case basis.  Typically, you'll only want to switch to viewing
+Detail, which is not viewed by default, but all levels can be
+controlled in this menu.  If you suspect that something is not there
+which should be, try selecting Show/Detail.
+
+   Fields that are highlighted in bright yellow indicate that the
+field value is at variance with the default value for that field.
+
+   The values associated with the member names appear to the right.
+There are a number of different graphical representations of the
+content of these fields, which are described in the following section.
+
+   In addition, there can be special buttons and menu actions
+available on the dialog.  These are described in subsequent sections.
+
+* Menu:
+
+* gui-edit-fields::             Member Fields
+* gui-edit-buttons::            Dialog Buttons
+* gui-edit-menus::              Dialog Menus
+
+
+File: pdp-user,  Node: gui-edit-fields,  Next: gui-edit-buttons,  Prev: gui-edit,  Up: gui-edit
+
+Member Fields
+-------------
+
+   The member fields in an edit dialog can be found to the right of
+the member name. These member fields can appear in many different
+forms.  Sometimes there may even be more than one on a line.
+
+Field Editor
+============
+
+   The Field Editor is used for editing strings (e.g., an object's
+name), and number values. It appears as a box with text in it. If you
+click on the box an Ibeam cursor appears at the click location. When
+the mouse is in the box, the characters you type will be entered at
+the Ibeam location point as you would expect.
+
+   You must place mouse pointer in field to start editing!  However,
+once you have started typing, the mouse pointer need only remain in
+the overall window.
+
+   Some Emacs style editing keys are also recognized, in addition to
+the standard keypad arrow and related keys:
+
+     Ctrl-f moves Ibeam forward (also right arrow key)
+
+     Ctrl-b moves Ibeam backward (also left arrow key)
+
+     Ctrl-a moves Ibeam to beginning of line (also Home)
+
+     Ctrl-e moves Ibeam to end of line (also End)
+
+     Ctrl-d deletes character to right of Ibeam (also Del)
+
+     Ctrl-u selects the entire line - subsequent typing replaces
+     contents
+
+     Ctrl-n, TAB, or RETURN moves the Ibeam to the next field editor
+
+     Ctrl-p or Shift-TAB moves the Ibeam to the previous field editor
+
+     Alt-n moves to next object in list editor (also PageDn)
+
+     Alt-p moves to previous object in list editor (also PageUp)
+
+   You can also hit shift-mousebutton2 (middle button) to scroll the
+text with the hand cursor.
+
+   If the item to be edited is an integer then increment/decrement
+arrow buttons will appear to the right of the field editor. Pressing
+on these buttons will increase or decrease the value in the field
+editor.  Pressing button-1 (left button) changes the value by 1,
+button-2 (middle button) changes the value by 10, and button-3 (right
+button) changes the value by 100. If the mouse button is pressed and
+held, the action will auto repeat.
+
+Read Only Member Field
+======================
+
+   The read only member field is like the FieldEditor except the user
+cannot edit the field. It is used for display purposes only.
+
+Boolean CheckBox
+================
+
+   The checkbox is used for boolean values that are either on or off.
+Clicking on the checkbox changes its values. A checkmark or solid
+block indicates an ON, TRUE or 1 value, while no checkmark or an
+empty box indicates an OFF, FALSE or 0 value.
+
+Enum Menus
+==========
+
+   The Enum menu is used for enumerated types. These types may have
+one of a number of symbolic values. The menu is shown with the
+member's current value. by clicking on the menu the other value
+choices appear in a popup menu. Selecting an alternate value from the
+menu sets the menu's value to the new value.
+
+SubObject Menus
+===============
+
+   A SubObject menu is used when an instance of a class is part of the
+edited object and that instance is not edited inline (*note
+gui-edit-fields::). The menu has the name "Type: Actions" where Type
+is the class name of the subobject. The menu contains the following
+functions as well as object specific functions that are unique to the
+subobject class.
+
+     Load:             Load an instance of the subobject class
+
+     Save:             Save the subobject using a file requester
+
+     SaveAs:           Save the subobject with its last saved name
+
+     Edit:             Edit the subobject
+
+Object Pointer Menus
+====================
+
+   Object pointer menus are used when the member is a pointer to
+another object. The current value of the pointer is shown in the
+menubar as the pathname of the object that is pointed to. If the
+pointer is not set, the name on the menubar will be set to NULL.
+Clicking on the menubar brings up a popup menu of other objects of
+similar type. Selecting an alternate object sets the menubar to the
+name of that object. The popup menu also allows the user to set the
+pointer to NULL and to Edit the object currently pointed to.
+
+Object Type Menus
+=================
+
+   The object type menus are used when a member specifies a type
+class of object. This menu allows the user to select from classes
+which inherit from it base class. The current selection is displayed
+in the menubar.
+
+SubGroup Menus
+==============
+
+   The subgroup menu allows the user to interact with a group member
+of the object. The name on the menubar is one of the two forms
+depending upon whether or not the group has subgroups. (*note
+obj-group::).
+
+   Clicking on the menubar gives the user the following choices:
+
+New
+     Create new object in the group
+
+Load
+     Load a group from a file using a file requester. *Note
+     obj-basics-files::.
+
+Save
+     Save the group using a file requester. *Note obj-basics-files::.
+
+SaveAs
+     Save the group with its last saved name. *Note
+     obj-basics-files::.
+
+Edit
+     Bring up a Group Edit Dialog of the subgroup
+
+RemoveAll
+     Remove all the elements of the group
+
+Remove
+     Remove an individual element of the group
+
+Link
+     Link an object from another group into this group
+
+Move
+     Rearrange the order of the elements in this group
+
+Transfer
+     Transfer objects from another group into this one
+
+EditEl
+     Edit and individual element of the group
+
+Find
+     Find and edit an object with a given name
+
+   Each of these selections will bring up a dialog for the user to
+specify the parameters to the operation.
+
+SubArray Menus
+==============
+
+   The subarray menu allows the user to interact with a array member
+of the object. It appears as an  "Edit" menubar. Clicking on the
+menubar gives the user the following choices:
+
+Load
+     Load an array from a file using a file requester. *Note
+     obj-basics-files::.
+
+Save
+     Save the array using a file requester. *Note obj-basics-files::.
+
+SaveAs
+     Save the array with its last saved name. *Note
+     obj-basics-files::.
+
+Edit
+     Bring up an Array Edit Dialog for the array
+
+Remove
+     Remove a number of elements from the array at a given index
+
+Permute
+     Permute the order of the elements in the array
+
+Sort
+     Sort the order of the elements in the array
+
+El
+     Show the value of a member of the array at given index
+
+Add
+     Add elements onto the end  the array
+
+Insert
+     Add a number of given values at a certain Array index
+
+Find
+     Find and Show the index of a member of the given value
+
+ColorEdit
+     Bring up a Color Array Editor for number arrays
+
+Inline Fields
+=============
+
+   Inline Fields are used for small substructures within an object
+(e.g., an object's position, which is only three values: x,y,z).
+Instead of the expected SubObject menubar, the object is laid out
+horizontally across on line in the Edit Dialog. The names of each of
+the fields are often truncated so that the line will not take up too
+much space. This allows quicker access and visualization without
+having to traverse through multiple dialogs. The fields within an
+inline field behave as do the rest of the fields in the dialog.
+
+
+File: pdp-user,  Node: gui-edit-buttons,  Next: gui-edit-menus,  Prev: gui-edit-fields,  Up: gui-edit
+
+Edit Dialog Buttons
+-------------------
+
+   At the bottom of the Edit Dialog is a row of buttons which have
+actions pertaining to the Edit Dialog's fields. Some of the buttons
+may be appropriately inactive due the state of the edit dialog. They
+will become active when their action is applicable. The following
+buttons will be available:
+
+`Ok'
+     The Ok button stores the information in the dialog's fields in
+     the object's fields and closes the dialog window.
+
+`Apply'
+     The Apply button stores the information in the dialogs fields
+     but does not close the window. If the apply button is
+     highlighted the edit dialog may contain changes which have not
+     been applied yet. The apply action can also be generated by
+     pressing the Return key in the body of the editor, unless the
+     editor has multiple field editors within it (*note
+     gui-edit-fields::).
+
+`Revert'
+     The Revert button reloads the information from the object into
+     the dialog's fields, clearing any changes the user might have
+     made. If the revert button is highlighted the object's fields
+     might have been changed "behind the scenes" by another part of
+     the program in which case the information displayed in the edit
+     dialog may be outdated. The revert action can also be generated
+     by pressing the Escape key in the body of the editor.
+
+`Cancel'
+     The Cancel button dismisses the dialog without applying the
+     user's changes.
+
+`Other Member Buttons'
+     Some objects will add an additional row of member buttons to the
+     Edit Dialog.(e.g., The Process object adds a row of
+     Run,Step,Init buttons).  These buttons perform additional
+     actions on the object.
+
+
+File: pdp-user,  Node: gui-edit-menus,  Prev: gui-edit-buttons,  Up: gui-edit
+
+Edit Dialog Menus
+-----------------
+
+   At the top of the edit dialog is a menubar with at least two
+menus.  The first menu entitled Object is similar to the Object menu
+on a WinBase window. If the edited object is not a WinBase, the
+"Object" menu my only provide the "Load", "Save, "Save As", and
+"Close" menu choices. (*note gui-object::). The second menu called
+"Actions" may contain member functions particular to the edited
+object's type which will be called on the edited object.
+
+
+File: pdp-user,  Node: gui-settings,  Next: gui-colors,  Prev: gui-edit,  Up: gui
+
+Settings Affecting GUI Behavior
+===============================
+
+   There are two primary ways of setting parameters which affect the
+look of the GUI.  There is an object called taMisc which contains
+miscellaneous parameters and settings that affect various aspects of
+the PDP++ system, but mostly the graphical interface.  This object
+can be edited by using the Settings menu option on the PDPRoot object.
+
+   In addition to the taMisc settings, there are a number of XWindow
+resources or Xdefaults that can be set. Also, since PDP++ uses the
+InterViews graphics toolkit a number of command line arguments and
+InterViews Xresources can also be customized (*note proj-startup::).
+
+* Menu:
+
+* gui-settings-tamisc::         Settings in taMisc
+* gui-settings-xdef::           XWindow Resources (Xdefaults)
+
+
+File: pdp-user,  Node: gui-settings-tamisc,  Next: gui-settings-xdef,  Prev: gui-settings,  Up: gui-settings
+
+Settings in taMisc
+------------------
+
+   The following parameters can be set:
+
+`int display_width'
+     Width of the shell display in characters.
+
+`int sep_tabs'
+     Number of tabs to separate items by in listings.
+
+`int max_menu'
+     The maximum number of elements in a menu -- if there are more
+     than this number of instances (tokens) of a given type of
+     object, then the menu for that type of object will say "<Over
+     max, Select>", meaning that each item could not be listed
+     separately in the menu, so you select this option to pull up a
+     object chooser (see *Note gui-obj-chooser::), which allows you
+     to choose the object from a longer list.
+
+`int search_depth'
+     The recursive depth at which css stops searching for an object's
+     path.
+
+`int color_scale_size'
+     This determines how many colors are in a color scale for a color
+     monitor (*note gui-colors::).
+
+`int mono_scale_size'
+     This determines how many colors are in a color scale for a
+     monochrome monitor (*note gui-colors::).
+
+`ShowMembs show'
+     Type of members to show in css.
+
+`ShowMembs show_iv'
+     Type of members to show in edit dialogs The previous two
+     variables can have one of four "ShowMembs" values:
+    `ALL_MEMBS'
+          Shows all members.
+
+    `NO_READ_ONLY'
+          Shows all but read_only members - stuff that can't be
+          changed.
+
+    `NO_HIDDEN'
+          Shows all but hidden members - stuff that is hidden because
+          it is not typically relevant.
+
+    `NO_HID_RO'
+          Shows all but hidden and r/o members.
+
+    `NO_DETAIL'
+          Shows all but "detail" members - stuff that might be
+          relevant, but is not often accessed.
+
+    `NO_HID_DET, etc.'
+          Further combinations of RO, HID, and DET options.  The
+     default is `NO_HID_RO_DET'.
+
+`TypeInfo type_info'
+     The amount of information about a class type that is reported
+     when the "type" command is used in CSS.  Type_info has one of
+     the following values:
+    `MEMB_OFFSETS'
+          Shows the byte offset of members.
+
+    `All_INFO'
+          Shows all type info except memb_offsets
+
+    `NO_OPTIONS'
+          Shows all info except type options
+
+    `NO_LISTS'
+          Shows all info but lists
+
+    `NO_OPTIONS_LISTS'
+          Shows all info but options and lists The default is
+     `NO_OPTIONS_LISTS'
+
+`KeepTokens keep_tok'
+     This sets the Default for keeping tokens (lists of members) for
+     object types.  This can have one of three "KeepTokens" values:
+    `Tokens'
+          Keep tokens as specified in the type.
+
+    `NoTokens'
+          Do not keep any tokens lists.
+
+    `ForceTokens'
+          Force the keeping of all tokens lists.  The default is
+     `Tokens'.
+
+`verbose_load'
+     Indicates the amount of information reported in the shell window
+     when objects are loaded
+
+`iv_verbose_load'
+     Indicate the amount of information reported in the Loading window
+     when objects are loaded The previous two members may have one of
+     the following values:
+    `QUIET'
+          No information is given
+
+    `MESSAGES'
+          General messages are reported for each object
+
+    `TRACE'
+          Each line of the file is printed as it is loaded
+
+    `SOURCE'
+          Intricate debugging details are reported
+
+`bool auto_edit'
+     If this value is on, an edit dialog will appear each time an
+     object is created with the New dialog. (*note The Subgroup
+     Menu(New): gui-subgroup.).
+
+`AutoRevert auto_revert'
+     In some cases a dialog may be reverted to its old values by a
+     PDP++ process.  This variable controls the behavior of the edit
+     dialog when this situation occurs. The behavior is determined by
+     one of three values:
+    `Auto_Apply'
+          Automatically apply changes before auto-reverting
+
+    `Auto_Revert'
+          Automatically revert the edit dialog loosing changes
+
+    `Confirm_Revert'
+          Popup a confirmation dialog to okay reverting
+
+`String include_paths'
+     Directory Paths used for finding files.  This is an array of
+     string values that represent paths to find CSS, defaults files,
+     and Help files in (*note css-settings::, *note proj-settings::,
+     *note proj-objdef::).
+
+`String tmp_dir'
+     The directory to use for temporary files
+
+`String compress_cmd'
+     Command to use for compressing files
+
+`String uncompress_cmd'
+     Command to use for uncompressing files
+
+`String compress_sfx'
+     Suffix to append to filenames when compressed
+
+`String help_file_tmplt'
+     Template for converting the type name of an object into a help
+     file - %t is replaced with the type name.  Include any leading
+     paths to help files relative to the basic root paths listed on
+     include_paths.
+
+`String help_cmd'
+     Comand for bringing up a help browser to read help file
+     (typically html, netscape by default).  %s is subsituted with
+     the help file produced from `help_file_tmplt'.
+
+
+File: pdp-user,  Node: gui-settings-xdef,  Prev: gui-settings-tamisc,  Up: gui-settings
+
+XWindow Resources (Xdefaults)
+-----------------------------
+
+   The following XWindow resources can be set.  These are typically
+placed in the user's `.Xdefaults' file in their home directory.
+
+`PDP++*flat'
+     The color of the buttons.  It is typically some kind of greyish
+     color.  The default has a blueish tint: `#c0c4d3'
+
+`PDP++*background'
+     The color of various non-view background regions.  The default
+     is an aquamarine color: `#70c0d8'.
+
+`PDP++*name*flat'
+     If you change the valueof background, you should change this one
+     to match.  It makes the member names in the edit dialogs (*note
+     gui-edit::) the same color as the background.
+
+`PDP++*apply_button*flat'
+     The color of the apply button (and other buttons) when they are
+     the "suggested" choice.  It is a dusty-red by default: `#c090b0'.
+
+`PDP++*FieldEditor*background'
+     The color of the edit fields, default is white.
+
+`PDP++*font'
+     The generic font to use for buttons, etc:
+     `*-helvetica-medium-r-*-*-10*'.
+
+`PDP++*name*font'
+     The font to use for member names: `*-helvetica-medium-r-*-*-10*'.
+
+`PDP++*title*font'
+     The font to use for titles of edit dialogs:
+     `*-helvetica-bold-r-*-*-10*'.
+
+`PDP++*small_menu*font'
+     The font to use for small menus (e.g., those in edit dialogs):
+     `*-helvetica-medium-r-*-10*'.
+
+`PDP++*small_submenu*font'
+     This font is used for menu items that contain sub-menus (these
+     are also indicated by three dots after the name)
+     `*-helvetica-medium-r-*-*-10*'.
+
+`PDP++*big_menu*font'
+     This font is used for big menus like those on the permanent
+     object windows, default is `*-helvetica-medium-r-*-12*'.
+
+`PDP++*big_submenu*font'
+     For sub menus on big menus: `*-helvetica-medium-r-*-*-12*'.
+
+`PDP++*big_menubar*font'
+     For big menus, the name of the menu itself:
+     `*-helvetica-bold-r-*-*-14*'.
+
+`PDP++*big_italic_menubar*font'
+     For big menus, name of italicized menu items (i.e. those that
+     apply to the object and not to its sub-objects):
+     `*-helvetica-bold-o-*-*-14*'.
+
+`PDP++*double_buffered:'
+     Double buffering makes the display smoother, but can use lots of
+     display memory.  Default is "on".
+
+`PDP++*FileChooser.width'
+     The width of the file-chooser in pixels. Default is 100.
+
+`PDP++*FileChooser.rows'
+     The number of items to list in the file chooser, default is 20.
+
+`PDP++*clickDelay'
+     This is the number of milliseconds to count two clicks as a
+     double-click.  The default is 250.
+
+For MS Windows Users:
+---------------------
+
+   To set XResources under MS Windows, you need to create an
+"application defaults" file that is formatted much like the
+XResources.  There are two steps for creating this application
+defaults file:
+
+   1. Edit `C:\WINDOWS\WIN.INI', and add the following two lines:
+
+     [InterViews]
+     location = C:\PDP++
+
+   Where the location should be the actual location where you
+installed the software.
+
+   2. Create a sub-directory under `C:\PDP++' (again, use the actual
+location) called `app-defaults', and then create a file called
+`InterViews' in that directory.  This file should contain resource
+values you want to set.  For example, to change the amount of time to
+detect a double-click, you would enter:
+
+     *clickDelay: 400
+
+   To change the overall size of the PDP++ windows (scaling):
+
+     *mswin_scale: 1.25
+
+
+File: pdp-user,  Node: gui-colors,  Next: gui-file-requester,  Prev: gui-settings,  Up: gui
+
+Color Scale Specifications
+==========================
+
+   Color scales are used in PDP++ to display the values of variables
+graphically in various types of displays.  The choice of color scale
+depends on personal preferences as well as what type of display the
+user has available.  There are a number of different types of color
+scales that come with the software, and the user can create their own
+custom colorscales.
+
+   A color scale is specified by creating a set of different color
+points.  The actual scale is just the linear interpolation between
+each of these points, where the points are distributed evenly through
+the range of values covered by the scale.  Thus, if there were three
+such points in a color specification that goes from -1 to 1, the
+first point would represent the value -1, the middle one would
+represent 0, and the last one would represent 1.  Values in between
+would be represented by intermediate colors between these points.
+The actual number of colors created in a given color scale is
+determined by the `color_scale_size' setting parameter for color
+displays, and `mono_scale_size' for monochrome displays (*note
+gui-settings::).
+
+   The PDPRoot object contains a group of color specifications called
+`.colorspecs', which is where the default color scales and any new
+ones the user creates are located.  The default element (*note
+obj-group::) of this group represents the default color scale to use
+when creating a new display that uses color scales. The defaults are
+as follows:
+
+`C_ColdHot'
+     interpolates from violet->blue->grey>->red->yellow
+
+`C_BlueBlackRed'
+     interpolates from blue->black-red
+
+`C_BlueGreyRed'
+     interpolates from blue->grey->red
+
+`C_BlueWhiteRed'
+     interpolates from blue->white->red
+
+`C_BlueGreenRed'
+     interpolates from blue->green->red
+
+`C_Rainbow'
+     interpolates from violet->blue->green->yellow->red
+
+`C_ROYGBIV'
+     interpolates from violet->indigo->blue->green->yellow->red
+
+`C_DarkLight'
+     interpolates from black->white
+
+`C_LightDark'
+     interpolates from white->black
+
+`M_DarkLight'
+     dithers from black->white
+
+`M_LightDark'
+     dithers from white->black
+
+`M_LightDarkLight'
+     dithers from white->black->white
+
+`P_DarkLight'
+     dithers from black->white with a white background for printing
+
+`P_DarkLight_bright'
+     dithers from black->white with a white background for printing,
+     having a brighter overall tone than the basic one (a lighter
+     zero value).
+
+`P_LightDark'
+     dithers from white->black with a white background for printing
+
+`P_DarkLightDark'
+     same as M_DarkLightDark with a white background for printing
+
+`P_LightDarkLight'
+     same as M_LightDarkLight with a white background for printing
+
+   The ColorScaleSpec is the object that specifies the color scale.
+It contains a group of RGBA objects, each of which is used to specify
+a point on the colorscale range based on the Red, Green, and Blue
+values, plus a "transparency" parameter Alpha. The ColorScaleSpec
+object has one primary function.
+
+`GenRanges (ColorGroup* cl, int nper)'
+     This function creates a range of colors in the ColorGroup by
+     linearly interpolating nper colors for each RGBA set point value
+     in the ColorScaleSpec.
+
+   The RGBA object has the following fields:
+
+`String name'
+     The name of the color
+
+`float r'
+     Amount of red in the color (0.0 - 1.0)
+
+`float g'
+     Amount of green in the color (0.0 - 1.0)
+
+`float b'
+     Amount of blue in the color (0.0 - 1.0)
+
+`float a'
+     Alpha intensity value (ratio of foreground to background) This
+     is used primarily for monochrome displays.
+
+   If the name field of an RGBA object is set, then it will try to
+lookup the name to find the r,g, and b values for that color.
+
+   Thus, to create your own color scale specification, just create a
+new ColorScaleSpec object, and then create some number of RGBA
+objects in it.  Then, edit your views (e.g., the network view, *Note
+net-view::), and set their `colorspec' to point to your new
+specification.  In order to see changes you make to your color spec,
+you need to switch the `colorspec' pointer to a different one and
+then back to yours after making the changes.
+
+
+File: pdp-user,  Node: gui-file-requester,  Next: gui-obj-chooser,  Prev: gui-colors,  Up: gui
+
+File Requester
+==============
+
+   The File Requester Dialog is used for choosing filename for
+reading and writing to files. The directions for the file
+manipulation are listed at the top of the dialog. Typically the
+directions will ask the user to "Select a File for xxx" where xxx is
+one of "Opening", "Appending", "Writing", etc. Under the directions
+is the prompt "Enter Filename", and a FieldEditor where the user can
+type in the name of the file.
+
+   Below the FieldEditor is a vertical scrollbox of filenames in the
+current directory. If there are more names than will fit in the
+window, the scrollbar on the right edge of the scrollbox can be used
+to scroll through the full listing. A filename can be chosen by
+clicking on the name in the scrollbox. Subdirectories are listed with
+a slash ('/') following the name, and can be read in by
+double-clicking on their name.  The "../" directory can be used to
+navigate up a directory level.
+
+   Below the filename scrollbox is a Field Editor for the filename
+filter.  The String listed here is a unix csh filename completion
+string.  Wildcards can be specified using the '*' character. See the
+csh man page for more details. Typically this field will be set by
+PDP++ to limit the range of filenames available to those which
+correspond to the type of file the dialog is to act upon. (e.g., If
+projects are being loaded, then the filter will be set to "*.proj.*"
+to limit the selection to files with ".proj" in the filename.) In
+most cases, compressed files can be loaded and saved as well.
+
+   Below the filter Field Editor are the action buttons. The leftmost
+button will perform the action specified in the directions at the top
+of the dialog. The rightmost button is the "Cancel" button and will
+exit the dialog without performing the action. Double-clicking on a
+filename, or pressing the "return" key, also causes the dialog's
+action to be taken.
+
+
+File: pdp-user,  Node: gui-obj-chooser,  Prev: gui-file-requester,  Up: gui
+
+Object Chooser
+==============
+
+   The Object Chooser Dialog is much like the file requester described
+previously, and is used primarily for choosing objects when there are
+too many such objects to fit within a menu.  It can also be used to
+browse the entire hierarchy of objects.  In the simple choosing
+function, just scroll and pick the object - double clicking to select,
+or using the Select button at the bottom.  A name can also be typed
+into the field at the top of the browser.
+
+   By selecting PDP++Root/Browse, the object chooser acts more like a
+file browser.  When you select an object, the default is to descend
+into the sub-objects on that object.  Pressing .. will go back up a
+level (as in the file system).  When you select an object, an edit
+dialog will show up for that object.  This can be used for editing
+things that may not show up in a useful way in standard edit dialogs
+(e.g., the StatVal's in Stats, see *Note proc-stat::).
+
+
+File: pdp-user,  Node: css,  Next: obj,  Prev: gui,  Up: Top
+
+Guide to the Script Language (CSS)
+**********************************
+
+   CSS is the script language for the PDP++ software.  It is a
+general-purpose language that allows one to do virtually anything that
+could be done by writing programs in C or C++ and compiling them.  It
+provides full access to all the types and objects defined in PDP++,
+and allows you to call the "member functions" of these objects and
+set the values of their members variables.
+
+   There are two principal uses for the script language in running
+simulations.  One is to automate the procedure of setting up and
+running a simulation.  In this role, the script replaces commands
+that would otherwise be given through the graphical user interface
+(gui).  The other is to extend the software without having to
+re-compile and re-link.  Thus, one can write new kinds of procedures,
+statistics, etc.  that are particular to a given simulation in the
+script language, and run them as if they were hard coded.  This gives
+the PDP++ software more flexibility.
+
+* Menu:
+
+* css-intro::                   Introduction to CSS
+* css-tut::                     Tutorial Example of Using CSS
+* css-from-c::                  CSS For C/C++ Programmers
+* css-ref::                     CSS Reference Information
+* css-errors::                  Common User Errors in CSS
+* css-hard::                    Compiling CSS files as C++ Hard Code
+
+
+File: pdp-user,  Node: css-intro,  Next: css-tut,  Prev: css,  Up: css
+
+Introduction to CSS
+===================
+
+   CSS is a "C" language interpreter and script language (C
+Super-Script).  The name derives from the fact that the language is
+C, written in C, so it is C to the C, or C^c, while at the same time
+being an excellent, even superlative scripting language.  The actual
+syntax for CSS is somewhere in between C and C++, and the language is
+written entirely in C++.  The major differences between CSS and C++
+are listed in *Note css-c++-diff::, and the few discrepancies between
+CSS and C are noted in *Note css-c-diff::.  Some of the convenient
+features of C++ that are incorporated into CSS are enumerated in
+*Note css-c++-intro::, for those unfamiliar with C++.
+
+   Being an interpreter, CSS presents the user with a prompt: `css>'.
+At this prompt, the user can enter any C expression, which will be
+evaluated immediately upon pressing Return, or enter a command.  The
+commands operate much like a debugger (e.g., gdb, dbx), and allow
+control over the running, listing, and debugging of programs.  In
+addition to the default "immediate mode" behavior of the system, it
+can behave like a compiler.  For example, the command `define' will
+cause the system to enter a compiling mode (the prompt changes to
+`css\# '), where the C code that is subsequently entered is compiled
+into an intermediate machine code, but not run directly.  Instead, it
+becomes a stored program that can be run many times.
+
+   Typically, one works with a program file (use the extension .css to
+indicate a css file) that is loaded and then run, instead of manually
+typing programs into the system using define mode.  The command `load
+"filename.css"' will load a file and compile it, at which point it
+can be run.  The command `run' will run the program from the
+beginning.  `reload' will remove the existing compiled program and
+load (and re-compile) the previously loaded one from the disk file,
+which is handy when you are editing the program file and testing it
+out.
+
+   One can view the source code within CSS by using the `list'
+command, which takes (optional) line number and length arguments.
+Unlike C functions, which need to be called with the usual syntax of
+parentheses around the arguments, which are themselves comma
+separated, and the whole thing is terminated by a semi-colon, the
+arguments to commands don't require the parentheses or the
+semi-colon, but do require thte commas.
+
+   One of the principle uses of CSS is as an interface for hard-coded
+C/C++ programs.  There is a "TypeAccess" program that reads the
+header files for a given application and generates type information
+that can be used by CSS to automatically interface with the objects
+and types in the hard-coded world.  CSS comes initially with some
+relevant hard-coded types from the standard C/C++ library, including
+a String class and the stream I/O classes, and various math and posix
+library functions.
+
+
+File: pdp-user,  Node: css-tut,  Next: css-from-c,  Prev: css-intro,  Up: css
+
+Tutorial Example of Using CSS
+=============================
+
+   This section provides a tutorial-style introduction to some of the
+features of the CSS language environment.
+
+* Menu:
+
+* css-tut-run::                 Running an Example Program in CSS
+* css-tut-debug::               Debugging an Example Program in CSS
+* css-tut-access::              Accessing Hard-Coded Functions and Variables in CSS
+
+
+File: pdp-user,  Node: css-tut-run,  Next: css-tut-debug,  Prev: css-tut,  Up: css-tut
+
+Running an Example Program in CSS
+---------------------------------
+
+   The following example will be used to illustrate the use of the CSS
+system:
+
+
+     // a function that decodes the number
+     String Decode_Number(float number) {
+       String rval = "The number, " + number + " is: ";
+       if(number < 0)
+         rval += "negative";
+       else if(number < .5)
+         rval += "less than .5";
+       else if(number < 1)
+         rval += "less than 1";
+       else
+         rval += "greater than 1";
+       return rval;
+     }
+     
+     // decodes n_numbers randomly generated numbers
+     void Decode_Random(int n_numbers) {
+       int i;
+       for(i=0; i<n_numbers; i++) {
+         float number = 4.0 * (drand48()-.5);
+         String decode = Decode_Number(number);  // call our decoding function
+         cout << i << "\t" << decode << "\n";    // c++ style output
+       }
+     }
+
+   You can enter this code using a text editor (e.g., emacs or vi),
+or use the example code in `css_example.css' included with the PDP++
+software in the `css/include' directory.  Then, run the PDP++
+software.  At the prompt (which will vary depending on which
+executable you run -- the example will use `css>'), type:
+
+     css> load "css_example.css"
+
+   and the prompt should return.  If you made any typos, they might
+show up as a Syntax Error, and should be corrected in the text file,
+which can be re-loaded with:
+
+     css> reload
+
+   Loading the text file translates it into an internal "machine
+code" that actually implements CSS.  This is like compiling the code
+in traditional C, but it does not write out an executable file.
+Instead, it keeps the machine code in memory, so that it can be run
+interactively by the user.
+
+   To ensure that CSS has loaded the text, you can list the program:
+
+     css> list
+     
+     Listing of Program: css_example.css
+     1
+     2       // a function that decodes the number
+     3       String Decode_Number(float number) {
+     4         String rval = "The number, " + number + " is: ";
+     5         if(number < 0)
+     6           rval += "negative";
+     7         else if(number < .5)
+     8           rval += "less than .5";
+     9         else if(number < 1)
+     10          rval += "less than 1";
+     11        else
+     12          rval += "greater than 1";
+     13        return rval;
+     14      }
+     15
+     16      // decodes n_numbers randomly generated numbers
+     17      void Decode_Random(int n_numbers) {
+     18        int i;
+     19        for(i=0; i<n_numbers; i++) {
+     20          float number = 4.0 * (drand48()-.5);
+     21          String decode = Decode_Number(number);  // call decoder
+     css> list
+     
+     Listing of Program: css_example.css
+     21          String decode = Decode_Number(number);  // call decoder
+     22          cout << i << "\t" << decode << "\n";    // c++ style output
+     23        }
+     24      }
+     26      list
+
+   Note that you have to type `list' in twice in order to see the
+whole program (by default, `list' only shows 20 lines of code).
+Also, notice that the list command itself shows up at the end of the
+program--this is because commands that are entered on the command line
+are actually compiled, run, and then deleted from the end of the
+program.  Because `list', when run, shows the current state of the
+code (i.e., before it has itself been deleted), it shows up at the
+bottom of the listing.
+
+   Now, let's try running the example:
+
+     css> run
+     css>
+
+   Nothing happens!  This is because the code as written only defines
+functions, it does not actually call them.  The program would have to
+have had some statements (i.e., function calls, etc) at the _top
+level_ (i.e., not within the definition of a function) in order to do
+something when the `run' command is issued.
+
+   However, we can call the functions directly:
+
+     css> Decode_Random(5);
+     0       The number, -0.414141 is: negative
+     1       The number, 1.36194 is: greater than 1
+     2       The number, -0.586656 is: negative
+     3       The number, -0.213666 is: negative
+     4       The number, -0.725229 is: negative
+     css>
+
+   (of course, your output will vary depending on the random number
+generator).  This illustrates the interactive nature of CSS -- you can
+call any function with any argument, and it will execute it for you
+right then and there.  This is especially useful for debugging
+functions individually.  Thus, we can call the `Decode_Number'
+function directly with different numbers to make sure it handles the
+cases appropriately:
+
+     css> Decode_Number(.25);
+     css>
+
+   Notice, however, that there was no output.  This is because the
+function simply returns a string, but does not print it out.  There
+are several ways to print out results, but the easiest is probably to
+use the `print' command:
+
+     css> print Decode_Number(.25);
+     (String)  = The number, 0.25 is: less than .5
+
+   `print' gives you the type name, the variable name (which is blank
+in this case), and the value.  To illustrate this, you can just
+declare a variable directly:
+
+     css> String foo = "a string";
+     css> print foo
+     (String) foo = a string
+
+   Compare this with the print _function_ (not command) `printf':
+
+     css> printf(Decode_Number(.25));
+     The number, 0.25 is: less than .5css>
+
+   which just gives you the value of the string (and does not
+automatically append a '\n' return at the end of the line).  Finally,
+we can use C++ stream-based printing, which directs the return value
+from the function to print itself to the default current output
+`cout':
+
+     css> cout << Decode_Number(.75) << "\n";
+     The number, 0.75 is: less than 1
+     css>
+
+   Note also that you can put any expression in the arguments to the
+function:
+
+     css> print Decode_Number(exp(cos(tan(.2) + .5) * PI)/ 20);
+     (String)  = The number, 0.549689 is: less than 1
+
+   In order to actually be able to run a script, we can add the
+following lines to the code by switching to `define' mode instead of
+the default interactive mode:
+
+     css> define
+     css# cout << Decode_Number(.75) << "\n";
+     css# Decode_Random(5);
+     css# exit
+
+   Note that we use `exit' to exit the `define' mode.  You could also
+use the `EOF' character (`ctrl-D' on most systems) to exit this mode.
+To see that we have added to the program, list it from line 20
+onwards:
+
+     css> list 20
+     
+     Listing of Program: css_example.css
+     20          float number = 4.0 * (drand48()-.5);
+     21          String decode = Decode_Number(number);  // call decoder
+     22          cout << i << "\t" << decode << "\n";    // c++ style output
+     23        }
+     24      }
+     26      cout << Decode_Number(.75) << "\n";
+     27      Decode_Random(5);
+     28      exit
+     29      list 20
+
+   Now, when we `run' the program, we get:
+
+     css> run
+     The number, 0.75 is: less than 1
+     0       The number, 1.54571 is: greater than 1
+     1       The number, -1.93767 is: negative
+     2       The number, 0.336361 is: less than .5
+     3       The number, -1.36253 is: negative
+     4       The number, -0.465137 is: negative
+     css>
+
+   All of the C language rules about declaring or defining functions
+before they are called apply in CSS as well (in general, CSS obeys
+most of the same rules as C), so we could not have put those two
+extra lines of code in the example program before the functions
+themselves were defined.  In general, this leads to a program layout
+consisting of various different functions, followed at the very end
+by one or two lines of code at the top-level which call the relevant
+function to start things off.  If you are feeling traditional, you
+can call this function `main', and it will look like a regular C/C++
+program, except for the last line which calls the main function.
+

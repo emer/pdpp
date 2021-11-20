@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-c-diff</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_71.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_73.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.3.2  Differences Between CSS and ANSI C</A></H3>
+
+<P>
+The design specification for CSS should be the same as ANSI C. However,
+at the present time, some features have not been implemented, including:
+
+</P>
+<P>
+The full functionality of <CODE>#define</CODE> pre-processor macros is not
+supported.  At this point, things are either defined or undefined and
+the <CODE>#ifdef</CODE> and <CODE>#ifndef</CODE> functions can be used to
+selectively include or not different parts of code.
+
+</P>
+<P>
+The promotion of types in arithmetic expressions is not standard.  In
+CSS, the result of an expression is determined by the left-most (first)
+value in the expression.  Thus, <CODE>20 / 3.0</CODE> would result in an
+integer value of 6, whereas <CODE>20.0 / 3</CODE> gives a real value of
+6.6667. 
+
+</P>
+<P>
+The guarantee that only as much of a logical expression will be
+evaluated as is necessary is not implemented in CSS.  Thus, something
+like <SAMP>`if((a == NULL) || (a-&#62;memb == "whatever"))'</SAMP> will
+(unfortunately) not work as it would in C, since the second expression
+will be evaluated even when <CODE>a</CODE> is <CODE>NULL</CODE>.
+
+</P>
+<P>
+Initialization of multiple variables of the same type in the same
+statement, is not supported, for example:
+<PRE>  int var1 = 20, var2 = 10, var3 = 15;
+</PRE>
+
+<P>
+and initialization of an array must occur after it has been declared
+(see example below).
+
+</P>
+<P>
+There are a limited number of primitive types in CSS, with the others
+defined in C being equivalent to one of these basic CSS types (see
+section <A HREF="pdp-user_80.html">7.4.5  Basic Types in CSS</A>).  This is because everything in CSS is actually
+represented by an object, so the storage-level differences between
+many different C types are irrelevant in the script language.
+
+</P>
+<P>
+Pointers in CSS are restricted to point to an object which lies in an
+array somewhere, or is a single entity.  The pointer is "smart", and it
+is impossible to increment a pointer that points to a single entity,
+which makes all pointer arithmatic safe:
+
+</P>
+<PRE>css&#62; int xxx;
+css&#62; int* xp = &#38;xxx;
+css&#62; print xp
+(Int)* xp --&#62; (Int) xxx = 0
+css&#62; xp++;
+Cannot modify a NULL or non-array pointer value
+&#62;1      xp++;
+css&#62; print *(xp +1);
+Cannot modify a NULL or non-array pointer value
+&#62;1      print *(xp +1);
+</PRE>
+
+<P>
+but it is possible to increment and perform arithmetic on a pointer
+when it points to an array:
+
+</P>
+<PRE>css&#62; int xar[10];
+css&#62; xp = xar;
+css&#62; xar = {0,1,2,3,4,5,6,7,8,9};
+css&#62; print xar
+(Int) xar[10] {
+0       1       2       3       4       5       6       7       8       9 
+}
+css&#62; print xp
+(Int)* xp --&#62; (Int) xar[10] {
+0       1       2       3       4       5       6       7       8       9 
+}
+css&#62; print *(xp+2);
+(Int)  = 2
+css&#62; print *(xp+3);
+(Int)  = 3
+css&#62; xp++;
+css&#62; print *(xp+3);
+(Int)  = 4
+css&#62; print *(xp+9);
+Array bounds exceeded
+&#62;1      p *(xp+9);
+(void) Void
+css&#62; print *(xp+8);
+(Int)  = 9
+</PRE>
+
+<P>
+The error that occurred when the <CODE>print *(xp+9)</CODE> command was issued
+(after <CODE>xp</CODE> already points to <CODE>xar[1]</CODE>), illustrates the kind
+of "smart pointers" that are built into CSS, which prevent crashes by
+preventing access to the wrong memory areas.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_71.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_73.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

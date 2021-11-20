@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-levels-train</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_154.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_156.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX931" HREF="pdp-user_toc.html">12.4.2  Iterating over Epochs: TrainProcess</A></H3>
+<P>
+<A NAME="IDX932"></A>
+<A NAME="IDX933"></A>
+<A NAME="IDX934"></A>
+
+</P>
+<P>
+<A NAME="IDX935"></A>
+The <B>TrainProcess</B> iterates over epochs of training a network.  It
+typically has an <B>EpochProcess</B> as its <CODE>sub_proc</CODE>.  When this
+process is initialized (e.g. by <CODE>ReInit</CODE> or <CODE>NewInit</CODE>), it
+also initializes the weights of the network.  It has an <CODE>epoch</CODE>
+counter which is tied to the <CODE>epoch</CODE> counter on the network object,
+which this process increments after every epoch of training.  Note that
+if the epoch process under this training process is in <CODE>TEST</CODE> mode,
+then neither epoch counter is incremented.
+
+</P>
+<P>
+<A NAME="IDX936"></A>
+There is an alternative kind of process which also iterates over epochs,
+called the <B>NEpochProcess</B>, which differs from the <B>TrainProcess</B> in
+that it does not initialize the network when it is initialized.  Also,
+it keeps its own <CODE>epoch</CODE> counter separate from that of the network.
+Thus, while it will increment the network's counter during training (but
+not turing testing), it <EM>will</EM> increment its epoch counter even
+during testing.  Thus, it is useful for cases where you need to run
+multiple epochs of testing (e.g., to get multiple samples from settling
+in a stochastic network).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_154.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_156.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

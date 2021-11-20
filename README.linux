@@ -1,0 +1,23 @@
+README file for compiling PDP++ under LINUX:
+
+- There are two different Makefile.LINUXxx files, one for gcc 2.9x
+  (e.g., RedHat 7.x) and the other for 3.x (e.g., RedHat 8,9+).  You
+  need to make the symbolic link for Makefile.LINUX (and LINUXdebug if
+  you use that) point to the correct one: .2 or .3.  Use gcc -v to
+  find your version.
+
+- IF USING 2.9x, especially under RedHat 7.3 and probably other
+  distributions:
+
+  YOU MUST UPDATE THE /usr/include/g++-3/sstream FILE!!!
+
+  The updated file is in pdp++/include/new_sstream_for_gcc_2.9x.h
+
+This is the info from the Makefile.LINUX.2:
+
+# IMPORTANT: the sstream header shipped with red hat 7.3 and probably 
+# other distros is broken and must be replaced with:
+# include/new_sstream_for_gcc_2.9x.h
+# e.g.: cp include/new_sstream_for_gcc_2.9x.h /usr/include/g++-3/sstream
+# (as root!)
+

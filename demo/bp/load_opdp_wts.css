@@ -1,0 +1,27 @@
+
+void Load_Wts(String nm) {
+  fstream strm;
+  strm.open(nm, ios::in);
+
+  strm >> .layers[1].units[0].recv.gp[0].Cn(0).wt;
+  strm >> .layers[1].units[0].recv.gp[0].Cn(1).wt;
+
+  strm >> .layers[1].units[1].recv.gp[0].Cn(0).wt;
+  strm >> .layers[1].units[1].recv.gp[0].Cn(1).wt;
+
+  strm >> .layers[2].units[0].recv.gp[0].Cn(0).wt;
+  strm >> .layers[2].units[0].recv.gp[0].Cn(1).wt;
+
+  strm >> .layers[0].units[0].bias.wt;
+  strm >> .layers[0].units[1].bias.wt;
+
+  strm >> .layers[1].units[0].bias.wt;
+  strm >> .layers[1].units[1].bias.wt;
+
+  strm >> .layers[2].units[0].bias.wt;
+
+  strm.close();
+}
+
+Load_Wts("xor.wts");
+

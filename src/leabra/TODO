@@ -1,0 +1,4 @@
+- settling: use some kind of activation-over-output layer criterion
+  instead of delta-activation.
+
+- soft clamp inputs for spike nets (only ones with noise)

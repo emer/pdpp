@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-freq</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_145.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_147.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX861" HREF="pdp-user_toc.html">11.10  Frequency Environments and Events</A></H2>
+<P>
+<A NAME="IDX862"></A>
+<A NAME="IDX863"></A>
+<A NAME="IDX864"></A>
+<A NAME="IDX865"></A>
+<A NAME="IDX866"></A>
+
+</P>
+<P>
+In the basic model of the environment, all events are equally likely to
+be presented to the network.  However, this is often not the case in the
+real world.  Thus, PDP++ provides a set of environmental types that
+implement frequency-based presentation of events.  These are the
+<B>FreqEvent</B>, the <B>FreqEvent_MGroup</B>, and the <B>FreqEnv</B> types.  As
+discussed above (see section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>, section <A HREF="pdp-user_136.html">11.1  Environments</A>), processes can ask the
+Environment for a single Event or a Group of Events. The FreqEvent is an
+individual event with its own frequency, and the FreqEvent_MGroup is a
+group of events with an associated frequency.
+
+</P>
+<P>
+<A NAME="IDX867"></A>
+<A NAME="IDX868"></A>
+The frequency model supported by these types has a number between zero
+and 1 associated with each event or event group.  This <CODE>frequency</CODE>
+value is essentially a probability with which the event should be
+presented.  
+
+</P>
+<P>
+<A NAME="IDX869"></A>
+A <B>FreqEnv</B> environment type must be used in order for the frequency
+variable associated with events or groups to be used.  This type of
+environment uses the <CODE>InitEvents</CODE> function to create the list of
+events or groups that will be presented for the current epoch.  There
+are two modes of selecting these events according to their frequency.
+Setting <CODE>sample_type</CODE> to <CODE>RANDOM</CODE> results in a random sample
+of events to be presented for each epoch, with the probability of an
+event's inclusion proportional to its frequency value.  The
+<CODE>PERMUTED</CODE> option instead adds a fixed number of a given event
+which is equal to the frequency of that event times the <CODE>n_sample</CODE>
+parameter.
+
+</P>
+<P>
+The <B>FreqEnv</B> class also has the following variables which affect this
+sampling process:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>int n_sample;</CODE>
+<DD>
+<A NAME="IDX870"></A>
+The number of samples of the Events or EventGroups to make per epoch.
+In the <CODE>RANDOM</CODE> case, this is the number of times to "roll the
+dice" to determine if a given event gets into the epoch.  An event or
+group with a frequency of 1 will appear exactly <CODE>n_sample</CODE> times in
+a given epoch.  Events with lower frequency will occur less often and
+with lower probability.  In the <CODE>PERMUTED</CODE> case, this number is
+multiplied times the frequency to determine how many copies of an event
+or group appear in a given epoch.
+<DT><CODE>FreqLevel freq_level</CODE>
+<DD>
+<A NAME="IDX871"></A>
+Has the values <CODE>NO_FREQ</CODE>, <CODE>EVENT</CODE>, or <CODE>GROUP</CODE>. It
+controls the level at which the frequency sampling occurs.  If
+<CODE>NO_FREQ</CODE> is selected, frequency is ignored and the environment is
+just like the basic one. The other two options should be selected
+depending on the type of process that is being used--use <CODE>GROUP</CODE>
+for sequence-based processes (see section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>), and otherwise use
+<CODE>EVENT</CODE>.
+</DL>
+
+<P>
+Note that there is also a <B>FreqTimeEvent</B>, <B>FreqTimeEvent_MGroup</B>,
+and <B>FreqTimeEnv</B>, which are frequency versions of the time-based
+environments described below.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_145.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_147.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

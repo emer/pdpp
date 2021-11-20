@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-over</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_198.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_200.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1210" HREF="pdp-user_toc.html">14.1.1  Overview of the Bp Implementation</A></H3>
+<P>
+<A NAME="IDX1211"></A>
+<A NAME="IDX1212"></A>
+
+</P>
+<P>
+The basic structure of the backpropagation algorithm is reviewed in the
+tutorial (see section <A HREF="pdp-user_15.html">4.1  Backpropagation and XOR</A>).  In short, there are two phases, an
+activation propagation phase, and an error backpropagation phase.  In
+the simplest version of Bp, both of these phases are strictly
+feed-forward and feed-back, and are computed sequentially
+layer-by-layer.  Thus, the implementation assumes that the layers are
+organized sequentially in the order that activation flows.
+
+</P>
+<P>
+In the recurrent versions, both the activation and the error propagation
+are computed in two steps so that each unit is effectively being updated
+simultaneously with the other units.  This is done in the activation
+phase by first computing the net input to each unit based on the other
+units current activation values, and then updating the activation values
+based on this net input.  Similarly, in the error phase, first the
+derivative of the error with respect to the activation (dEdA) of each
+unit is computed based on current dEdNet values, and then the dEdNet
+values are updated based on the new dEdNet.
+
+</P>
+<P>
+To implement a new algorithm like Bp in PDP++, one creates new class
+types that derive from the basic object types that make up a network
+(see section <A HREF="pdp-user_112.html">10  Networks (Layers, Units, etc)</A>), and scheduling processes (see section <A HREF="pdp-user_148.html">12  Processes and Statistics</A>).  These new
+classes inherit all the functionality from the basic types, and specify
+the details appropriate for a particular algorithm.  There are two ways
+in which this specification happens--overloading (replacing) existing
+functions, and adding new ones (see section <A HREF="pdp-user_88.html">8.1.1  What is an Object?</A>).
+
+</P>
+<P>
+The new classes defined in the basic Bp implementation include:
+<B>BpConSpec, BpCon, BpCon_Group, BpUnit, BpUnitSpec, BpTrial</B>, the
+role of which should be clear from their names.  In addition, we have
+added a <B>CE_Stat</B> that computes the cross-entropy error statistic,
+much in the same way <B>SE_Stat</B> does (see section <A HREF="pdp-user_172.html">12.8.1  Summed-Error Statistics</A>).
+
+</P>
+<P>
+Bias weights in PDP++ are implemented by adding a <B>BpCon</B> object
+to the <B>BpUnit</B> directly, and not by trying to allocate some kind of
+self projection or some other scheme like that.  In addition, the
+<B>BpUnitSpec</B> has a pointer to a <B>BpConSpec</B> to control the updating
+etc of the bias weight.  Thus, while some code was written to support
+the special bias weights on units, it amounts to simply calling the
+appropriate function on the <B>BpConSpec</B>.
+
+</P>
+<P>
+The processing hierarchy for feed-forward Bp requires only a specialized
+Trial process: <B>BpTrial</B>, which runs both the feed-forward
+activation updating and error backpropagation phases.  
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_198.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_200.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

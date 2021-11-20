@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-build</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_133.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_135.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX756" HREF="pdp-user_toc.html">10.8  Building Networks Using the Viewer</A></H2>
+
+<P>
+The network viewer (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>) can be used to build networks
+easily and rapidly.  The <I>Minor Action Buttons</I> in the action region
+(see section <A HREF="pdp-user_130.html">10.7.1  The Action Region</A>) in particular provide a series of actions
+that can be performed on objects selected in the view region
+(see section <A HREF="pdp-user_132.html">10.7.3  The View Region</A>) that allow one to build the network.  Also note
+that the tutorial covers some of the following material
+(see section <A HREF="pdp-user_34.html">4.3.2  Making a New Network</A>). 
+
+</P>
+<P>
+The first step in building the network is creating the layers.  The
+<I>New Layer(s)</I> button is highlighted when there are no layers in the
+network, and it is usable when nothing else is selected.  It will prompt
+for the number of layers to create.  After they are created, they show
+up in the view region.  Note that they might appear off-screen depending
+on how many were created, so you might have to hit the <I>Init</I> button
+to see them all.
+
+</P>
+<P>
+The <I>ReShape</I> button is used to shape layers into their desired size.
+Note that the size of the layer is displayed in the coordinate area at
+the very top of the "actions" region (see section <A HREF="pdp-user_130.html">10.7.1  The Action Region</A>).  The
+default assumption of the software is to create as many units as will
+fit in the shape of the layer (i.e., <CODE>n_units = X * Y</CODE>).  Whenever
+you use <I>ReShape</I> and there are no units in the layer currently, it
+will reset the <CODE>n_units</CODE> to fill the layer box completely. However,
+if you use <I>ReShape</I> and there <EM>are</EM> units in the layer, the
+value of <CODE>n_units</CODE> is not changed.  Note, however, that it will be
+impossible to shape the layer to a size that is smaller than that which
+will contain all of the existing units.  For more info on layer
+parameters, see section <A HREF="pdp-user_115.html">10.2  Layers and Unit Groups</A>.
+
+</P>
+<P>
+There are two ways of specifying a number of units that is less than the
+size of the layer.  One is to select the layer box, at which time, if it
+is empty, the <I>New Unit(s)</I> action button will become highlighted.
+This action will prompt you for the number of units to create (the
+default being the number that will fill the box completely).  By
+entering a number that is less than this default value, you will
+simultaneously create the units in the layer, and set the <CODE>n_units</CODE>
+value to be that number.  Thus, any subsequent <CODE>Build</CODE> actions on
+this layer will create that many units if they are not already there.
+
+</P>
+<P>
+The units within the layer can be moved around.  However, they must stay
+within the layer box.  Thus, you must reshape the layer to a larger size
+if you wish to move the units beyond the box.
+
+</P>
+<P>
+If the units within a layer are grouped into sub-groups, these
+constitute a distinct selection level, so that all the units in the
+group can be selected together.
+
+</P>
+<P>
+Note that the <I>Build All</I> button is highlighted whenever there is a
+layer that does not have its full complement of <CODE>n_units</CODE> units in
+it.  Pressing <I>Build All</I> will create units in all the layers which
+need them, and ensure that the units in the existing layers are of the
+type specified in the <CODE>units</CODE> group on the layer.
+
+</P>
+<P>
+After creating layers and units within them, the next step is to specify
+the connectivity between layers.  Alternatively, though less commonly
+(and more effortfully), connectivity can be specified on a unit-by-unit
+basis.  This is covered later in this section.  As was discussed above
+(see section <A HREF="pdp-user_116.html">10.3  Projections</A>), it is easier to specify connectivity in terms of
+projections between layers.
+
+</P>
+<P>
+To create a new projection you select the <EM>receiving layer first</EM>.
+Then, "extend" select the sending layer(s) (use the middle mouse button
+or hold down the shift key while selecting, which adds the selected item
+to the list of those things selected, instead of making it the only
+thing selected).  The <I>New Prjn(s)</I> button will be highlighted, and
+pressing it will create a projection into the first-selected receiving
+layer from the subsequently selected sending layer(s).
+
+</P>
+<P>
+Note that you can also create <EM>bi-directional projections</EM> instead.
+Just use the <I>New BiPrjns</I> button instead of <I>New Prjn(s)</I>, and this
+will create a reciprocal projection into the sending layer from the
+receiving layer.
+
+</P>
+<P>
+To <EM>self-connect</EM> a layer, simply select one layer, and press the
+<I>New Self Prjn</I> button.
+
+</P>
+<P>
+Just as with units in layers, one can create connections in projections
+either all at once with the <I>Connect All</I> button, or individually by
+selecting the projection and using the <I>Fill Prjn(s)</I> button, which
+will be highlighted if the projection does not yet have any connections
+associated with it.
+
+</P>
+<P>
+To connect units on an individual basis, one simply selects the
+receiving unit first and then the sending unit(s), and selects the
+<I>Connect Units</I> button (or the <I>BiCon Units</I> to
+bidirectionally-connect them).  The connections made in this way will be
+associated with a <B>CustomPrjnSpec</B>, which basically just ensures that
+the connectivity pattern will not be reset when the <I>Connect All</I>
+button is pressed (i.e., it has no <CODE>Connect</CODE> function because the
+connections are made one-by-one).
+
+</P>
+<P>
+The specifications associated with the objects in the network can be
+viewed and changed by using the <I>Selections</I> menu of the network
+viewer.  This allows one to associate different parameters or types of
+processing with different components of the network (e.g., projections
+with different patterns of connectivity, units with different activation
+functions or parameters, connections with different learning rates,
+etc..)
+
+</P>
+<P>
+Note that each layer has a default <B>UnitSpec</B> associated with it,
+which is applied to any new units created in the layer or when <I>Build</I>
+is performed.  Thus, if all of the units in the layer will be using the
+same unit spec, it is a good idea to just select the layer itself and
+then use <I>Selections/Set Unit Spec</I> to set the spec.  This will
+automatically apply this spec to all of the units in the layer.
+
+</P>
+<P>
+Also note that connection specifications (<B>ConSpec</B>s) are associated
+with projections.  Thus, projections will be selected when
+<I>Selections/Show Con Spec</I> is performed, and you should select
+projections when doing the <I>Selections/Set Con Spec</I>.
+
+</P>
+<P>
+Finally, all objects can be <I>Remove</I>d and <I>Edit</I>ed by selecting them
+and pressing the appropriate action button.  When editing a group of
+objects (i.e., after having multiply selected them and pressed
+<I>Edit</I>), these objects should remain the only ones selected until the
+dialog is either <I>Ok</I>ed or <I>Cancel</I>ed, since changing what is
+selected affects what the edit dialog thinks its editing, and you won't
+be able to <I>Apply</I> your editing changes if the selections change.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_133.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_135.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

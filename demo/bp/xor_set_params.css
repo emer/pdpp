@@ -1,0 +1,64 @@
+// easy-access for XOR
+
+class XOR_Params {
+  // parameters and actions for controlling the XOR network
+public:
+  c_float*	learning_rate;	// points to .specs.ConSpec.lrate
+  c_float*	momentum;	// points to .specs.ConSpec.momentum
+  c_float*	activation_min;	// points to .specs.UnitSpec.act_range.min
+  c_float*	activation_max;	// points to .specs.UnitSpec.act_range.max
+  c_float*	weight_init_range; // points to .specs.ConSpec.rnd.var
+  c_float*	sse_stopping_criteria; // points to .processes[0].loop_stats[0].se.stopcrit.val
+
+  void	SetupTraining();	// #BUTTON Setup the control panel and log for training
+  void	SetupTesting();		// #BUTTON Setup the control panel and log for testing
+  void	MonitorOutput();	// Monitor the output units over the four patterns during training
+  void	AutoTest(int how_often=30); // Set the test process to happen every 'how_often' training epochs
+  void	EditAllSpecs();	    	// edit all of the actual specs for this project
+
+  XOR_Params();
+};
+
+XOR_Params::XOR_Params() {
+  learning_rate = .specs.ConSpec.lrate;
+  momentum = .specs.ConSpec.momentum;
+  activation_min = .specs.UnitSpec.act_range.min;
+  activation_max = .specs.UnitSpec.act_range.max;
+  weight_init_range = .specs.ConSpec.rnd.var;
+  sse_stopping_criteria = .processes[0].loop_stats[0].se.stopcrit.val;
+}
+
+void XOR_Params::SetupTraining() {
+  .processes[0]->ControlPanel();
+  .logs[0].views[0].ViewWindow();
+}
+void XOR_Params::SetupTesting() {
+  .processes.Test->ControlPanel();
+  .logs[1].views[0].ViewWindow();
+}
+void XOR_Params::MonitorOutput() {
+  if(.processes[2].final_stats.size > 1) {
+    taMisc::Choice("Already Monitoring Output", "Ok");
+    return;
+  }
+  MonitorStat* ths = .processes[2].final_stats.NewEl(1,MonitorStat);
+  ths->variable = "act";
+  ths->objects.LinkUnique(.networks[0].layers[2].units[0]);
+  .processes[2].final_stats[1].CreateAggregates(6);
+  ths->UpdateAfterEdit();
+}
+void XOR_Params::AutoTest(int how_often) {
+  if(.processes[0].loop_procs.size > 0) {
+    taMisc::Choice("Already Doing Auto-Test", "Ok");
+    return;
+  }
+  .processes[0].loop_procs.InsertLink(.processes.Test, 0);
+  Process* ths = .processes.Test;
+  ths->mod.m = how_often;
+}
+void XOR_Params::EditAllSpecs() {
+  EditObj(.specs);
+}
+
+XOR_Params xor_params;
+EditObj(xor_params,0);

@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - so-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_233.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_235.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1451" HREF="pdp-user_toc.html">16.5  So Implementational Details</A></H2>
+
+<P>
+The following is a chart describing the flow of processing in the So
+algorithm, starting with the epoch process, since higher levels do not
+interact with the details of particular algorithms:
+
+</P>
+<PRE>EpochProcess: {
+  Init: {
+    environment-&#62;InitEvents();          // init events (if dynamic)
+    event_list.Add() 0 to environment-&#62;EventCount(); // get list of events
+    if(order == PERMUTE) event_list.Permute();       // permute if necessary
+    GetCurEvent();                      // get pointer to current event
+  }
+  Loop (trial): {                      // loop over trials
+    SoTrial: {                         // trial process (one event)
+      Init: {                          // at start of trial
+        cur_event = epoch_proc-&#62;cur_event; // get cur event from epoch
+      }
+      Loop (once): {                   // only process this once per trial
+        network-&#62;InitExterns();         // init external inputs to units
+        cur_event-&#62;ApplyPatterns(network); // apply patterns to network
+        Compute_Act(): {               // compute the activations
+          network-&#62;layers: {           // loop over layers
+            layer-&#62;Compute_Net();       // compute net inputs
+            layer-&#62;Compute_Act();       // compute activations from net in
+          }
+        }
+        network-&#62;Compute_dWt();         // compute weight changes from acts
+      }
+    }
+    if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+      network-&#62;UpdateWeights(); // after trial, update weights if necc
+    GetCurEvent();              // get next event
+  }
+  Final:
+    if(wt_update == BATCH)  network-&#62;UpdateWeights(); // batch weight updates
+}
+</PRE>
+
+<P>
+The <CODE>layer-&#62;Compute_Act()</CODE> function has several sub-stages for
+different versions of algorithms, as detailed below:
+
+</P>
+<P>
+For non-input layer hard competitive learning units:
+<PRE>ClLayerSpec::Compute_Act() {
+  SoUnit* win_u = FindWinner(lay);
+  float lvcnt = (float)lay-&#62;units.leaves;
+  lay-&#62;avg_act =  // compute avg act assuming one winner and rest losers..
+        (act_range.max / lvcnt) + (((lvcnt - 1) * act_range.min) / lvcnt);
+  win_u-&#62;act = act_range.max; // winning unit gets max value
+  win_u-&#62;act_i = lay-&#62;avg_act;	// and average value goes in _i 
+}
+</PRE>
+
+<P>
+For non-input layer soft competitive learning units:
+<PRE>SoftClLayerSpec::Compute_Act() {
+  float sum = 0;
+  for(units) {                 // iterate over the units 
+    unit-&#62;Compute_Act();                        // compute based on netin
+    unit-&#62;act = exp(softmax_gain * unit-&#62;act);  // then exponential
+    sum += unit-&#62;act;                           // collect sum
+  }
+  for(units) {                 // then make a second pass
+    unit-&#62;act =                 // act is now normalized by sum
+        act_range.min + act_range.range * (unit-&#62;act / sum);
+  }
+  Compute_AvgAct();             // then compute average act over layer
+}
+</PRE>
+
+<P>
+The code for the SOM case is more complicated than the description,
+which is just that it finds the winner and pastes the kernel onto the
+units surrounding the winner.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_233.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_235.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,15 @@
+// convert environment to -1 to 1 range
+
+void EnvToPM(int env_no) {
+  Environment* env = .environments[env_no];
+  PreProcessVals trans = new PreProcessVals;
+  trans = "{type=THRESH: arg=.5: lw=-1: hi=1: }";
+  int i;
+  for(i=0; i<env->event_specs[0].patterns.size; i++) 
+    env->TransformPats(i, trans);
+  delete trans;
+}
+
+EnvToPM(s_args[0]);		// arg is env no..
+
+

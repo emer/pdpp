@@ -1,0 +1,31 @@
+# ta_string makefile: part of the ta/css/pdp++ package
+
+##################################
+# these are the things to set
+#
+
+LIBS = -ltastring $(IOS_LIB) $(IBERTY_LIB) -lm
+
+PROJNAME = ta_string
+PROJDIR = ta_string
+
+EXE = test
+
+LIB = libtastring.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx
+
+TAHEADS = 
+HEADS = ta_string.h
+
+SRCS = ta_string.cc test.cc
+
+OBJS = ta_string.o
+
+EXEOBJS = test.o
+
+DEPS = ta_string.d test.d
+
+default:  optLib
+#default: dbgBin
+#default: dbgLib

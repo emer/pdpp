@@ -1,0 +1,47 @@
+// startup and run a project, use like this:
+// pdp++ -nogui -f startup.css <myproj> [<epoch_max> [<batch max>]] &
+// argv[2] is <myproj>, which is the name of your project
+// (with or without the .proj.gz), and optionally the epoch and batch
+// maximums can be set to determine how long to train
+
+// this assumes that your first log is a trial-level log, the second is an epoch log
+// and the third is a training log.  the last two logs are saved in file names
+// with .epc.log and .bat.log suffixes (for "batch" log, since the train log shows
+// how each batch performed)
+
+void Startup() {
+  if(argc < 3) {
+    cerr << "\n\nstartup.css script should be used as follows:\n\n"
+	 << argv[0] << " -nogui -f startup.css <myproj> [<epoch_max> [<batch max>]] &\n" 
+	 << "\n<myproj> is the name of your project (with or without the .proj.gz)\n"
+	 << "Optionally the epoch and batch maximums can be set.\n"
+	 << "This script will automatically record epoch and batch log files.\n\n";
+    return;
+  }
+
+  String stub_nm = argv[2];
+  if(stub_nm.contains(".proj.gz"))
+    stub_nm = stub_nm.before(".proj.gz");
+  .projects->Load(stub_nm + ".proj.gz");
+  .logs[0].SetSaveFile(stub_nm + ".epc.log");
+  .networks[0].name = stub_nm;		// network will have stub name for saving
+  cerr << "\n" << argv[0] << " Loaded: " << stub_nm << ".proj.gz\n";
+  cerr << "Logging to: " << stub_nm << ".epc.log, and " << stub_nm << ".bat.log\n";
+  cerr << "Saving network(s) to: " << stub_nm << ".#.net.gz\n";
+  cerr << "Epoch max is: ";
+  if(argc > 3) {
+    .processes.TrainProcess.epoch.max = argv[3];
+    cerr << .processes.TrainProcess.epoch.max << " (from argv[3]) ";
+  }
+  else
+    cerr << .processes.TrainProcess.epoch.max << " (default) ";
+  if(argc > 4) {		// user may not have a batch process, only if argv[4]..
+    .processes.BatchProcess.batch.max = argv[4];
+    cerr << "Batch max is: " << .processes.BatchProcess.batch.max << " (from argv[4])\n";
+  }
+  .processes[0].ReInit();
+  .processes[0].Run();
+  .networks[0].Save(stub_nm + ".final.net.gz");	// save a final network..
+}
+
+Startup();

@@ -1,0 +1,553 @@
+*** ta_string.cc	Sun Apr 30 14:51:22 1995
+--- ta_string-g++-2.6.cc	Sat Apr 29 11:59:43 1995
+***************
+*** 52,67 ****
+  #pragma implementation
+  #endif
+  #include <ta_string/ta_string.h>
+- #include <stdlib.h>
+  #include <ctype.h>
+  #include <limits.h>
+  #ifdef __GNUG__
+  #include <builtin.h>
+  #endif
+  
+  void String::error(const char* msg) const
+  {
+!   cerr << "String" << msg;
+  }
+  
+  String::operator const char*() const
+--- 52,68 ----
+  #pragma implementation
+  #endif
+  #include <ta_string/ta_string.h>
+  #include <ctype.h>
+  #include <limits.h>
++ #include <new.h>
+  #ifdef __GNUG__
++ #include <std.h>
+  #include <builtin.h>
+  #endif
+  
+  void String::error(const char* msg) const
+  {
+!   cerr << "String:" <<  msg << "\n";
+  }
+  
+  String::operator const char*() const
+***************
+*** 76,81 ****
+--- 77,83 ----
+  
+  
+  
++ 
+  /*
+   the following inline fcts are specially designed to work
+   in support of String classes, and are not meant as generic replacements
+***************
+*** 132,137 ****
+--- 134,161 ----
+    }
+  }
+  
++ // ta_string: added to support conversion of int, float, double to string
++ 
++ #include <stdio.h>
++ 
++ String::String(int i,char* format) : rep(&_nilStrRep) {
++   alloc(32);
++   sprintf((char*)chars(),format,i);
++   rep->len = slen(chars());
++ }
++ 
++ String::String(float f,char* format) : rep(&_nilStrRep) {
++   alloc(32);
++   sprintf((char*)chars(),format,f);
++   rep->len = slen(chars());
++ }
++ 
++ String::String(double f,char* format) : rep(&_nilStrRep) {
++   alloc(32);
++   sprintf((char*)chars(),format,f);
++   rep->len = slen(chars());
++ }
++ 
+  // minimum & maximum representable rep size
+  
+  #define MAXStrRep_SIZE   ((1 << (sizeof(short) * CHAR_BIT - 1)) - 1)
+***************
+*** 156,162 ****
+    while (allocsiz < siz) allocsiz <<= 1;
+    allocsiz -= MALLOC_MIN_OVERHEAD;
+    if (allocsiz >= MAXStrRep_SIZE)
+!     cerr << "String" << " Requested length out of range";
+      
+    StrRep* rep = (StrRep *) new char[allocsiz];
+    rep->sz = allocsiz - sizeof(StrRep);
+--- 180,186 ----
+    while (allocsiz < siz) allocsiz <<= 1;
+    allocsiz -= MALLOC_MIN_OVERHEAD;
+    if (allocsiz >= MAXStrRep_SIZE)
+!     cerr << "String: " << "Requested length out of range\n";
+      
+    StrRep* rep = (StrRep *) new char[allocsiz];
+    rep->sz = allocsiz - sizeof(StrRep);
+***************
+*** 196,202 ****
+  // generally be faster in the long run to get new space & copy
+  // than to call realloc
+  
+! StrRep* Sresize(StrRep* old, int newlen)
+  {
+    if (old == &_nilStrRep) old = 0;
+    StrRep* rep;
+--- 220,227 ----
+  // generally be faster in the long run to get new space & copy
+  // than to call realloc
+  
+! static StrRep*
+! Sresize(StrRep* old, int newlen)
+  {
+    if (old == &_nilStrRep) old = 0;
+    StrRep* rep;
+***************
+*** 216,224 ****
+    return rep;
+  }
+  
+  // like allocate, but we know that src is a StrRep
+  
+! StrRep* Scopy(StrRep* old, StrRep* s)
+  {
+    if (old == &_nilStrRep) old = 0;
+    if (s == &_nilStrRep) s = 0;
+--- 241,257 ----
+    return rep;
+  }
+  
++ void
++ String::alloc (int newsize)
++ {
++   unsigned short old_len = rep->len;
++   rep = Sresize(rep, newsize);
++   rep->len = old_len;
++ }
++ 
+  // like allocate, but we know that src is a StrRep
+  
+! StrRep* Scopy(StrRep* old, const StrRep* s)
+  {
+    if (old == &_nilStrRep) old = 0;
+    if (s == &_nilStrRep) s = 0;
+***************
+*** 336,365 ****
+  }
+  
+  
+- // added to support conversion of int, float, double to string
+- 
+- 
+- #include <stdio.h>
+- 
+- String::String(int i,char* format) : rep(&_nilStrRep) {
+-   char conv[32];
+-   sprintf(conv,format,i);
+-   cat(*this, conv, *this);
+- }
+- 
+- String::String(float f,char* format) : rep(&_nilStrRep) {
+-   char conv[32];
+-   sprintf(conv,format,f);
+-   cat(*this, conv, *this);
+- }
+- 
+- String::String(double f,char* format) : rep(&_nilStrRep) {
+-   char conv[32];
+-   sprintf(conv,format,f);
+-   cat(*this, conv, *this);
+- }
+- 
+- 
+  // string compare: first argument is known to be non-null
+  
+  inline static int scmp(const char* a, const char* b)
+--- 369,374 ----
+***************
+*** 368,374 ****
+--- 377,387 ----
+      return *a != 0;
+    else
+    {
++ #ifdef NO_SIGNED
++     char diff = 0;
++ #else
+      signed char diff = 0;
++ #endif
+      while ((diff = *a - *b++) == 0 && *a++ != 0);
+      return diff;
+    }
+***************
+*** 378,384 ****
+--- 391,401 ----
+  inline static int ncmp(const char* a, int al, const char* b, int bl)
+  {
+    int n = (al <= bl)? al : bl;
++ #ifdef NO_SIGNED
++   char diff;
++ #else
+    signed char diff;
++ #endif
+    while (n-- > 0) if ((diff = *a++ - *b++) != 0) return diff;
+    return al - bl;
+  }
+***************
+*** 390,396 ****
+    int al = x.length();
+    int bl = y.length();
+    int n = (al <= bl)? al : bl;
+!   signed char diff = 0;
+    while (n-- > 0)
+    {
+      char ac = *a++;
+--- 407,417 ----
+    int al = x.length();
+    int bl = y.length();
+    int n = (al <= bl)? al : bl;
+! #ifdef NO_SIGNED
+!     char diff = 0;
+! #else
+!     signed char diff = 0;
+! #endif
+    while (n-- > 0)
+    {
+      char ac = *a++;
+***************
+*** 444,450 ****
+--- 465,475 ----
+    {
+      const char* a = x.chars();
+      int n = x.length();
++ #ifdef NO_SIGNED
++     char diff;
++ #else
+      signed char diff;
++ #endif
+      while (n-- > 0) if ((diff = *a++ - *b++) != 0) return diff;
+      return (*b == 0) ? 0 : -1;
+    }
+***************
+*** 532,538 ****
+    return tl;
+  }
+  
+! void SubString::assign(StrRep* ysrc, const char* ys, int ylen)
+  {
+    if (&S == &_nilString) return;
+  
+--- 557,563 ----
+    return tl;
+  }
+  
+! void SubString::assign(const StrRep* ysrc, const char* ys, int ylen)
+  {
+    if (&S == &_nilString) return;
+  
+***************
+*** 872,906 ****
+    return i;
+  }
+  
+- #if defined(__GNUG__) && !defined(NO_NRV)
+- 
+- String join(String src[], int n, const String& separator) return x;
+- {
+-   String sep = separator;
+-   int xlen = 0;
+-   for (int i = 0; i < n; ++i)
+-     xlen += src[i].length();
+-   xlen += (n - 1) * sep.length();
+- 
+-   x.alloc(xlen);
+- 
+-   int j = 0;
+-   
+-   for (i = 0; i < n - 1; ++i)
+-   {
+-     ncopy(src[i].chars(), &(x.rep->s[j]), src[i].length());
+-     j += src[i].length();
+-     ncopy(sep.chars(), &(x.rep->s[j]), sep.length());
+-     j += sep.length();
+-   }
+-   ncopy0(src[i].chars(), &(x.rep->s[j]), src[i].length());
+- }
+  
+! #else
+  
+! String join(String src[], int n, const String& separator)
+  {
+!   String x;
+    String sep = separator;
+    int xlen = 0;
+    for (int i = 0; i < n; ++i)
+--- 897,916 ----
+    return i;
+  }
+  
+  
+! #if defined(__GNUG__) && !defined(_G_NO_NRV)
+! #define RETURN(r) return
+! #define RETURNS(r) return r;
+! #define RETURN_OBJECT(TYPE, NAME) /* nothing */
+! #else /* _G_NO_NRV */
+! #define RETURN(r) return r
+! #define RETURNS(r) /* nothing */
+! #define RETURN_OBJECT(TYPE, NAME) TYPE NAME;
+! #endif
+  
+! String join(String src[], int n, const String& separator) RETURNS(x)
+  {
+!   RETURN_OBJECT(String,x)
+    String sep = separator;
+    int xlen = 0;
+    for (int i = 0; i < n; ++i)
+***************
+*** 907,913 ****
+      xlen += src[i].length();
+    xlen += (n - 1) * sep.length();
+  
+!   x.alloc(xlen);
+  
+    int j = 0;
+    
+--- 917,923 ----
+      xlen += src[i].length();
+    xlen += (n - 1) * sep.length();
+  
+!   x.rep = Sresize (x.rep, xlen);
+  
+    int j = 0;
+    
+***************
+*** 919,928 ****
+      j += sep.length();
+    }
+    ncopy0(src[i].chars(), &(x.rep->s[j]), src[i].length());
+!   return x;
+  }
+- 
+- #endif
+    
+  /*
+   misc
+--- 929,936 ----
+      j += sep.length();
+    }
+    ncopy0(src[i].chars(), &(x.rep->s[j]), src[i].length());
+!   RETURN(x);
+  }
+    
+  /*
+   misc
+***************
+*** 929,935 ****
+  */
+  
+      
+! StrRep* Sreverse(StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest)
+--- 937,943 ----
+  */
+  
+      
+! StrRep* Sreverse(const StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest)
+***************
+*** 949,955 ****
+  }
+  
+  
+! StrRep* Supcase(StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+--- 957,963 ----
+  }
+  
+  
+! StrRep* Supcase(const StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+***************
+*** 959,965 ****
+    return dest;
+  }
+  
+! StrRep* Sdowncase(StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+--- 967,973 ----
+    return dest;
+  }
+  
+! StrRep* Sdowncase(const StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+***************
+*** 969,975 ****
+    return dest;
+  }
+  
+! StrRep* Scapitalize(StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+--- 977,983 ----
+    return dest;
+  }
+  
+! StrRep* Scapitalize(const StrRep* src, StrRep* dest)
+  {
+    int n = src->len;
+    if (src != dest) dest = Salloc(dest, src->s, n, n);
+***************
+*** 990,996 ****
+        {
+          if (isupper(*p))
+            *p = tolower(*p);
+!         else if (!islower(*p) && !isdigit(*p))
+            break;
+        }
+      }
+--- 998,1006 ----
+        {
+          if (isupper(*p))
+            *p = tolower(*p);
+! 	/* A '\'' does not break a word, so that "Nathan's" stays
+! 	   "Nathan's" rather than turning into "Nathan'S". */
+!         else if (!islower(*p) && !isdigit(*p) && (*p != '\''))
+            break;
+        }
+      }
+***************
+*** 998,1004 ****
+    return dest;
+  }
+  
+! #if defined(__GNUG__) && !defined(NO_NRV)
+  
+  String replicate(char c, int n) return w;
+  {
+--- 1008,1014 ----
+    return dest;
+  }
+  
+! #if defined(__GNUG__) && !defined(_G_NO_NRV)
+  
+  String replicate(char c, int n) return w;
+  {
+***************
+*** 1110,1119 ****
+  {
+    if (!s.ipfx(0) || (!(s.flags() & ios::skipws) && !ws(s)))
+    {
+! //    s.set(ios::failbit); // Redundant if using GNU iostreams.
+      return s;
+    }
+- 
+    int ch;
+    int i = 0;
+    x.rep = Sresize(x.rep, 20);
+--- 1120,1128 ----
+  {
+    if (!s.ipfx(0) || (!(s.flags() & ios::skipws) && !ws(s)))
+    {
+!     s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams.
+      return s;
+    }
+    int ch;
+    int i = 0;
+    x.rep = Sresize(x.rep, 20);
+***************
+*** 1128,1148 ****
+    }
+    x.rep->s[i] = 0;
+    x.rep->len = i;
+!   if (i == 0) s.setf(ios::failbit);
+!   if (ch == EOF) s.setf(ios::eofbit);
+    return s;
+  }
+  
+  int readline(istream& s, String& x, char terminator, int discard)
+  {
+- #ifdef _OLD_STREAMS
+-   if (!s.good())
+- #else
+    if (!s.ipfx(0))
+- #endif
+-   {
+      return 0;
+-   }
+    int ch;
+    int i = 0;
+    x.rep = Sresize(x.rep, 80);
+--- 1137,1153 ----
+    }
+    x.rep->s[i] = 0;
+    x.rep->len = i;
+!   int new_state = s.rdstate();
+!   if (i == 0) new_state |= ios::failbit;
+!   if (ch == EOF) new_state |= ios::eofbit;
+!   s.clear(new_state);
+    return s;
+  }
+  
+  int readline(istream& s, String& x, char terminator, int discard)
+  {
+    if (!s.ipfx(0))
+      return 0;
+    int ch;
+    int i = 0;
+    x.rep = Sresize(x.rep, 80);
+***************
+*** 1160,1166 ****
+    }
+    x.rep->s[i] = 0;
+    x.rep->len = i;
+!   if (ch == EOF) s.setf(ios::eofbit);
+    return i;
+  }
+  
+--- 1165,1171 ----
+    }
+    x.rep->s[i] = 0;
+    x.rep->len = i;
+!   if (ch == EOF) s.clear(ios::eofbit|s.rdstate());
+    return i;
+  }
+  
+***************
+*** 1220,1226 ****
+  
+  int SubString::OK() const
+  {
+!   int v = 1; // S != 0;               // have a String;
+    v &= S.OK();                 // that is legal
+    v &= pos + len >= S.rep->len;// pos and len within bounds
+    if (!v) S.error("SubString invariant failure");
+--- 1225,1231 ----
+  
+  int SubString::OK() const
+  {
+!   int v = S != (const char*)0; // have a String;
+    v &= S.OK();                 // that is legal
+    v &= pos + len >= S.rep->len;// pos and len within bounds
+    if (!v) S.error("SubString invariant failure");

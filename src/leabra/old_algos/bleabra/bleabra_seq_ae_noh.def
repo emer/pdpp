@@ -1,0 +1,388 @@
+// ta_Dump File v1.0
+TypeDefault_MGroup .projects[0].defaults { 
+TypeDefault_MGroup .projects[0].defaults {
+TypeDefault @[0] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+NameValue @[1] { };
+NameValue @[2] { };
+NameValue @[3] { };
+};
+};
+TypeDefault @[1] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+};
+};
+TypeDefault @[2] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+NameValue @[1] { };
+NameValue @[2] { };
+};
+};
+TypeDefault @[3] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+};
+};
+TypeDefault @[4] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+};
+};
+TypeDefault @[5] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+NameValue @[1] { };
+NameValue @[2] { };
+NameValue @[3] { };
+};
+};
+TypeDefault @[6] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+};
+};
+TypeDefault @[7] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+NameValue @[1] { };
+NameValue @[2] { };
+};
+};
+TypeDefault @[8] { 
+taBase_Group @.active_membs {
+NameValue @[0] { };
+NameValue @[1] { };
+};
+};
+};
+};
+TypeDefault_MGroup .projects[0].defaults {
+el_typ=TypeDefault;
+el_def=0;
+name="";
+TypeDefault @[0] {
+name="Projection";
+default_type=Projection;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="spec";
+value="{type=FullPrjnSpec: spec=NULL: }";
+};
+NameValue @[1] {
+name="con_type";
+value="LeabraCon";
+};
+NameValue @[2] {
+name="con_gp_type";
+value="LeabraCon_Group";
+};
+NameValue @[3] {
+name="con_spec";
+value="{type=LeabraConSpec: spec=NULL: }";
+};
+};
+};
+TypeDefault @[1] {
+name="Network";
+default_type=Network;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="layers";
+value="LeabraLayer";
+};
+};
+};
+TypeDefault @[2] {
+name="EpochProcess";
+default_type=EpochProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+NameValue @[1] {
+name="order";
+value="PERMUTED";
+};
+NameValue @[2] {
+name="wt_update";
+value="ON_LINE";
+};
+};
+};
+TypeDefault @[3] {
+name="SequenceProcess";
+default_type=SequenceProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+};
+};
+TypeDefault @[4] {
+name="SE_Stat";
+default_type=SE_Stat;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="tolerance";
+value="0.5";
+};
+};
+};
+TypeDefault @[5] {
+name="SyncEpochProc";
+default_type=SyncEpochProc;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+NameValue @[1] {
+name="order";
+value="PERMUTED";
+};
+NameValue @[2] {
+name="wt_update";
+value="ON_LINE";
+};
+NameValue @[3] {
+name="second_proc_type";
+value="LeabraAeTrial";
+};
+};
+};
+TypeDefault @[6] {
+name="TrainProcess";
+default_type=TrainProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="SequenceEpoch";
+};
+};
+};
+TypeDefault @[7] {
+name="LeabraTrial";
+default_type=LeabraTrial;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="min_unit";
+value="LeabraHistUnit";
+};
+NameValue @[1] {
+name="min_con_group";
+value="LeabraHistCon_Group";
+};
+NameValue @[2] {
+name="trial_init";
+value="DECAY_PRIOR";
+};
+};
+};
+TypeDefault @[8] {
+name="LeabraLayerSpec";
+default_type=LeabraLayerSpec;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="prior_decay";
+value="0.9";
+};
+NameValue @[1] {
+name="phase_decay";
+value="0.9";
+};
+};
+};
+};
+TypeDefault .projects[0].defaults[0] {
+name="Projection";
+default_type=Projection;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="spec";
+value="{type=FullPrjnSpec: spec=NULL: }";
+};
+NameValue @[1] {
+name="con_type";
+value="LeabraCon";
+};
+NameValue @[2] {
+name="con_gp_type";
+value="LeabraCon_Group";
+};
+NameValue @[3] {
+name="con_spec";
+value="{type=LeabraConSpec: spec=NULL: }";
+};
+};
+};
+TypeDefault .projects[0].defaults[1] {
+name="Network";
+default_type=Network;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="layers";
+value="LeabraLayer";
+};
+};
+};
+TypeDefault .projects[0].defaults[2] {
+name="EpochProcess";
+default_type=EpochProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+NameValue @[1] {
+name="order";
+value="PERMUTED";
+};
+NameValue @[2] {
+name="wt_update";
+value="ON_LINE";
+};
+};
+};
+TypeDefault .projects[0].defaults[3] {
+name="SequenceProcess";
+default_type=SequenceProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+};
+};
+TypeDefault .projects[0].defaults[4] {
+name="SE_Stat";
+default_type=SE_Stat;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="tolerance";
+value="0.5";
+};
+};
+};
+TypeDefault .projects[0].defaults[5] {
+name="SyncEpochProc";
+default_type=SyncEpochProc;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="LeabraAeTrial";
+};
+NameValue @[1] {
+name="order";
+value="PERMUTED";
+};
+NameValue @[2] {
+name="wt_update";
+value="ON_LINE";
+};
+NameValue @[3] {
+name="second_proc_type";
+value="LeabraAeTrial";
+};
+};
+};
+TypeDefault .projects[0].defaults[6] {
+name="TrainProcess";
+default_type=TrainProcess;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="sub_proc_type";
+value="SequenceEpoch";
+};
+};
+};
+TypeDefault .projects[0].defaults[7] {
+name="LeabraTrial";
+default_type=LeabraTrial;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="min_unit";
+value="LeabraHistUnit";
+};
+NameValue @[1] {
+name="min_con_group";
+value="LeabraHistCon_Group";
+};
+NameValue @[2] {
+name="trial_init";
+value="DECAY_PRIOR";
+};
+};
+};
+TypeDefault .projects[0].defaults[8] {
+name="LeabraLayerSpec";
+default_type=LeabraLayerSpec;
+active_membs {
+el_typ=NameValue;
+el_def=0;
+name="";
+NameValue @[0] {
+name="prior_decay";
+value="0.9";
+};
+NameValue @[1] {
+name="phase_decay";
+value="0.9";
+};
+};
+};

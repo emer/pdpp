@@ -1,0 +1,35 @@
+// make distortions of given seed pattern, where each has ndiff bits different
+// than the seed
+
+void MakeDistorts(Environment* env, Pattern* seed, int n, int patno, int non,
+		  int ndiff)
+{
+  int_Array* seed_idx = new int_Array;
+  int_Array* new_idx = new int_Array;
+
+  int i;
+  for(i=0; i<seed.value.size; i++) {
+    if(seed.value[i] > .5)
+      seed_idx.Add(i);		// part of the seed
+    else
+      new_idx.Add(i);		// not part of the seed
+  }
+
+  for(i=0; i<n; i++) {
+    Event* ev = env.events.NewEl(1);
+    float_RArray* pat = ev.patterns[patno].value;
+    seed_idx.Permute();
+    new_idx.Permute();
+    int j;
+    for(j=0; j<ndiff; j++) {
+      pat[new_idx[j]] = 1.0;
+    }
+    for(j=0; j<non - ndiff; j++) {
+      pat[seed_idx[j]] = 1.0;
+    }
+  }
+
+  delete seed_idx;
+  delete new_idx;
+}
+

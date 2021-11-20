@@ -1,0 +1,70 @@
+# css makefile, in the ta/css/pdp++ package
+
+##################################
+# these are the things to set
+#
+
+# reset opt flags to not do anything for linux, crashes with dynamic linking
+#OPT_FLAGS=
+
+LIBS = -ltamisc -livgraphic -ltypea -livmisc -lreadline -ltermcap -ltastring \
+	$(IV_LIB) $(X11_LIB) $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+PROJNAME = css
+PROJDIR = css
+
+EXE = css$(EXE_EXT)
+
+# distribution executable (not really used..)
+DIST_EXE = css.dist
+
+LIB = libcss.$(LIB_EXT)
+
+FLAGS = -DYYDEBUG
+
+MAKETA_FLAGS = -hx -css
+
+EXTRA_HX_FILE = css_parse
+
+TAHEADS = 
+HEADS =  machine.h basic_types.h c_ptr_types.h css_builtin.h extern_support.h \
+	ta_css.h css_parse.h special_math.h css_iv.h hard_of_css.h css_misc_funs.h
+
+SRCS = 	css_parse.cc machine.cc basic_types.cc c_ptr_types.cc css_builtin.cc \
+	css_lex.cc ta_css.cc xmemory.cc css_iv.cc csshell.cc \
+	special_math.cc css_misc_funs.cc
+
+OBJS =  css_parse.o machine.o basic_types.o c_ptr_types.o css_builtin.o \
+	css_lex.o ta_css.o xmemory.o css_iv.o \
+	special_math.o css_misc_funs.o
+
+EXEOBJS = $(OBJS) csshell.o
+
+DEPS = css_parse.d machine.d basic_types.d c_ptr_types.d css_builtin.d \
+	css_lex.d ta_css.d xmemory.d css_iv.d csshell.d \
+	special_math.d css_misc_funs.d
+
+default:  optLib
+#default: optBin
+
+hard_css:
+	@if [ -d $(CPU) ]; then ( $(CD) $(CPU);	$(MAKE) hard_css_impl)\
+	else $(MAKE) hard_css_impl;\
+	fi
+
+hard_css_impl:
+	$(MAKE) libhard_css.$(LIB_EXT) "OPT_DEBUG=$(OPT_FLAGS)"
+
+libhard_css.$(LIB_EXT): special_math.o css_misc_funs.o
+	$(RM) $@
+	- $(AR_PRE_CMD) $^
+	$(AR_CMD) $@ $^
+	- $(RANLIB_CMD) $@
+	$(CP) $@ lib_include
+	- $(RANLIB_CMD) -t lib_include/$@
+
+
+
+
+
+

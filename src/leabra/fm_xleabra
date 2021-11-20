@@ -1,0 +1,9 @@
+#!/bin/csh
+
+foreach i (~/mypdp++/xleabra/*.h ~/mypdp++/xleabra/*.cc)
+    set fn = $i:t
+    echo $i " to " $fn 
+    sed -e "s\<xleabra\<leabra\g" $i > $fn
+end
+
+

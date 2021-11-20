@@ -1,0 +1,1077 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: net,  Next: env,  Prev: proj,  Up: Top
+
+Networks (Layers, Units, etc)
+*****************************
+
+   Every simulation is built around a network.  Networks contain
+layers of units, with connections between the units.  PDP++ provides
+objects at every level of structure from the Network down to the
+Connection from which neural network models can be constructed.
+While particular algorithms will define their own sub-classes of these
+basic object types the essential properties of these objects are
+relatively constant across different algorithms.  This chapter
+describes these basic properties.
+
+   The user's primary interaction with the PDP++ software is through
+the NetView, described in *Note net-view::.  This provides a graphical
+display of the network structure, and a means of creating and
+modifying the different elements of the network.
+
+   For a tutorial introduction on how to use the NetView to build and
+connect a network, see *Note tut-config::.
+
+* Menu:
+
+* net-net::                     The Network Object
+* net-layer::                   Layers and Unit Groups
+* net-prjn::                    Projections
+* net-unit::                    Units
+* net-con::                     Connections and Connection Groups
+* net-view::                    The Network Viewer
+* net-build::                   Building Networks using the Viewer
+
+
+File: pdp-user,  Node: net-net,  Next: net-layer,  Prev: net,  Up: net
+
+The Network Object
+==================
+
+   The network object is basically a container for all the things
+that go in it.  Thus, it has a group of layers, which then contain
+units, projections, etc.  In addition, each network also has an epoch
+counter and a variable controlling the default layout of the layers.
+The epoch counter reflects the number of _training_ epochs the
+network has seen (not testing). Finally, the network is instantiated
+in the user interface by one or more NetViews, which provide a window
+with menu actions, tools, etc. to operate on the network.
+
+   Also see the following information about Networks:
+
+* Menu:
+
+* net-dmem::             Distributed Memory Computation in the Network
+
+`Layer_MGroup layers'
+     This is the group of layers that have been created in the
+     network.  The layers then contain all of the remaining
+     substructure of the network.
+
+`int epoch'
+     The epoch counter indicates how many epochs of training the
+     network has been subjected to. This counter is incremented by
+     the training processes which act upon it, see *Note
+     proc-levels-epoch::.
+
+`bool re_init'
+     This flag is set by training schedule process to indicate
+     whether the network should be reinitialized when the process is
+     initialized *Note proc-levels-train::.
+
+`LayerLayout lay_layout'
+     This variable can be set to either `TWO_D' or `THREE_D'. It
+     controls the default positioning of the layers when they are
+     created, as well as the skew of the units when they are
+     displayed.  `TWO_D' networks are arranged in one big X-Y grid,
+     while `THREE_D' networks simulate a three-dimensional space
+     where successive layers are located at successively higher Z
+     coordinates, and units within a layer are arranged in an X-Y
+     plane.
+
+`Usr1SaveFmt usr1_save_fmt'
+     You can control how the network is saved when it receives the
+     `USR1' signal (*note proj-signals::) with this - the full network
+     or just the weights
+
+`PThreadSpec pthread'
+     This specifies parameters for parallel processing (SMP) of the
+     network.  Number of processors (threads) is specified by the
+     n_threads parameter.  This works by compiling a list of layers
+     for each thread to process, based on the number of connections
+     and units in the layers (separate list for each).  The
+     allocation algorithm tries to distribute the computation as
+     evenly as possible.  This is relatively fine-grained
+     parallelism, and due to the overhead involved in managing the
+     threads, it only speeds up relatively large networks (i.e., > 50
+     units per layer, >= 4 layers).  Speedups can by upwards of 1.67
+     times as fast on dual pentium III systems.  You can also
+     restrict parallelism to only connection-level computations by
+     turning off par_units -- unit level speedup is typically quite
+     quite small (but measurable..).
+
+   The network also has the following functions which can be
+activated by the corresponding menu selection in the NetView (using
+the left hand menu).
+
+   In the Object menu:
+
+`ReadOldPDPNet(File input_file, bool skip_dots)'
+
+`Copy_Weights()'
+     Copies the weights from another similarly-configured network.  By
+     duplicating a network and then later copying weights back from
+     it, one can restore weight values to known values while
+     tinkering with various parameters affecting network learning.
+
+`WriteWeights(File output_file)'
+     Outputs bias and receiver weight values in a unit by unit format
+     to a file (includes comments). NOTE: This is not the same format
+     as the old pdp software.
+
+`ReadWeights(File input_file)'
+     Loads in the bias and receiver weight values from a file created
+     with the WriteWeights function above.  Reads in a "filename.net"
+     type file format from the old pdp software.  SKIP_DOTS indicates
+     whether to skip over "." values in the "network:" weight matrix
+     section or to create zero valued weights instead. This function
+     will attempt to use and extend existing network structure if it
+     exists and create new network structure if necessary.  Currently
+     (v1.2) it does not handle "Bias:" sections or "LINKED" weight
+     constraints.
+
+   In the Actions menu:
+
+`Build()'
+     Create units in all the layers according to the size and shape
+     of the layers.  If units already exist, it makes sure they are
+     of the right type, and arranged within the geometry of the
+     layer.  This is accessed through the Build All button of the
+     NetView (*note net-view::).
+
+`Connect()'
+     Create connections on all the units according to the projections
+     on the layers.  The projections define a pattern of
+     connectivity, and the connections actually flesh this pattern
+     out by individually connecting unit to unit.  Note that any
+     existing connections are removed before connecting. This is
+     accessed through the Connect All button of the NetView (*note
+     net-view::).
+
+`Check Types()'
+     Checks to make sure all the objects and specs in the network are
+     mutually compatible.
+
+`Fix Prjn Indexes()'
+     Fixes the other_idx indexes on the connection groups --
+     CheckTypes might tell you you need to run this if your network
+     was not properly connected.
+
+`RemoveCons()'
+     Remove all the connections on the units in the network.  Like
+     `RemoveUnits' this is useful for reducing the size of the network
+     for saving.
+
+`RemoveUnits()'
+     Remove all the units from the network.  This can be useful for
+     saving large networks, since all of the relevant structural
+     information for rebuilding the network is typically present in
+     the layers and projections.  Thus, one can save the "skeleton"
+     and then simply press Build All and Connect All when the network
+     is reloaded.
+
+`InitState()'
+     Initialize the state variables on the units.  This means
+     activation-like variables, but not the weights.
+
+`InitWtState()'
+     Initialize the weight state information on the connections in
+     accordance with their ConSpecs.  This also resets the epoch
+     counter to zero.
+
+`TransformWeights(PreProcessVals trans)'
+     Applies given transformation to weights.  Possible
+     transformations include basic arithmetic operators (e.g.,
+     scaling via multiplication), and absolute value, thresholding,
+     etc.
+
+`AddNoiseToWeights(Random noise_spec)'
+     Adds noise to weights using given noise specification.  This can
+     be useful for simulating damage to the network.
+
+`PruneCons(PreProcessVals pre_proc, CountParam::Relation rel, float cmp_val)'
+     Removes connections that (after a pre-processing transformation,
+     e.g. absolute-value) meet the given relation in comparison to
+     compare val (e.g., LESSTHANOREQUAL to some value).
+
+`LesionCons(float p_lesion, bool permute)'
+     Removes connections with probability p_lesion.  If permute is
+     true, then a fixed number of weights will be lesioned, where
+     this number is equal to the probablility times the number of
+     weights.  Othewise, the actual number of weights lesioned will
+     vary based on the probability.
+
+`LesionUnits(float p_lesion, bool permute)'
+     Removes units with probability p_lesion.  If permute is true,
+     then a fixed number of units will be lesioned, where this number
+     is equal to the probablility times the number of units (on a
+     layer-by-layer basis).  Othewise, the actual number of units
+     lesioned will vary based on the probability.
+
+`TwoD_Or_ThreeD(LayerLayout layout_type)'
+     Reposition the units and layers in either a 2D or 3D
+     configuration.
+
+`GridViewWeights(GridLog* grid_log, Layer* recv_lay, Layer* send_lay, int un_x, un_y, wt_x, wt_y)'
+     Plots the entire set of weights into the recv_lay from the
+     send_lay in the grid log specified (NULL = make a new one).  The
+     un_x, un_y parameters can specify a more limited range of
+     receiving units (-1 means entire layer), and the wt_x, wt_y
+     similarly specify a more limited range of sending units
+     (weights).
+
+   These other functions of the network might be useful to those
+writing scripts or programming in PDP++:
+
+`ConnectUnits(Unit* receiving_unit, Unit* sending_unit);'
+     Creates a connection from the sending_unit to the
+     receiving_unit. A custom projection between the units' layers is
+     created if necessary
+
+   Finally there are a number of other functions that can be found in
+`src/pdp/netstru.h' which are useful for programming.  In general the
+Network has a function corresponding to one that is performed on a
+lower-level object like a unit, and this function on the network
+simply calls the corresponding one on all of its layers, which then
+call the one on all of their units, etc.
+
+
+File: pdp-user,  Node: net-dmem,  Up: net-net
+
+Distributed Memory Computation in the Network
+.............................................
+
+   The Network supports parallel processing across connections, where
+different distributed memory (dmem) processes compute different
+subsets of connections, and then share their results.  For example if
+4 processors were working on a single network, each would have
+connections for approximately 1/4 of the units in the network.  When
+the net input to the network is computed, each process computes this
+on its subset of connections, and then shares the results with all the
+other processes.
+
+   Given the relatively large amount of communication required for
+synchronizing net inputs and other variables at each cycle of network
+computation, this is efficient only for relatively large networks
+(e.g., above 250 units per layer for 4 layers).  In benchmarks on
+Pentium 4 Xeon cluster system connected with a fast Myrinet
+fiber-optic switched network connection, networks of 500 units per
+layer for 4 layers achieved _better_ than 2x speedup by splitting
+across 2 processors, presumably by making the split network fit within
+processor cache whereas the entire one did not.  This did not scale
+that well for more than 2 processors, suggesting that cache is the
+biggest factor for this form of dmem processing.
+
+   In all dmem cases (see *Note proc-epoch-dmem:: for event-wise
+dmem) each processor maintains its own copy of the entire simulation
+project, and each performs largely the exact same set of functions to
+remain identical throughout the computation process.  Processing only
+diverges at carefully controlled points, and the results of this
+divergent processing are then shared across all processors so they can
+re-synchronize with each other.  Therfore, 99.99% of the code runs
+exactly the same under dmem as it does under a single-process, making
+the code extensions required to support this form of parallel
+processing minimal.  This was not true for the pthread (parallel
+thread) model that was used in earlier releases - it is now gone.
+
+   The main parameter for controlling dmem processing is the
+`dmem_nprocs' field, which determines how many of the available
+processors are allocated to processing network connections.  Other
+processors left over after the network allocation are allocated to
+processing event-wise distributed memory computation (see *Note
+proc-epoch-dmem:: for information on this).  The other parameter is
+`dmem_sync_level', which is set automatically by most algorithms
+based on the type of synchronization that they require (feedforward
+networks generally require layer-level synchronization, while
+recurrent, interactive networks require network-level
+synchronization).
+
+   The one area where dmem processing can cause complications is in
+networks that use shared/linked weights, such as those that can be
+created by the TesselPrjnSpec projection spec (*note
+net-prjn-tessel::).  If shared weights end up on different
+processors, they cannot be shared!  If these weights happen to be
+shared across unit groups, then you can set the `dmem_dist' parameter
+in the corresponding Layer to `DMEM_DIST_UNITGP', which will
+distribute connections across unit groups such that the first unit in
+each unit group are all allocated to the first processor, the second
+to the second, etc.  In this case, they can all share connections.
+
+
+File: pdp-user,  Node: net-layer,  Next: net-prjn,  Prev: net-net,  Up: net
+
+Layers and Unit Groups
+======================
+
+   Layers are basically just groups of units, but they also
+constitute the basic elements of connectivity as specified by the
+projections (*note net-prjn::).  Thus, one can specify that a whole
+group of units should be connected in a particular fashion to another
+whole group of units, instead of going one-by-one through the units
+and telling each one individually how to connect to other units.
+Note that the model used in PDP++ is the _receiver_ model - a layer
+contains the projections it _receives_ from other layers, not the
+ones it sends to them.
+
+   Further, in certain kinds of learning algorithms, particularly
+those with a self-organizing character, the Layer plays a
+computational role in that it implements competition among units, for
+example (*note so::).  In these algorithms, the Layer will have an
+accompanying LayerSpec that contains the parameters governing the
+computation that occurs in the layer.  However, in standard
+backpropagation and constraint satisfaction algorithms (*Note bp::,
+*Note cs::), the LayerSpec is not used.
+
+   Layers have the following variables:
+
+`int n_units'
+     Number of units to create with Build command.  Entering a value
+     of 0 will cause the n_units to be computed based on the current
+     geometry (i.e., n_units = x * y).
+
+`Geometry geom'
+     Specifies the layer's 3D geometry for its units. It is used for
+     display purposes, and for computing a default `n_units'.  Note
+     that a `z' value of greater than 1 means that multiple
+     sub-groups of units will be created in the layer, each of which
+     having x * y units (by default).
+
+`Geometry pos'
+     Specifies the layer's 3D position relative to the network. Used
+     for display purposes and potentially for algorithms that depend
+     on physical distance information.
+
+`Geometry gp_geom'
+     This is the geometry of the sub-groups of units within a layer
+     (only applicable if `geom.z > 1').  Groups will be arranged in
+     the x,y geometry given by this parameter (i.e.,  `x * y' should
+     be >= `geom.z').
+
+`Projection_Group projections'
+     The group of projections which specify the connections that this
+     layer receives from other layers.
+
+`Unit_Group units'
+     The group of units within the layer.  The type of units which are
+     created is determined by the `el_typ' on this group (*note
+     obj-group-variables::).  Note that sub-groups of units can be
+     created, as given by the `geom.z' parameter, and as described in
+     greater detail below.
+
+`UnitSpec_SPtr unit_spec'
+     The default unit specification for units created in this layer.
+     This is applied whenever the Build function is performed.
+
+`bool lesion'
+     When set to `true', this layer is inactivated from all
+     processing, as if it was not there in the first place.  This
+     makes it possible to selectively pre-train certain layers within
+     the network, for example.
+
+`Unit:ExtType ext_flag'
+     Indicates which kind of external input the layer last received.
+     Whenever input is applied to the network from an environment, the
+     affected layer's flag is set, so that when it comes time to
+     clear the unit flags, or perform any other input-specific
+     processing, only relevant layers need to be processed.
+
+   The following layer functions are available, either in the layer
+edit dialog or in the CSS script language:
+
+`Build()'
+     Create `n_units' in the layer and arrange them according to the
+     `geometry'.   If units already exist, they are enforced to be of
+     the type of the unit group.  Thus, the best way to change the
+     type of units in the layer is to change the `el_typ' of the
+     units group and then do a Build() (see also *Note net-net::).
+
+`Connect()'
+     Actually creates the connections into each of the units in the
+     layer according to the projections on this layer.  Note that any
+     existing connections are removed before connecting.
+
+`RemoveCons()'
+     Removes any existing connections into units in the layer.
+
+`DisConnect()'
+     This removes all the projections (and connections) that this
+     layer receives from other layers, and all the projections that
+     other layers receive from this layer.  Thus, it is stronger than
+     `RemoveCons' in that it removes the projections as well as the
+     connections.
+
+`Copy_Weights(Layer *)'
+     Copies the weights from the other layer including unit bias
+     weights.
+
+`SetLayerSpec(LayerSpec *)'
+     Sets the layer specification for this layer to be the given one.
+
+`SetUnitSpec(UnitSpec *)'
+     Sets the unit specification of all units in the layer to be the
+     given one, and makes that the default unit spec for any new
+     units that would be created in the layer.
+
+`SetConSpec(ConSpec *)'
+     Sets the connection specification of all projections in the
+     layer to be the given one.
+
+   Note that the layer also has instances of other functions that are
+present on the network, such as `InitWtState' and `InitState'.
+
+   The Unit_Group provides another level of organization between the
+layer and the units within the layer.  This can be useful for cases
+where different groups of units play specialized roles, but have
+otherwise the same connectivity to other layers (which is what makes
+them part of the same layer instead of being different layers).  This
+level of organization has been used to implement independent sub-pools
+of activation competition within a larger layer, for example.
+
+   Unit groups are created as sub-groups within the `units' member of
+the layer.  The `z' value of the layer's geometry specification
+indicates how many groups to create, and each of them has `n_units'
+units arranged in the `geom.x, geom.y' geometry as specified in the
+layer.  However, once created, the unit groups can be individually
+re-sized, and they have their own `n_units', `geom', and `pos'
+variables.  To have a unit group always use the settings on the
+layer, the `n_units' should be set to 0.
+
+
+File: pdp-user,  Node: net-prjn,  Next: net-unit,  Prev: net-layer,  Up: net
+
+Projections
+===========
+
+   Projections represent a layer's connectivity with another layer.
+They serve as a "template" for individual connections between units
+in the two layers, thus simplifying the specification of general
+patterns of connectivity.  The connectivity of the projection is
+specified in terms of the layer this projection's layer is receiving
+from.  Thus if you had an input layer connected to a hidden layer,
+then the hidden layer would have a projection with its `from' field
+set to the input layer.
+
+   In addition to the `from' field, projections have a ProjectionSpec
+which determines the connectivity patterns to use when creating the
+actual connections between individual units.  There are a number of
+different forms of connectivity that can be specified with the
+different ProjectionSpecs, from the simple full connectivity to
+different forms of random, one-to-one, and "tesselated" or repeated
+patterns of connectivity.
+
+   The projection object itself is primarily concerned with specifying
+_where_ to receive connections from, and what kinds of connection
+objects to create.  The ProjectionSpec is responsible for determining
+the _pattern_ of connectivity.
+
+* Menu:
+
+* net-prjn-prjn::               The Projection Class
+* net-prjn-spec::               The Projection Specification
+* net-prjn-special::            Specialized Types of Projection Specs
+
+
+File: pdp-user,  Node: net-prjn-prjn,  Next: net-prjn-spec,  Prev: net-prjn,  Up: net-prjn
+
+The Projection Class
+--------------------
+
+   The projection object is primarily concerned with specifying
+_where_ to receive connections from.  Also, it determines what type
+of connections (and connection groups and connection specs) should be
+created:
+
+`PrjnSource from_type'
+     Type of the projection source. This can have one of the
+     following values:
+        * NEXT: Receive connections from the next layer in network.
+
+        * PREV: Receive connections from the previous layer in
+          network.
+
+        * SELF: Receive connections from the same layer this
+          projection is in.
+
+        * CUSTOM: Receive connections from the layer specified in the
+          projection.
+
+`Layer* from'
+     The layer this projection receives from. This is set
+     automatically if `from_type' is not set to `CUSTOM'.
+
+`ProjectionSpec_Sptr spec'
+     Points to the ProjectionSpec which controls the pattern of
+     connectivity for this projection.
+
+`TypeDef con_type'
+     The type of Connection to create when making connections.
+
+`TypeDef con_gp_type'
+     The type of connection group to create when making connections.
+
+`ConSpec_SPtr con_spec'
+     The connection specification to use for the connections.
+
+   The Projection class has a number of member functions, most of
+which have the same function as those defined on the Layer and the
+Network.  Refer to *Note net-layer:: and *Note net-net:: for further
+details.  The following are specific to projections:
+
+`Copy_Weights(Projection* src)'
+     Copies the weights values from an equal sized projection to the
+     weight values of the connections on this Projection.
+
+`ApplyConSpec()'
+     Sets the conspec of the all the connections for this projection
+     to the projection's `con_spec' without rebuilding them.
+
+
+File: pdp-user,  Node: net-prjn-spec,  Next: net-prjn-special,  Prev: net-prjn-prjn,  Up: net-prjn
+
+The Projection Specification
+----------------------------
+
+   The ProjectionSpec class describes the patterns of connectivity
+between units in the two layers involved in a projection.  The base
+ProjectionSpec class is a parent class for the more specific
+Projection Spec classes which are actually used (*note obj-basics::).
+Nonetheless, it provides the basic functions and variables common to
+all Projection Specs.
+
+   The projection spec actually implements many of the functions
+associated with the projection, so functionality can be modified just
+by changing the spec.
+
+   There are two variables that are common to all projection specs.
+One is the `self_con' flag.  This indicates if self-connections from a
+unit to itself should be created in `SELF' projections.  The other is
+`init_wts', which indicates whether the connection weights should be
+initialized from this projection spec (see Tessel and Random, below)
+or via the ConSpec (which is the default, *note net-con::).
+
+
+File: pdp-user,  Node: net-prjn-special,  Prev: net-prjn-spec,  Up: net-prjn
+
+Specialized Types of Projection Specs
+-------------------------------------
+
+   There are a number of different types of projection specification
+types which implement different kinds of connectivity patterns.  They
+are described below.
+
+* Menu:
+
+* net-prjn-full::               Full Connectivity
+* net-prjn-tessel::             Tesselated (Repeated) Patterns of Connectivity
+* net-prjn-random::             Random Patterns of Connectivity
+* net-prjn-unitgp::             Unit_Group Based Connectivity
+* net-prjn-misc::               Miscellaneous other Projection Types
+
+
+File: pdp-user,  Node: net-prjn-full,  Next: net-prjn-tessel,  Prev: net-prjn-special,  Up: net-prjn-special
+
+Full Connectivity
+.................
+
+   The FullPrjnSpec is the most commonly used type of projection spec.
+It creates full connectivity between units.  There are no other
+parameters controlling its behavior, and not much else to say.
+
+
+File: pdp-user,  Node: net-prjn-tessel,  Next: net-prjn-random,  Prev: net-prjn-full,  Up: net-prjn-special
+
+Tesselated (Repeated) Patterns of Connectivity
+..............................................
+
+   The TesselPrjnSpec connects two layers using tesselations (repeated
+patterns) of connectivity.  These patterns are defined in terms of a
+"receptive field" which is a two-dimensional pattern of connectivity
+into a given receiving unit.  This pattern is defined in terms of
+two-dimensional X,Y offsets of the sending units relative to the
+position of a given receiving unit.  Thus, there is an assumed
+correspondence between the layout of the receiving and sending units.
+
+   Which receiving units get this receptive field is determined by
+offset and skip parameters which allow one to have different receptive
+fields for the even and odd units, for example.
+
+   The center of each receiving unit's receptive field over the
+sending layer is either in direct correspondence with the coordinates
+of the receiving unit within its layer, or there can be a scaling of
+the coordinates based on the relative sizes of the two layers, so
+that the receiving units evenly cover the sending layer.  Also,
+contiguous receivers can share the same effective receptive field
+center by using the `recv_group' parameters.
+
+   In addition, since the TesselPrjnSpec creates repeated versions of
+the same connectivity pattern, it is a natural place to implement
+weight sharing. There is a choice on the spec, `link_type', that can
+establish shared weights among all units in the same `recv_group'
+(`GP_LINK'), or each unit has the the same weights (`UN_LINK').
+
+   Finally, there are a number of functions which automatically
+generate receptive fields according to simple geometric shapes, or
+create receptive fields from patterns of selected units in the NetView
+(*note net-view::).  Further, the weight values for these connections
+can be initialized to specified values (use the `init_wts' and set
+the `wt_val' values), and distance-based values can be computed
+automatically using functions.  These are described below.
+
+   The spec has the following parameters:
+
+`TwoDCoord recv_off'
+     The offset (XY) in the layer for the start of the receiving
+     units.  Units before this offset do not get connections.
+
+`TwoDCoord recv_n'
+     The number of receiving units in each dimension (XY).  The
+     default values of -1 means use all the receiving units (after
+     the offset).
+
+`TwoDCoord recv_skip'
+     The number of receiving units to skip in each dimension (XY).
+     Thus, one could have one spec controlling the even units and
+     another for the odd units in a given layer.  NOTE: this is
+     ignored when `GP_LINK' is used, for technical reasons.
+
+`TwoDCoord recv_group'
+     The number of receiving units to group together with the same
+     receptive field center in each dimension (XY).  Thus, one can
+     have groups of units with identical receptive fields.
+
+`bool wrap'
+     Indicates whether or not to wrap coordinates at the edges of the
+     sending layer (otherwise it clips at the layer edges).
+
+`bool link_type'
+     Indicates whether and how to link together receiving weights:
+    `NO_LINK'
+          Each unit has its own weights, as is normally the case.
+
+    `GP_LINK'
+          Shares weights among an entire `recv_group' of units, where
+          the 1st unit in each group has the same weights, etc.
+
+    `UN_LINK'
+          The same weights are shared between all units (each unit
+          has the same weights).  Also see `link_src'.
+
+`TwoDCoord link_src'
+     The index of the receiving unit that should serve as the
+     "source" unit for unit linked weights.  If sending coordinates
+     are not being wrapped, then the first unit in the receiving
+     layer will likely not have the full complement of connections,
+     since some of them will have been clipped, so this allows a unit
+     that has the full complement of connections to be indicated as
+     the source, which has to have all the possible connections.
+
+`FloatTwoDCoord send_scale'
+     Scales the coordinates of the receiving unit in order to
+     determine the coordinates of the center of the receptive field
+     in the sending layer.  Thus, if in a given dimension (X or Y)
+     there are only four units in the receiving layer and 8 units in
+     the sending layer, one might want to use a scale of 2 in that
+     dimension so the receivers will cover the whole sending layer.
+
+`TwoDCoord send_border'
+     A border (offset) that is added to the receiving unit's
+     coordinates (after scaling, see above) in order to determine the
+     coordinates of the center of the receptive field in the sending
+     layer.
+
+`TessEl_List send_offs'
+     A list of offsets of the sending units.  These offsets are
+     relative to the center of the receiving unit's receptive field
+     in the sending layer, computed as described above.  Each offset
+     is a member of the class TessEl which has the members:
+    `TwoDCoord send_off'
+          The offset from the center of the receptive field.
+
+    `float wt_val'
+          The value to assign to the weight of the connection.  These
+          weight values are given to the weight upon creation of the
+          connection, but if the ConSpec performs its own
+          initialization of the weights, they will be lost.  Also, if
+          learning is taking place, the only way to reinstate these
+          values is to reconnect the network.
+
+   The functions that make particular receptive fields are as follows:
+
+`MakeEllipse(int half_width, int half_height, int ctr_x, int ctr_y)'
+     Constructs an elliptical receptive field from the given
+     parameters.  The ctr_x and y specify the center of the receptive
+     field.  For example, half_width = half_height = 2, ctr_x = ctr_y
+     = 0, gives a circle from -2 to 2 in x and y.
+
+`MakeRectangle(int width, int height, int ctr_x, int ctr_y)'
+     Constructs a rectangular receptive field from the given
+     parameters.  ctr_x and _y are as in MakeEllipse (e.g.,
+     specifying a width, height of 5 and ctr_x, _y of 0 gives x and y
+     coordinates from -2 to 2.
+
+`MakeFromNetView(NetView* view)'
+     Uses the currently selected units in the NetView to create a
+     receptive field.  First select a receiving unit, which
+     establishes the center of the receptive field (this should be in
+     the receiving layer).  Then, in the sending layer, select the
+     receptive field pattern.  All units must be selected (use
+     multiple-select) before this function is called.
+
+`WeightsFromDist(float scale)'
+     Initializes the `wt_val' value of each element of the receptive
+     field according to its distance in offset coordinates, scaled by
+     the given scale parameter.  Note that `init_wts' must be set for
+     these weights to be used in initializing the weights.
+
+`WeightsFromGausDist(float scale, float sigma)'
+     Like the above, but it uses a Gaussian function of the distance,
+     with a standard deviation equal to the given sigma parameter.
+
+
+File: pdp-user,  Node: net-prjn-random,  Next: net-prjn-unitgp,  Prev: net-prjn-tessel,  Up: net-prjn-special
+
+Random Patterns of Connectivity
+...............................
+
+   The UniformRandomPrjnSpec specifies a uniform random pattern of
+connectivity.
+
+   `p_con' specifies the overall probability of connectivity -- a
+connection is made with a given sending unit with this probability.
+The `permute' flag indicates that a randomly-ordered list of sending
+units is created, and p_con * n_units are selected for connecting --
+creates exactly the same number of connections per receiving unit.
+`same_seed' specifies that this projection saves the random seed used
+for creating connections, so tht the pattern is the same every time
+(useful for being able to read in weight files for randomly connected
+networks).
+
+   The PolarRndPrjnSpec creates randomized patterns of connectivity as
+a function of distance and angle between sending and receiving unit.
+Distance and angle are computed from the center of a receiving unit's
+receptive field in the sending layer, which, as with the
+TesselPrjnSpec described above, can be computed in different ways.
+Two different random functions control the distribution of
+connectivity in distance and angle.
+
+   The `dist_type' field controls how the distance is computed, as
+follows:
+`XY_DIST'
+     Just a simple distance function using the receiver's coordinates
+     in the sending layer.  This works fine when both layers are the
+     same size.
+
+`XY_DIST_CENTER'
+     The receiver's coordinates are transformed relative to the
+     center of the sending layer.  This makes the distance
+     distribution symmetrical.
+
+`XY_DIST_NORM'
+     The receiver's coordinates are normalized by the total size of
+     the sending layer.
+
+`XY_DIST_CENTER_NORM'
+     The receiver's coordinates are normalized by the total size of
+     the sending layer, and are computed relative to the center of
+     the layer.  This will result in a reasonable distance measure
+     even when the two layers are of different sizes.
+
+   The `rnd_dist' and `rnd_angle' are Random (*note obj-random::)
+classes that specify the distributions and associated parameters for
+connection distance and angle from the receiving unit.  Distance is
+scaled as above, and angle is done on a 0-1 scale (i.e., the random
+number is multiplied by 2pi).  `p_con' determines how many
+connections are made.  A target value of p_con * n_units in the
+sending layer is used, and connections are attempted, rejecting
+attempts to reconnect to an existing connection, until `max_retries'
+such rejections have been made.  Thus, for very tight distributions,
+the same units will be selected again and again, and it may be
+impossible for `p_con' different connections to be established.  In
+this case, a warning message is issued.
+
+   The `wrap' flag determines if the units are treated as one big
+wrapping-around surface, or if it is clipped at the edges of the
+layer.
+
+   `same_seed' functions as on the UniformRandomPrjnSpec
+
+
+File: pdp-user,  Node: net-prjn-unitgp,  Next: net-prjn-misc,  Prev: net-prjn-random,  Up: net-prjn-special
+
+Unit_Group Based Connectivity
+.............................
+
+   There are a couple of classes that specifically pay attention to
+the sub-groups of units within a layer, if these have been created
+(the other types of projections just ignore this level of structure).
+
+   There is a sub-class of the full projection called the
+GpFullPrjnSpec, which does the same thing the full prjn spec, but
+creates separate connection groups based on the sending and receiving
+unit-group structure.  Thus, the result is full connectivity, but this
+is broken down so separate unit sub-groups can be treated separately
+(e.g., if there were a weight-based competition between the units in a
+sub-group, or between sub-groups).  The `n_con_groups' parameter
+determines whether there is one con-group per `RECV_SEND_PAIR', or
+just one per `SEND_ONLY', which is one con-group per unit-group on
+the sending layer.
+
+   The GpOneToOnePrjnSpec connects unit groups in two layers in a
+one-to-one fashion, much as the OneToOnePrjnSpec connects units in a
+layer in a one-to-one fashion.
+
+   The GpOneToManyPrjnSpec connects one or more sending groups to all
+receiving groups.  It can greate these connections in a number of
+separate connection groups, or all in one group, depending on the
+`n_con_groups' parameter (see GpFullPrjnSpec above).  Note that the
+`recv_start' parameter is ignored, and only the `send_start', which
+determines which sending group to start with, and the `n_conns',
+which determines how many sending groups to use beyond the start, are
+relevant.
+
+
+File: pdp-user,  Node: net-prjn-misc,  Prev: net-prjn-unitgp,  Up: net-prjn-special
+
+Miscellaneous other Projection Types
+....................................
+
+   The OneToOnePrjnSpec simply connects units in a one-to-one fashion.
+This is typically for the entire set of units, but can be controlled
+by setting the `n_conns', `recv_start' and `send_start' parameters,
+which specify the total number of connections to make and starting
+offsets.
+
+   The SymmetricPrjnSpec makes receiving connections to units in the
+sending layer that are already receiving connections from units in the
+receiving layer.  Thus, it makes symmetric connectivity where another
+projection spec has defined the pattern from the other set of units.
+Note that the other projection spec must be associated with a layer
+that comes before the one this spec is on, otherwise it will not have
+any connections to copy from.
+
+   The ScriptPrjnSpec uses a CSS script to create the connections.  It
+contains an `s_args' array of Strings which are passed to script as
+arguments (*note css::).  Any arbitrary form of connectivity can be
+described by writing the appropriate script.  Several useful functions
+on the unit are available for making connections, including
+`ConnectFrom', which takes the sending unit and the projection as
+arguments, and returns the connection and the two connection groups
+associated with it.
+
+   The CustomPrjnSpec is used when the connectivity between units is
+hand assembled. Thus it does not specify a connectivity function, and
+therefore performs no actions when the Build command is called on a
+Network.
+
+   The LinkPrjnSpec does not create any connections itself.  Instead,
+it turns existing connections into linked connections.  The
+connections to be linked are specified by the layer name and unit
+index for both the sending and receiving units.  The connection
+function then finds the connection that connects these two units, and
+links it in with the other ones.  The first connection specified is
+the "owner" of the connection, and its weight values are the ones
+that are used.  The `links' member is the list of connections to be
+linked together.  This type of projection spec, since it does not
+create any projections itself, is typically assigned to a "dummy"
+self projection on one of the affected layers.
+
+
+File: pdp-user,  Node: net-unit,  Next: net-con,  Prev: net-prjn,  Up: net
+
+Units
+=====
+
+   Units are the basic computational elements of networks.  They
+typically integrate information from a number of sources (inputs),
+and perform some relatively simple type of processing on these
+inputs, and then output a single value which somehow summarizes its
+response to the inputs.
+
+   The basic Unit class in PDP++ contains real valued variables for
+representing a unit's activation and its net input from other units as
+well as its target pattern and/or external training input. In addition
+the unit class contains subgroups of sending and receiving connections
+between other units, and a 'bias' connection, which may or may not be
+present depending on the algorithm. A unit also has a position which
+represents its relative offset from its layer's position in the
+netview (*note net-view::).
+
+   As with many objects in PDP++, the Unit relies on a corresponding
+UnitSpec to provide most of the functions and parameters that control
+the unit's behavior.  The unit itself contains the state variables.
+Thus, different units can have different parameters and functions
+simply by changing which UnitSpec they point to.
+
+   The following variables are found on the Unit:
+
+`UnitSpec_SPtr spec'
+     A pointer to the unit specifications for this unit (see below).
+
+`Geometry pos'
+     Specifies the unit's 3-D position relative to the layer. Used for
+     display purposes and optionally for certain projection patterns
+
+`ExtType ext_flag'
+     This flag indicates which kind of external input unit last
+     received. This may have one of four values:
+    `NO_EXTERNAL'
+          Indicates that the unit received no input.
+
+    `TARG'
+          Indicates that the unit received a target value, which is
+          in the `targ' field.
+
+    `EXT'
+          Indicates that the unit received external input, which is
+          in the `ext' field.
+
+    `TARG_EXT'
+          Indicates that the unit received both a target and external
+          input.
+
+    `COMP'
+          Indicates that the unit has a comparison value in its
+          `targ' field.  This is for computing an error statistic or
+          other comparisons, but not for training the network.
+
+    `COMP_TARG'
+          Both a comparison and a target (this is redundant, since
+          all target values are included in comparisons anyway..)
+
+    `COMP_EXT'
+          Both a comparsion and an external input.
+
+    `COMP_TARG_EXT'
+          All three.
+
+`float targ'
+     The target value that the unit is being taught to achieve (i.e.,
+     for output units in a backpropagation network).
+
+`float ext'
+     The external input that the unit received.  Depending on the
+     algorithm, this can be added into the net input for the unit
+     (soft clamping), or the unit' activation can be set to this
+     value (hard clamping).
+
+`float act'
+     The unit's activation value, which is typically a function of
+     its net input.
+
+`float net'
+     The unit's net input value, which is typically computed as a
+     function of the sending unit's activations times their weights.
+
+`Con_Group recv'
+     This group contains the unit's receiving connections.  Each
+     projection creates its own sub-group within this group (*note
+     obj-group::), so `recv' just contains sub-groups which
+     themselves contain the actual connections.
+
+`Con_Group send'
+     This group contains sub-groups containing the unit's sending
+     connections, one sub-group per projection (just like `recv').
+
+`Connection* bias'
+     A pointer to a Connection object which contains the bias weight
+     for this Unit.  Bias weights are treated as special connections
+     which do not have a corresponding sending unit.  This pointer
+     may be NULL if the unit does not have a bias weight.  The type
+     of connection created here is specified by the `bias_con_type'
+     member of the UnitSpec, and the ConSpec for this connection is
+     in the `bias_spec' member of the UnitSpec.
+
+   The basic UnitSpec class defines the set of computational functions
+on the unit, and has parameters which control the unit's behavior.
+Specific algorithms add more parameters to this object.
+
+`MinMaxRange act_range'
+     The legal range of activation values for the unit.
+
+`TypeDef* bias_con_type'
+     The type of bias connection to create in the unit.  The default
+     value for this is set by different algorithms, and it can be
+     NULL if no bias connections are to be created.  The 'Build'
+     operation should be performed if this connection type is changed
+     manually.
+
+`ConSpec_SPtr bias_spec'
+     This ConSpec controls the behavior of the bias on the unit in an
+     algorithm-dependent fashion.
+
+   Note: the following information should be useful to those who wish
+to program in PDP++, but is not necessary for the average user to
+understand.
+
+* Menu:
+
+* net-unit-impl::               Implementational Details About Units
+
+
+File: pdp-user,  Node: net-unit-impl,  Prev: net-unit,  Up: net-unit
+
+Implementational Details About Units
+------------------------------------
+
+   The base UnitSpec defines a standardized way of splitting up the
+computations that take place on a unit.  This allows there to be a
+single function at the level of the Network which iterates through
+all of the layers and they iterate through all of their units and call
+these functions.  This makes writing process code easier, and
+provides a conceptual skeleton on which to implement different
+algorithms.  Note that the unit has simple "stub" versions of these
+functions which simply call the corresponding one on the spec.  This
+also simplifies programming.
+
+`InitState(Unit* u)'
+     Initializes the unit's state variables, including activations,
+     net input, etc.
+
+`InitWtDelta(Unit* u)'
+     Initializes the stored connection weight changes (i.e., changes
+     that have not yet been applied to the weights).
+
+`InitWtState(Unit* u)'
+     Initializes the connection weight values for all of the receiving
+     connections of the unit.
+
+`Compute_Net(Unit* u)'
+     Iterates over the receiving connections of the unit and sets the
+     unit's `net' field to the summed product of the sending unit's
+     activation value times the weight.
+
+`Send_Net(Unit* u)'
+     Iterates over the _sending_ connections of the unit and
+     increments the `net' field of the unit's it sends to.  This way
+     of computing net input is useful when not all units send
+     activation (i.e., if there is a threshold for sending activation
+     or "firing").  A given algorithm will either use `Compute_Net'
+     or `Send_Net', but not both.
+
+`Compute_Act(Unit* u)'
+     Turns the net input value into an activation value, typically by
+     applying a sigmoidal activation function, but this varies
+     depending on the particular algorithm used.  The version in the
+     base UnitSpec just copies the net input into the activation
+     (i.e., it is linear).
+
+`Compute_dWt(Unit* u)'
+     Iterates over the receiving connections on the unit and calls
+     the `Compute_dWt' function on them, which should compute the
+     amount that the weights should be changed based on the current
+     state of the network, and a learning rule which translates this
+     into weight changes.  It should always add an increment the
+     current weight change value, so that learning can occur either
+     pattern-by-pattern ("online" mode) or over multiple patterns
+     ("batch" mode).
+
+`UpdateWeights(Unit* u)'
+     Actually updates the weights by adding the changes computed by
+     `Compute_dWt' to the weights, applying learning rates, etc.
+     This function should always reset the weight change variable
+     after it updates the weights, so that `Compute_dWt' can always
+     increment weight changes.  Note that this function is called by
+     the EpochProcess, which decides whether to perform online or
+     batch-mode learning (*note proc-levels-epoch::).
+

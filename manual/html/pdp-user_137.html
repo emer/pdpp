@@ -1,0 +1,285 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-event</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_136.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_138.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX774" HREF="pdp-user_toc.html">11.2  Events, Patterns and their Specs</A></H2>
+<P>
+<A NAME="IDX775"></A>
+<A NAME="IDX776"></A>
+<A NAME="IDX777"></A>
+<A NAME="IDX778"></A>
+<A NAME="IDX779"></A>
+<A NAME="IDX780"></A>
+
+</P>
+<P>
+Events are the snapshots of the Environment presented to the Network.
+They represent a single coherent set of stimuli drawn from the
+environment.  They are comprised of a set of patterns, which hold the
+information affecting the network on a layer by layer basis.
+
+</P>
+<P>
+<A NAME="IDX781"></A>
+The structure of an event is determined by its corresponding
+<B>EventSpec</B>.  Any changes made in the event spec are automatically
+made to all of the events that use that event spec.  Thus, there must be
+one event spec for each different type of event created.  Event specs
+reside in the environment itself, and not in the Project like other
+specs.  The <B>Event</B> has a pointer to its spec, called <CODE>spec</CODE>.
+This works just like other spec pointers (see section <A HREF="pdp-user_100.html">8.4  Specifications</A>).
+
+</P>
+<P>
+<A NAME="IDX782"></A>
+<A NAME="IDX783"></A>
+Both the <B>Event</B> and <B>EventSpec</B> objects are essentially just
+containers for their constituent <B>Pattern</B> and <B>PatternSpec</B>
+objects, which are also kept in one-to-one correspondence.  Thus, any
+new pattern specs added in the <CODE>pattern</CODE> group in an event spec
+will result in corresponding patterns in the <CODE>pattern</CODE> group on the
+event.  Different varieties of events will add event-level parameters
+like frequency and time (see section <A HREF="pdp-user_146.html">11.10  Frequency Environments and Events</A>, section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>).
+
+</P>
+<P>
+<A NAME="IDX784"></A>
+<A NAME="IDX785"></A>
+A <B>Pattern</B> is simply a list of real numbers, which are kept in a
+floating-point <B>Array</B> object called <CODE>value</CODE>. It can be "applied"
+to a specified layer in the network.  Each element of the value array in
+the Pattern corresponds to a Unit in the Layer.  In addition, one can
+assign a flag to each value, which will alter how this value is applied
+to the units in the network.  The <CODE>flag</CODE> member of a Pattern holds
+the flags, which are only present if the <CODE>use_flags</CODE> field in the
+corresponding pattern spec is set to <CODE>USE_PATTERN_FLAGS</CODE> or
+<CODE>USE_PAT_THEN_GLOBAL_FLAGS</CODE>. All of the flags are independent of
+each other and be either on or off. The meaning of the flag values are
+given in the <CODE>PatFlags</CODE> enumerated type in the <B>PatternSpec</B> and
+listed below.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>TARG_FLAG</CODE>
+<DD>
+unit's TARG flag is set
+<DT><CODE>EXT_FLAG</CODE>
+<DD>
+unit's EXT flag is set
+<DT><CODE>COMP_FLAG</CODE>
+<DD>
+unit's COMP flag is set
+<DT><CODE>TARG_VALUE</CODE>
+<DD>
+pattern value goes to the unit targ field
+<DT><CODE>EXT_VALUE</CODE>
+<DD>
+pattern value goes to the unit ext field
+<DT><CODE>NO_UNIT_FLAG</CODE>
+<DD>
+no unit flags are set, but value is set as normal
+<DT><CODE>NO_UNIT_VALUE</CODE>
+<DD>
+don't set the unit's value, but flag as normal
+<DT><CODE>NO_APPLY</CODE>
+<DD>
+don't apply this value to unit (no flags either)
+</DL>
+
+<P>
+The options include the ability to control how the unit's external input
+will be flagged, and where the value will be copied on the Unit (i.e.,
+to its <CODE>targ</CODE> or <CODE>ext</CODE> field).  This gives the user complete
+control over how the pattern value is presented.
+
+</P>
+<P>
+Note that the <CODE>value</CODE> field is an <CODE>float_RArray</CODE> type, which
+has a range associated with it (hence the RArray), and it also has a
+number of other useful functions that enable the distance between two
+arrays to be computed, or various statistics like the mean, variance,
+etc. to be computed on a given array.  These functions may be useful in
+creating and analyzing patterns.
+
+</P>
+<P>
+The <B>PatternSpec</B> has several fields which determine where its
+corresponding pattern is presented, and what meaning it has to the
+network:
+<DL COMPACT>
+
+<DT><CODE>PatType type</CODE>
+<DD>
+<A NAME="IDX786"></A>
+The type of the pattern, which determines how the network will interpret
+its values.  This can be one of the following values:
+<DL COMPACT>
+
+<DT><CODE>INACTIVE:</CODE>
+<DD>
+The corresponding pattern is not presented to the network.
+<DT><CODE>INPUT:</CODE>
+<DD>
+The corresponding pattern is presented to the network as external input
+activation: the value is copied to the <CODE>ext</CODE> variable of the
+corresponding Unit, and the <CODE>EXT</CODE> flag is set on the
+<CODE>ext_flags</CODE> of the unit (and the layer the unit is in).
+<DT><CODE>TARGET:</CODE>
+<DD>
+The corresponding pattern is presented to the network as target
+activation: the value is copied to the <CODE>targ</CODE> variable of the
+corresponding Unit, and the <CODE>TARG</CODE> flag is set on the
+<CODE>ext_flags</CODE> of the unit (and the layer the unit is in).
+<DT><CODE>COMPARE:</CODE>
+<DD>
+The corresponding pattern is presented to the network as comparison
+pattern, which does not affect activation states or learning, but can be
+used to compare output values to expected ones via error statistics
+(e.g., the <B>SE_Stat</B>). The value is copied to the <CODE>targ</CODE> variable
+of the corresponding Unit, and the <CODE>COMP</CODE> flag is set on the
+<CODE>ext_flags</CODE> of the unit (and the layer the unit is in).
+</DL>
+<P>
+<DT><CODE>PatLayer to_layer</CODE>
+<DD>
+<A NAME="IDX787"></A>
+The network layer to present the Pattern to. This can be one of the
+following values:
+<DL COMPACT>
+
+<DT><CODE>FIRST:</CODE>
+<DD>
+Apply to the first layer in the network.
+<DT><CODE>LAST:</CODE>
+<DD>
+Apply to the last layer in the network.
+<DT><CODE>LAY_NAME:</CODE>
+<DD>
+Specify the Layer to apply to by name. The name should be set in the
+variable <CODE>layer_name</CODE>.
+<DT><CODE>LAY_NUM:</CODE>
+<DD>
+Specify the Layer to apply to by layer number. The number should be set
+in the variable <CODE>layer_num</CODE>.
+</DL>
+<P>
+<DT><CODE>String layer_name</CODE>
+<DD>
+<A NAME="IDX788"></A>
+Contains the name of the layer to apply to (used if <CODE>to_layer</CODE> is
+set to <CODE>LAY_NAME</CODE>).
+<DT><CODE>Int layer_num</CODE>
+<DD>
+<A NAME="IDX789"></A>
+Contains the number of the layer to apply to (used if <CODE>to_layer</CODE> is
+set to <CODE>LAY_NUM</CODE>).
+<DT><CODE>TypeDef* pattern_type</CODE>
+<DD>
+<A NAME="IDX790"></A>
+Determines the type of <B>Pattern</B> object that is created in events
+that use this pattern spec.  Changing this after events have already
+been created will <EM>not</EM> cause them to change pattern types.  You
+have to remove the Events and start over if you want to change the types
+of patterns that are used.
+<DT><CODE>LayerFlags layer_flags</CODE>
+<DD>
+<A NAME="IDX791"></A>
+Determines how the layer's <CODE>ext_flags</CODE> will be set.  The
+<CODE>DEFAULT</CODE> is to set them according to the pattern <CODE>type</CODE> as
+described above, but they can be set to any of the possible combinations
+of flags (<CODE>TARG, EXT, COMP</CODE>), or to <CODE>NO_LAYER_FLAGS</CODE> at all.
+This can be useful if you have an pattern which uses flags for different
+values (see <CODE>use_flags</CODE>) so the layer actually receives multiple
+different kinds of external input.
+<DT><CODE>PatUseFlags use_flags</CODE>
+<DD>
+<A NAME="IDX792"></A>
+Determines how the <CODE>flag</CODE> field of the Pattern and the
+<CODE>global_flags</CODE> of this PatternSpec will be used when applying the
+Pattern to the network.  This can be one of the following values:
+<DL COMPACT>
+
+<DT><CODE>USE_NO_FLAGS:</CODE>
+<DD>
+Both pattern flags and global flags are ignored
+<DT><CODE>USE_PATTERN_FLAGS:</CODE>
+<DD>
+Patterns flags are applied, global flags are ignored
+<DT><CODE>USE_GLOBAL_FLAGS:</CODE>
+<DD>
+Global flags are applied, individual pattern flags are ignored
+<DT><CODE>USE_PAT_THEN_GLOBAL_FLAGS:</CODE>
+<DD>
+If any flags are set on the pattern then use all the pattern's flag
+settings, otherwise apply the global flags for that pattern. Note that
+the choice of global versus pattern flags is not done individually by
+each flag on the pattern but rather as an all or nothing check on each
+pattern to determine if any of its flags are set.
+</DL>
+<P>
+<DT><CODE>int n_vals</CODE>
+<DD>
+<A NAME="IDX793"></A>
+The number of values to create in the corresponding pattern.  It
+should be equivalent to the number of units in the corresponding layer.
+If this value is set to 0, it will be filled in with the number of units
+on the corresponding layer of the default network in the current
+project, if the layer can be found.
+<DT><CODE>PosTDCoord geom</CODE>
+<DD>
+<A NAME="IDX794"></A>
+Determines the shape of the values as displayed in the
+<B>EnviroView</B>.  It should correspond to the geom of the
+corresponding layer, and is initialized as such if possible.
+<DT><CODE>PosTDCoord pos</CODE>
+<DD>
+<A NAME="IDX795"></A>
+The position of the start of the event in the <B>EnviroView</B>.
+Any overlap of displayed patterns is detected automatically, and the
+<CODE>LinearLayout</CODE> action on the EventSpec can be called to arrange the
+events linearly across or down the display.
+<DT><CODE>float initial_val</CODE>
+<DD>
+<A NAME="IDX796"></A>
+The initial value that will be placed in newly created pattern
+<CODE>value</CODE> arrays.
+<DT><CODE>Random noise</CODE>
+<DD>
+<A NAME="IDX797"></A>
+This adds random noise of the given specification as the pattern is
+applied to the network.
+<DT><CODE>String_Array value_names</CODE>
+<DD>
+<A NAME="IDX798"></A>
+The elements in this array are in one-to-one correspondence with the
+values in the pattern, and can be used to label the patterns in the
+<B>EnviroView</B> (see section <A HREF="pdp-user_140.html">11.4  The EnviroView</A>).  This is very useful 
+<DT><CODE>int_Array global_flags</CODE>
+<DD>
+<A NAME="IDX799"></A>
+This contains flags that can apply (depending on <CODE>use_flags</CODE>) to
+all of the patterns, determining how they are presented.
+</DL>
+
+<P>
+Note: the following information should be useful to those who wish to
+program in PDP++, but is not necessary for the average user to
+understand.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_138.html">1               Implementational Details of Events and Patterns</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_136.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_138.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

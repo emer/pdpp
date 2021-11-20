@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-view-view</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_131.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_133.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX753" HREF="pdp-user_toc.html">10.7.3  The View Region</A></H3>
+<P>
+<A NAME="IDX754"></A>
+<A NAME="IDX755"></A>
+<A NAME="IDX756"></A>
+
+</P>
+<IMG SRC="pics/xor.netview.view.gif" ALIGN="MIDDLE" ALT="The NetView View Region">
+<P>
+<B> Figure: </B> The NetView View Region
+<P>
+
+<P>
+The View Region is the core of the NetView and provides a multitude of
+configurable options to the user. The network's layers, units, and
+connections can be viewed, manipulated, scaled, and arranged as the user
+desires. In addition, arbitrary descriptive labels can be placed in the
+View Region to annotate the network. The user has full control over the
+colors used to view the network and can print the View Region itself
+using the PrintData() command on the NetView. Idraw image files may
+also be loaded into the View Region's background.
+
+</P>
+<P>
+Non-obvious actions you can perform on objects in the NetView:
+<DL COMPACT>
+
+<DT><B>Single-click with left-mouse-button (LMB)</B>
+<DD>
+Will select or deselect item, and update the action buttons at the left
+of the display.
+<DT><B>Single-click with right-mouse-button (RMB)</B>
+<DD>
+Will bring up the edit dialog for that object (for Layer names and
+labels).
+<DT><B>Shift-LMB or middle-mouse-button</B>
+<DD>
+Extends the selection to include multiple items.
+</DL>
+
+<P>
+<B>Layers</B> are displayed in the View Region as a rectangular boxes.  The
+position of the layers is controlled by their <CODE>pos</CODE> member and the
+layer's size is controlled by the layer's <CODE>geom</CODE> member
+variable.
+
+</P>
+<P>
+Within the Layer Box, <B>Units</B> are displayed as smaller
+rectangular boxes. The unit's <CODE>pos</CODE> variable controls its relative
+offset from the layer's position. If there are <B>Unit_Groups</B> within
+the layer, they are represented with their own box which surrounds the
+units they contain, and there are also two boxes associated with the
+layer in this case.  One box represents the default size of each
+subgroup of units in the layer, and is the primary one that is selected
+and manipulated in the interface.  An additional box surrounds all of
+the unit groups, and identifies the extent of the layer as
+whole.
+
+</P>
+<P>
+<B>Projections</B> are displayed as arrows starting at the sending
+layer's Layer Box and pointing at the receiving layer's LayerBox. In
+addition units and layers may have text near them which display their
+name or current value.
+
+</P>
+<P>
+The actions of the mouse in the View Region are dependent upon the mode
+of the region selected by the Mode Buttons in the Action Region of the
+NetView.
+
+</P>
+<P>
+In <B>Select Mode</B> the pointer is a small arrow. Clicking the left or
+right mouse button on an object selects the object under the pointer and
+unselects all other object. Clicking the middle mouse button selects
+also selects the object, but does not unselect the other selected
+objects. When an object is selected its border is drawn with a dashed
+line. Re-Selecting an already selected object Un-Selects the object.
+When a <B>Layer</B> or <B>Unit_Group</B> is selected, it will be displayed as
+grid instead of an outlined box. The grid provides the user with a
+depiction of how many units the layer or group contains, as well as the
+size and spacing of the units.
+
+</P>
+<P>
+The names of the <B>Minor Action Buttons</B> in the Action Region will
+change is accordance with the objects which are selected. Since layers,
+unit groups, and units overlap, a special selection method is
+implemented for deciding which object is selected. On the first click of
+the mouse button, the layer is selected. On the second click, the layer
+is unselected and the unit group is selected. On the third click, an
+individual unit is selected. On the fourth click the individual unit is
+unselected.
+
+</P>
+<P>
+In <B>View Mode</B> the pointer becomes a small pointing hand. This mode is
+used for selecting units from which to view sending or receiving weight
+values. View mode is orthogonal to select mode and is illustrated by a
+dotted line surrounding an object. Thus objects can be both selected
+and/or viewed at the same time. Since it is only useful to View
+individual units, clicking on a layer bypasses the Layer and Unit_Group
+selection of Select Mode and directly hi-lights a unit for viewing.
+Indeed, only units can be viewed.  Clicking with the middle mouse button
+invokes the split unit mode and shows the sending or receiving values
+for multiple units.
+
+</P>
+<P>
+In the other four modes, selection of objects occurs as in select mode.
+Each level of selection occurs on the up release of the mouse button,
+and these modes always operate on the currently selected object if there
+is one.
+
+</P>
+<P>
+Therefore, to <I>Move</I> a layer, simply click on the layer and hold down
+the mouse button and move the layer.
+
+</P>
+<P>
+To move a unit group, click on the layer and release, so that the unit
+group is selected.  Then, the next down press will grab the unit group
+for moving -- press and hold and move.
+
+</P>
+<P>
+To move a unit, click twice, once to get through the layer, again to get
+through the unit group, at which point the unit will be selected and
+grabbed for moving upon the next down click.
+
+</P>
+<P>
+In each of the following action modes, when the action is finished, the
+selected object is unselected. If no action was taken (i.e., the mouse
+button was clicked, but the mouse was not moved) the object remains
+selected. In this way, the user can select objects for editing and other
+Actions without being forced to re-choose the Select Mode button. In
+addition the View Region itself my be manipulated by clicking the mouse
+in the background of the View Region and not selecting any objects.
+
+</P>
+<P>
+In <B>Move Mode</B> layers, unit groups, and units are repositioned on a
+coordinate grid with spacing set at the size of an individual unit. As
+the layer or unit object is moved, the object will jump to the fixed
+grid position instead of moving smoothly with the mouse. As a layer or
+unit is moved, its position will be displayed in the Coordinate Box at
+the top of the Actions Region of the NetView. Using the left or middle
+mouse button moves the layer or unit objects in their x-y plane. Using
+the right mouse button allows movement in the x-z planes.
+
+</P>
+<P>
+The head and tail of a projection arrow can be repositioned in Move mode
+as well. Although the position of a projection's head or tail is not
+constrained to the same grid like movement of the layer and units, it is
+constrained to lie within the layer it is connected to.  Layer names and
+the arbitrary network labels may be moved without constraint.  Moving
+the View Region itself is accomplished by clicking in the background
+area of the view. The pointer will change to a flat hand and the View
+Region will "slide" as the user moves the mouse. Pressing the middle
+mouse button constrains the movement to be horizontal, while pressing
+the right mouse button constrains the movement to be vertical.
+
+</P>
+<P>
+<B>Reshape Mode</B> is used exclusively for changing the geometry of a
+layer or unit group.  By clicking and dragging on a layer or unit group,
+the geometry (and number of units if there are no actual units created
+yet) of the displayed grid changes as the mouse moves. The geometry of
+the layer or unit group is displayed in the Coordinate Box at the top of
+the Action Region.  If a layer or group already contains units, its area
+is constrained to be equal to or greater than the number of unit's in
+the layer or group. Thus a layer with 100 units could be sized to be
+10x10 or 20x5, but not 4x3.  Further reshaping a layer or group with
+units already in it will not change the number of units in the layer,
+while this will occur if there are no actual units.
+
+</P>
+<P>
+<B>Zoom Mode</B> is used to change the magnification (zooming) of objects
+in the View Region, or the overall view itself. It is primarily used
+to rescale layers for maximum visibility when you have a really big
+network.  You can reset the zooming of a layer with
+<I>Actions/ResetLayerZoom</I>, or impose a specific amount of zooming
+with <I>Actions/ZoomLayer</I>.  If the mouse is pressed in the background
+of the View Region, the entire View Region can be scaled. Dragging the
+mouse upward zooms in on the region at which the mouse was first
+pressed. Dragging downward likewise zooms outward. If the middle mouse
+button is pressed only the horizontal dimension is scaled. If the
+right mouse button is pressed only the vertical dimension is
+scaled. The Init Button in the Action Region can be used to undo
+background scaling and recenter the Network, and
+<I>Actions/FreezeNetZoom</I> will lock in the current overall view
+zooming until a subsequent <I>Actions/AutoNetZoom</I>.
+
+</P>
+<P>
+The Rotate mode is somewhat frivolous but can be used to further
+customize the objects in the View Region, or to manipulate imported
+Idraw graphics.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_131.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_133.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

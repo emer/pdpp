@@ -1,0 +1,1160 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: log-views-logview,  Next: log-views-text,  Prev: log-views,  Up: log-views
+
+The LogView Class
+-----------------
+
+   The LogView class provides the general variables, functions, and
+interface components for all the LogView subclasses. Visually all
+LogView objects have a common interface at the top of the LogView
+window. In the top middle of each LogView widow is a set of four
+buttons used for scrolling the visible region of the LogView
+throughout the data and data logfile:
+
+|< Full Rewind
+     Load the first `data_bufsz' lines of data from the file.
+
+<  Rewind
+     Move back `data_shift' lines in the datatable.
+
+>  Forward
+     Move forward `data_shift' lines in the datatable.
+
+>| Full Forward
+     Load the last `data_bufsz' lines of data from the file.
+
+   To the left of the scroll buttons is a toggle switch which sets the
+LogView's updating on or off. To the right of the scroll buttons are
+the Update, Init, and Clear buttons. The Update button is the most
+benign. Its action merely refreshes the display. The Init button is
+does a bit more by rescaling, recentering and recreating the graphical
+representation of the LogView based on the settings of the ViewSpecs
+and the LogView object. The Clear button destructively removes all the
+data from the log and re-initializes the display. It is useful if you
+are restarting your Training for example and want to clear out the
+statistics gathered for the last Training run. The Clear button does
+not affect the log files.
+
+   All LogViews have the following functions in their View:Object
+menu:
+`AddUpdater(SchedProcess* proc)'
+     Adds the given process as an updater of this log (i.e., it sends
+     data to this log).
+
+`RemoveUpdater(SchedProcess* proc)'
+     Removes the given process as a sender of data to this log.  This
+     function can also be used check what process(es) are updating
+     this log.
+
+   All LogViews have the following functions in their Actions menu:
+`StartAnimCapture(img_fmt, img_ctr, sub_dir)'
+     Starts automatic capturing of window updates to files of given
+     format saved in given sub directory, with increasing counter
+     extensions starting with img_ctr.  These images can then be
+     processed to create an animation of what was displayed in the
+     view.
+
+`StopAnimCapture()'
+     Stops the automatic capturing of window updates to files.
+
+`EditViewSpec(ViewSpec* column)'
+     Brings up an edit dialog for parameters that control the display
+     of given column or group of data.
+
+`SetVisibility(ViewSpec* column, bool vis)'
+     Determines whether a given column of data is visible (displayed)
+     in the log view or not.
+
+`SetLogging(ViewSpec* column, bool log_data, bool also_chg_vis)'
+     Determines whether a given column of data is logged to the log
+     file, and, if also_chg_vis is set, it also similarly affects
+     whether the column is visible (displayed) in the log view or
+     not.  The logging flag (`save_to_file') is actually stored in
+     the `data' structure on the log object itself, and is thus
+     shared by all views of this log.
+
+`UpdateDispLabels()'
+     Copies display_labels from the log object to the labels used to
+     display data in the log view.  These display_labels are not used
+     by default.
+
+   Furthermore, LogViews have an Analyze menu that allows one to
+analyze columns of data in the log.  This actually occurs by copying
+the data to an environment object, and then running analysis routines
+on that environment.  See the environment documentation (*note
+env-analyze::) to see what other functions are available, and for
+greater explanation of these analysis functions.
+`CopyToEnv(TAPtr data, TAPtr labels, Environment* env)'
+     Outputs data column (must be group) with labels to environment
+     env (WARNING: reformats env to fit data!)  Further analysis and
+     transformations can be performed within the environment.
+
+`DistMatrixGrid(TAPtr data, TAPtr labels, GridLog* disp_log, DistMetric metric,  bool norm, float tol)'
+     Computes and displays in a grid log (NULL = make a new one) the
+     distance matrix for data (must be group of data) with labels
+     (typically event names).
+
+`ClusterPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, bool graphic, DistMetric metric, bool norm, float tol);'
+     Produces a cluster plot (in graph log, NULL = make a new one) of
+     the given data (with labels).
+
+`CorrelMatrixGrid(TAPtr data, TAPtr labels, GraphLog* disp_log);'
+     Produces a correlation matrix of the given data - how each
+     column of values correlates with the other columns across the
+     rows of different values, and plots this in a grid log.
+
+`PCAEigenGrid(TAPtr data, TAPtr labels, GraphLog* disp_log);'
+     Computes principal components (eigenvectors) of the correlation
+     matrix of column values across rows of data, and plots these
+     eigenvectors in a grid log.
+
+`PCAPrjnPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, int x_axis_component, y_axis_component);'
+     Computes principal components (eigenvectors) of the correlation
+     matrix of column values across rows of data, and plots the
+     projection of each row of data against two of these principal
+     components.  This produces a simplified two-dimensional
+     representation of the similarity structure of the data.
+
+`MDSPrjnPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, int x_axis_component, y_axis_component);'
+     Computes multidimensional scaling (MDS) on the distance matrix
+     of rows of data, and then plots a projection of each row onto
+     two components - this also provides simplified two-dimensional
+     representation of the similarity structure of the data.
+
+   And as mentioned above, all LogViews have the following Variables:
+`bool display_toggle'
+     Determines if screen updates from the Update Processes will
+     affect the display or not. It is sometimes useful to turn off the
+     complex display updating of the LogView to speed up the
+     Processes. This variable does not affect the recording of the
+     Log information. Thus if the `display_toggle' is toggled off
+     while a Process is running, and then toggled back on, the
+     LogView display will reflect all of the data received when the
+     LogView display was turned off.
+
+`int view_bufsz'
+     The maximum number of lines of Log data visible in the Display.
+
+`float view_shift'
+     The percentage of `view_bufsz' to shift when the data exceeds the
+     `view_range'
+
+`MinMax view_range'
+     The range of currently visible data lines.
+
+`DT_ViewSpec viewspec'
+     This DataTable View specification is the place holder for all the
+     ViewSpecs for the individual columns of data in the log - edit
+     this to get at all of the parameters that control the view
+     display.
+
+
+File: pdp-user,  Node: log-views-text,  Next: log-views-net,  Prev: log-views-logview,  Up: log-views
+
+The Text LogView
+----------------
+
+   The Text LogView provides a read-only scrollable window of a
+textual representation of the log's data. Across the top of the
+TextLogView are the common file I/O buttons and the display toggle.
+Beneath those buttons is a horizontally scrollable region of data.
+The top line of data will always be the most recent header
+information the log has received. It will be printed in bold face
+type, with each field separated by the expected size of the data.
+Beneath the header info and its separator bar is the actual data. The
+fields in the data line correspond to the the fields of header line
+above.
+
+   Each column of data has an associated TextViewSpec which has but
+one field:
+`width'
+     The width (in 8 character blocks) allocated to  the column of
+     data
+
+   Resizing the TextLogView window changes the number of visible data
+lines, although you typically need to press Init to get everything
+synced up.
+
+
+File: pdp-user,  Node: log-views-net,  Next: log-views-graph,  Prev: log-views-text,  Up: log-views
+
+The Net LogView
+---------------
+
+   The NetLogView is similar to the TextLogView in that it displays
+the log's data in a textual representation. Its main difference
+however is that instead of displaying the values in its own window,
+it displays its data as labels in an associated network's views. Thus
+the NetLogView has one important field, `network', which is the
+network to display into.  By default, the `network' is set to the one
+used by the process that updates the log.  The data is displayed in
+each of the network's views by adding labels to the NetViews and
+changing the text in those labels. The labels can be repositioned (as
+a group or individually) and edited in the NetView to change their
+fonts.  The labels are arranged in columns at the upper left of the
+netview.
+
+   The following functions on the Actions menu are available to
+control the display:
+
+`SetNetwork(Network* net)'
+     Sets the network to display the log data into.  Goes into the
+     default display in this network.
+
+`ArrangeLabels(int cols, int rows, int width, float left, float top)'
+     Controls positioning by specifying the number of columns and
+     rows, their width, and where in the display they should appear
+     (left = 0 = left side, 1 = right; top = 0 = bottom, 1 = top).
+
+
+File: pdp-user,  Node: log-views-graph,  Next: log-views-grid,  Prev: log-views-net,  Up: log-views
+
+The Graph LogView
+-----------------
+
+   Figure of: <The Graph Log Viewer> here
+
+   The GraphLogView provides a realtime 2D line graph representation
+of the log's data. The fields of the header of the log are each
+graphable as a separate line in the Graph. The color and style of the
+lines are fully customizable by the user as are the range and scaling
+factors of the graph itself.
+
+   Resizing the GraphLogView window rescales the graph to fit the
+size of the window.
+
+* Menu:
+
+* log-views-graph-fields::       The Field Toggle Buttons
+* log-views-graph-graph::        The Graph Area
+* log-views-graph-labels::       GraphLogView Labels
+* log-views-graph-variables::    GraphLogView Variables
+* log-views-graph-functions::    GraphLogView Functions
+
+
+File: pdp-user,  Node: log-views-graph-fields,  Next: log-views-graph-graph,  Prev: log-views-graph,  Up: log-views-graph
+
+The Field Toggle Buttons
+........................
+
+   Each of these fields of data in the GraphLogView's PDPLog are
+listed in a vertical scrollbox of toggle buttons in the lower left of
+the GraphLogView. Initially all the lines are toggled on, except those
+that represent counter data and String data.  By pressing the toggle
+button with the left mouse button, the display of the line
+corresponding to that field is turned on or off. Pressing the middle
+mouse button selects that field to represent the X axis - a second
+press on a group of data selects Row-wise plotting of data.  Pressing
+the right mouse button on the field toggle button brings up an edit
+dialog for the field, where you can specify all the detailed
+parameters controlling its display.
+
+   Initially each of the lines is assigned a default line style and
+color.  The color of the line is displayed as a small line just to the
+left of the toggle button (for String fields, an "-S-" is displayed).
+To the right of the toggle button another small line will indicate the
+color of the line's y-axis, or a "-X-" if the toggle button's field
+represents the X-axis.
+
+   The GraphViewSpec provides the following customizable variables:
+`RGBA line_color'
+     The color of the line specified as a color name or
+     Red,Green,Blue,Alpha
+
+`LineType line_type'
+     Determines if the line is drawn with `LINES', `POINTS', or both
+     `LINES_AND_POINTS'.  If the data is Strings, `STRINGS' is
+     selected by default.  `TRACE_COLORS' specifies that each trace
+     of data gets a different color according to the color scale
+     spectrum associated with the graph log.  `VALUE_COLORS'
+     specifies that the Y axis values are represented by colors using
+     the color scale spectrum - useful for `vertical = NO_VERTICAL'.
+     `THRESH_POINTS' draws points whenever the Y axis data value
+     exceeds the `thresh' value.
+
+`LineStyle line_style'
+     Determines the how the line component of the GraphLine is drawn.
+     Style choices are `SOLID (______)' , `DOT (......)', `DASH (_ _ _
+     )', `DASH_DOT (_._._.)' .
+
+`PointStyle point_style'
+     Determines the how the point component of the GraphLine is
+     drawn. Style choices are `NONE ( )' , `SMALL_DOT (.)', `BIG_DOT
+     (o)', `TICK (|)', `PLUS (+)'.
+
+`point_mod'
+     Specifies spacing of points - m = modulus value, or number of
+     spaces between dots, and off = offset from start of data.
+
+`bool negative_draw'
+     Determines if a line is drawn from right to left if the values
+     of the X-axis decrease (i.e., between traces).
+
+`SharedYType shared_y'
+     What to do with multiple graph lines that share the Y axis:
+     `OVERLAY_LINES' overlays shared lines on top of each other, while
+     `STACK_LINES' stacks shared values on top of each other in a
+     non-overlapping manner.
+
+`VerticalType vertical'
+     How to manage the vertical (Y) axis.  `FULL_VERTICAL' means use
+     the full vertical axis for displaying Y values, `STACK_TRACES'
+     means arrange subsequent traces of data (pass through the same X
+     axis values) in non-overlapping vertically-arranged stacks,
+     `NO_VERTICAL' means don't draw any vertical dimension at all (for
+     `line_type = VLAUE_COLORS' or `THESH_POINTS').
+
+`FloatTwoDCoord trace_incr'
+     Specifies increments in starting coordinates for each subsequent
+     trace of a line across the same X axis values, producing a
+     3D-like effect.  For example, x=-2,y=2 means move each
+     subsequent trace to the left and upwards.
+
+`float thresh'
+     The threshold for `line_type' = `THRESH_POINTS'.
+
+`GraphLogViewSpec* axis_spec'
+     Determines which GraphLogViewSpec should be used as the Y-Axis
+     for this ViewSpec's data to be scaled by.  This can be any other
+     column except if this column is used as a Y-axis for other
+     columns.
+
+`FixedMinMax range'
+     This specifies fixed min or max values for the range of values
+     to be plotted.  Values are only applicable if corresponding `fix'
+     buttons are on.
+
+`int n_ticks'
+     Maximum number of ticks to use in display of axis number labels
+     (actual number may be less depending on the labels).
+
+`GraphLogViewSpec* string_coords'
+     Column that contains vertical coordinate values for positioning
+     of String data labels.
+
+   The following functions are also available on the GraphViewSpec:
+
+`PlotRows()'
+     Plot the data across rows of grouped columns (x axis = column
+     index, y axis = values for each column in one row) instead of
+     down the columns.
+
+`PlotCols()'
+     Plot the data down columns (standard mode).
+
+`GpShareAxis()'
+     Make every element in this group share the same Y axis, which is
+     the first in the group.
+
+`GpSepAxes()'
+     Make every element in this group have its own Y axis.
+
+
+File: pdp-user,  Node: log-views-graph-graph,  Next: log-views-graph-labels,  Prev: log-views-graph-fields,  Up: log-views-graph
+
+The Graph Area
+..............
+
+   The Graph Area of the GraphLogView appears as a region consisting
+of a field of background color overlaid with a horizontal X axis at
+the bottom of the Graph region, one or more vertical Y-axes on the
+left edge of the Graph region, lines of data, and optionally text
+labels scattered about. The lines of data will not initially be
+visible until data is actually recorded in the PDPLog.  If separate
+graphs are selected, multiple such graphs may be arranged within the
+display.
+
+   The range of the Axes is determined by the GraphLogViewSpec of
+their corresponding fields. The tick marks are displayed as decimal
+numbers with a factor of 10 multiplier on the bottom of the Y-axes or
+left side of the x-axis. (i.e. If the axis tick read "2.15" and the
+multiplier is"10X" then the actual value is 21.5).
+
+   The GraphLogView Graph area can be zoomed and scrolled in a
+similar way as the Netview by selecting the Mv/Scan or ReScale mode
+buttons in the upper left of the GraphLogView. In Move/Scan mode, the
+graph's coordinates can be moved around by pressing and holding a
+mouse button in the background of the graph area. Moving with the
+left mouse button allows translations in both the Horizontal and
+Vertical planes, while the middle mouse button constrains movement to
+the Horizontal plane only and similarly the right mouse only allows
+Vertical movement. Likewise in Rescale mode, the left mouse button
+scales both dimensions, the middle mouse button only scales the
+Horizontal, and the right mouse button only scales the Vertical.
+
+   In Move/Scan mode if the mouse button is pressed while the pointer
+is over a line in the graph area the pointer will turn to a clenched
+hand and the value of the data at the mouse pointer location will
+appear beside the pointer. Dragging the mouse with left mouse button
+pressed will move a small box along the selected line, jumping from
+data point to data point and indicating the values. When the mouse
+button is released, the value and location box remain on the line
+until the `Init' button is pressed on the GraphLogView, or the log's
+buffer is overfilled.
+
+
+File: pdp-user,  Node: log-views-graph-labels,  Next: log-views-graph-variables,  Prev: log-views-graph-graph,  Up: log-views-graph
+
+GraphLogView Labels
+...................
+
+   In addition to the scanned value GraphLabels, general purpose
+GraphLabels can be manipulated using the New, Delete, and Edit
+GraphLabel action buttons on the left of the GraphLogView display.
+The "New" action button creates a label in the graph area. The
+"Delete" action button removes selected labels. The "Edit" action
+button brings up an Edit dialog for the selected labels.  Editing a
+label allows the user to change the text or font of the label, using a
+standard XWindows font specification string.  Note that Select mode
+must be activated to select these labels for the Edit and Delete
+operations, and that clicking wit the right-mouse-button (RMB) will
+automatically edit the label.
+
+
+File: pdp-user,  Node: log-views-graph-variables,  Next: log-views-graph-functions,  Prev: log-views-graph-labels,  Up: log-views-graph
+
+GraphLogView Variables
+......................
+
+   The GraphLogView provides the following variables for customizing
+the appearance of the Graph. To further customize the appearance of
+the individual lines of the graph, edit the GraphLogViewSpecs of the
+PDPLog's data fields.
+
+`int x_axis_index'
+     The index of the field to be used as the x (horizontal) axis.
+     Usually it is easier to select this using the middle-mouse
+     button on a field button.
+
+`ViewLabel_Group labels'
+     The listing of all the extra labels (string text) on the graph.
+
+`ColorScaleSpec* colorspec'
+     The color spectrum for this display (for TRACE_COLOR or
+     VALUE_COLOR line displays).
+
+`bool separate_graphs'
+     Draw each group of lines sharing a Y axis using separate graphs
+
+`PosTwoDCoord graph_layout'
+     Arrangement of graphs for separate graphs - these are just rough
+     constraints - actual geometry will be adjusted to fit number of
+     graphs.
+
+
+File: pdp-user,  Node: log-views-graph-functions,  Prev: log-views-graph-variables,  Up: log-views-graph
+
+GraphLogView Functions
+......................
+
+   The GraphLogView provides the following functions:
+
+`SetColorSpec(ColorScaleSpec* colors)'
+     Set the color spectrum to use for color-coding values (NULL =
+     use default)
+
+`SetBackGround(RGBA background)'
+     Sets the graph area's background color. When printing the graph
+     it is useful to set this color to white.
+
+`UpdateLineFeatures()'
+     Update the update color, line type, point type, etc of lines in
+     accordance with the current settings for the ordering of these
+     features.  Only visible lines are updated.
+
+`SetLineFeatures(ColorType color_type, SequenceType sequence_1, SequenceType sequence_2,  SequenceType sequence_3, bool visible_only)'
+     Sets the features of the all the lines or only the visible lines
+     if `visible_only' is set. The lines' features are determined by
+     iterating over the possible choices in sequence_1, and then when
+     those choices are exhausted, incrementing sequence_2 and
+     repeating the possible choices in sequence_1 again. This is
+     likewise extended to sequence_3 if need be until all of the
+     lines' features have been set.  The `color_type' argument is
+     used to determine the colorscale to sequence over for the
+     sequence arguments which are set to `COLORS'.  The other
+     possible choices of sequence types are `LINES' and `POINTS'.
+
+`SetLineWidths(float line_width)'
+     Set the widths of all lines in the graph to given value
+
+`SetLineType(LineType line_type)'
+     Set all line types to given type
+
+`ShareAxisAfter(GraphViewSpec* axis_var)'
+     Make all displayed variables after given axis_var share Y axis
+     with axis_var
+
+`ShareAxes()'
+     Make all groups of columns share the same Y axis
+
+`SeparateAxes()'
+     Each column of data gets its own Y axis
+
+`PlotRows()'
+     Plot the data across rows of grouped columns (x axis = column
+     index, y axis = values for each column in one row) instead of
+     down the columns
+
+`PlotCols()'
+     Plot the data down columns (standard mode)
+
+`SeparateGraphs(int x_layout, int y_layout)'
+     Draw each group of lines sharing the same Y axis using separate
+     graphs, with the given layout of graphs in the display. Sets the
+     `graph_layout' and `separate_graphs' parameters.
+
+`OneGraph()'
+     Draw all data in one graph (default).
+
+`TraceIncrement(float x_increment, float y_increment)'
+     Each subsequent trace of data (pass through the same X axis
+     values) is incremented by given amount, producing a 3D-like
+     effect.
+
+`StackTraces()'
+     Arrange subsequent traces of data (pass through the same X axis
+     values) in non-overlapping vertically-arranged stacks.
+
+`UnStackTraces()'
+     Subsequent traces of data (pass through the same X axis values)
+     are plotted overlapping on top of each other.
+
+`StackSharedAxes()'
+     Arrange lines that share the same Y axis in non-overlapping
+     vertically-arranged stacks.
+
+`UnStackSharedAxes()'
+     Lines that share the same Y axis are plotted overlapping on top
+     of each other.
+
+`SpikeRaster(float thresh)'
+     Display spike rasters with given threshold for cutting a spike
+     (`trace_incr.y = 1', `vertical = NO_VERTICAL', `line_type =
+     TRESH_POINTS').
+
+`ColorRaster()'
+     Display values as rasters of lines colored according to the
+     values of the lines.
+
+`StandardLines()'
+     Get rid of raster-style display and return to 'standard' graph
+     line display.
+
+`SetXAxis (char* nm)'
+     Sets the `x-axis_index' of the view to the field named `nm'. If
+     there is no field named `nm' then the index is unchanged.
+
+
+File: pdp-user,  Node: log-views-grid,  Prev: log-views-graph,  Up: log-views
+
+The Grid LogView
+----------------
+
+   Figure of: <The Grid Log Viewer> here
+
+   The GridLogView is similar to the TextLogView in that it displays
+from top to bottom sequential lines of Log data. It differs however
+in that the values of the data can be displayed as colored blocks
+similar to the units in the NetView as well as the text output style
+of the TextLogView.
+
+   In addition, the columns of Log data can be arranged in a custom
+fashion in a 2-D grid for each "line" of data. This is useful
+especially for MonitorStats which generate a separate column of data
+for each value recorded from the NetView.  For Example: If a
+MonitorStat was monitoring the activations a 5x5 layer it would
+generate 25 columns of data. In the GridLogView these 25 columns
+could be arranged as in a 5x5 grid in the same layout as the units in
+the monitored Layer.  Indeed, a monitored layer automatically sets
+its geometry to be used for the default configuration of the
+GridLogView.
+
+   The header label information in the GridLogView is also different
+in that is is arranged in the same grid layout as the data and its
+field header name labels are selectable and manipulable with the
+mouse.  This allows complete interactive configuration of the
+GridLogView display, as follows:
+
+Move with left-mouse-button (LMB)
+     Clicking and dragging on a header item will move it, in
+     unit-level chunks, and will then update the display of all the
+     corresponding data for that column.  Items can be moved
+     anywhere, and overlap is not a problem (previous versions would
+     crash upon overlap).
+
+Reshape with Shift-LMB or middle-mouse-button
+     For items that are displayed in the header with a grid of boxes
+     (e.g., monitored values), you can reshape the grid.  The grid
+     will not shrink below the number of elements to be displayed, so
+     keep that in mind as you reshape it.
+
+Edit with right-mouse-button (RMB)
+     Clicking with the right mouse button will pull up the
+     GridLogViewSpec for that item for more detailed configuration
+     (*note log-views-grid-custom::).
+
+   Resizing the GridLogView window changes the number of visible data
+lines, always in such a way as to keep the grids roughly square.  So,
+if you want to have more items in the display, this can also be
+achieved by making the window narrower!
+
+* Menu:
+
+* log-views-grid-logview::      The GridLogView object
+* log-views-grid-custom::       Customizing the GridLogView Display
+
+
+File: pdp-user,  Node: log-views-grid-logview,  Next: log-views-grid-custom,  Prev: log-views-grid,  Up: log-views-grid
+
+The GridLogView Class
+.....................
+
+   The GridLogView class provides the following variables for
+customizing the display:
+`BlockFill fill_type'
+     Controls the way in which the Log data values are displayed as
+     blocks. The `COLOR' setting fills the block with its value's
+     respective color from the colorbar at the bottom of the
+     GridLogView display. The `AREA' and `LINEAR' fill the block with
+     size-varying spirals in a manner similar to the spirals in the
+     NetView and described in more detail in that section. (*note
+     net-view::).
+
+`ColorScale* colorspec'
+     The colorscale to use for the colorbar at the bottom of the
+     GridLogView display (*note gui-colors::).
+
+`int block_size'
+     The size (width and height) of the block area for the value
+     blocks -- note that this is only a maximum value - if the blocks
+     need to be shrunk to fit everything in the current window size,
+     they will be!
+
+`int block_border_size'
+     The horizontal and vertical spacing between the blocks in the
+     GridLogView.
+
+`bool header_on'
+     Whether to display the header or not (also accessable through the
+     Hdr check box on the display itself).
+
+`bool auto_scale'
+     Whether to scale the block colors by the actual values of items
+     displayed, or to use a fixed range given by the colorscale at
+     the bottom of the screen (also accessable through the Auto check
+     box on the display itself).
+
+`FontSpec view_font'
+     Font to use for rendering of all text in the display.
+
+   The GridLogView also provides the following functions:
+`SetColorSpec(ColorScaleSpec* colors)'
+     Set the color spectrum to use for color-coding values (NULL =
+     use default)
+
+`SetBlockFill(BlockFill fill_typ)'
+     Set's the way that data blocks representing values are displayed
+     according to the `fill_type' variable of the GridLogView, either
+     `COLOR', `AREA', or `LINEAR'.
+
+`SetBlockSizes(int block_sz, int border sz)'
+     Set's the maximum size of the data blocks - actual size can be
+     smaller depending on size of display.
+
+`UpdateGridLayout(MatrixLayout layout)'
+     Arranges the columns of data to fit without gaps, according to
+     the geometry of the `view_spec'. Possible choices for `layout'
+     are:
+    `LFT_RGT_BOT_TOP'
+
+    `LFT_RGT_TOP_BOT'
+
+    `BOT_TOP_LFT_RGT'
+
+    `TOP_BOT_LFT_RGT'
+     These are explained more fully in the next section.
+
+`SetViewFontSize(int point_size)'
+     Set the point size of the font used for labels in the display
+
+`AllBlockTextOn()'
+     Turn text on (in addition to the block) for all block displayed
+     items.
+
+`AllBlockTextOff()'
+     Turn text off for all block displayed items (so they only
+     display as colored blocks).
+
+
+File: pdp-user,  Node: log-views-grid-custom,  Prev: log-views-grid-logview,  Up: log-views-grid
+
+Customizing the GridLogView Display
+...................................
+
+   In addition to the general customization variables available on the
+GridLogView object, the GridViewSpec objects allow precise control
+over the positioning and display style of the data elements in the
+GridLogView.
+
+   Each of the columns of data in the PDPLog has an associated
+GridViewSpec in the GridLogView. Some of the columns of data have
+been grouped together by their generating statistics and will also
+have a DT_GridViewSpec for the entire group of data columns.
+
+   The GridViewSpec provides the following customizable variables:
+
+`TDGeometry pos'
+     Indicates the absolute position in the grid in which this data
+     column's values will appear (i.e., even if the GridLogViewSpec
+     is part of an associated group of GridLogViewSpecs this variable
+     will indicate the absolute position of this column's value). The
+     Z component of the position is ignored. (0,0) is in the lower
+     left corner of each line in the GridLogView.
+
+`DisplayStyle display_style'
+     Controls the way in which the Log data values for this column
+     are displayed. The choices are:
+    `TEXT'
+          Display the values as text only
+
+    `BLOCK'
+          Display the values as a colored block
+
+    `TEXT_AND_BLOCK'
+          Display the block overlaid with with text
+
+`bool scale_on'
+     If set, and if the display style includes BLOCK, then this
+     column of data will participate in setting the overall scaling
+     of values.
+
+   For data columns organized into groups (e.g., the output of a
+MonitorStat on a layer's worth of activations), the DT_GridViewSpec
+provides the following variables:
+
+`TDGeometry pos'
+     Indicate the position in the grid in which this group of data
+     columns' values will appear. The Z component of the position is
+     ignored. (0,0) is in the lower left corner of each line of the
+     GridLogView.
+
+`TDGeometry geom'
+     Controls the size of the region in which the GridViewSpecs of
+     the this DT_GridViewSpec are positioned.
+
+`MatrixLayout layout'
+     Controls how the individual elements within the group are
+     positioned relative to each other, as follows (note this is also
+     used in the UpdateLayout function):
+    `LFT_RGT_BOT_TOP'
+          Increment column first, then decrement row, start at bottom
+          left:
+                789
+                456
+                123
+
+    `LFT_RGT_TOP_BOT'
+          Increment column first, then increment row, start at top
+          left:
+                123
+                456
+                789
+
+    `BOT_TOP_LFT_RGT'
+          Decrement row first, then increment column, start at bottom
+          left:
+                369
+                258
+                147
+
+    `TOP_BOT_LFT_RGT'
+          Increment row first, then increment column, start at top
+          left:
+                147
+                258
+                369
+
+`Bool use_gp_name'
+     When this variable is set to `true' a single label of the name of
+     the group's DT_GridViewSpec is used instead of individual labels
+     for all the GridViewSpecs of the group.  This also determines
+     whether the display_style used will be that of the group or the
+     individual elements.
+
+`DisplayStyle display_style'
+     Controls how the data is displayed, either TEXT, BLOCK, or both.
+
+   The DT_GridViewSpec provides the following functions:
+`UpdateLayout(MatrixLayout ml)'
+     Repositions the GridViewSpecs according to the `ml' and the
+     `geom' variable.  See `layout' variable above, which is what is
+     used if `DEFAULT' is selected for the `ml', for descriptions of
+     the layout options.
+
+
+File: pdp-user,  Node: bp,  Next: cs,  Prev: log,  Up: Top
+
+Backpropagation
+***************
+
+   Backpropagation is perhaps the most commonly used neural network
+learning algorithm.  Several different "flavors" of backpropagation
+have been developed over the years, several of which have been
+implemented in the PDP++ software, including the use of different
+error functions such as cross-entropy, and recurrent backprop, from
+the simple recurrent network to the Almeida-Pineda algorithm up to
+the real-time continuous recurrent backprop.  The implementation
+allows the user to extend the unit types to use different activation
+and error functions in a straightforward manner.
+
+   Note that the simple recurrent networks (SRN, a.k.a. Elman
+networks) are described in the feedforward backprop section, as they
+are more like feedforward networks than the fully recurrent ones.
+
+* Menu:
+
+* bp-ff::                       Feedforward Backpropagation
+* rbp::                         Recurrent Backpropagation
+
+
+File: pdp-user,  Node: bp-ff,  Next: rbp,  Prev: bp,  Up: bp
+
+Feedforward Backpropagation
+===========================
+
+* Menu:
+
+* bp-over::                     Overview of the Bp Implementation
+* bp-con::                      Bp Connection Specifications
+* bp-unit::                     Bp Unit Specifications
+* bp-proc::                     The Bp Trial Process
+* bp-vari::                     Variations Available in Bp
+* bp-srn::                      Simple Recurrent Networks in Bp
+* bp-defs::                     Bp Defaults
+* bp-impl::                     Bp Implementation Details
+
+
+File: pdp-user,  Node: bp-over,  Next: bp-con,  Prev: bp-ff,  Up: bp-ff
+
+Overview of the Bp Implementation
+---------------------------------
+
+   The basic structure of the backpropagation algorithm is reviewed
+in the tutorial (*note tut-bp::).  In short, there are two phases, an
+activation propagation phase, and an error backpropagation phase.  In
+the simplest version of Bp, both of these phases are strictly
+feed-forward and feed-back, and are computed sequentially
+layer-by-layer.  Thus, the implementation assumes that the layers are
+organized sequentially in the order that activation flows.
+
+   In the recurrent versions, both the activation and the error
+propagation are computed in two steps so that each unit is
+effectively being updated simultaneously with the other units.  This
+is done in the activation phase by first computing the net input to
+each unit based on the other units current activation values, and
+then updating the activation values based on this net input.
+Similarly, in the error phase, first the derivative of the error with
+respect to the activation (dEdA) of each unit is computed based on
+current dEdNet values, and then the dEdNet values are updated based
+on the new dEdNet.
+
+   To implement a new algorithm like Bp in PDP++, one creates new
+class types that derive from the basic object types that make up a
+network (*note net::), and scheduling processes (*note proc::).
+These new classes inherit all the functionality from the basic types,
+and specify the details appropriate for a particular algorithm.
+There are two ways in which this specification happens--overloading
+(replacing) existing functions, and adding new ones (*note
+obj-basics-obj::).
+
+   The new classes defined in the basic Bp implementation include:
+BpConSpec, BpCon, BpCon_Group, BpUnit, BpUnitSpec, BpTrial, the role
+of which should be clear from their names.  In addition, we have
+added a CE_Stat that computes the cross-entropy error statistic, much
+in the same way SE_Stat does (*note proc-stats-se::).
+
+   Bias weights in PDP++ are implemented by adding a BpCon object to
+the BpUnit directly, and not by trying to allocate some kind of self
+projection or some other scheme like that.  In addition, the
+BpUnitSpec has a pointer to a BpConSpec to control the updating etc
+of the bias weight.  Thus, while some code was written to support the
+special bias weights on units, it amounts to simply calling the
+appropriate function on the BpConSpec.
+
+   The processing hierarchy for feed-forward Bp requires only a
+specialized Trial process: BpTrial, which runs both the feed-forward
+activation updating and error backpropagation phases.
+
+
+File: pdp-user,  Node: bp-con,  Next: bp-unit,  Prev: bp-over,  Up: bp-ff
+
+Bp Connection Specifications
+----------------------------
+
+   In addition to the weight itself, the connection type in Bp,
+BpCon, has two additional variables:
+
+`float dwt'
+     The most recently computed change in the weight term.  It is
+     computed in the `UpdateWeights' function.
+
+`float dEdW'
+     The accumulating derivative of the error with respect to the
+     weights.  It is computed in the `Compute_dWt' function.  It will
+     accumulate until the `UpdateWeights' function is called, which
+     will either be on a trial-by-trial or epoch-wise (batch mode)
+     basis.
+
+   The connection specifications control the behavior and updating of
+connections (*note net-con::).  Thus, in Bp, this is where you will
+find thinks like the learning rate and momentum parameters.  A
+detailed description of the parameters is given below:
+
+`float lrate'
+     The learning rate parameter.  It controls how fast the weights
+     are updated along the computed error gradient.  It should
+     generally be less than 1 and harder problems will require
+     smaller learning rates.
+
+`float momentum'
+     The momentum parameter determines how much of the previous
+     weight change will be retained in the present weight change
+     computation.  Thus, weight changes can build up momentum over
+     time if they all head in the same direction, which can speed up
+     learning.  Typical values are from .5 to .9, with anything much
+     lower than .5 making little difference.
+
+`MomentumType momentum_type'
+     There are a couple of different ways of thinking about how
+     momentum should be applied, and this variable controls which one
+     is used.  According to `AFTER_LRATE', momentum is added to the
+     weight change _after_ the learning rate has been applied:
+            cn->dwt = lrate * cn->dEdW + momentum * cn->dwt;
+            cn->wt += cn->dwt;
+     This was used in the original pdp software.  The `BEFORE_LRATE'
+     model holds that momentum is something to be applied to the
+     gradient computation itself, not to the actual weight changes
+     made.  Thus, momentum is computed _before_ the learning rate is
+     applied to the weight gradient:
+            cn->dwt = cn->dEdW + momentum * cn->dwt;
+            cn->wt += lrate * cn->dwt;
+     Finally, both of the previous forms of momentum introduce a
+     learning rate confound since higher momentum values result in
+     larger effective weight changes when the previous weight change
+     points in the same direction as the current one.  This is
+     controlled for in the `NORMALIZED' momentum update, which
+     normalizes the total contribution of the previous and current
+     weight changes (it also uses the `BEFORE_LRATE' model of when
+     momentum should be applied):
+            cn->dwt = (1.0 - momentum) * cn->dEdW + momentum * cn->dwt;
+            cn->wt += lrate * cn->dwt;
+     Note that normalized actually uses a variable called `momentum_c'
+     which is pre-computed to be 1.0 - momentum, so that this extra
+     computation is not incurred needlessly during actual weight
+     updates.
+
+`float decay'
+     Controls the magnitude of weight decay, if any.  If the
+     corresponding `decay_fun' is `NULL' weight decay is not
+     performed.  However, if it is set, then the weight decay will be
+     scaled by this parameter.  Note that weight decay is applied
+     _before_ either momentum or the learning rate is applied, so
+     that its effects are relatively invariant with respect to
+     manipulations of these other parameters.
+
+`decay_fun'
+     The decay function to be used in computing weight decay.  This
+     is a pointer to a function, which means that the user can add
+     additional decay functions as they wish.  However, the default
+     ones are `Bp_Simple_WtDecay', which simply subtracts a fraction
+     of the current weight value, and `Bp_WtElim_WtDecay', which uses
+     the "weight elimination" procedure of `Weigand, Rumelhart, and
+     Huberman, 1991'.  This procedure allows large weights to avoid a
+     strong decay pressure, but small weights are encouraged to be
+     eliminated:
+            float denom = 1.0 + (cn->wt * cn->wt);
+            cn->dEdW -= spec->decay * ((2 * cn->wt) / (denom * denom);
+     The ratio of the weight to the `denom' value is roughly
+     proportional to the weight itself for small weights, and is
+     constant for weights larger than 1.
+
+
+File: pdp-user,  Node: bp-unit,  Next: bp-proc,  Prev: bp-con,  Up: bp-ff
+
+Bp Unit Specifications
+----------------------
+
+   The unit in Bp contains a bias weight and the various derivative
+terms that are accumulated during the backpropagation phase:
+
+`BpCon bias'
+     Contains the bias weight and its associated derivative and weight
+     change values.  The bias weight is controlled by the `bias_spec'
+     on the BpUnitSpec.
+
+`float err'
+     Contains the actual error or cost associated with the unit.  It
+     is a function of the difference between the activation and the
+     target value, so it only shows up for those units that have
+     target activation values.  It is not to be confused with the
+     derivative of the activation with respect to the error, which is
+     `dEdA'.
+
+`float dEdA'
+     The derivative of the error with respect to the activation of
+     the unit.  For output units using the squared-error function, it
+     is simply `(targ - act)'.  For hidden units, it is the
+     accumulation of the backpropagated `dEdNet' values times the
+     intervening weights from the units to which the unit sends
+     activation.
+
+`float dEdNet'
+     The derivative of the error with respect to the net input of the
+     unit.  It is simply the `dEdA' times the derivative of the
+     activation function, which is `act * (1 - act)' for standard
+     sigmoidal units.
+
+   The unit specifications for Bp control what kind of error function
+is being used, the parameters of the activation function, and the
+functions on the spec orchestrate the computation of the activation
+and error backpropagation phases:
+
+`SigmoidSpec sig'
+     These are the parameters of the sigmoidal activation function.
+     The actual range of this activations are determined by the
+     `act_range' parameters, and the `sig' parameters determine the
+     gain and any fixed offset of the function (the offset is like a
+     fixed bias term).
+
+`float err_tol'
+     The error tolerance allows activation values that are
+     sufficiently close to the target activation to be treated as
+     though they were equal to the target value.  Reasonable values
+     of this parameter are from .02 to .1, and its use prevents the
+     large accumulation of weight values that happens when the unit
+     keeps trying to get closer and closer to an activation of 1 (for
+     example), which is impossible.
+
+`BpConSpec_SPtr bias_spec'
+     A pointer to a BpConSpec that controls the updating of the
+     unit's bias weight.  Typically, this points to the same
+     BpConSpec that updates the rest of the weights in the network,
+     but it is possible to have special BpConSpec's that do different
+     things to the bias weights, like initialize them to moderate
+     negative values, for example.
+
+`err_fun'
+     A pointer to the error function to use in computing error for
+     output units that have target values.  The function computes both
+     `err' and `dEdA' values (the former typically being the square
+     of the latter).  While the user can define additional error
+     functions, the two that come with the standard distribution are
+     `Bp_Squared_Error' and `Bp_CrossEnt_Error', which compute the
+     squared error and cross-entropy error functions, respectively.
+
+
+File: pdp-user,  Node: bp-proc,  Next: bp-vari,  Prev: bp-unit,  Up: bp-ff
+
+The Bp Trial Process
+--------------------
+
+   The BpTrial process is the only Bp-specific process type needed to
+perform simple feed-forward backprop.  The `Loop' function of this
+process simply propagates activation forwards through the network,
+and then propagates the error backwards.  This assumes that the layers
+are ordered sequentially in a feed-forward manner.  Note that the
+process does not actually "loop" over anything, so it has no counter.
+See *Note proc-levels-trial:: for more information on the trial
+process type.
+
+   The following functions are defined on the trial process, each of
+which performs one step of the backpropagation computations:
+
+`Compute_Act()'
+     Goes layer-by-layer and computes the net input and the
+     activation of the units in the layer.
+
+`Compute_Error()'
+     Computes the error on the output units, which is only done during
+     testing, and not training.
+
+`Compute_dEdA_dEdNet()'
+     Computes the derivative of the error with respect to the
+     activation and then with respect to the net inputs.  This goes
+     in reverse order through the layers of the network.
+
+`Compute_dWt()'
+     Computes the dEdW for all the weights in the network.
+
+
+File: pdp-user,  Node: bp-vari,  Next: bp-srn,  Prev: bp-proc,  Up: bp-ff
+
+Variations Available in Bp
+--------------------------
+
+   There are several different BpUnitSpec and BpConSpec types
+available that perform variations on the generic backpropagation
+algorithm.
+
+   LinearBpUnitSpec implements a linear activation function
+
+   ThreshLinBpUnitSpec implements a threshold linear activation
+function with the threshold set by the parameter `threshold'.
+Activation is zero when net is below threshold, net-threshold above
+that.
+
+   NoisyBpUnitSpec adds noise to the activations of units.  The noise
+is specified by the `noise' member.
+
+   StochasticBpUnitSpec computes a binary activation, with the
+probability of being active a sigmoidal function of the net input
+(e.g., like a Boltzmann Machine unit).
+
+   RBFBpUnitSpec computes activation as a Gaussian function of the
+distance between the weights and the activations.  The variance of the
+Gaussian is spherical (the same for all weights), and is given by the
+parameter `var'.
+
+   BumpBpUnitSpec computes activation as a Gaussian function of the
+standard dot-product net input (not the distance, as in the RBF).  The
+mean of the effectively uni-dimensional Gaussian is specified by the
+`mean' parameter, with a standard deviation of `std_dev'.
+
+   ExpBpUnitSpec computes activation as an exponential function of the
+net input (e^net).  This is useful for implementing SoftMax units,
+among other things.
+
+   SoftMaxBpUnitSpec takes one-to-one input from a corresponding
+exponential unit, and another input from a LinearBpUnitSpec unit that
+computes the sum over all the exponential units, and computes the
+division between these two.  This results in a SoftMax unit.  Note
+that the LinearBpUnitSpec must have fixed weights all of value 1, and
+that the SoftMaxUnit's must have the one-to-one projection from exp
+units first, followed by the projection from the sum units.  See
+`demo/bp_misc/bp_softmax.proj.gz' for a demonstration of how to
+configure a SoftMax network.
+
+   HebbBpConSpec computes very simple Hebbian learning instead of
+backpropagation.  It is useful for making comparisons between
+delta-rule and Hebbian leanring.  The rule is simply `dwt = ru->act *
+su->act', where `ru->act' is the target value if present.
+
+   ErrScaleBpConSpec scales the error sent back to the sending units
+by the factor `err_scale'.  This can be used in cases where there are
+multiple output layers, some of which are not supposed to influence
+learning in the hidden layer, for example.
+
+   DeltaBarDeltaBpConSpec implements the delta-bar-delta learning rate
+adaptation scheme `Jacobs, 1988'.  It should only be used in batch
+mode weight updating.  The connection type must be
+DeltaBarDeltaBpCon, which contains a connection-wise learning rate
+parameter.  This learning rate is additively incremented by
+`lrate_incr' when the sign of the current and previous weight changes
+are in agreement, and decrements it multiplicatively by `lrate_decr'
+when they are not.  The demo project `demo/bp_misc/bp_ft_dbd.proj.gz'
+provides an example of how to set up delta-bar-delta learning.  The
+defaults file `bp_dbd.def' provides a set of defaults that make
+delta-bar-delta connections by default.
+

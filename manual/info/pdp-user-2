@@ -1,0 +1,897 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: over-stru-proc,  Prev: over-stru-env,  Up: over-stru
+
+The Objects Involved in Processing/Scheduling
+---------------------------------------------
+
+   In order to make the scheduling aspect of the software reasonably
+flexible, it has itself been decomposed into a set of different object
+types.  Each of these object types plays a specific role within the
+overall task of scheduling the training and testing of a network.
+
+   The backbone of the scheduling function is made up of a structure
+hierarchy of objects of the type `SchedProcess' (*note proc-sched::),
+which reflects the hierarchy of the different time grains of
+processing in a neural network:
+
+     Training (loop over epochs)
+         Epoch (loop over trials)
+             Trial (present a single pattern)
+             .
+             .
+         .
+         .
+
+   Thus, there is one object for every grain of processing, and each
+process essentially just loops over the next-finer grain of processing
+in the hierarchy.  Because each grain of processing is controlled by a
+separate process, it is possible to alter both the parameters and type
+of processing that takes place at each grain _independently_.  This
+is why this design results in great flexibility.
+
+   Since this time grain structure forms the backbone of scheduling,
+all other aspects of scheduling, and anything that depends on time
+grain information in any way, are oriented around it.  For example,
+setting the training criteria becomes embedded in the Training level
+of processing.  The updating of displays is associated with a
+particular time grain of processing (e.g., telling the system that
+you want to see the activations updated in your view of a network
+after every trial means associating the view with the Trial grain of
+processing).  Similarly, the generation of information to be logged,
+and the update of the display of this information, is tied to a
+particular time grain.
+
+   The other principal type of object used for scheduling is the
+_statistic_ (of type `Stat', *note proc-stat::), which is responsible
+for computing (or simply recording) data of any kind that is either
+relevant for controlling scheduling (e.g., stopping criteria), or is
+to be displayed in a log at a particular time grain.  Thus,
+statistics are the source of any data that is to be logged, and
+provide a general way of specifying when to stop processing based on
+the values of computed variables (i.e., sum-squared error).  Again,
+because these statistic objects can be mixed and matched with all
+sorts of different schedule processes, this creates a high level of
+flexibility.
+
+   Because they are intimately tied to the time grain of processing,
+and can directly affect its course, statistics actually "live" on
+schedule processes.  Thus, whenever a statistic is created, it is
+created in a particular process that governs a given time grain of
+processing.  Furthermore, statistics can create copies of themselves
+that reflect their _aggregation_ over higher levels of processing.
+For example, the sum-squared error statistic (*note proc-stats-se::)
+is created at the Trial level of processing, where it can actually
+compute the difference between the output and target for a given
+pattern right after it has been presented.  However, in order for
+these individual pattern-level sse values to be accumulated or
+aggregated over time, there is another sse statistic at the Epoch
+level of processing whose only job is to add up the Trial level sse
+values.
+
+
+File: pdp-user,  Node: over-spec,  Next: over-scripts,  Prev: over-stru,  Up: over
+
+Separation of State from Specification Variables
+================================================
+
+   Another major distinction that is made in the software reflects the
+separation of _state_ variables (e.g., the current activation of a
+unit) from _specification_ variables (e.g., the activation function
+to be used in computing activation states, and its associated
+parameters).  This distinction is made because it is often desirable
+to have many objects use the same specifications, while each retain a
+distinct set of state variables.  For example, all of the units in one
+layer might use a particular learning rate, while units in another
+layer have a different one.  By separating these specifications from
+the state variables, it is easy to accomplish this.
+
+   Thus, associated with many different kinds of objects is a
+corresponding `Spec' object (e.g., a `UnitSpec' for `Unit' objects,
+etc).  While this separation does sometimes make it a little more
+difficult to find the parameters which are controlling a given
+object's behavior, it makes the software much more flexible.
+Furthermore, we have put most of the specification objects (specs) in
+one place, so it should soon become second nature to look in this
+place to set or change parameters.  For more information about specs,
+see *Note obj-spec::.
+
+   Specs are also used to control the layout of events and patterns
+in the environment (throught the use of `EventSpec' and `PatternSpec'
+objects).  Thus, one first configures these specs, and then creates
+events according to them.  A new interface makes configuring these
+specs much easier than before.
+
+
+File: pdp-user,  Node: over-scripts,  Next: over-group,  Prev: over-spec,  Up: over
+
+Scripts: General Extensibility
+==============================
+
+   It is impossible to anticipate all of the things that a user might
+want to do in running and controlling a simulation.  For this reason,
+we have built a powerful script language into the PDP++ software.
+This script language, called CSS for C-Super-Script or C^C, is
+essentially a C/C++ interpreter, and thus does not require the user
+to learn any new syntax apart from that which would be required to
+program additions to the software itself.  This shared syntax means
+that code developed initially in the script language can be compiled
+into the software later for faster performance, without requiring
+significant modifications.
+
+   CSS scripts are used in several places throughout the software.
+They have been added to some of the basic objects to enable their
+function to be defined and extended at run time.  Examples of these
+include a ScriptEnv, which allows an Environment to be defined
+dynamically and have events that are generated on the fly,
+potentially in response to the output of the network itself (*note
+env-other::).  The ScriptPrjnSpec allows arbitrary patterns of
+connectivity to be defined (*note net-prjn-misc::).  The ScriptStat
+allows arbitrary statistics to be computed and recorded in the data
+logs during training and testing (*note proc-stats-misc::).
+
+   In addition to these targeted uses, scripts can be used to perform
+miscellaneous tasks or repetitive functions at any level of the
+software.  It is possible to attach a set of scripts to a given
+process, run them automatically when the process starts up, and even
+record actions performed in the user interface as script code that
+can be replayed later, edited for other uses, etc.  For more
+information on these objects, see *Note proj-scripts::.
+
+   Finally, the script language provides a means for interacting with
+a simulation when the graphical interface cannot be used, such as over
+dial-up lines when working from home, etc.  Anything that can be done
+in the GUI can be done in the script language, although it is not
+quite as easy.
+
+
+File: pdp-user,  Node: over-group,  Prev: over-scripts,  Up: over
+
+Groups: A General Mechanism for Defining Substructure
+=====================================================
+
+   Another way in which the PDP++ software has built-in flexibility
+is in the ability to create substructure at any level.  By
+substructure, we mean the grouping of objects together in ways that
+reflect additional structure not captured in the basic structural
+distinctions made in the software (e.g., as described in the previous
+sections).  For example, it is possible to group events together to
+reflect sequential information.  Also, one can imagine that certain
+layers should be grouped together to reflect the fact that they all
+perform a similar function, and should be treated as a group.
+Similarly, units within a layer can be divided into subgroups that
+might reflect different parameter settings, etc.
+
+   The basic operations of the software are written so as to be
+insensitive to this additional substructure (i.e., they can "flatten
+out" the groups), which allows the substructure to be used without
+requiring special-case code to handle it.
+
+   Substructure is defined by creating subgroups of objects.  Thus,
+everywhere the user has the opportunity to create an object of a given
+type, they also have the opportunity to create a subgroup of such
+objects.
+
+   For more information, see *Note obj-group::.
+
+
+File: pdp-user,  Node: tut,  Next: how,  Prev: over,  Up: Top
+
+Tutorial Introduction (using Bp)
+********************************
+
+   In this chapter, *Note tut-bp::, *Note tut-using:: and *Note
+tut-config:: provide a tutorial introduction in three parts.  *Note
+tut-bp:: provides a brief overview of a connectionist learning
+algorithm, backpropagation, and a simple but classic learning problem
+that can be solved by this model, called XOR.  It is worth reading
+this section even if you are familiar with these problems, since it
+introduces some of the conceptual structure behind the simulator and
+some important terminology, such as the names of many of the variable
+names used in the simulator.  *Note tut-using:: shows you how to use
+the PDP++ system to run backpropagation on the XOR example,
+indicating how to control the learning process, modify options and
+parameters, save and load results, etc.  *Note tut-config:: shows you
+how to to configure the backpropagation model for an example of you
+own.  To illustrate the configuration process we choose another
+classic problem, the Encoder problem.
+
+* Menu:
+
+* tut-bp::                      Backpropagation and XOR
+* tut-using::                   Using the Simulator to run Bp on the XOR Example
+* tut-config::                  Configuring the Encoder Problem
+
+
+File: pdp-user,  Node: tut-bp,  Next: tut-using,  Prev: tut,  Up: tut
+
+Backpropagation and XOR
+=======================
+
+   Backpropagation is the name of a learning algorithm used to train
+multi-layer networks of simple processing units (Rumelhart, Hinton &
+Williams, 1986).  In the simple case we consider in this tutorial, we
+restrict our attention to multi-layer feed-forward networks.  Such
+networks consist of several layers of units, the first (one or more)
+of which are the input layer(s) and the last of which are the output
+layer(s).  Each layer consists of some number of simple connectionist
+units.  Units in lower-numbered layers may send connections to units
+in any higher-numbered layer, but in feedforward networks they cannot
+send connections to units in the same layer or lower-numbered layers.
+
+   The network learns from events it is exposed to by its training
+environment.  Each event consists of an input pattern for each input
+layer and a target output pattern for each output layer.  Henceforth
+we will consider the case of a single input and output layer.  The
+goal of learning is to adjust the weights on the connections among the
+units so as to allow the network to produce the target output pattern
+in response to the given input pattern.  Weights changes are based on
+calculating the derivative of the error in the network's output with
+respect to each weight.
+
+   Training is organized into a series of epochs.  In each epoch, the
+network is exposed to a set of events, often the entire set of events
+that comprise the training environment.  for each event, processing
+occurs in three phases: an activation phase, a back-propagation phase,
+and a final phase in which weight error derivatives are calculated.
+
+   Training begins by initializing the weights and biases to small
+random values. The process of learning then begins, and continues for
+some number of epochs or until a performance criterion is reached.
+Typically this criterion is given in terms of the total, summed over
+all of the events in the epoch, of some measure of performance on
+each event; the sum squared error, described below, is the most
+frequently used measure.
+
+   We now consider in each of the three phases involved in processing
+each pattern.
+
+* Menu:
+
+* tut-bp-act::                  Activation Phase
+* tut-bp-backprop::             BackPropagation Phase
+* tut-bp-weight::               Weight Error Derivative Phase
+* tut-bp-xor::
+
+
+File: pdp-user,  Node: tut-bp-act,  Next: tut-bp-backprop,  Prev: tut-bp,  Up: tut-bp
+
+Activation Phase
+----------------
+
+   In this phase, the activations of the input units are set to the
+values given in the input pattern, and activation is propagated
+forward through the network to set the activations of units at
+successively higher-numbered layers, ending with the output layer.
+The idea is that the connection weights determine the outcome of this
+process, and the purpose of this pass is to determine how closely
+this outcome matches the target.  During this pass, we calculate two
+quantities for each unit: First the net input it receives from the
+units that project to it, and second the activation, based on the net
+input.  The net input is simply the sum, over all of the incoming
+connections to the unit, of the weight of the connection times the
+activation of the sending unit, plus a bias term:
+
+   net_i = SUM_i a_j w_ij + b_i
+
+   This sum may run over all of the units in all of the lower-numbered
+layers, but the connectivity may be restricted by design.  the term
+w_ij signifies the weight to unit i from unit j, and the term b_i
+signifies the bias associated with unit i.  The activation is simply a
+monotonically increasing sigmoidal function of the net input.  The
+simulator uses the logistic function:
+
+     	            1
+             a_i =  --------------
+                    1 + exp(-net_i)
+
+   The activation ranges from 0 to 1 as the net input ranges from
+minus infinity to infinity.  As an option other ranges can be used, in
+which case the function becomes
+
+     	a_i = min + (max - min)          1
+                                      ---------------------
+                                         1 + exp(-net_i)
+
+
+File: pdp-user,  Node: tut-bp-backprop,  Next: tut-bp-weight,  Prev: tut-bp-act,  Up: tut-bp
+
+BackPropagation Phase
+---------------------
+
+   In this phase, a measure of the error or mismatch between the
+target and the actual output is computed, and the negative of the
+derivative of the error with respect to the activation and with
+respect to the net input to each unit is computed, starting at the
+output layer and passing successively back through successively lower
+numbers of layers.  By default the error measure used is the summed
+square error:
+
+     	ss = SUM_i (t_i - a_i)^2
+
+   where the index i runs over all of the output units.  The
+derivative of this with respect to the activation of each output unit
+is easily computed.  We actually use the negative of this derivative,
+which we call dE/da_i.  For output units, this quantity is
+
+   	dE/da_i = (t_i - a_i)
+
+   We then compute a quantity proportional to the negative derivative
+of the error measure with respect to the net input to each unit,
+which is
+
+   	dE/dnet_i = dE/da_i f'(net_i)
+
+   where f'(net_i) is the slope of the activation function given the
+net input to the unit.
+
+   This quantity is then propagated back to successively lower
+numbered layers, using the formulas
+
+   and
+
+
+   	dE/da_j = SUM_i w_ij dE/dnet_i and 	dE/dnet_j = dE/da_j f'(net_j)
+
+   Here subscript i indexes units that receive connections from unit
+j; we can see these formulas as providing for the backward
+propagation of error derivative information via the same connections
+that carry activation forward during the activation phase.
+
+
+File: pdp-user,  Node: tut-bp-weight,  Next: tut-bp-xor,  Prev: tut-bp-backprop,  Up: tut-bp
+
+Weight Error Derivative Phase
+-----------------------------
+
+   In this phase, we calculate quantities called dE/dw_ij and dE/db_i
+for all of the weights and all of the biases in the network.  These
+quantities again represent the negative derivative of the Error with
+respect to the weights and the biases.  The formulae are:
+
+   and
+
+
+             dE/dw_ij = dE/dnet_i * a_j
+     
+        and
+     
+             dE/db_i = dE/dnet_i
+
+   After these error derivatives are calculated, there are two
+options.  They may be summed over an entire epoch of training, or
+they may be used to change the weights immediately.  In the latter
+case, the variable dE/dw_ij accumulates the value of this derivative
+over all of the patterns processed within the epoch, and similarly
+for dE/db_i.
+
+   When the weight change is made, there are two further values
+calculated.  First, the exact magnitude of the change to be made is
+calculated:
+
+   deltaW_ij = lrate * dE/dw_ij + momentum * deltaW_ij
+
+   This expression introduces a learning rate parameter, which scales
+the size of the effect of the weight error derivative, and a momentum
+parameter, which scales the extent to which previous weight changes
+carry through to the current weight change.  Note that in the
+expression for deltaW_ij the value of deltaW_ij from the previous
+time step appears on the right hand side.  An analogous expression is
+used to calculate the deltaBias_i.  Finally, the weight change is
+actually applied:
+
+   w_ij += deltaW_ij
+
+   Once again, an analogous expression governs the updating of bias_i.
+
+
+File: pdp-user,  Node: tut-bp-xor,  Prev: tut-bp-weight,  Up: tut-bp
+
+The XOR Problem
+---------------
+
+   XOR is about the simplest problem requiring a hidden layer of
+units between the inputs and the outputs.  For this reason, it has
+become something of a paradigm example for the back propagation
+learning algorithm.  The problem is to learn a set of weights that
+takes two-element input patterns, where each element is a 1 or a 0,
+and computes the exclusive-or (XOR) of these inputs.  XOR is a boolean
+function which takes on the value '1' if either of the input bits is a
+1, but not if both are 1:
+
+     Table [XOREvents]:
+     
+            Input  Output
+     
+             0 0     0
+             0 1     1
+             1 0     1
+             1 1     0
+
+   The output should be 1 if one of the inputs is 1; if neither is 1
+or if both is 1, the output should be 0.
+
+   The environment for learning XOR consists of four events, one for
+each of the input-output pairs that specify the XOR function.   In the
+standard training regime, each pattern is presented once per epoch,
+and training continues until the total squared error, summed across
+all four input-output pairs falls below a criterion value.  The value
+is usually set to something like .04.  With this criterion, all the
+none of the cases can be off by more than about .2.
+
+   Various network configurations can be used, but for this example
+we will use the configuration shown in Figure [XORNet].  In this
+configuration, the input layer consists of two units, one for each
+input element; the output layer consists of a single unit, for the
+result of the XOR computation; and the hidden layer consists of two
+units.  The output unit receives connections from both hidden units
+and each hidden unit receives connections from both input units.  The
+hidden and output units also have modifiable biases, shown in the
+figure as with arrows labeled with 'b' coming in from the side.
+
+     Figure [XORNet]:
+     
+                Output Unit <- b
+                 ^      ^
+                 |       \
+                 |        \
+                 ^         ^
+         b ->   Left      Right  <- b
+                Hidden   Hidden
+                 ^    ^  ^    ^
+                 |     \/     |
+                 |     /\     |
+                 |    /  \    |
+                 ^   ^    ^   ^
+                Left      Right
+                Input     Input
+
+
+File: pdp-user,  Node: tut-using,  Next: tut-config,  Prev: tut-bp,  Up: tut
+
+Using the Simulator to run BP on the XOR Example
+================================================
+
+   The brief description of back propagation and XOR just given in
+section BP introduces key concepts and terminology, including the
+actual names of the variables used in the simulator.  With that
+background, you are ready to turn to the simulator itself.
+
+* Menu:
+
+* tut-using-notation::          Notation for Tutorial Instructions
+* tex-using-starting::          Starting up PDP++
+* tut-using-hierarchy::         Object Hierarchy: The Root Object and the Project
+* tut-using-network::           Network and NetView Window
+* tut-using-environment::       The Environment
+* tut-using-processes::         Processes
+* tut-using-logs::              Logging Training and Testing Data
+* tut-using-running::           Running the Processes
+* tut-using-monitoring::        Monitoring Network Variables
+* tut-using-changing::          Changing Things
+* tut-using-saving::            Saving and restoring.
+
+
+File: pdp-user,  Node: tut-using-notation,  Next: tex-using-starting,  Prev: tut-using,  Up: tut-using
+
+Notation for Tutorial Instructions
+----------------------------------
+
+   Before we go any further, we will need a few notational
+conventions, so let us introduce some.  We use `underlined' type for
+things that you will type.  We use `typewriter' for labels and
+prompts, such as the prompt in the PDP++ shell or a label on a
+type-in menu boxes.  bold is used to denote an object type name, like
+BpUnit.  We use italic for menu items or buttons you will click on or
+select using the SELECT (usually left) mouse key.  For multi-step
+menu selections we will use statements like 'select A/B/C'.  This
+means that you should press and hold the select key on menu item A.
+When a popup menu appears move the pointer to item B.  When a further
+popup menu appears, move the pointer to C, and then release the
+select key.  Finally, we use double quotes to designate strings that
+name objects such as files, layers, units, etc.
+
+
+File: pdp-user,  Node: tex-using-starting,  Next: tut-using-hierarchy,  Prev: tut-using-notation,  Up: tut-using
+
+Starting up PDP++
+-----------------
+
+   The XOR demo project that we will be using is located in a
+directory where the PDP++ software was installed.  You should go to
+that directory (typically `/usr/local/pdp++') and then change to the
+`demo/bp' directory, which is where the project files are.
+
+   To start using the back propagation package within the PDP++
+system, you simply type `bp++' to your unix command interface.  After
+a short time, the `bp++>' prompt will appear in your command interface
+window, and a small menubar window will appear somewhere on the
+screen.  This is the `PDP++:Root' window, and it contains three
+menus.  The first is called Object, the second is called .projects,
+and the third is called .colorspecs.  The first menu's name alerts
+you to the fact that this window is associated with an object, whose
+name appears as the label on the window.  The other menu names refer
+to the children of Root, which consist of projects and colorspecs.
+You can think of the '.' in front of the names as indicating that the
+projects and colorspecs are children of the current object.
+
+   You are going to open a pre-defined Project and then run it.  To
+open the project, select .projects / Open In / Root.  A file-selector
+window will appear.  It gives a list of directories accessible from
+your current directory and files in the current directory that might
+contain a project.  You can either type the name of the project file
+in the `enter filename' box, or double click on an item in the the
+list to select it.  We want the project file "xor.proj.gz". This file
+is saved in a compressed format, which is why it has the ".gz"
+extension.  Double click on it, and the project will be loaded in
+(the simulator automatically uncompresses files stored in the ".gz"
+compression format).
+
+   After a little time for initialization, the Root menu will move to
+the right, and you should see two new windows on your screen: A
+Project window and a window called a NetView.  Several other windows
+will be iconified, we will turn our attention to them in a moment.
+
+
+File: pdp-user,  Node: tut-using-hierarchy,  Next: tut-using-network,  Prev: tex-using-starting,  Up: tut-using
+
+Object Hierarchy: The Root Object and the Project
+-------------------------------------------------
+
+   As a result of loading the "xor.proj" file, we created a number of
+objects, all of which can be thought of as organized into a
+hierarchical tree, with Root at the top of the tree.  The Root window
+is associated with the Root object, which is a generic object that
+basically just serves as a place holder for other objects.  We opened
+the XOR project in Root, and so an object representing the entire XOR
+project has been created as a child of Root.  The Project window is
+associated with this project; in fact we could create a second
+project under root, and if we did a second project window would be
+created.  Typically, though, we just have one project.  Within this
+project, we have both a network and an environment, as well as some
+other things we will consider later in this tutorial.  Within the
+network we have layers of units; within the units we have projections
+from other layers, which contain connections.
+
+   Each object can be identified by a string that specifies its
+location in the object hierarchy.  Root sits at the top of the object
+hierarchy; our project is a 'child' of root.  It's identifier string
+is `.projects[0]'.  In general, the identifier string for an object
+specifies its location in the object hierarchy as a pathway
+specification that begins with a '.', followed by fields separated by
+dots.  Each field contains a type-name and an index.  One can trace
+the pathway to a particular object down from Root (implicit in the
+first dot) through intermediate fields separated by dots, ending with
+the field specifying the type and token number of the object itself.
+The path for the project is short since it is the first (and only)
+project that is a child of Root.  This is all exactly like a directory
+hierarchy, except we have objects instead of files and the separator
+is '.' instead of '/'.
+
+   Objects can have proper names as well as type names and indices;
+these names can be used to access the object directly and to give it a
+mnemonic label that can be used in referring to it.  The windows you
+see give the full identifier string and if a name has been assigned,
+they give the name as well in parentheses.
+
+   Within the Project window, we have several menus accessible.  As
+before, one of these menus refers to the Project Object itself (the
+Object menu).  The other menus refer to the children of the project,
+which are again organized into several types.  The main ones we will
+care about are the networks, the environments, the processes, and the
+logs.  The defaults, specs, and scripts are for customizations that we
+will not consider for the moment.  We could access the network through
+the .networks menu, but we already have a window up on the screen
+that gives us access to the network, called the NetView.
+
+
+File: pdp-user,  Node: tut-using-network,  Next: tut-using-environment,  Prev: tut-using-hierarchy,  Up: tut-using
+
+Network and NetView Window
+--------------------------
+
+   The NetView window (*note net-view::) is an essential window for us
+since it provides us with access to the network that we have created
+for learning the XOR problem.  The NetView window has two sets of
+menus along with lots of pushbuttons and a display area containing a
+graphical display of the network. Lets take a look at the menus
+first.  The left hand set of menus relate to the Network itself.  The
+right hand set of menus relate to the NetView.  The NetView is an
+object, actually a child of the Network, that provides a view of the
+Network.  We can operate on either one, and we have two separate sets
+of menus.
+
+   The left hand menus allow access to the Network itself and the
+Networks' children: its .views and its .layers.  Most of these menus
+have the same basic structure as we have already seen, but there is
+one new menu, namely the Actions menu.  This menu allows us to
+perform actions on the network itself, such as removing things from
+it, initializing it, etc.  Some of the other actions we can perform
+are accessible through the buttons to which we will turn in the next
+paragraph.  The right hand menus allow us to access the NetView.
+This is indicated by the label View: on this set of menus.  These
+menus operate on the visual display of the network, or any operation
+that interacts with the visual display (e.g., the Selections menu
+operates on things that are selected in the visual display).
+
+   The NetView itself, the main body of the NetView window, provides a
+graphical depiction of our network.  You can think of the layers of
+the network arranged vertically, with the units within each layer
+laid out on a two-dimensional sheet.  The input layer is located at
+the bottom of the netview, with the two input units arranged side by
+side.  In networks with many units per layer the units can be laid
+out in an X by Y array.  The hidden layer is next above the input
+layer, and we can see the two hidden units, again laid out side by
+side.  The output layer, above the hidden layer, contains just a
+single unit, aligned to the left of the netview.  At present, each
+unit is displaying its activation, as indicated by the depressed
+appearance of the `act' button, together with the yellow highlight.
+The activation is shown in color in accordance with the color bar
+shown at the right of the NetView, and by the numeric value printed
+on it.  Either way we see that the activation of all of the units is
+0.
+
+   The Network has been initialized so that each unit has a random
+bias weight and so that there are random weights on the connections
+between the units.  We can examine these biases and weights by
+displaying them on the netview.  First, to look at the bias weights,
+we can click on the bias.wt button.  Once we do this, the units will
+assume colors corresponding to their bias weights.  The biases on the
+input units are not used and can be ignored.
+
+   We can also view weights either coming into or going out of a
+selected unit.  The former are called 'receiving weights'.  To view
+the receiving weights of the left hidden unit we first click on the
+button labeled r.wt.  This activates the View button, and turns the
+cursor into a little hand, indicating that we may now pick a unit to
+view its receiving weights.  We can now click on the left hidden
+unit, and its receiving or incoming weights are displayed on the
+units from which they originate; the selected receiving unit is
+highlighted.  We see that this unit receives incoming weights only
+from the two input units, both somewhat positive.  We can proceed to
+click on other units to view their incoming weights as well.  Note
+that the input units have no incoming weights.  To see the outgoing
+or 'sending' weights from a unit, we simply click the s.wt button,
+then click the unit whose sending weights we wish to view.  You can
+verify that the values of the sending weight from the left input unit
+to the right hidden unit is the same value as the receiving weight to
+the right hidden unit.
+
+   Since all we've done so far is initialize the network's weights
+there isn't that much else we can look at at this point.  However, if
+we click on the act button, the network will be set to display the
+activations of units later when we actually start to run the network.
+Do this now.
+
+
+File: pdp-user,  Node: tut-using-environment,  Next: tut-using-processes,  Prev: tut-using-network,  Up: tut-using
+
+The Environment
+---------------
+
+   A second type of object contained in our Project is the
+Environment.  The environment can be thought of as a special object
+that supplies events (training examples) on request.  In real life,
+if our network were embedded in the brain of some organism the
+training experiences would arise from the world.  In the simulator we
+will imagine that we sample events from the environment when a
+process requests them.  In general the environment can itself be an
+arbitrarily complex process, but in the present case, the environment
+simply contains a list of 'events', each of which in turn consists of
+an input-output pattern pair.  If we double click on the iconified
+EnviroView window, we can inspect the objects corresponding to each
+of these Events.  The window that pops up displays the names of all
+four of the events that make up the 'XOR' problem.  You can inspect
+any one of these events by clicking on the appropriate button, and if
+you do you will see that it consists of two patterns, an input and an
+output pattern.  You can display all four together, by first clicking
+the left mouse button on the first event button, then clicking the
+middle mouse button on the other event buttons in order.  The color
+scale indicates the correct interpretation of the colors that
+indicate the activations of the units.  Once you check this out you
+can go ahead and iconify the EnviroView window again.
+
+
+File: pdp-user,  Node: tut-using-processes,  Next: tut-using-logs,  Prev: tut-using-environment,  Up: tut-using
+
+Processes
+---------
+
+   Since everything has been properly initialized, and the various
+displays are all laid out for our use, we are ready to try to teach
+the network the XOR function.  We train networks, and test them, by
+running Process objects that operate on them.
+
+   Process objects are described at length in *Note proc::.  We will
+only say enough about them here to give you a general sense of what
+they are and what they do.  You can think of processes as objects
+that consist of several parts: an initialization part, a loop part,
+and a finishing-up part.  When a process is run, it first carries out
+its initialization process; then it loops for a specified number of
+iterations or until some performance criterion is met, and then it
+finishes up and exits.  For many processes, the loop consists of
+simply calling the process's sub-process over and over again.  At the
+bottom of the process tree, we call routines that actually interact
+with the network.  Processes also spawn sub-processes that calculate
+statistics, such as the sum of squares statistic that measures how
+well the network has solved the learning problem that has been posed
+to it.  Some statistics, called `loop_stats', are calculated at the
+end of each step in the process loop; others are calculated only when
+finishing up.
+
+   In the case of backpropagation, we have a three-level process
+hierarchy.  At the bottom of the hierarchy is the TrialProcess.  This
+process takes an event, consisting of an input pattern and a target
+pattern, from the Environment, and then carries out the three phase
+process described previously (*note tut-bp::).  The processing is
+actually implemented by looping through the Layers in ascending
+numerical order; then looping, within each layer, through the Units,
+and calling functions associated with each unit to compute the
+quantities as previously described.  All of the variables mentioned
+there are explicitly stored in each unit, and can be inspected once
+they have been computed by selecting the appropriate button in the
+NetView.  At the end of the trial, the sum of squares statistic is
+calculated; in this case it isn't much of a sum since there is just
+one output unit.
+
+   The Trial process is actually called as a sub-process of the
+EpochProcess.  All the Epoch process does is loop through the set of
+pattern pairs in the Environment, calling the trial process to
+process each pattern pair.  Before it starts, it initializes its
+statistic, the sum of the trial-wise sum-squared-error
+(`sum_sum_SE_Stat'), to 0. As it loops, it computes the
+`sum_sum_SE_Stat' by aggregating the `sum_SE_Stat' statistic over
+each of the training trails, so that at the end of the epoch, it
+reflects the sum over all of the trials in the epoch.  At the end of
+the epoch, it passes the `sum_sum_SE_Stat' up to the training process.
+
+   The Epoch process is called by the TrainProcess.  This process
+initializes the epoch counter before it starts.  It stops when the
+counter reaches a specified maximum value, or when the latest (or
+last) sum-squared-error value (`lst_sum_SE_Stat') falls below its
+stopping criterion.  The stopping criterion is actually a property of
+the Train process's SE_Stat statistic, `lst_sum_SE_Stat'.  This
+statistic simply copies the last `sum_sum_SE_Stat' from the epoch
+process, and compares it to the criterion, passing a special return
+value to the Train process when the criterion is met.  If so, the
+process exits from the loop at that point, and training is stopped.
+
+
+File: pdp-user,  Node: tut-using-logs,  Next: tut-using-running,  Prev: tut-using-processes,  Up: tut-using
+
+Logging Training and Testing Data
+---------------------------------
+
+   Before we start to train our Network, and see if it can learn the
+XOR problem, we will need a couple of tools for visualizing the
+network's performance as it learns.  To allow for this, we have
+created two objects called Logs, one for recording the state of
+various network statistics and variables as they are computed during
+the training process, and one for recording the activations of the
+hidden and output units, when the network is tested with the learning
+process switched off.  The data recorded in these logs are displayed
+in the GraphlogView and the GridLogView respectively.  Double click on
+both of these to open them up.
+
+   The GraphLogView is set to display the sum of the sum-squared-error
+measure (`sum_sum_se'), summing over all output units and all of the
+training patterns presented within each epoch.  The Epoch number will
+be the X axis and the summed squared error will be the Y axis.  When
+we start to run the network this will be updated after every epoch as
+we shall see.
+
+   The GridLogView is set to display detailed information about each
+pattern whenever a special test process is run.  During the test, each
+event in the environment is presented once, and the View displays the
+epoch number, the Event name, the sum_squared error over all output
+units (though in this case there is only one), and the activations of
+the hidden and output units that occur when the input pattern
+associated with this event is presented.
+
+
+File: pdp-user,  Node: tut-using-running,  Next: tut-using-monitoring,  Prev: tut-using-logs,  Up: tut-using
+
+Running the Processes
+---------------------
+
+   To run a process, we first create a 'control panel' window for it.
+Select .processes / ControlPanel / Train in the Project window; this
+creates a control panel for running the TrainProcess.  At this point,
+if you were to click on Run (don't do it now!), the network will
+proceed to run epochs, until either the stopping criterion is met or
+`max' epochs (shown in the `max' typein box) are completed.
+
+   Rather than start training right away, let's run through a test
+before any training is carried out.  We can do this using the "Test"
+process, which is actually just another EpochProcess that is set up
+to run one epoch without learning.  Select .processes / ControlPanel /
+Test in the Project window, then simply press Step.  Now, you will
+see some action.  First, assuming that act is selected in the
+NetView, you will see the activations of all of the units as the
+first pattern is processed.  The input units are both off (0) in the
+first pattern, and should have the color associated with 0 in the
+color scale.  The hidden and output units all have activations
+between about 0.4 and 0.6.  The same information is displayed in the
+GridLogView.  You should see the epoch number, the Event name, the
+sum-squared error for this event, and a display showing the
+activation of the hidden and output units for this event.  If you
+press Step 3 more times you can step through the remaining test
+patterns.  At the end of stepping you should have the results from
+all four cases visible in the GridLogView.
+
+   Now let's run 30 epochs of training and see what happens.  To do
+this, just click on Step in the "Train" control panel, which is
+pre-set to run 30 epochs in each step (as indicated by the value of
+`n' in the control panel `step' field).  When you do this, assuming
+that indeed the act button has been clicked in the NetView, you will
+see the state of activation in the network flicker through all four
+patterns thirty times.  At the end of each epoch the total sum of
+squares will be displayed in the GraphLogView -- the results are
+pretty dismal at first, with a sum of sum-of-squares-error
+(`sum_sum_se') oscillating a bit very close to 1.
+
+   After 30 epochs you can run through another test if you want,
+either stepping through the patterns one at a time as before with the
+Step button or running a complete test of all of the items with the
+Run button.  If you hit Run the results will flicker by rather fast in
+the NetView but again all four cases will be logged in the
+GridLogView.  You can see that the activations of the hidden and
+output units are very similar across all four cases.
+
+   You can proceed to taking successive steps of 30 epochs, then
+testing, if you like, or, if you prefer, you can simply let the
+learning process run to criterion, and then run a test only at that
+point.  To do the latter, just hit Run in the "Train" control panel.
+You can click off the Display toggle in the NetView (near the upper
+left) -- this will speed things up a bit, even though the
+GraphLogView will still be adding new data after each epoch.
+
+   As with the example of learning XOR from the original PDP
+handbook, not much happens to the sum of sum-squared-error
+(`sum_sum_se') until about epoch 160 or so.  Now the error begins to
+drop, slowly at first, then faster... until at about 270 epochs the
+stopping criterion is reached, and the problem is solved.  Hit Step
+in the "Test" control panel, to step through a test at this point.
+You should be able to see either in the NetView or in the GridLogView
+that the units that should be off are close to off (less than about
+.1) and the units that should be on are most of the way on
+(activation about .9).
+
+   If you would like to let the network learn to get the activations
+even closer to the correct values, you'll need to change the stopping
+criterion.  This criterion is associated with the sum of
+sum-squared-error statistic (`lst_sum_SE_Stat') in the TrainProcess.
+To access it, select .processes / Edit / Train /
+lst_sum_Train_SE_Stat from the .project window.  The label
+"lst_sum_Train_SE_Stat" indicates that this SE_Stat (squared-error
+statistic) is associated with the TrainProcess.  It originates at the
+trial level, but its `sum' over training trials within the epoch is
+passed to the epoch level, and the `lst' (last, latest) value at the
+epoch level is passed to the Train process.
+
+   An edit dialog box will come up when you Edit it.  This may seem a
+bit daunting at this point -- we're letting you see how much there is
+under the hood here -- but bear with us for a moment.  All you need to
+do is find the row of this dialog labeled `se'.  You'll see its
+current value, a toggle indicating that it is set to serve as a
+stopping criterion, a criterion-type (here less-than-or-equal or
+`<='), and to the right of this a numeric criterion value (which
+should be 0.04).  Click in this numeric field, and set it to 0.01.
+
+   Before the new value takes effect, it must be propagated from the
+dialog box to the actual internal state of the simulator.  As soon as
+you have started to make change, the dialog will highlight the Apply
+button to indicate that you need to press this button to apply any
+changes that have been made to the state of the simulator.  Once you
+have the value field showing the new value that you want to use,
+click Apply and the change will be implemented.  Then click Ok to
+dismiss the window Note that Ok also performs an "Apply" if
+necessary, so you can actually just do this in one step.  However,
+often you'll want to keep a dialog around after you make changes,
+which is where the Apply button is useful.
+
+   Now hit Run again in the "Train" control panel, and the network
+will run around 70 more epochs to get its performance to the new, more
+stringent criterion.
+

@@ -1,0 +1,135 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-running</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_27.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_29.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.8  Running the Processes</A></H3>
+
+<P>
+To run a process, we first create a 'control panel' window for it.
+Select <I>.processes</I> / <I>ControlPanel</I> / <I>Train</I> in the <B>Project</B>
+window; this creates a control panel for running the <B>TrainProcess</B>.
+At this point, if you were to click on <I>Run</I> (don't do it now!), the
+network will proceed to run epochs, until either the stopping criterion
+is met or <CODE>max</CODE> epochs (shown in the <CODE>max</CODE> typein box) are
+completed.
+
+</P>
+<P>
+Rather than start training right away, let's run through a test before
+any training is carried out.  We can do this using the "Test" process,
+which is actually just another <B>EpochProcess</B> that is set up to run
+one epoch without learning.  Select <I>.processes</I> / <I>ControlPanel</I> /
+<I>Test</I> in the <B>Project</B> window, then simply press <I>Step</I>.  Now,
+you will see some action.  First, assuming that <I>act</I> is selected in
+the <B>NetView</B>, you will see the activations of all of the units as the
+first pattern is processed.  The input units are both off (0) in the
+first pattern, and should have the color associated with 0 in the color
+scale.  The hidden and output units all have activations between about
+0.4 and 0.6.  The same information is displayed in the <B>GridLogView</B>.
+You should see the epoch number, the Event name, the sum-squared error
+for this event, and a display showing the activation of the hidden and
+output units for this event.  If you press <I>Step</I> 3 more times you can
+step through the remaining test patterns.  At the end of stepping you
+should have the results from all four cases visible in the GridLogView.
+
+</P>
+<P>
+Now let's run 30 epochs of training and see what happens.  To do this,
+just click on <I>Step</I> in the "Train" control panel, which is pre-set to
+run 30 epochs in each step (as indicated by the value of <CODE>n</CODE> in the
+control panel <CODE>step</CODE> field).  When you do this, assuming that
+indeed the <I>act</I> button has been clicked in the <B>NetView</B>, you will
+see the state of activation in the network flicker through all four
+patterns thirty times.  At the end of each epoch the total sum of
+squares will be displayed in the <B>GraphLogView</B> -- the results are
+pretty dismal at first, with a sum of sum-of-squares-error
+(<CODE>sum_sum_se</CODE>) oscillating a bit very close to 1.
+
+</P>
+<P>
+After 30 epochs you can run through another test if you want, either
+stepping through the patterns one at a time as before with the <I>Step</I>
+button or running a complete test of all of the items with the <I>Run</I>
+button.  If you hit <I>Run</I> the results will flicker by rather fast in
+the <B>NetView</B> but again all four cases will be logged in the
+<B>GridLogView</B>.  You can see that the activations of the hidden and
+output units are very similar across all four cases.
+
+</P>
+<P>
+You can proceed to taking successive steps of 30 epochs, then testing,
+if you like, or, if you prefer, you can simply let the learning process
+run to criterion, and then run a test only at that point.  To do the
+latter, just hit <I>Run</I> in the "Train" control panel.  You can click
+off the <I>Display</I> toggle in the <B>NetView</B> (near the upper left) ---
+this will speed things up a bit, even though the <B>GraphLogView</B> will
+still be adding new data after each epoch.
+
+</P>
+<P>
+As with the example of learning XOR from the original PDP handbook, not
+much happens to the sum of sum-squared-error (<CODE>sum_sum_se</CODE>) until
+about epoch 160 or so.  Now the error begins to drop, slowly at first,
+then faster... until at about 270 epochs the stopping criterion is
+reached, and the problem is solved.  Hit <I>Step</I> in the "Test" control
+panel, to step through a test at this point.  You should be able to see
+either in the <B>NetView</B> or in the <B>GridLogView</B> that the units that
+should be off are close to off (less than about .1) and the units that
+should be on are most of the way on (activation about .9).
+
+</P>
+<P>
+If you would like to let the network learn to get the activations even
+closer to the correct values, you'll need to change the stopping
+criterion.  This criterion is associated with the sum of
+sum-squared-error statistic (<CODE>lst_sum_SE_Stat</CODE>) in the
+<B>TrainProcess</B>.  To access it, select <I>.processes</I> / <I>Edit</I> /
+<I>Train</I> / <I>lst_sum_Train_SE_Stat</I> from the .project window.  The
+label "lst_sum_Train_SE_Stat" indicates that this <B>SE_Stat</B>
+(squared-error statistic) is associated with the <B>TrainProcess</B>.  It
+originates at the trial level, but its <CODE>sum</CODE> over training trials
+within the epoch is passed to the epoch level, and the <CODE>lst</CODE> (last,
+latest) value at the epoch level is passed to the Train process.
+
+</P>
+<P>
+An edit dialog box will come up when you <I>Edit</I> it.  This may seem a
+bit daunting at this point -- we're letting you see how much there is
+under the hood here -- but bear with us for a moment.  All you need to
+do is find the row of this dialog labeled <CODE>se</CODE>.  You'll see its
+current value, a toggle indicating that it is set to serve as a stopping
+criterion, a criterion-type (here less-than-or-equal or <CODE>&#60;=</CODE>), and
+to the right of this a numeric criterion value (which should be 0.04).
+Click in this numeric field, and set it to 0.01.
+
+</P>
+<P>
+Before the new value takes effect, it must be propagated from the dialog
+box to the actual internal state of the simulator.  As soon as you have
+started to make change, the dialog will highlight the <I>Apply</I> button
+to indicate that you need to press this button to apply any changes that
+have been made to the state of the simulator.  Once you have the value
+field showing the new value that you want to use, click <I>Apply</I> and
+the change will be implemented.  Then click <I>Ok</I> to dismiss the window
+Note that <I>Ok</I> also performs an "Apply" if necessary, so you can
+actually just do this in one step.  However, often you'll want to keep a
+dialog around after you make changes, which is where the <I>Apply</I>
+button is useful.
+
+</P>
+<P>
+Now hit <I>Run</I> again in the "Train" control panel, and the network will
+run around 70 more epochs to get its performance to the new, more
+stringent criterion.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_27.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_29.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

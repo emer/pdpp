@@ -1,0 +1,70 @@
+# typea makefile for g++
+
+##################################
+# these are the things to set
+#
+
+# this directory cannot be optimized -O2 in linux, so using -O instead
+#OPT_FLAGS = -O
+
+LIBS = -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+EXTERNAL_LIBS = $(LIBS) -lcss -ltamisc -livmisc -livgraphic -lreadline -ltermcap -lIV -lX11
+PROJNAME = ta
+PROJDIR	 = ta
+
+EXE = maketa
+DIST_EXE = maketa.bkup
+
+LIB = libtypea.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx -css
+
+EXTRA_HX_FILE = mta_parse
+EXTRA_CPU_FILES = mta.parse.cc
+
+# there is a bug here which is not VPATHing thse files...
+NIV_TAHEADS = $(VPATH)/streambuf-$(IOS_INCLUDES).h \
+	$(VPATH)/iostream-$(IOS_INCLUDES).h $(VPATH)/fstream-$(IOS_INCLUDES).h \
+	$(VPATH)/sstream-$(IOS_INCLUDES).h \
+	$(PDPDIR)/include/$(CPU)/ta_string/ta_string.h $(VPATH)/ta_stdef.h \
+	$(VPATH)/ta_list.h $(VPATH)/ta_list_tmplt.h \
+	$(VPATH)/typea.h $(VPATH)/ta_base.h $(VPATH)/ta_base_tmplt.h \
+	$(VPATH)/ta_group.h $(VPATH)/ta_group_tmplt.h \
+	$(VPATH)/ta_dump.h $(VPATH)/tdefaults.h
+TAHEADS = $(NIV_TAHEADS) $(VPATH)/taiv_data.h $(VPATH)/taiv_dialog.h \
+	$(VPATH)/taiv_type.h $(VPATH)/ta_group_iv.h
+
+HEADS = ta_stdef.h ta_list.h ta_list_tmplt.h typea.h typea_constr.h \
+	ta_base.h ta_base_tmplt.h ta_group.h ta_group_tmplt.h \
+	ta_dump.h tdefaults.h taiv_data.h taiv_dialog.h taiv_type.h \
+	ta_group_iv.h enter_iv.h leave_iv.h\
+	mta_constr.h maketa.h mta_parse.h wait_cursor.h wait_mask.h \
+	record_cursor.h record_mask.h $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS = 	mta_parse.cc mta_lex.cc mta_constr.cc maketa.cc ta_list.cc typea.cc \
+	typea_constr.cc ta_base.cc ta_group.cc ta_dump.cc tdefaults.cc\
+	taiv_data.cc taiv_dialog.cc taiv_type.cc ta_group_iv.cc ta_TA.cc
+
+NIV_OBJS = ta_list.o typea.o typea_constr.o ta_base.o ta_group.o \
+	ta_dump.o tdefaults.o ta_TA.o
+OBJS = 	$(NIV_OBJS) taiv_data.o taiv_dialog.o taiv_type.o ta_group_iv.o
+
+EXEOBJS = ta_list.o mta_parse.o mta_lex.o mta_constr.o maketa.o typea.o 
+
+DEPS = 	mta_parse.d mta_lex.d mta_constr.d maketa.d ta_list.d typea.d \
+	typea_constr.d ta_base.d ta_group.d ta_dump.d tdefaults.d \
+	taiv_data.d taiv_dialog.d taiv_type.d ta_group_iv.d ta_TA.d
+
+default:  optLib
+#default:	dbgLib
+#default:	dbgBin
+
+ios_includes:
+	- $(RM) *stream*-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/streambuf.h streambuf-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/iostream.h iostream-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/fstream.h fstream-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/sstream.h sstream-$(IOS_INCLUDES).h
+
+# NOTE: you cannot make maketa or lib_min in this directory anymore!
+# see src/maketa and src/ta_lib_min

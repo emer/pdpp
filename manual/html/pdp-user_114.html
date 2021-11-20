@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-dmem</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_113.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_115.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX582" HREF="pdp-user_toc.html">10.1.0.1  Distributed Memory Computation in the Network</A></H4>
+
+<P>
+The Network supports parallel processing across connections, where
+different distributed memory (dmem) processes compute different
+subsets of connections, and then share their results.  For example if
+4 processors were working on a single network, each would have
+connections for approximately 1/4 of the units in the network.  When
+the net input to the network is computed, each process computes this
+on its subset of connections, and then shares the results with all the
+other processes.
+
+</P>
+<P>
+Given the relatively large amount of communication required for
+synchronizing net inputs and other variables at each cycle of network
+computation, this is efficient only for relatively large networks
+(e.g., above 250 units per layer for 4 layers).  In benchmarks on
+Pentium 4 Xeon cluster system connected with a fast Myrinet
+fiber-optic switched network connection, networks of 500 units per
+layer for 4 layers achieved <EM>better</EM> than 2x speedup by splitting
+across 2 processors, presumably by making the split network fit within
+processor cache whereas the entire one did not.  This did not scale
+that well for more than 2 processors, suggesting that cache is the
+biggest factor for this form of dmem processing.
+
+</P>
+<P>
+In all dmem cases (see section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A> for event-wise dmem) each
+processor maintains its own copy of the entire simulation project, and
+each performs largely the exact same set of functions to remain
+identical throughout the computation process.  Processing only
+diverges at carefully controlled points, and the results of this
+divergent processing are then shared across all processors so they can
+re-synchronize with each other.  Therfore, 99.99% of the code runs
+exactly the same under dmem as it does under a single-process, making
+the code extensions required to support this form of parallel
+processing minimal.  This was not true for the pthread (parallel
+thread) model that was used in earlier releases -- it is now gone.
+
+</P>
+<P>
+The main parameter for controlling dmem processing is the
+<CODE>dmem_nprocs</CODE> field, which determines how many of the available
+processors are allocated to processing network connections.  Other
+processors left over after the network allocation are allocated to
+processing event-wise distributed memory computation (see
+section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A> for information on this).  The other parameter
+is <CODE>dmem_sync_level</CODE>, which is set automatically by most
+algorithms based on the type of synchronization that they require
+(feedforward networks generally require layer-level synchronization,
+while recurrent, interactive networks require network-level
+synchronization).
+
+</P>
+<P>
+The one area where dmem processing can cause complications is in
+networks that use shared/linked weights, such as those that can be
+created by the <B>TesselPrjnSpec</B> projection spec
+(see section <A HREF="pdp-user_121.html">10.3.3.2  Tesselated (Repeated) Patterns of Connectivity</A>).  If shared weights end up on different
+processors, they cannot be shared!  If these weights happen to be
+shared across unit groups, then you can set the <CODE>dmem_dist</CODE>
+parameter in the corresponding <B>Layer</B> to <CODE>DMEM_DIST_UNITGP</CODE>,
+which will distribute connections across unit groups such that the
+first unit in each unit group are all allocated to the first
+processor, the second to the second, etc.  In this case, they can all
+share connections.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_113.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_115.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

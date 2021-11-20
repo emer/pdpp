@@ -1,0 +1,321 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-view</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_128.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_130.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX713" HREF="pdp-user_toc.html">10.6  Network Viewer</A></H2>
+<P>
+<A NAME="IDX714"></A>
+<A NAME="IDX715"></A>
+<A NAME="IDX716"></A>
+
+</P>
+<IMG SRC="pics/xor.netview.gif" ALIGN="MIDDLE" ALT="The Network Viewer">
+<P>
+<B> Figure: </B> The Network Viewer
+<P>
+
+<P>
+The Network Viewer (NetView) provides an interactive pseudo-3D view of
+the network structure. A default view is associated with each network
+object, although networks may have as many additional NetViews as is
+necessary. The NetView can be spatially divided into four regions:
+Actions, Members, View, and Scale.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_130.html">1            The Action Region</A>
+<LI><A HREF="pdp-user_131.html">2            The Member Region</A>
+<LI><A HREF="pdp-user_132.html">3               The View Region</A>
+<LI><A HREF="pdp-user_133.html">4              The Scale region</A>
+</UL>
+
+<P>
+The NetView contains the following variables which control some of the
+display features of View and Scale Regions:
+
+</P>
+
+<H2>10.7  NetView Variables</H2>
+
+<DL COMPACT>
+
+<DT><CODE>int  skew</CODE>
+<DD>
+<A NAME="IDX717"></A>
+The skew controls the pseudo-3d depth dimension of the NetView's units.
+A skew of zero provides no perceived depth (2D). The default is 0.15.
+<DT><CODE>UnitShape shape</CODE>
+<DD>
+<A NAME="IDX718"></A>
+Controls the shape of the units in the NetView and how their values are
+graphically displayed.  This is also available as the <I>Disp Md</I> menu
+on the right-hand side of the NetView.  The possible choices are:
+<P>
+<DL COMPACT>
+
+<DT><CODE>COLOR</CODE>
+<DD>
+A rectangular shape filled with a color from the colorscale
+corresponding to its value. If the unit's value is less than the minimum
+value of the colorscale then it will appear as stippled version of the
+minimum color. Similar stippling will occur it is greater than the
+maximum value of the colorscale. If the unit contains no value for the
+selected member it will be displayed as a stippled version of the View
+Region's  background color.
+<P>
+<DT><CODE>AREA</CODE>
+<DD>
+<DT><CODE>LINEAR</CODE>
+<DD>
+A rectangular shape filled with a background color corresponding to the
+midpoint value of the colorscale and a foreground rectangular spiral shape
+of with an area corresponding to the ratio of the unit's value to
+maximum range on the scalebar. Unit values above the scalebar's midpoint
+have spirals filled with the color of the maximum value of the scalebar,
+while units with values less than the scalebar's midpoint have spirals
+filled with the color of the minimum value of the scalebar. AREA spirals
+scale the size of their area with respect their value/scalebarmax ratio.
+LINEAR spirals scale their width and height linearly with respect to
+their value/scalebarmax ratio.
+<P>
+<DT><CODE>FILL</CODE>
+<DD>
+FILL is similar to the AREA UnitShape but instead of a centered spiral
+area the FILL UnitShape begins covering an area at the bottom of the
+Unit and "fills" the unit left to right and bottom to top, covering a
+percentage area of the unit equal to the units value/scalebarmax ratio.
+<P>
+<DT><CODE>DIR_FILL</CODE>
+<DD>
+This is similar to FILL except that the unit is divided with a
+horizontal line across the middle. Unit values greater than the
+midpoint of the colorscale fill the upper half of the unit only, while
+values less than the midpoint of the colorscale only fill the lower half
+the unit.
+<P>
+<DT><CODE>THREE_D</CODE>
+<DD>
+THREE_D Units utilize the pseudo-3D nature of the View Region to create
+a varying rectangular height field perspective of the unit's value. Unit
+values greater than the midpoint of the colorscale rise "above" the
+3-D plane of the unit and unit values less than the midpoint of the
+colorscale sink below the 3-D plane of the unit. The units are colored
+in the same was as the COLOR UnitShape.
+<P>
+<DT><CODE>ROUND</CODE>
+<DD>
+Round units have a circular or oval shape and are colored in the same way
+as the COLOR UnitShape.
+<P>
+<DT><CODE>HGT_FIELD</CODE>
+<DD>
+Like THREE_D, but each of the four corners of a unit are placed at the
+average height computed from the four adjacent units to that corner.
+This produces a smoothly-shaped field of height corresponding to average
+values of units.  The units are colored in the same was as the COLOR
+UnitShape.
+<P>
+<DT><CODE>HGT_PEAKS</CODE>
+<DD>
+The same as HGT_FIELD, except that the center of the unit has a peak
+that is exactly the height corresponding to the value of the units.
+</DL>
+
+<P>
+<DT><CODE>ColorScale* colorspec</CODE>
+<DD>
+<A NAME="IDX719"></A>
+Controls the color spectrum used by the colorscale.
+(see section <A HREF="pdp-user_61.html">6.18  Color Scale Specifications</A>).
+<DT><CODE>float prjn_arrow_size</CODE>
+<DD>
+<A NAME="IDX720"></A>
+Controls the size of the arrowheads at the end of the projections.
+<DT><CODE>float prjn_arrow_angle</CODE>
+<DD>
+<A NAME="IDX721"></A>
+Controls the angle (sharpness) of the arrowheads at the end of the
+projections.  Smaller values = sharper arrowheads.
+<DT><CODE>FontSpec layer_font</CODE>
+<DD>
+<A NAME="IDX722"></A>
+The X11 specification for the font to use in drawing the
+layer names in the View Region
+<DT><CODE>FontSpec unit_font</CODE>
+<DD>
+<A NAME="IDX723"></A>
+The X11 specification for the font to use in drawing the
+unit names and values in the View Region.
+<DT><CODE>Label_Group labels</CODE>
+<DD>
+<A NAME="IDX724"></A>
+This group contains the arbitrary network labels visible in the View
+Region. Labels are usually created and place using the "New Label"
+button in the Action Region, however the can also be directly created in
+this group. Editing these labels allows the user to change the text or
+font of the label, using a standard XWindows font specification string.
+<DT><CODE>NetViewGraph_Group idraw_graphics</CODE>
+<DD>
+<A NAME="IDX725"></A>
+This group contains the idraw graphics included in the network display
+-- the menus <I>Load Graphic</I> and <I>Remove Graphic</I> manipulate these
+objects.
+<DT><CODE>UnitTextDisplay unit_text</CODE>
+<DD>
+<A NAME="IDX726"></A>
+Controls whether or not the unit's names and values are overlayed on top
+of the unit. This variable is also accessible directly in the NetView's
+Scale Region.
+<DT><CODE>SplitUnitLayout unit_layout</CODE>
+<DD>
+<A NAME="IDX727"></A>
+Controls how the units are split when multiple members are
+selected for display in the Member Region of the NetView.
+<DT><CODE>bool auto_scale</CODE>
+<DD>
+<A NAME="IDX728"></A>
+Controls whether or not the range of the scale in the
+Scale Region automatically adjust to range of values currently on display
+in the View Region. This variable is also accessible directly in the
+NetView's Scale Region as a toggle box.
+<DT><CODE>FloatGeometry spacing</CODE>
+<DD>
+Controls the spacing of the units and layers in the View
+Region. Useful values range from "0" to "1.0".
+</DL>
+
+<P>
+The NetView provides the following functions on its <I>Action</I> Menu:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>SetColorSpec(ColorScaleSpec* colors)</CODE>
+<DD>
+<A NAME="IDX729"></A>
+Set the color spectrum to use for color-coding values (NULL = use default).
+
+<DT><CODE>AutoPositionPrjnPoints()</CODE>
+<DD>
+<A NAME="IDX730"></A>
+Initialize the positions of all of the projection arrows according to
+the automatic positioning algorithm.  If the positions are not quite
+ideal, the projections may be repositioned using the Move Mode (and
+this function removes any existing custom repositioning!)
+
+<DT><CODE>AutoPositionLayerNames()</CODE>
+<DD>
+<A NAME="IDX731"></A>
+Initialize the the size and position of the Layer names to fit in the
+lower left-hand corner of the layer (removes any custom positioning!)
+
+<DT><CODE>ZoomLayer(Layer* lay, float mag_factor_x, float mag_factor_y)</CODE>
+<DD>
+<A NAME="IDX732"></A>
+Set the magnification factors (zooming) for the display of a given layer.
+
+<DT><CODE>ResetLayerZoom()</CODE>
+<DD>
+<A NAME="IDX733"></A>
+Reset (remove) any magnification/zooming (rescaling) of the display of
+layers in the netview (made via the Zoom button or ZoomLayer menu).
+
+<DT><CODE>FreezeNetZoom()</CODE>
+<DD>
+<A NAME="IDX734"></A>
+Freeze (save) current network zooming/magnification (rescaling or
+repositioning) -- it will no longer auto-resize to fit entire network
+in display.
+
+<DT><CODE>AutoNetZoom()</CODE>
+<DD>
+<A NAME="IDX735"></A>
+Clear any frozen/saved magnification/zooming (rescaling or
+repositioning) of the network display, enabling auto-zooming to fit
+entire network in display.  This is the default.
+
+<DT><CODE>SetLayerFontSize(int point_size)</CODE>
+<DD>
+<A NAME="IDX736"></A>
+Set the point size of the layer name font.
+
+<DT><CODE>SetUnitFontSize(int point_size)</CODE>
+<DD>
+<A NAME="IDX737"></A>
+Set the point size of the unit name/value font .
+
+<DT><CODE>LoadGraphic(File name, float scale)</CODE>
+<DD>
+<A NAME="IDX738"></A>
+Loads and Idraw image file of name <CODE>name</CODE> and scales
+it by <CODE>scale</CODE>. The image is displayed in background of the the View
+Region. 
+
+<DT><CODE>RemoveGraphics()</CODE>
+<DD>
+<A NAME="IDX739"></A>
+Removes all included graphics.
+</DL>
+
+<P>
+In addition the NetView provides a <I>Selection</I> menu with two sets of
+complementary functions.  The <B>Set</B> version of these sets a given
+parameter or specification of the objects selected in the NetView.  The
+<B>Show</B> version selects those objects in the NetView which have a given
+parameter or specification.  These are very useful for constructing the
+network, and providing visual feedback about its state.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Set/ShowUnitSpec(UnitSpec* spec)</CODE>
+<DD>
+<A NAME="IDX740"></A>
+<A NAME="IDX741"></A>
+The unit specification, for units, groups of units, or layers.
+<DT><CODE>Set/ShowConSpec(ConSpec* spec)</CODE>
+<DD>
+<A NAME="IDX742"></A>
+<A NAME="IDX743"></A>
+The Connection specification, for projections.
+<DT><CODE>Set/ShowPrjnSpec(PrjnSpec* spec)</CODE>
+<DD>
+<A NAME="IDX744"></A>
+<A NAME="IDX745"></A>
+The Projection specification, for projections.
+<DT><CODE>Set/ShowPrjnConType(TypeDef* con_type)</CODE>
+<DD>
+<A NAME="IDX746"></A>
+<A NAME="IDX747"></A>
+The type of Connection object to be created by the projection
+(<CODE>con_type</CODE> of Projection).
+<DT><CODE>Set/ShowPrjnConGpType(TypeDef* con_gp_type)</CODE>
+<DD>
+<A NAME="IDX748"></A>
+<A NAME="IDX749"></A>
+The type of Con_Group to be created by the projections
+(<CODE>con_gp_type</CODE> of Projection).
+<DT><CODE>Set/ShowLayerSpec(LayerSpec* spec)</CODE>
+<DD>
+<A NAME="IDX750"></A>
+<A NAME="IDX751"></A>
+The Layer specification, for layers.
+<DT><CODE>Set/ShowLayerUnitType(TypeDef* unit_type)</CODE>
+<DD>
+<A NAME="IDX752"></A>
+<A NAME="IDX753"></A>
+The type of units to be created by the layer (<CODE>el_type</CODE> of the
+layer).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_128.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_130.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

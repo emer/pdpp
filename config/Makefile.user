@@ -1,0 +1,23 @@
+#############################################################
+# defines settings for makefiles in user's directory
+# 	(i.e. not in the pdp++ main directory)
+#
+# this is put in the location defined by $(TOP) given below by the 
+# script bin/mknewpdp, and is incorporated into the makefile constructed
+# in the individual directories below this $(TOP) by the NewMakefiles
+# make target, which automatically looks here for these definitions
+#
+
+# this must be set to point to the location where pdp++ was actually
+# installed!!
+PDPDIR = /usr/local/pdp++
+
+# this must be set to point to the location where this file is actually
+# located.  
+TOP = $(HOME)/mypdp++
+
+# this can optionally be set to a location which will be local to each
+# machine, so that the object files can be located there instead of on
+# a networked disk, which is slow for compiling.  this is only used
+# if the 'make local_cpu_dir' action is performed.
+LOC_OBJS = $(HOME)/pdp++_objs

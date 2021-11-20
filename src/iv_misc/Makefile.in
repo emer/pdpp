@@ -1,0 +1,47 @@
+# miscellaneous interviews extras for ta/css package
+
+##################################
+# these are the things to set
+#
+
+IVLIB = -lIV
+IVDEBUGLIB = -lIVd
+
+# tastring needed by dynalabel
+
+LIBS =  $(IVLIB) -lX11 -lm -ltastring
+DEBUGLIBS =  $(IVDEBUGLIB) -lX11 -lm 
+
+PROJNAME = iv_misc
+PROJDIR = iv_misc
+
+EXE = ivtest
+
+LIB = libivmisc.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx
+
+TAHEADS = 
+
+HEADS = grabber.bm grabberMask.bm vcrbitmaps.h \
+	dynalabel.h spiral.h requestbox.h grid.h dastepper.h \
+	lrScrollBox.h tbScrollBox.h hungrybox.h scrollable.h \
+	adjustbox.h
+
+SRCS =  dynalabel.cc spiral.cc requestbox.cc grid.cc dastepper.cc \
+        lrScrollBox.cc tbScrollBox.cc hungrybox.cc scrollable.cc \
+	adjustbox.cc
+
+OBJS =  dynalabel.o spiral.o requestbox.o grid.o dastepper.o \
+	lrScrollBox.o tbScrollBox.o hungrybox.o scrollable.o \
+	adjustbox.o
+
+EXEOBJS = spiral.o dastepper.o
+
+DEPS = 	dynalabel.d spiral.d requestbox.d grid.d dastepper.d \
+	lrScrollBox.d tbScrollBox.d hungrybox.d scrollable.d \
+	adjustbox.d
+
+default: optLib
+#default: dbgBin
+#default: dbgLib

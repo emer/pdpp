@@ -1,0 +1,121 @@
+#!/bin/csh -f
+# make a new project directory
+# arg1 is the directory to create
+
+if( $#argv < 1) then
+	echo " "
+	echo "$0 : Must give argment which is the name of the project to create"
+	exit 1
+endif
+
+if( $?CPU == 0) then
+	echo " "
+   	echo "You must set the CPU environment variable to the type of machine"
+	echo "this is.  Use the 'setenv' command, and it is a good idea to"
+	echo "put it in your .cshrc so that it will be installed automatically"
+	echo "when you log in.  Supported types are: SUN4, HP800, SGI"
+	echo " "
+	exit 1
+endif
+
+set LOCAL = /usr/local
+set PDPDIR = $LOCAL/pdp++
+
+if( !(-e $PDPDIR/config/Makefile.user) ) then
+	echo " "
+	echo "This installation script needs to be edited and the correct"
+	echo "path to the PDPDIR needs to be set.  I was not able to find"
+	echo "the files necessary to construct a new project directory."
+	echo " "
+	exit 1
+endif
+
+set noclobber
+
+if( !(-e Makefile.user) ) then
+	echo " "
+	echo "This is apparently the first project you will be making"
+	echo "in this directory.  Each project lives in its own subdirectory"
+	echo "under this current directory.  The current directory is known"
+	echo "as the 'TOP' directory, and is typically HOME/mypdp++"
+	echo " "
+	echo "The file 'Makefile.user' has been created in this directory."
+	echo "You now need to edit it and make sure that the paths of"
+	echo "PDPDIR (where pdp++ was installed) and TOP (this dir) are correct."
+	echo "Then, run '$0 $1' again."
+	echo " "
+	echo "If you will be making executables for different machines"
+	echo "using the same source, you should set the LOC_OBJS variable"
+	echo "in the 'Makefile.user' to point to a directory that will"
+	echo "be local to each machine type.  This is where the local"
+	echo "object files will be located."
+	echo " "
+	cp $PDPDIR/config/Makefile.user .
+	exit 1
+endif
+
+echo " "
+echo "*** Making the directory ***"
+echo " "
+echo $PWD/$1
+
+mkdir $1
+cat $PDPDIR/config/Makefile.init.user Makefile.user > $1/Makefile
+sed -e "s/XXX/$1/g" $PDPDIR/config/Makefile.in.blank > $1/Makefile.in
+sed -e "s/XXX/$1/g" $PDPDIR/config/main.cc.blank > $1/main.cc
+sed -e "s/XXX/$1/g" $PDPDIR/config/project.h.blank > $1/$1.h
+sed -e "s/XXX/$1/g" $PDPDIR/config/project.cc.blank > $1/$1.cc
+sed -e "s/XXX/$1/g" $PDPDIR/config/project_vt.blank > $1/$1_vt.cc
+sed -e "s/XXX/$1/g" $PDPDIR/config/project_ti.blank > $1/$1_ti.cc
+
+# create bogus versions of _TA files
+touch $1/$1_TA_type.h
+touch $1/$1_TA_type.hx
+touch $1/$1_TA_inst.h
+touch $1/$1_TA_inst.hx
+touch $1/$1_TA.ccx
+touch $1/$1_TA.cc
+
+echo " "
+echo "*** Making a makefile in the directory ***"
+echo " "
+cd $1; make NewMakefile; make cpu_dir
+echo " "
+echo "*** Performing initial TypeAccess scan of files ***"
+echo " "
+make force_ta
+echo " "
+echo "*** Making dependencies ***"
+echo " "
+make depend
+
+echo " "
+echo "*** Project directory creation complete ***"
+echo " "
+echo "You might want to do a 'make local_cpu_dir' in this directory"
+echo "to have machine-local versions of the object files so that"
+echo "compilation will be faster, etc."
+echo " "
+echo "local_cpu_dir uses the defnitions for LOC_OBJS in Makefile.user"
+echo "and assumes that it already exists and that"
+echo "you have read/write permissions there"
+
+echo " "
+echo "Some initial project files have been created automatically"
+echo "for you in this directory.  You can edit them to add the"
+echo "functions you want."
+echo " "
+echo "Note that you will also probably have to edit the 'Makefile.in'"
+echo "file, which contains dependencies and tells which pdp libraries"
+echo "to include.  Read that file for more information."
+echo "If you edit it, use 'make NewMakeDepend' to make a new Makefile"
+echo " "
+
+echo "The next step in the compile process is to simply do a"
+echo "'make', which will make your program for you."
+echo "There are other make targets too, like 'make optBin'"
+echo "which makes the binary optimized, and 'make dbgBin'"
+echo "which makes it with debug information."
+echo "See the programming section of the manual for more info."
+echo " "
+

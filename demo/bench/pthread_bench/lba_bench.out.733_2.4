@@ -1,0 +1,449 @@
+=======================================
+10 unit layers, 500 epochs
+=======================================
+
+leabra++ Loading: lba_pt_10_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 500 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    5.59 sys:    0.08 tot:    5.72 n: 420432
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    9.29 sys:    0.31 tot:    8.82 n: 810864
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+
+Total time: usr:    52.1 sys:    1.06 tot:    53.2 n: 1
+52.77user 1.14system 0:54.68elapsed 98%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2109major+2904minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_10_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 500 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 300:   1:200,  3:100,  
+  t_run            usr:    3.86 sys:    0.15 tot:    1.76 n: 420432
+  t_sem_wait       usr:    1.38 sys:    3.14 tot:    17.8 n: 420432
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 200:   2:200,  0:0,  
+  t_run            usr:    3.98 sys:    0.17 tot:    4.17 n: 420432
+  t_sem_wait       usr:    1.32 sys:    3.09 tot:    97.9 n: 420431
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 20:   2:10,  3:10,  
+  t_run            usr:    6.07 sys:    0.29 tot:    1.88 n: 810864
+  t_sem_wait       usr:    2.68 sys:    5.75 tot:    34.2 n: 810864
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 20:   1:10,  0:10,  
+  t_run            usr:    6.89 sys:    0.45 tot:    7.58 n: 810864
+  t_sem_wait       usr:    2.83 sys:       6 tot:    86.2 n: 810863
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    70.2 sys:    14.5 tot:     112 n: 1
+110.41user 27.54system 1:52.80elapsed 122%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+2910minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_10_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 500 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 300:   1:200,  3:100,  
+  t_run            usr:    4.02 sys:    0.11 tot:    1.95 n: 420432
+  t_sem_wait       usr:     1.7 sys:    3.17 tot:    18.1 n: 420432
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 200:   2:200,  0:0,  
+  t_run            usr:    3.66 sys:    0.23 tot:    4.17 n: 420432
+  t_sem_wait       usr:    1.16 sys:     3.1 tot:    58.9 n: 420431
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:      59 sys:    5.73 tot:    73.2 n: 1
+73.08user 10.37system 1:13.81elapsed 113%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+2908minor)pagefaults 0swaps
+ 
+=======================================
+50 unit layers, 50 epochs
+=======================================
+
+leabra++ Loading: lba_pt_50_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    11.3 sys:       0 tot:    11.7 n: 43529
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    3.86 sys:    0.02 tot:    4.32 n: 84058
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+
+Total time: usr:    26.5 sys:    0.09 tot:    26.6 n: 1
+27.28user 0.11system 0:27.41elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2109major+3095minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_50_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 7500:   1:5000,  3:2500,  
+  t_run            usr:     7.4 sys:    0.02 tot:    6.58 n: 43529
+  t_sem_wait       usr:    0.18 sys:    0.23 tot:    1.97 n: 43529
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 5000:   2:5000,  0:0,  
+  t_run            usr:    5.79 sys:    0.03 tot:     5.5 n: 43529
+  t_sem_wait       usr:    0.13 sys:    0.28 tot:    21.2 n: 43528
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 100:   2:50,  3:50,  
+  t_run            usr:    2.98 sys:    0.02 tot:    2.04 n: 84058
+  t_sem_wait       usr:     0.2 sys:    0.59 tot:    3.35 n: 84058
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 100:   1:50,  0:50,  
+  t_run            usr:     2.4 sys:    0.05 tot:    2.56 n: 84058
+  t_sem_wait       usr:    0.36 sys:    0.63 tot:    23.3 n: 84057
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    23.1 sys:    1.54 tot:    27.8 n: 1
+35.26user 2.87system 0:28.60elapsed 133%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+3100minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_50_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 50 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 7500:   1:5000,  3:2500,  
+  t_run            usr:    6.22 sys:    0.03 tot:    5.89 n: 43529
+  t_sem_wait       usr:    0.18 sys:    0.32 tot:    2.13 n: 43529
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 5000:   2:5000,  0:0,  
+  t_run            usr:    4.35 sys:    0.03 tot:    4.61 n: 43529
+  t_sem_wait       usr:    0.07 sys:    0.37 tot:    17.1 n: 43528
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    20.8 sys:    0.63 tot:    22.7 n: 1
+26.86user 1.15system 0:23.50elapsed 119%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+3098minor)pagefaults 0swaps
+ 
+=======================================
+100 unit layers, 15 epochs
+=======================================
+
+leabra++ Loading: lba_pt_100_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    19.8 sys:    0.02 tot:    20.1 n: 13401
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    2.44 sys:    0.01 tot:    2.27 n: 25902
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+
+Total time: usr:      30 sys:    0.08 tot:    30.1 n: 1
+31.31user 0.09system 0:31.42elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2109major+3577minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_100_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 30000:   1:20000,  3:10000,  
+  t_run            usr:    10.3 sys:       0 tot:    10.2 n: 13401
+  t_sem_wait       usr:    0.04 sys:    0.11 tot:    3.11 n: 13401
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 20000:   2:20000,  0:0,  
+  t_run            usr:    10.4 sys:       0 tot:    10.4 n: 13401
+  t_sem_wait       usr:    0.04 sys:    0.15 tot:    13.9 n: 13400
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 200:   2:100,  3:100,  
+  t_run            usr:    1.65 sys:       0 tot:    1.49 n: 25902
+  t_sem_wait       usr:    0.06 sys:    0.25 tot:    1.26 n: 25902
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 200:   1:100,  0:100,  
+  t_run            usr:    1.56 sys:    0.01 tot:    1.64 n: 25902
+  t_sem_wait       usr:    0.06 sys:    0.26 tot:    22.3 n: 25901
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    20.1 sys:    0.53 tot:    24.6 n: 1
+34.50user 1.20system 0:25.94elapsed 137%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+3581minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_100_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 15 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 30000:   1:20000,  3:10000,  
+  t_run            usr:    9.78 sys:    0.02 tot:    10.2 n: 13401
+  t_sem_wait       usr:    0.09 sys:    0.09 tot:    2.85 n: 13401
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 20000:   2:20000,  0:0,  
+  t_run            usr:    8.99 sys:    0.03 tot:    9.64 n: 13401
+  t_sem_wait       usr:    0.07 sys:    0.14 tot:    12.7 n: 13400
+  t_pthread_create usr:       0 sys:       0 tot:    0.01 n: 1
+
+
+Total time: usr:    20.1 sys:    0.18 tot:    22.8 n: 1
+30.83user 0.44system 0:24.11elapsed 129%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+3580minor)pagefaults 0swaps
+ 
+=======================================
+200 unit layers, 5 epochs
+=======================================
+
+leabra++ Loading: lba_pt_200_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    28.6 sys:    0.02 tot:    28.5 n: 4605
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    1.88 sys:       0 tot:    1.89 n: 8910
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+
+Total time: usr:    36.4 sys:    0.03 tot:    36.4 n: 1
+40.00user 0.10system 0:40.11elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2109major+5356minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_200_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 120000:   1:80000,  3:40000,  
+  t_run            usr:    14.7 sys:    0.01 tot:    15.1 n: 4605
+  t_sem_wait       usr:    0.07 sys:    0.09 tot:    5.28 n: 4605
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 80000:   2:80000,  0:0,  
+  t_run            usr:    16.8 sys:       0 tot:    16.7 n: 4605
+  t_sem_wait       usr:    0.01 sys:    0.04 tot:    11.5 n: 4604
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 400:   2:200,  3:200,  
+  t_run            usr:       1 sys:       0 tot:    1.13 n: 8910
+  t_sem_wait       usr:    0.06 sys:    0.11 tot:    0.38 n: 8910
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 400:   1:200,  0:200,  
+  t_run            usr:    1.18 sys:    0.02 tot:    1.09 n: 8910
+  t_sem_wait       usr:    0.04 sys:    0.17 tot:    26.9 n: 8909
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    22.2 sys:    0.29 tot:    28.3 n: 1
+44.31user 0.60system 0:31.98elapsed 140%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+5362minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_200_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 5 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 120000:   1:80000,  3:40000,  
+  t_run            usr:    14.7 sys:       0 tot:    14.8 n: 4605
+  t_sem_wait       usr:    0.03 sys:    0.09 tot:    5.51 n: 4605
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 80000:   2:80000,  0:0,  
+  t_run            usr:    16.5 sys:    0.01 tot:    16.2 n: 4605
+  t_sem_wait       usr:    0.02 sys:    0.09 tot:    11.7 n: 4604
+  t_pthread_create usr:       0 sys:       0 tot:    0.01 n: 1
+
+
+Total time: usr:    22.9 sys:    0.23 tot:    28.2 n: 1
+43.22user 0.41system 0:31.92elapsed 136%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+5362minor)pagefaults 0swaps
+ 
+=======================================
+500 unit layers, 1 epochs
+=======================================
+
+leabra++ Loading: lba_pt_500_1p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    42.4 sys:    0.03 tot:    42.6 n: 935
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 0:   0:0,  1:0,  2:0,  3:0,  
+  t_run            usr:    1.31 sys:       0 tot:     1.2 n: 1810
+  t_sem_wait       usr:       0 sys:       0 tot:       0 n: 0
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+
+Total time: usr:    47.5 sys:    0.03 tot:    47.5 n: 1
+74.09user 0.18system 1:14.34elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2109major+15964minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_500_2p.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 750000:   1:500000,  3:250000,  
+  t_run            usr:    22.8 sys:       0 tot:    22.6 n: 935
+  t_sem_wait       usr:    0.01 sys:       0 tot:     7.5 n: 935
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 500000:   2:500000,  0:0,  
+  t_run            usr:    23.9 sys:    0.01 tot:    23.9 n: 935
+  t_sem_wait       usr:    0.01 sys:       0 tot:    10.8 n: 934
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+Unit-level pthread timing data:
+Thread: 0
+  tot_cnt: 1000:   2:500,  3:500,  
+  t_run            usr:    0.62 sys:       0 tot:    0.74 n: 1810
+  t_sem_wait       usr:       0 sys:    0.04 tot:    0.05 n: 1810
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 1000:   1:500,  0:500,  
+  t_run            usr:    0.76 sys:    0.01 tot:    0.62 n: 1810
+  t_sem_wait       usr:       0 sys:    0.03 tot:    33.4 n: 1809
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    27.3 sys:    0.06 tot:    34.8 n: 1
+78.67user 0.34system 1:01.64elapsed 128%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+15968minor)pagefaults 0swaps
+
+leabra++ Loading: lba_pt_500_2pnu.proj.gz ...Done
+Counter max: TrainProcess.epoch = 1 (from argv[3])
+
+PThread Timing Report:
+con_avg_dev: 0.2 unt_avg_dev: 0
+
+Connection-level pthread timing data:
+Thread: 0
+  tot_cnt: 750000:   1:500000,  3:250000,  
+  t_run            usr:    22.8 sys:       0 tot:      23 n: 935
+  t_sem_wait       usr:    0.02 sys:    0.05 tot:    7.38 n: 935
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 0
+
+Thread: 1
+  tot_cnt: 500000:   2:500000,  0:0,  
+  t_run            usr:    23.8 sys:    0.05 tot:    24.1 n: 935
+  t_sem_wait       usr:    0.01 sys:    0.01 tot:    11.1 n: 934
+  t_pthread_create usr:       0 sys:       0 tot:       0 n: 1
+
+
+Total time: usr:    27.8 sys:    0.06 tot:    35.3 n: 1
+78.42user 0.39system 1:02.22elapsed 126%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2113major+15968minor)pagefaults 0swaps

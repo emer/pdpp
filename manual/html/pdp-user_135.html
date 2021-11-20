@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_134.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_136.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX756" HREF="pdp-user_toc.html">11  Environments, Events, and Patterns</A></H1>
+
+<P>
+<A NAME="IDX757"></A>
+<A NAME="IDX758"></A>
+
+</P>
+<P>
+Conceptually, a network always acts in an environment of some kind. For
+example, back propagation and pattern associator networks act in an
+environment of input-output patterns. An unsupervised learning network
+operates in an environment consisting of input patterns.
+
+</P>
+<P>
+In PDP++, the object of type <B>Environment</B> contains all the
+information that specifies the kinds of stimuli or patterns that the
+network will be tested or trained on.  The role of the environment is to
+represent all of the data, structured so that the data can be
+interpreted by the processes and presented to the network appropriately.
+Thus, it is like a database or a library.  The environment does not
+specify things like the <EM>order</EM> with which events will be presented
+to the network--this is the job of the processes, which, to continue the
+metaphor, act like librarians in providing the interface between the
+data (the environment) and the consumer (the network).
+
+</P>
+<P>
+There is a special relationship between the <B>EventSpec</B>, which
+specifies properties of events, and the <B>Event</B> objects themselves.
+Any changes made to the event spec (or its pattern specs), for example
+in the number of patterns per event or size of one of the patterns, are
+automatically propagated to all of the events that use the event spec.
+Thus, the <B>EventSpec</B> acts much like a dynamic template for events,
+which is a different role for a spec object.  This design makes it very
+easy to modify environments once they've been created.
+
+</P>
+<P>
+The <B>EnviroView</B> enables you to interactively configure the event
+specs for the events, much in the same way the net view allows one to
+configure networks.  In the standard color scheme, environment objects
+are colored green (like the great outdoors!).
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_136.html">1                     Environment</A>
+<LI><A HREF="pdp-user_137.html">2                   Events, Patterns, and their Specs</A>
+<LI><A HREF="pdp-user_139.html">3                     Representing Sequences of Events</A>
+<LI><A HREF="pdp-user_140.html">4                    The EnviroView</A>
+<LI><A HREF="pdp-user_143.html">5                  Importing Environments from Text Files</A>
+<LI><A HREF="pdp-user_144.html">6                     Environment Generation Functions</A>
+<LI><A HREF="pdp-user_145.html">7                 Environment Analysis Functions</A>
+<LI><A HREF="pdp-user_146.html">8                    Frequency Environments and Events</A>
+<LI><A HREF="pdp-user_147.html">9                   Other Environment Types</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_134.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_136.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

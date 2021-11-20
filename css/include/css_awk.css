@@ -1,0 +1,32 @@
+#!/usr/local/bin/css -f
+// this illustrates how to use CSS as an awk-like file processing system
+// the key function is ReadLine, which parses a line of the file into
+// columns, which are stored in a String_Array object
+
+// this can be used as a template..
+
+void Main() {
+  fstream istrm;
+  istrm.open(argv[1], ios::in);
+
+  fstream ostrm;
+  ostrm.open(argv[1] + ".tmp", ios::out);
+  // this is an output file, you could use 'cout' instead
+
+  while(!istrm.eof() && istrm.good()) {
+    String_Array& col = ReadLine(istrm);
+    if(istrm.eof() || istrm.bad()) break;
+    // now you can act on the columns as col[x]
+    // the total number of columns is col.size
+    // this is how they get printed out
+    ostrm << col[0] << "\t" << col[1] << "\t" << col[2] << "\n";
+  }
+  istrm.close();
+  ostrm.close();
+  // you can do some post-processing with unix commands too..
+  system("sort " + argv[1] + ".tmp > " + argv[1] + ".avg");
+  system("rm " + argv[1] + ".tmp");
+  system("more " + argv[1] + ".avg");
+}
+
+Main();

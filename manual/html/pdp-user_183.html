@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-functions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_182.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_184.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1096" HREF="pdp-user_toc.html">13.2  PDPLog Functions</A></H2>
+
+<P>
+On all of the following functions, the optional no_dlg arg will prevent
+the popup file requester dialog if true - this dialog comes up even when
+a valid file name is specified.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Actions/GetHeaders()</CODE>
+<DD>
+<A NAME="IDX1097"></A>
+Tells all the processes that update this log to send their
+current headers to this log.  Use this if you have changed the
+statistics being sent to this log.  Note that it causes all existing
+data to be removed.  The log will automatically adjust to the addition
+and removal of statistics, so this isn't necessary in those cases.
+However, it won't notice if a name of a statistic has changed.
+<DT><CODE>LogFile/SetSaveFile(char* file_nm, bool no_dlg = false)</CODE>
+<DD>
+<A NAME="IDX1098"></A>
+Pulls up a file chooser dialog that allows one to select the file that
+the log will save data into, or sets the log file to the argument if
+called from the script language.  This does not save any existing data
+in the file, it just opens the file so that any new data will be
+recorded.  Use <CODE>BufferToFile</CODE> after setting the save file (or by
+itself without a save file set) to actually save currently buffered data
+to the file.  Note that this will overwrite any existing file of the
+same name.
+<DT><CODE>LogFile/SetAppendFile(char* file_nm, bool no_dlg = false)</CODE>
+<DD>
+<A NAME="IDX1099"></A>
+This is just like <CODE>SetSaveFile</CODE>, but it appends to an existing file
+instead of writing over it.
+<DT><CODE>LogFile/LoadFile(char* file_nm, bool no_dlg = false)</CODE>
+<DD>
+<A NAME="IDX1100"></A>
+This will load data from a previously-saved log file into this log.
+Note that it is possible to load from a log file created by any process,
+since it will read the header information from the log file itself.
+Thus, one can open a new project, create a <B>GraphLog</B> object, and do a
+Load file on a log from a project that was run in the background, and
+get a graph of what happened.
+<DT><CODE>LogFile/CloseFile()</CODE>
+<DD>
+<A NAME="IDX1101"></A>
+Closes any open files. Note that <CODE>LoadFile</CODE> does not close the
+log file, because if the file is longer than the current buffer, it
+needs to be read from as the user scrolls through the file.
+<DT><CODE>LogFile/BufferToFile(char* file_nm, bool no_dlg = false)</CODE>
+<DD>
+<A NAME="IDX1102"></A>
+Sends the entire contents of the currently-buffered log data to a log
+file.  If there is an open log file and no file name is specified, it
+sends to this currently open file.  If there is no open file, then it
+will do a SetSaveFile(file_nm, no_dlg) and then dump the buffer to the
+file, closing the file afterwards.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_182.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_184.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

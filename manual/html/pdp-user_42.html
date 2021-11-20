@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - how-net</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_41.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_43.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX60" HREF="pdp-user_toc.html">5.2  Questions about Networks</A></H2>
+
+<P>
+For information about how to build a network using the network viewer,
+see section <A HREF="pdp-user_134.html">10.8  Building Networks Using the Viewer</A> and the tutorial section <A HREF="pdp-user_32.html">4.3  Configuring the Encoder Problem</A>.  Also, many
+questions can be answered by looking at the chapter on networks
+section <A HREF="pdp-user_112.html">10  Networks (Layers, Units, etc)</A>. 
+
+</P>
+<DL COMPACT>
+
+<DT><B>How to I get certain units to use a different parameter than others?</B>
+<DD>
+<A NAME="IDX61"></A>
+ 
+For example, if you want certain units to use a different learning rate,
+or activation function, or gain, etc... This is done by making a new
+<B>UnitSpec</B> or <B>ConSpec</B> (depending on where the relevant parameter
+is), and telling the relevant units or connections to use this new spec.
+It is recommended that you create the spec as a child of an existing
+spec (see section <A HREF="pdp-user_100.html">8.4  Specifications</A>), so that all the other parameters will
+automatically be inherited by the new spec (except for the one you
+change).  The easiest way to apply a different spec is to select the
+relevant units or projections, and use the <I>Selections</I> menu on the
+<B>NetView</B> (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>) to set the spec.  The tutorial now has an
+example of how to do this (see section <A HREF="pdp-user_39.html">4.3.7  Training and Testing Your Network</A>).
+
+<A NAME="IDX62"></A>
+<DT><B>What is the difference between Projections and Connections?</B>
+<DD>
+Projections specify the broad patterns of connectivity between layers.
+Connections are the actual unit-to-unit weights and other parameters
+which actually implement this connectivity.  Thus, there is always a
+projection associated with a set of connections. See section <A HREF="pdp-user_116.html">10.3  Projections</A>
+for more details.
+
+<A NAME="IDX63"></A>
+<A NAME="IDX64"></A>
+<DT><B>How do I implement weight sharing/linking?</B>
+<DD>
+The <B>TesselPrjnSpec</B> (see section <A HREF="pdp-user_121.html">10.3.3.2  Tesselated (Repeated) Patterns of Connectivity</A>) and the <B>LinkPrjnSpec</B>
+(see section <A HREF="pdp-user_124.html">10.3.3.5  Miscellaneous other Projection Types</A>) are two types of projection specifications
+(see section <A HREF="pdp-user_116.html">10.3  Projections</A>) that implement weight sharing.  The
+<B>TesselPrjnSpec</B> generates repeated patterns of connectivity, and it
+can automatically link all of the repeated patterns together with the
+same set of weights.  Thus, a set of units in a receiving layer can all
+have the same receptive field from a given sending layer, and all of the
+units can use the same set of weights to define their receptive field.
+The <B>LinkPrjnSpec</B> allows individual or small groups of weights to be
+specifically linked together, even if these connections are in different
+layers in the network.  It does not generate any connectivity itself, it
+simply causes existing connections to share weights.
+
+<A NAME="IDX65"></A>
+<A NAME="IDX66"></A>
+<DT><B>Can I temporarily lesion a layer in my network?</B>
+<DD>
+Sometimes, one wants to pre-train part of a network on one task, and
+then subject the rest of the network to some more complex task.  This
+process is greatly facilitated by being able to create the entire
+network at the outset, and then temporarily "lesion" certain layers
+during pre-training.  This can be accomplished by simply checking the
+<CODE>lesion</CODE> flag on the <B>Layer</B> object (see section <A HREF="pdp-user_115.html">10.2  Layers and Unit Groups</A>).
+
+<A NAME="IDX67"></A>
+<A NAME="IDX68"></A>
+<DT><B>Are there functions for lesioning the weights or units in the network?</B>
+<DD>
+Yes, <CODE>LesionCons</CODE>, <CODE>AddNoiseToWeights</CODE>,
+<CODE>TransformWeights</CODE>, and <CODE>PruneCons</CODE> all perform various
+manipulations on the weights in a network, and could be used to
+simulation "lesions" of the network.  <CODE>LesionUnits</CODE> lesions units.
+These functions, like most in the network, can be called at various
+levels of granularity from a single group of weights (or units) up to
+the entire network.  See (see section <A HREF="pdp-user_113.html">10.1  The Network Object</A>) for details.
+
+<A NAME="IDX69"></A>
+<A NAME="IDX70"></A>
+<DT><B>How can I use a specified (non-random) set of initial weight values?</B>
+<DD>
+There are several ways to do this.  One is to write a CSS script to set
+the weight values by reading them in from a file or from values coded
+into the script itself.  This script can be attached to a
+<B>ScriptPrjnSpec</B> so it is run automatically when the network is
+connected (see section <A HREF="pdp-user_124.html">10.3.3.5  Miscellaneous other Projection Types</A>).  It is also possible to use a
+<B>TesselPrjnSpec</B> (see section <A HREF="pdp-user_121.html">10.3.3.2  Tesselated (Repeated) Patterns of Connectivity</A>) or <B>RandomPrjnSpec</B>
+(see section <A HREF="pdp-user_122.html">10.3.3.3  Random Patterns of Connectivity</A>) in conjunction with the <CODE>init_wts</CODE> flag
+to specify initial weight patterns, which are used instead of the random
+ones whenever the network is initialized (see section <A HREF="pdp-user_118.html">10.3.2  The Projection Specification</A>).  You
+could also construct a "donor" network that had the intial weights set
+as you wanted them (by hand or whatever), and then use the
+<CODE>CopyFrom</CODE> or <CODE>Copy_Weights</CODE> function to initialize your
+training net from the donor net (see section <A HREF="pdp-user_113.html">10.1  The Network Object</A>).  Similarly, you could
+use <CODE>WriteWeights</CODE> and <CODE>ReadWeights</CODE> to save and load weights
+from a file.
+
+<A NAME="IDX71"></A>
+<DT><B>Is there a way to view the weights for a set of multiple units at the same time?</B>
+<DD>
+Yes -- the function <CODE>GridViewWeights</CODE> on the network (in the
+<I>Actions</I> menu) will display the entire weight matrix between two
+layers of the network on a GridLog.  Also, you can plot a matrix of
+events from an environment using the <CODE>EnvToGrid</CODE> function on an
+environment (<I>Generate</I> menu).  This is useful for activity-based
+receptive fields computed via the <B>UnitActRFStat</B>
+(see section <A HREF="pdp-user_176.html">12.8.5  Activity-based Receptive Fields</A>), which are stored in an <B>Environment</B>.
+
+<A NAME="IDX72"></A>
+<A NAME="IDX73"></A>
+<A NAME="IDX74"></A>
+<A NAME="IDX75"></A>
+<A NAME="IDX76"></A>
+<DT><B>How do I setup distributed memory processing across multiple processors?</B>
+<DD>
+The Network object supports distributed memory processing of
+connections (using the MPI protocol), where each processor maintains a
+different set of connections and performs operations on only this
+subset, sharing its results with the other processors to achieve
+processing of the entire network.  See section <A HREF="pdp-user_114.html">10.1.0.1  Distributed Memory Computation in the Network</A> for details on
+how to configure this.  Given the relatively large amount of
+communication required, this is efficient only for relatively large
+networks (e.g., above 250 units per layer for 4 layers).  In
+benchmarks on Pentium 4 Xeon cluster system connected with a fast
+Myrinet fiber optic switched network connection, networks of 500 units
+per layer for 4 layers achieved <EM>better</EM> than 2x speedup by
+splitting across 2 processors, presumably by making the split network
+fit within processor cache whereas the entire one did not.  This did
+not scale that well for more than 2 processors, suggesting that cache
+is the biggest factor for this form of dmem processing.  However,
+there is also the ability to distribute events across multiple
+processors, which achieves more reliable speedups
+(see section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A>).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_41.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_43.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

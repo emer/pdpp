@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_31.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_33.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX28" HREF="pdp-user_toc.html">4.3  Configuring the Encoder Problem</A></H2>
+
+<P>
+Running a canned exercise may be fun and informative, but most people
+like to use simulation models to work on something new of their own.  In
+this short section we will give you a quick overview of the essentials
+of creating your own project.  We'll use the 4-2-4 encoder problem,
+first considered by Ackley, Hinton and Sejnowski in their seminal
+article on learning in Boltzmann machines.  We'll stay with the back
+propagation learning algorithm, though, since it learns the problem much
+faster than the Boltzmann machine.
+
+</P>
+<P>
+In the 4-2-4 encoder problem, the goal is to learn to associate an input
+pattern with itself via a small hidden layer (in this case containing 2
+units).  There are 4 input units and 4 output units, and there are 4
+training pattern-pairs, each involving one unit on, the same unit, in
+both the input and the output:
+
+</P>
+<PRE>Input   Output
+1000 -&#62; 1000
+0100 -&#62; 0100
+0010 -&#62; 0010
+0001 -&#62; 0001
+</PRE>
+
+<P>
+What we need to do is set up a network with four input units, four
+output units, and two hidden units; then create an environment
+containing the set of training patterns; then create the processes that
+train and test the network, then create Logs and LogViews for displaying
+the results of training and testing.
+
+</P>
+<P>
+To begin, you just start up the executable for bp by typing <KBD>bp++</KBD>
+at your unix prompt.  This starts the program, giving you the
+<CODE>bp++</CODE> prompt as your command-line interface to the program, and
+giving you a Root window as the seed of the GUI you are about to build
+for yourself.  You're going to do the whole thing through the GUI.  You
+can keep a script of what we've done so you can repeat the same steps
+(or even edit them and do something slightly different) later.  This is
+optional, however; many people prefer simply to save the state of their
+configured project in a .proj file.
+
+</P>
+<P>
+To create your project, select <I>.projects</I> / <I>New</I> / <I>Project</I> in
+the Root window, and then just click <I>Ok</I> on the confirmation box that
+appears. A project menu will appear.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_33.html">1          Recording a Script File of Your Actions</A>
+<LI><A HREF="pdp-user_34.html">2         Making a New Network</A>
+<LI><A HREF="pdp-user_35.html">3     Making a New Environment</A>
+<LI><A HREF="pdp-user_36.html">4        Setting Up Control Processes</A>
+<LI><A HREF="pdp-user_37.html">5             Creating Logs For Viewing Data</A>
+<LI><A HREF="pdp-user_38.html">6             A Few Miscellaneous Things</A>
+<LI><A HREF="pdp-user_39.html">7          Training and Testing Your Network </A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_31.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_33.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

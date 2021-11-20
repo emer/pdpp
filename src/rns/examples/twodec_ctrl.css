@@ -1,0 +1,32 @@
+
+class TwoDecCtrl { 
+// #NO_OK #NO_CANCEL control panel for two-decision model
+public:
+  
+  //void TwoDecCtrl();
+
+  void ReInit();                // #BUTTON initialize network with random parameters
+  float CalcObjFunc();           // #BUTTON #USE_RVAL calculate objective function
+  void RunFit();		// #BUTTON runs the simulation
+};
+
+
+void TwoDecCtrl::ReInit() {
+  .Constrain_0.subp.ReInit();
+  //.RtUnitSpec_0.noise.var = 0.05;
+  .specs[1].children[0].wt_gain = 1.25 + 0.1*Random::ZeroOne();
+  .specs[1].children[0].children[0].wt_gain = 1.15 + 0.1*Random::ZeroOne();
+  .ModelParam_0.updateParamList();
+}
+
+float TwoDecCtrl::CalcObjFunc() {
+  return .Constrain_0.CalcObjFunc();
+}
+
+void TwoDecCtrl::RunFit() {
+  .Constrain_0.Run();
+}
+
+TwoDecCtrl twodec_ctrl;
+EditObj(twodec_ctrl);
+

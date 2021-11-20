@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-con-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_127.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_129.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX703" HREF="pdp-user_toc.html">10.5.1  Implementational Details About Connections</A></H3>
+
+<P>
+The is a general policy regarding the organization of functions and
+parameters for connections, connection groups, and connection
+specifications:
+
+</P>
+<P>
+Only those functions that relate to the computational processing done by
+the connections should be defined in the connection spec, while the
+"structural" or other "administrative" functions should be defined in
+the connection group object so that the spec can be invariant with
+respect to these kinds of differences.  The idea is that the spec
+defines <EM>functional</EM> aspects while the object defines various
+implementational aspects of an object's function (i.e. how the
+connections are arranged, etc..).
+
+</P>
+<P>
+<A NAME="IDX704"></A>
+<A NAME="IDX705"></A>
+Thus, the <B>Con_Group</B> type has a large number of functions that are
+useful for making, finding, and removing connections.  See the header
+file <TT>`src/pdp/netstru.h'</TT> for a listing of these.  The Con_Group has
+a special way of representing connectivity.  The group itself contains
+<B>Connection</B> objects, which define the state variables associated with
+the connection itself.  However, the pointer to the unit on the other
+side of the connection (the sending unit in the case of receiving
+connections, and the receiving unit in the case of sending connections),
+is kept in a separate list, which is in one-to-one correspondence with
+the connection objects.  This arrangement allows for the same connection
+state variables to be shared across connections between different units.
+Indeed, the sending and receiving connection groups from the same
+projection share a single connection object between them.  Some of the
+projection types (see section <A HREF="pdp-user_121.html">10.3.3.2  Tesselated (Repeated) Patterns of Connectivity</A>, section <A HREF="pdp-user_124.html">10.3.3.5  Miscellaneous other Projection Types</A>) define
+additional forms of connection sharing.
+
+</P>
+<P>
+<A NAME="IDX706"></A>
+Note that only one side of the connection is actually saved when a
+network is saved.  This is the receiving side by default.  Thus, after
+loading a project in from disk, the projection which manages the
+connections has to perform a <CODE>ReConnect_Load</CODE> function which builds
+the sending connections that correspond to the receiving connections
+that were just loaded in.  A similar kind of operation must take place
+after copying a network.
+
+</P>
+<P>
+For the functions that are defined in the <B>ConSpec</B>, a convention has
+been established regarding the division of labor between iterating
+through the connections in a group, and processing a given connection.
+Thus, there are two versions of each function defined in the con spec,
+one to apply to a single connection and another to apply to an entire
+Con_Group.  The one which applies to a single connection has the name
+<CODE>C_XXX</CODE> where <CODE>XXX</CODE> is the name of the Con_Group version.
+Since some implementations of algorithms use bias weights, which are
+represented by a connection without a surrounding connection group, it
+is sometimes necessary to define a bias-weight version of a
+connection-specific function.  Such a function will have the name
+<CODE>B_XXX</CODE>.
+
+</P>
+<P>
+Note that the <CODE>C_</CODE> version of the function is <EM>not</EM> declared
+<CODE>virtual</CODE>, while the <B>Con_Group</B> is.  This was done for reasons
+of speed, since the <CODE>C_</CODE> versions can be inlined within the
+iteration defined in the con-group version.  However, it means that if
+you change one of the <CODE>C_</CODE> functions, <EM>you must redefined the
+associated con-group version!</EM>
+
+</P>
+<P>
+Also note that the same object type, a <B>Con_Group</B> (and its associated
+<B>ConSpec</B>), is used for both sending and receiving connections.  Thus,
+the <B>ConSpec</B> will have functions that apply to both cases.
+
+</P>
+<P>
+As with the unit specs, a standard way of breaking up neural
+computations has been established by defining some basic functions on
+the con spec.  Only the Con_Group version of these functions are listed
+below, but a C_ version is also defined.  Also note that the C_ versions
+of these functions typically take a connection pointer, receiving unit,
+and sending unit arguments.  The functions are as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>InitWtState(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX707"></A>
+Initialize state variables (i.e. at beginning of training).
+<DT><CODE>InitWtDelta(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX708"></A>
+Initialize variables that change every delta-weight computation.  This
+clears any existing weight change computations.
+<DT><CODE>float Compute_Net(Con_Group* cn, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX709"></A>
+Computes the net input from the connections in this group, assuming that
+they are receiving connections.
+<DT><CODE>Send_Net(Con_Group* cg, Unit* su)</CODE>
+<DD>
+<A NAME="IDX710"></A>
+Adds the net input contribution from the given sending unit to all of
+the receiving units on the other side of these connections.  This
+assumes that the con group is a sending connection group of unit
+<CODE>su</CODE>.
+<DT><CODE>float Compute_Dist(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX711"></A>
+Returns the distance (squared difference) between the unit activations
+and connection weights for all connections in group.  This assumes it is
+a receiving group.
+<DT><CODE>Compute_dWt(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX712"></A>
+Computes the delta-weight change for all connections in the group.  This
+is typically called on the receiving connections, and is defined by
+specific algorithms.
+<DT><CODE>UpdateWeights(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX713"></A>
+Updates the weights of the all the connections in the group. This again
+is defined by specific algorithms, but is called by generic functions up
+the network hierarchy.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_127.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_129.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

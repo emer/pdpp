@@ -1,0 +1,639 @@
+/*
+Simple 2-layer cs network with v visible units and h hidden units.
+It simply approximates the v-dimensional joint.
+
+This script can set up a network using units with continuous or discrete
+activations, but learns a discrete probability distribution over binary
+targets. Network settling is stochastic.
+
+Edit the next section to select:
+  the size of the network,
+  the type of unit to use
+    (-1/1 CsUnitSpec units,
+     -1/1 SigmoidUnitSpec units,
+   or 0/1 BoltzUnitSpec units),
+  the exact properties of these units,
+  and the file specifying the joint distribution to be learned.
+
+There should be a README file in the same directory as this file which
+explains in more detail how to use this script and project.
+
+TODO:
+  - put all 2^n patterns in test environment rather than the same set of
+    patterns from the *.prob_pat file
+  - automatic "annealling" schedule to increase the number of samples and/or
+    decrease the learning rate as training progresses (I think this might
+    require major changes).
+*/
+
+////////////////////////////////////////////////////////////////////////////
+/// definition of script parameters
+////////////////////////////////////////////////////////////////////////////
+
+// script parameters to be specified (most can be changed while running)
+
+  // network structure, number of hidden and visible units
+  int num_visible = 2;
+  int num_hidden = 5;
+
+  // type of units
+  int BOLTZ = 0; int CSUNIT = 1; int SIGMOID = 2;
+  int unit_type = BOLTZ;
+
+  // for BoltzUnitspec units with 0/1 acts:
+  String def_filename = "./cs_boltz_prob-env.def"; // BoltzUnitSpec units
+  real min_activation = 0.0;	 // min of act range, usually -1.0 or 0.0
+  real act_range_clip = 0.0;	 // fraction of act range to clip from ends
+  real clipping_tolerance = 0.1; // doesn't matter, activations are 0.0/1.0
+  String prob_pat_filename = "simple3.0_1.prob_pat";	// the target dist
+
+  if (unit_type != BOLTZ) {
+    // for CsUnitSpec or SigmoidUnitSpec units with -1/1 acts:
+    if (unit_type == CSUNIT) {
+      def_filename = "cs_prob_env.def";	// CsUnitSpec units
+    } else {
+      def_filename = "./cs_sigmoid_prob-env.def";   // SigmoidUnitSpec
+    }
+    min_activation = -1.0;
+    real act_range_clip = 0.025;
+    clipping_tolerance = 0.5;
+    prob_pat_filename = "simple.-1_1.prob_pat";
+  }
+
+
+// "SYNCHRONOUS" vs. "ASYNCHRONOUS" unit updating during settling
+// BM lit usually uses asynch; it is technically correct for Gibbs sampling
+// note that this affects the number of "cycles" one wants to settle for
+// since fewer unit updates (only 1) happen per cycle in asynch mode
+  String UPDATE_MODE = "ASYNCHRONOUS";
+
+// process hierarchies settings for # cycles and # samples
+  int def_train_nostat_cycles =	200; // stats will start on next cycle
+  int def_train_cycles =	300;
+  int def_train_samples =	100;
+
+  int def_test_nostat_cycles =	200;  // should be same as for training
+  int def_test_cycles =		300;  // should be same as for training
+  int def_test_samples =	1000; // typically more than for training
+
+// number of training epochs between automatic test epochs
+  int train_test_ratio =        100;
+
+// automatic stopping parameters
+  double TIG_stop_crit = 0.025; // stop training if TEST tig drops below this
+  int stop_test_epochs = 5; // must be < crit this many test epochs in a row
+
+// learning rate
+  double learn_rate = 0.05;
+  double momentum = 0.0;
+
+
+////////////////////////////////////////////////////////////////////////////
+/// functions for setting up the network
+////////////////////////////////////////////////////////////////////////////
+
+// network-related global variable definitions
+
+  int num_layers = 2;	// # of layers (just visible and hidden makes 2)
+
+
+// create and edit the network and netview
+void
+setup_network_netview()
+{
+  NetView* ths = .networks[0].views[0];		// edit the netview
+  ths->skew = "0";
+  ths->colorspec = ".colorspecs[2]";
+  ths->unit_text = "VALUES";
+  ths->prjn_arrow_size = 10;
+}
+
+// set name, geometry, and number of units for the given layer
+void
+setup_layer(taNBase* lay, String name, int geomX, int geomY, int geomZ,
+            int posX, int posY, int posZ, int num_units)
+{
+  lay->name = name;
+  lay->geom.x = geomX; lay->geom.y = geomY; lay->geom.z = geomZ;
+  lay->pos.x = posX;   lay->pos.y = posY;   lay->pos.z = posZ;
+  lay->n_units = num_units;
+}
+
+// create and set up the layers
+void
+setup_layers()
+{
+  .layers->New(2, Layer);	// make two layers
+
+  // visible layer has 1-unit high horizontally layerout at bottom
+  setup_layer(.layers[0], "visible", num_visible, 1, 1, 0, 0, 0, num_visible);
+
+  // hidden layer above it, approximately square
+  int side = ceil(sqrt(num_hidden));
+  setup_layer(.layers[1], "hidden", side, side, 1, 0, 2, 0, num_hidden);
+
+  .networks[0].Build();		// create the units in the layers
+}
+
+// edit the unit spec
+void
+setup_unit_spec()
+{
+  double absolute_clip = (1.0 - min_activation)*act_range_clip;
+
+  // whichever of the 3 types it is, the UnitSpec always seems to be .specs[0]
+  UnitSpec* ths = .specs[0];
+  ths->act_range.max = 1.0;
+  ths->act_range.min = min_activation;
+  ths->real_range.max = 1.0 - absolute_clip;
+  ths->real_range.min = min_activation + absolute_clip;
+  ths->noise = "{type=GAUSSIAN: mean=0: var=0.2: par=1: }";
+  ths->gain = "8";
+  ths->clamp_gain = "5";
+  ths->initial_act = "{type=GAUSSIAN: mean=0: var=0.9: par=1: }";
+  // HARD_FAST clamping doesn't work for clamping visible units to  fixed vals
+  ths->clamp_type = "HARD_CLAMP";
+  if (unit_type == BOLTZ) {
+    // need to turn off noise so clamping works correctly
+    // can't do this for CsUnitSpecs or SigmoidUnitSpecs
+    // does this mean it's a bug in PDP++... hmm seems like it at the moment
+    // but at least Boltzmann machines will work correctly
+    ths->noise = "{type=NONE: mean=0: var=0.2: par=1: }";
+    ths->initial_act = "{type=NONE: mean=0: var=0.9: par=1: }";
+  }
+}
+
+// edit the con spec
+void
+setup_con_spec()
+{
+  ConSpec* ths = .specs.CsConSpec_0;
+  ths->rnd = "{type=UNIFORM: mean=0: var=0.25: par=1: }";
+  ths->lrate = learn_rate;
+  ths->momentum = momentum;
+  ths->decay_fun = "NULL";
+}
+
+// create the projections (2 self, 2 symmetric between the layers)
+void
+setup_projections()
+{
+  // create the within-layer projections
+  int i;
+  for (i=0; i<num_layers; i++) {	// create within-layer projections
+    .layers[i].projections.New(1);
+    .layers[i].projections[0].from_type = Projection::SELF;
+  }
+
+  // create symmetric projections between the two layers
+  .layers[1].projections.New(1);
+  .layers[1].projections[1].from = .layers[0];
+  .layers[1].projections[1].from_type = Projection::CUSTOM;
+  .layers[0].projections.New(1);
+  .layers[0].projections[1].from = .layers[1];
+  .layers[0].projections[1].from_type = Projection::CUSTOM;
+
+  printf("About to make connections, this may take a moment...");
+  .networks[0].Connect();		// make connections
+  printf("done.\n");
+}
+
+// set up the network
+void
+setup_network()
+{
+  .networks->New(1, Network);	// create the network
+  
+  setup_network_netview();
+  setup_layers();
+  setup_unit_spec();
+  setup_projections();
+  setup_con_spec();
+  .networks[0].views[0].ResetDisplay();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+/// functions for setting up the environments
+////////////////////////////////////////////////////////////////////////////
+
+// environment-related global variable definitions
+
+  // I had problems trying to wait for an EOF while reading a file using css,
+  // so I'll figure out the number of lines in the file ahead of time,
+  // using this hack (a function that calls Unix wc)
+  int num_lines(String filename) {
+    int n;
+    int pid = getpid();    // make this safe for a multitasking environment
+    system("wc -l " + filename + " > /tmp/num_lines.pdp++." + pid);
+    fstream file;
+    file.open("/tmp/num_lines.pdp++." + pid, ios::in);
+    file >> n;
+    file.close();
+    system("rm /tmp/num_lines.pdp++." + pid);
+    return n;
+  }
+  
+  int num_train_pats = num_lines(prob_pat_filename);
+
+  // there may be more possible patterns than those specified in the file
+  int num_total_pats = 2.0^((double)num_visible);
+
+
+// reads the prob pat file and sets the patterns of the 1 event accordingly
+void
+set_train_events()
+{
+  fstream prob_pat_file;
+  prob_pat_file.open(prob_pat_filename, ios::in);
+  int i;
+  int j;
+  double prob_sum = 0;
+  double val;
+  for (i=0; i<num_train_pats; i++) {
+    float_RArray* ths = .environments[0].events[0].patterns.gp[0][i];
+    for (j=0; j<num_visible; j++) {
+      prob_pat_file >> val;
+      ths->value[j] = val;
+    }
+    prob_pat_file >> val;
+    ths->prob = val;
+    prob_sum += val;
+  }
+  if (fabs(prob_sum - 1.0) > 0.00000001) {
+    printf("Warning: probabilities sum to ", prob_sum, " instead of 1\n");
+    printf("prob_sum - 1 = ", prob_sum - 1.0, "\n");
+  }
+  prob_pat_file.close();
+}
+
+// eventually this should create all 2^num_visible possible binary patterns
+// those in the prob_pat file have probs set accordingly, others have 0
+// for now, just use the patterns from the file, as with the training env
+void
+set_test_events()
+{
+  fstream prob_pat_file;
+  prob_pat_file.open(prob_pat_filename, ios::in);
+  int i;
+  int j;
+  double prob_sum = 0;
+  double val;
+  for (i=0; i<num_train_pats; i++) {
+    float_RArray* ths = .environments[1].events[0].patterns.gp[0][i];
+    for (j=0; j<num_visible; j++) {
+      prob_pat_file >> val;
+      ths->value[j] = val;
+      ths->flag[j] = 17; // Targ and TargExt bits on, user will set ext bits
+    }
+    prob_pat_file >> val;
+    ths->prob = val;
+    prob_sum += val;
+  }
+  if (fabs(prob_sum - 1.0) > 0.00000001) {
+    printf("Warning: probabilities sum to ", prob_sum, " instead of 1\n");
+    printf("prob_sum - 1 = ", prob_sum - 1.0, "\n");
+  }
+  prob_pat_file.close();
+}
+
+// edit individual prob pattern spec to be a targets and prob pat
+// and give the pattern spec a vertical layout
+// env_no==0 is the training env, env_no==1 is the testing env
+void
+setup_pattern_spec(int env_no, int patspec_no)
+{
+  PatternSpec* patspec =
+    .environments[env_no].event_specs[0].patterns.gp[0][patspec_no];
+
+  patspec->pattern_type = "ProbPattern";
+  patspec->pos = "{x=0: y=" + patspec_no + ": z=0: }";
+
+  // has to be TARGET for CsDistStats to work
+  patspec->type = "TARGET";
+
+  // for testing need to mess around with flags to allow clamping since
+  // TARGET patterns don't get applied to the network by default in the minus
+  // phase and testing is all minus phase
+  if (env_no == 1) {
+    // The user must set the EXT_FLAG and EXT_VALUE flags for the
+    // units they want to clamp to certain values and then zero
+    // the probabilities for patterns with incompatible values for
+    // those units.
+    patspec->layer_flags = "TARG_EXT_LAYER";
+    patspec->use_flags = "USE_PATTERN_FLAGS";
+  }
+}
+
+// setup one, most things are the same, condition on the diffs as appropriate
+// env_no==0 is the training env, env_no==1 is the testing env
+void
+setup_environment(int env_no, int num_patterns)
+{
+  Environment* env = .environments[env_no];
+  env->views[0].colorspec = ".colorspecs[2]";  // edit the view
+  env->views[0].pad_size = "20";
+
+  env->event_specs->New(1, ProbEventSpec);  // create event_spec
+
+  // this automatically makes 2 (non-prob) pattern specs that we don't want
+  int j;
+  for (j=0; j<2; j++)
+    env->event_specs[0].patterns.Remove(0);
+
+  // now we need to create a prob pattern group
+  env->event_specs[0].patterns->New(1, ProbPatternSpec_Group);
+
+  printf("Environment ", env_no, " has ", num_patterns, " patterns\n");
+
+  // create the appropriate number of pattern specs within the group
+  env->event_specs[0].patterns.gp[0]->New(num_patterns, PatternSpec);
+
+  // edit the individual prob pattern specs
+  for (j=0; j<num_patterns; j++)
+    setup_pattern_spec(env_no, j);
+
+  // create the actual event
+  env->events->New(1, Event);
+
+  // read the prob pat file and set the patterns of the event accordingly
+  if (env_no == 0)
+    set_train_events();
+  else
+    set_test_events();
+
+  // this updates the GUI window to reflect the changes we've caused using css
+  .environments[0].views[0].Revert();
+}
+
+// set up the environments (one for training, one for interactive testing)
+void
+setup_environments()
+{
+  .environments->New(2, Environment);	// create the environments
+  
+  int i;
+  for (i=0; i<2; i++)
+    setup_environment(i, (i==0) ? num_train_pats : num_total_pats);
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+/// functions for setting up the processes
+////////////////////////////////////////////////////////////////////////////
+
+// handy utility function to set the number of cycles and samples
+// in order sets for training, then testing:
+// cycles before stats, total cycles, total samples
+void
+set_process_iterations(int train_nostat_cycles,
+                       int train_cycles,
+                       int train_samples,
+                       int test_nostat_cycles,
+                       int test_cycles,
+                       int test_samples)
+{
+  .processes.Settle_0.start_stats = train_nostat_cycles;
+  .processes.Settle_0.cycle.max = train_cycles;
+  .processes.Sample_0.sample.max = train_samples;
+  .processes.Settle_1.start_stats = test_nostat_cycles;
+  .processes.Settle_1.cycle.max = test_cycles;
+  .processes.Sample_1.sample.max = test_samples;
+}
+
+// create the train process hierarchy
+void
+setup_train_processes()
+{
+  .projects[0].processes->New(1, TrainProcess);
+  int i;
+  for (i=0; i<6; i++)
+    .processes[i].CreateSubProcs();
+
+  // remove the default sum squared error stat
+  .processes.Trial_0.loop_stats.RemoveAll();
+
+  // set to train for a long long time unless manually stopped
+  .processes.Train_0.epoch.max = 10000000;
+
+  // set for synch vs. asynch settling
+  .processes.Cycle_0.update_mode = UPDATE_MODE;
+}
+
+// create test process hierarchy
+void
+setup_test_processes()
+{
+  .projects[0].processes->New(1, NEpochProcess);
+  int i;
+  for (i=6; i<12; i++)
+    .processes[i].CreateSubProcs();
+
+  // remove the default sum squared error stat
+  .processes.Trial_1.loop_stats.RemoveAll();
+  
+  // set these processes for testing, and point them to the test environment
+  .processes.NEpoch_0.environment = ".environments[1]";
+  .processes.Epoch_1.wt_update = "TEST";
+
+  // set for synch vs. asynch settling
+  .processes.Cycle_1.update_mode = UPDATE_MODE;
+}
+
+void
+setup_processes()
+{
+  setup_train_processes();
+  setup_test_processes();
+
+  // link the testing epoch into the train process to enable one epoch of
+  // automatic testing every n training epochs
+  .processes.Train_0.loop_procs.InsertLink(.processes.NEpoch_0, -1);
+  .processes.NEpoch_0.mod.flag = true;
+  .processes.NEpoch_0.mod.m = train_test_ratio;
+  .processes.NEpoch_0.epc_ctr.max = 1;	// only do one epoch of testing
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+/// functions for setting up statistics and logs
+////////////////////////////////////////////////////////////////////////////
+
+int AVG = 5;	// average aggregation
+
+void
+setup_stats()
+{
+  // first training hierarchy stats, then test hierarchy stats
+  .processes.Settle_0.loop_stats->New(1, CsDistStat);
+  .processes.Settle_0.loop_stats[0].tolerance = clipping_tolerance;
+  .processes.Settle_0.loop_stats[0].CreateAggregates(AVG);
+
+  .processes.Sample_0.final_stats->New(1, CsTargStat);
+  .processes.Sample_0.final_stats[1].dist_stat =  // point it to DistStat
+    ".processes.Sample_0.loop_stats[0]";
+  .processes.Sample_0.final_stats[1].CreateAggregates(AVG);
+
+  // now test hierarchy stats
+  .processes.Settle_1.loop_stats->New(1, CsDistStat);
+  .processes.Settle_1.loop_stats[0].tolerance = clipping_tolerance;
+  .processes.Settle_1.loop_stats[0].CreateAggregates(AVG);
+
+  .processes.Sample_1.final_stats->New(1, CsTargStat);
+  .processes.Sample_1.final_stats[1].dist_stat =  // point it to DistStat
+    ".processes.Sample_1.loop_stats[0]";
+  .processes.Sample_1.final_stats[1].CreateAggregates(AVG);
+
+  // for automatic stopping, need to copy the test TIG to a stat in the
+  // training process (in order to be able to stop the training process)
+  .processes.Train_0.loop_stats->New(1, CsTIGstat);
+  { int index = .processes.Train_0.loop_stats.size - 1; // newly created one
+    Stat* ths = .processes.Train_0.loop_stats[index];
+    ths->time_agg.op = "LAST";
+    ths->time_agg.from = ".processes.NEpoch_0.loop_stats[0]";
+    ths->tig.stopcrit.flag = true;
+    ths->tig.stopcrit.rel = "LESSTHANOREQUAL";
+    ths->tig.stopcrit.val = TIG_stop_crit;
+
+    // stop_test_epochs is given in number of test epochs, but
+    // this number is the number of times through the training loop,
+    // which depends on the value of train_test_ratio
+    ths->tig.stopcrit.cnt = (stop_test_epochs-1)*train_test_ratio + 1;
+
+    ths->name = "Test_TIG";
+  }
+}
+
+// the full log views don't get created until some
+// processing has been done, so do some processing first
+// this appears to be a "feature" of PDP++
+void
+process_hack()
+{
+  // before doing 1 epoch of training and testing, set the number of
+  // samples and the number of cycles to be small to make this fast
+  set_process_iterations(1, 1, 1, 1, 1, 1);
+
+  .processes.Train_0.Step_gui();
+  .processes.Train_0.ReInit(0);
+  .processes.Epoch_1.Step_gui();
+  .processes.Epoch_1.ReInit(0);
+
+  // now set the process objects to default values specified at top
+  set_process_iterations(
+    def_train_nostat_cycles+1, def_train_cycles, def_train_samples,
+    def_test_nostat_cycles+1, def_test_cycles, def_test_samples);
+}
+
+// for some reason, the log headers are incorrect until an UpdateAfterEdit
+// on the CsDistStat object at the Sample level
+// (this causes the strange behavior in the GUI that things don't work quite
+// right until after editing and applying even if you don't change anything)
+void
+log_headers_hack()
+{
+  .processes.Sample_0.loop_stats[0].UpdateAfterEdit();
+  .processes.Sample_1.loop_stats[0].UpdateAfterEdit();
+
+  int i;
+  for (i=0; i<4; i++)
+    .logs[i].GetHeaders();
+}
+
+// set the y-axis properties and range for the given plotted line
+void
+set_graph_properties(DA_GraphViewSpec* plotted_line)
+{ 
+  plotted_line->min_mode = "FIXED";
+  plotted_line->max_mode = "FIXED";
+  plotted_line->range = "{min=0: max=1: }";
+}
+
+// setup separate text and graph logs for training and testing
+void
+setup_logs()
+{
+  process_hack();
+
+  // create a textlog, and graphlog at the sample level
+  // will display: epoch, the distribution, TIG, and CsTargStat
+  // training:
+  .logs->New(1, TextLog);
+  .logs[0].AddUpdater(.processes.Sample_0);
+  .logs->New(1, GraphLog);
+  .logs[1].AddUpdater(.processes.Sample_0);
+
+  // testing:
+  .logs->New(1, TextLog);
+  .logs[2].AddUpdater(.processes.Sample_1);
+  .logs->New(1, GraphLog);
+  .logs[3].AddUpdater(.processes.Sample_1);
+
+  log_headers_hack();
+
+  // adjust the y-axis ranges and settings
+  // TIG stats have a 0 min, but no max
+  .logs[1].views[0].viewspecs.sum_tig.min_mode = "FIXED";
+  .logs[3].views[0].viewspecs.sum_tig.min_mode = "FIXED";
+  
+  // the CsDistStats and CsTargStats, as probabilities, have a 0-1 range
+  int i;
+  for (i=4; i<.logs[1].views[0].viewspecs.leaves; i++)
+    set_graph_properties(.logs[1].views[0].viewspecs.Leaf(i));
+  
+  // testing logs have 1 more item (testing epoch counter), so start at 5
+  for (i=5; i<.logs[1].views[0].viewspecs.leaves; i++)
+    set_graph_properties(.logs[3].views[0].viewspecs.Leaf(i));
+}
+
+void
+setup_stats_logs()
+{
+  setup_stats();
+  setup_logs();
+}
+  
+
+////////////////////////////////////////////////////////////////////////////
+/// commands for executing all of the above pieces (main)
+////////////////////////////////////////////////////////////////////////////
+
+// save the project 
+void
+save()
+{
+  printf("about to save, this may take a moment...");
+  .projects[0]->Save("./css-saved.proj.gz");
+  printf("done\n");
+}
+
+// actually do everything
+void
+main()
+{
+  // load the defaults file to save us some work here in the script
+  root.default_file = def_filename; // it's set in first section of this file
+
+  // create the project
+  // note: having this line means that this css script must be loaded with
+  // the css load command and run before creating a new project in the gui,
+  // rather than creating a new project and a new script object within it,
+  // and then loading and running a script file using that script object
+  .projects->New(1, Project);
+
+  setup_network();
+  setup_environments();
+  setup_processes();
+  setup_stats_logs();
+
+  // save();	// could save automatically after completing the script
+
+  // seems like a good thing to run before returning control to the GUI
+  // (it doesn't always seem to work when run from a script like this,
+  // but that doesn't seem to be a problem at the moment)
+  .projects[0].UpdateMenus();
+  root.UpdateMenus();
+}
+
+main();
+

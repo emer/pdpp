@@ -1,0 +1,279 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - gui-edit-fields</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_53.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_55.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX295" HREF="ta_css_toc.html">7.6.1  Member Fields</A></H3>
+
+<P>
+The member fields in an edit dialog can be found to the right of the
+member name. These member fields can appear in many different forms.
+Sometimes there may even be more than one on a line.
+
+</P>
+
+<H2>7.7  Field Editor</H2>
+
+<P>
+The Field Editor is used for editing strings (e.g., an object's name), and
+number values. It appears as a box with text in it. If you click on the
+box an Ibeam cursor appears at the click location. When the mouse is in
+the box, the characters you type will be entered at the Ibeam location
+point as you would expect. 
+
+</P>
+<P>
+<B>You must place mouse pointer in field to start editing!</B>  However,
+once you have started typing, the mouse pointer need only remain in the
+overall window. 
+
+</P>
+<P>
+Some Emacs style editing keys are also recognized, in addition to the
+standard keypad arrow and related keys:
+
+</P>
+
+<IL>
+<LI>Ctrl-f moves Ibeam forward (also right arrow key)
+
+<LI>Ctrl-b moves Ibeam backward (also left arrow key)
+
+<LI>Ctrl-a moves Ibeam to beginning of line (also Home)
+
+<LI>Ctrl-e moves Ibeam to end of line (also End)
+
+<LI>Ctrl-d deletes character to right of Ibeam (also Del)
+
+<LI>Ctrl-u selects the entire line -- subsequent typing replaces contents
+
+<LI>Ctrl-n, TAB, or RETURN moves the Ibeam to the next field editor
+
+<LI>Ctrl-p or Shift-TAB moves the Ibeam to the previous field editor
+
+<LI>Alt-n moves to next object in list editor (also PageDn)
+
+<LI>Alt-p moves to previous object in list editor (also PageUp)
+
+</IL>
+
+<P>
+You can also hit shift-mousebutton2 (middle button) to scroll the text
+with the hand cursor.
+
+</P>
+<P>
+If the item to be edited is an integer then increment/decrement arrow
+buttons will appear to the right of the field editor. Pressing on these
+buttons will increase or decrease the value in the field editor.
+Pressing button-1 (left button) changes the value by 1, button-2 (middle
+button) changes the value by 10, and button-3 (right button) changes the
+value by 100. If the mouse button is pressed and held, the action will
+auto repeat.
+
+</P>
+
+<H2>7.8  Read Only Member Field</H2>
+
+<P>
+The read only member field is like the FieldEditor except the user
+cannot edit the field. It is used for display purposes only.
+
+</P>
+
+<H2>7.9  Boolean CheckBox</H2>
+
+<P>
+The checkbox is used for boolean values that are either on or off.
+Clicking on the checkbox changes its values. A checkmark or solid block
+indicates an ON, TRUE or 1 value, while no checkmark or an empty box
+indicates an OFF, FALSE or 0 value.
+
+</P>
+
+<H2>7.10  Enum Menus</H2>
+
+<P>
+The Enum menu is used for enumerated types. These types may have one of
+a number of symbolic values. The menu is shown with the member's
+current value. by clicking on the menu the other value choices appear in
+a popup menu. Selecting an alternate value from the menu sets the menu's
+value to the new value.
+
+</P>
+
+<H2>7.11  SubObject Menus</H2>
+
+<P>
+A SubObject menu is used when an instance of a class is part of the
+edited object and that instance is not edited inline
+(see section <A HREF="ta_css_54.html">7.6.1  Member Fields</A>). The menu has the name "Type: Actions" where
+Type is the class name of the subobject. The menu contains the following
+functions as well as object specific functions that are unique to the
+subobject class.
+
+</P>
+
+<IL>
+<LI>Load:             Load an instance of the subobject class
+
+<LI>Save:             Save the subobject using a file requester
+
+<LI>SaveAs:           Save the subobject with its last saved name
+
+<LI>Edit:             Edit the subobject
+
+</IL>
+
+
+<H2>7.12  Object Pointer Menus</H2>
+
+<P>
+Object pointer menus are used when the member is a pointer to another
+object. The current value of the pointer is shown in the menubar as the
+pathname of the object that is pointed to. If the pointer is not set, the name
+on the menubar will be set to NULL. Clicking on the menubar brings up a popup
+menu of other objects of similar type. Selecting an alternate object sets the
+menubar to the name of that object. The popup menu also allows the user to set
+the pointer to NULL and to Edit the object currently pointed to.
+
+</P>
+
+<H2>7.13  Object Type Menus</H2>
+
+<P>
+The object type menus are used when a member specifies a type class of
+object. This menu allows the user to select from classes which inherit
+from it base class. The current selection is displayed in the menubar.
+
+</P>
+
+<H2>7.14  SubGroup Menus</H2>
+
+<P>
+The subgroup menu allows the user to interact with a group member of the
+object. The name on the menubar is one of the two forms depending upon whether
+or not the group has subgroups. (see section <A HREF="ta_css_68.html">8.2  Groups</A>).
+
+</P>
+<P>
+Clicking on the menubar gives the user the following choices: 
+
+</P>
+<DL COMPACT>
+
+<DT><I>New</I>
+<DD>
+Create new object in the group
+<DT><I>Load</I>
+<DD>
+Load a group from a file using a file requester. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>Save</I>
+<DD>
+Save the group using a file requester. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>SaveAs</I>
+<DD>
+Save the group with its last saved name. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>Edit</I>
+<DD>
+Bring up a Group Edit Dialog of the subgroup
+<DT><I>RemoveAll</I>
+<DD>
+Remove all the elements of the group
+<DT><I>Remove</I>
+<DD>
+Remove an individual element of the group
+<DT><I>Link</I>
+<DD>
+Link an object from another group into this group
+<DT><I>Move</I>
+<DD>
+Rearrange the order of the elements in this group
+<DT><I>Transfer</I>
+<DD>
+Transfer objects from another group into this one
+<DT><I>EditEl</I>
+<DD>
+Edit and individual element of the group
+<DT><I>Find</I>
+<DD>
+Find and edit an object with a given name
+</DL>
+
+<P>
+Each of these selections will bring up a dialog for the
+user to specify the parameters to the operation.
+
+</P>
+
+<H2>7.15  SubArray Menus</H2>
+
+<P>
+The subarray menu allows the user to interact with a array member of the
+object. It appears as an  "Edit" menubar. Clicking on the menubar
+gives the user the following choices:
+
+</P>
+<DL COMPACT>
+
+<DT><I>Load</I>
+<DD>
+Load an array from a file using a file requester. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>Save</I>
+<DD>
+Save the array using a file requester. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>SaveAs</I>
+<DD>
+Save the array with its last saved name. See section <A HREF="ta_css_67.html">8.1.3  Saving and Loading Objects</A>.
+<DT><I>Edit</I>
+<DD>
+Bring up an Array Edit Dialog for the array
+<DT><I>Remove</I>
+<DD>
+Remove a number of elements from the array at a given index
+<DT><I>Permute</I>
+<DD>
+Permute the order of the elements in the array
+<DT><I>Sort</I>
+<DD>
+Sort the order of the elements in the array
+<DT><I>El</I>
+<DD>
+Show the value of a member of the array at given index
+<DT><I>Add</I>
+<DD>
+Add elements onto the end  the array
+<DT><I>Insert</I>
+<DD>
+Add a number of given values at a certain Array index
+<DT><I>Find</I>
+<DD>
+Find and Show the index of a member of the given value
+<DT><I>ColorEdit</I>
+<DD>
+Bring up a Color Array Editor for number arrays
+</DL>
+
+
+<H2>7.16  Inline Fields</H2>
+
+<P>
+Inline Fields are used for small substructures within an object (e.g., an
+object's position, which is only three values: x,y,z). Instead of the
+expected SubObject menubar, the object is laid out horizontally across on
+line in the Edit Dialog. The names of each of the fields are often
+truncated so that the line will not take up too much space. This allows
+quicker access and visualization without having to traverse through
+multiple dialogs. The fields within an inline field behave as do the
+rest of the fields in the dialog.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_53.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_55.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

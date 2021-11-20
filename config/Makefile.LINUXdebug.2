@@ -1,0 +1,51 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - g++ (ELF)
+####################################################
+
+# IMPORTANT: this is for gcc 2.9x compiliers: use .3 versions for
+# 3.x version compilers.
+
+# IMPORTANT: the sstream header shipped with red hat 7.3 and probably 
+# other distros is broken and must be replaced with:
+# include/new_sstream_for_gcc_2.9x.h
+# e.g.: cp include/new_sstream_for_gcc_2.9x.h /usr/include/g++-3/sstream
+# (as root!)
+
+# gcc 2.9x/ios 2.8.1 requires a separate streamoff converter for cssEl
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DLINUX -DNEED_STREAMOFF_CSS_CONV
+
+# always debug, all the time
+OPT_FLAG = -g -Wall -Wunused -Wunused-parameter
+DEBUG_FLAG = -g -Wall -Wunused -Wunused-parameter
+
+# use debug interviews!
+IV_LIB = -lIVdhines
+
+IDIRS_EXTRA = -I/usr/include/g++-3
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux -I/usr/include/g++-3
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-2.8.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /lib/cpp -D__i386__ 
+
+# NOT - doesn't link properly for debugging purposes!
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+# no libg++ for binaries 
+#BIN_CXX = $(CC)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

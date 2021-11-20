@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - obj-array-func</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_97.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_99.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX445" HREF="pdp-user_toc.html">8.3.2  Array Functions</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>Alloc (int x)</CODE>
+<DD>
+<A NAME="IDX446"></A>
+Allocates an array with space for x items.
+<DT><CODE>Reset()</CODE>
+<DD>
+<A NAME="IDX447"></A>
+Sets the size of the array to zero, but does not change or free the
+amount to allocated space.
+<DT><CODE>Remove(int x)</CODE>
+<DD>
+<A NAME="IDX448"></A>
+Removes the array element at index <CODE>x</CODE>.
+<DT><CODE>Permute()</CODE>
+<DD>
+<A NAME="IDX449"></A>
+Permutes the elements of the array into a random order.
+<DT><CODE>Sort()</CODE>
+<DD>
+<A NAME="IDX450"></A>
+Sorts the array in ascending order.
+<DT><CODE>ShiftLeft (int x)</CODE>
+<DD>
+<A NAME="IDX451"></A>
+Shifts all the elements in the array <CODE>x</CODE> positions to the left.
+<DT><CODE>ShiftLeftPct (float f)</CODE>
+<DD>
+<A NAME="IDX452"></A>
+Shifts the array to the left by <CODE>f</CODE> percent.
+<DT><CODE>El (int x)</CODE>
+<DD>
+<A NAME="IDX453"></A>
+Returns the element at index <CODE>x</CODE>, or err if out of range. Indexing
+starts at zero, therefore an array with five elements would have valid
+indices for zero to four.
+<DT><CODE>FastEl (int x)</CODE>
+<DD>
+<A NAME="IDX454"></A>
+Fast element return. Returns the element at index <CODE>x</CODE> with no
+error checking. Caution: PDP++ may behave unexpectedly if this function
+is called with an index that is out of range.
+<DT><CODE>Pop()</CODE>
+<DD>
+<A NAME="IDX455"></A>
+Returns and removes the last element in the array.
+<DT><CODE>Peek()</CODE>
+<DD>
+<A NAME="IDX456"></A>
+Returns the last element in the array without removing it.
+<DT><CODE>Add (item i)</CODE>
+<DD>
+<A NAME="IDX457"></A>
+Adds <CODE>i</CODE> to the array.
+<DT><CODE>Push (item i)</CODE>
+<DD>
+<A NAME="IDX458"></A>
+Pushes (adds) <CODE>i</CODE> to the the end of the array
+<DT><CODE>Insert (item i, int num, int loc)</CODE>
+<DD>
+<A NAME="IDX459"></A>
+Inserts <CODE>num</CODE> copies of item <CODE>i</CODE> at location <CODE>loc</CODE> in the
+array.
+<DT><CODE>Find (item i, int loc)</CODE>
+<DD>
+<A NAME="IDX460"></A>
+Returns the index of the first element in the array matching item
+<CODE>i</CODE> starting at location <CODE>loc</CODE>. 
+<DT><CODE>RemoveEl (item i)</CODE>
+<DD>
+<A NAME="IDX461"></A>
+Removes the first element matching item <CODE>i</CODE>. Returns <CODE>TRUE</CODE> if
+a match is found and <CODE>FALSE</CODE> otherwise.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_97.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_99.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

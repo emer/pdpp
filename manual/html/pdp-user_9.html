@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-stru-env</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_8.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_10.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX12" HREF="pdp-user_toc.html">3.2.2  The Objects in Environments</A></H3>
+<P>
+<A NAME="IDX13"></A>
+<A NAME="IDX14"></A>
+<A NAME="IDX15"></A>
+
+</P>
+<P>
+We decided to call the training and testing data that is presented to a
+network an <CODE>Environment</CODE> (see section <A HREF="pdp-user_135.html">11  Environments, Events, and Patterns</A>) to capture the idea that a
+network is like an organism that exists and interacts within a
+particular environment.  Thus, the environment object describes a little
+world for the network to roam around in.  It does not, however, specify
+the path that the network takes in its travels (i.e., the order in which
+the events are presented to the network)---this is determined by the
+scheduling objects, which can be thought of as "tour guides" in this
+context.  To switch metaphors, an environment should be thought of as a
+library, which contains lots of data, but does not tell you which books
+to check out when.
+
+</P>
+<P>
+The <CODE>Environment</CODE> is composed of <CODE>Event</CODE>s (see section <A HREF="pdp-user_137.html">11.2  Events, Patterns and their Specs</A>),
+which represent a collection of stimuli or <CODE>Pattern</CODE>s that go
+together.  Thus, in the context of a typical backpropagation network, an
+<CODE>Event</CODE> consists of an input pattern and a target pattern for a
+single training example.  <CODE>Pattern</CODE>s contain an array of values
+which get mapped onto the units in a particular layer of the network.
+
+</P>
+<P>
+In order to represent <EM>sequences</EM> of events that should be
+presented sequentially in time, events can be grouped together
+(see section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>, see section <A HREF="pdp-user_13.html">3.5  Groups: A General Mechanism for Defining Substructure</A>).  Note, however, that the
+scheduling objects need to be made aware of the fact that the events in
+a group represent a sequence of events in order for these to actually be
+presented to the network in the right order (see section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).
+
+</P>
+<P>
+Environments can also be defined which dynamically create events
+on-line, possibly in response to outputs from the network.  This must be
+done under the supervision of an appropriate Schedule process, which can
+coordinate network outputs with the parameters that determine how the
+environment creates events.
+
+</P>
+<P>
+<B>New for 2.0:</B> The Environment interface has been completely
+rewritten, and now enables interactive configuration of event
+structures, just like in the Network interface.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_8.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_10.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

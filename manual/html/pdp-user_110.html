@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-scripts</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_109.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_111.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX531" HREF="pdp-user_toc.html">9.6  Project Scripts</A></H2>
+<P>
+<A NAME="IDX532"></A>
+<A NAME="IDX533"></A>
+<A NAME="IDX534"></A>
+<A NAME="IDX535"></A>
+<A NAME="IDX536"></A>
+
+</P>
+<P>
+Scripts are an important component of a simulation, especially when
+things get a bit more complicated than a simple XOR example.  They allow
+you to perform routine actions automatically, which can save a lot of
+mouse clicks, and makes some things possible that would be prohibitively
+time-consuming to do by hand (e.g., switching one's environment to use
+-1 to +1 values instead of 0 to 1 values).  Since scripts can be created
+just by recording actions taken in the GUI, it is relatively easy to get
+started with them.
+
+</P>
+<P>
+A PDP++ <B>Project</B> contains a special place to put different scripts
+that are associated with a given project.  Thus, there is a <B>Script</B>
+object, which has a corresponding script file that contains CSS script
+code (see section <A HREF="pdp-user_64.html">7  Guide to the Script Language (CSS)</A>).  These <B>Script</B> objects provide a way of managing
+and running multiple different CSS script files, whereas the script
+window that is present at startup can only hold one script file at a
+time.
+
+</P>
+<P>
+The script objects are found in the <CODE>.scripts</CODE> group on the
+project.  Editing a <B>Script</B> object results in a little "control
+panel" with several buttons that manipulate the script in different
+ways.  An existing script can also be run directly by selecting that
+script from the <I>Run</I> menu of <CODE>.scripts</CODE>.
+
+</P>
+<P>
+The <B>Script</B> object has the following member fields:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>taFile script_file</CODE>
+<DD>
+<A NAME="IDX537"></A>
+<A NAME="IDX538"></A>
+This contains the name of the script file to associate with this object.
+The name field of the object will automatically reflect the name of the
+script file selected (minus the .css extension).  Note that the script
+file can be edited by using the <I>Edit</I> menu option, which pulls up the
+editor given by the <CODE>EDITOR</CODE> environmental variable.
+
+<DT><CODE>String script_string</CODE>
+<DD>
+<A NAME="IDX539"></A>
+You can enter an entire script in this string field, and run it instead
+of reading the script from the <CODE>script_file</CODE>.  If
+<CODE>script_string</CODE> is non-empty, it is used instead of the file, even
+if the file is open.
+
+<DT><CODE>bool auto_run</CODE>
+<DD>
+<A NAME="IDX540"></A>
+Check this option if you want the script to be run automatically when
+the project is loaded.  This is can be used for example to automatically
+build and connect a large network which is saved without units or
+connections to make things faster and the file smaller.  An example
+script which builds the network is <TT>`css/include/build_network.css'</TT>.
+
+If you startup the pdp++ program with the project name on the command
+line, then the project will load over and over again if there is an
+error with a script that is set to run upon loading the project using
+<CODE>auto_run</CODE>.  The solution is to load the project from the Root
+menu, and to immediately move the mouse over the xterminal window, and
+type a Return into that window when the error occurs.  Then, you can
+debug the problem with the script at the point where the error occurred.
+
+<DT><CODE>String_Array s_args</CODE>
+<DD>
+<A NAME="IDX541"></A>
+These are arguments that the script file can access.  The argument
+values can be set in the script object, and used to modify the way the
+script behaves, etc.  Scripts that use these arguments should have the
+meaning of the arguments documented near the top of the script file.
+</DL>
+
+<P>
+The following button actions are available in the edit dialog of the
+<B>Script</B> object:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Run()</CODE>
+<DD>
+<A NAME="IDX542"></A>
+This runs the script.  A script must already be loaded and compiled.
+<DT><CODE>Record()</CODE>
+<DD>
+<A NAME="IDX543"></A>
+This causes future GUI actions to be recorded to this script.  Thus, one
+can construct a script record of a series of gui actions, and play them
+back by compiling the resulting script, and running it.  The script file
+can be edited and, for example, a <CODE>for</CODE> loop wrapped around a set
+of actions to perform them multiple times, etc.
+<DT><CODE>StopRecording() (StopRec)</CODE>
+<DD>
+<A NAME="IDX544"></A>
+This stops the recording of GUI actions to this script.  Only one script
+can record at a time, so if you press <CODE>Record</CODE> on a script, then
+all others will automatically stop recording.
+<DT><CODE>Interact()</CODE>
+<DD>
+<A NAME="IDX545"></A>
+This allows you to interact with the script through the CSS shell window
+(the one you started the PDP++ program from).  The prompt will change to
+the name of the script you are working with.  All of the CSS commands
+can then be used to debug and run the script (see section <A HREF="pdp-user_64.html">7  Guide to the Script Language (CSS)</A>).  Note that
+to exit out of this css shell, you do a <CODE>quit</CODE> in CSS, which will
+bring you back to the initial PDP++ executable prompt.
+<DT><CODE>Clear()</CODE>
+<DD>
+<A NAME="IDX546"></A>
+This clears (empties out) the script file.  This cannot be undone, so
+make sure you are ok losing all of the stuff in the script file!  It is
+primarily used when recording scripts, when you want to start over from
+the beginning.
+<DT><CODE>Compile()</CODE>
+<DD>
+<A NAME="IDX547"></A>
+This will re-compile the script file.  Any time you make changes to the
+.css file associated with the <B>Script</B> object, these changes need to
+be re-interpreted by CSS into something that can actually be run
+(see section <A HREF="pdp-user_67.html">7.2.1  Running an Example Program in CSS</A>). 
+</DL>
+
+<P>
+<A NAME="IDX548"></A>
+There are a number of useful script files in the <TT>`css/include'</TT>
+directory of the PDP++ distribution.  These files contain documentation
+as to what they do.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_109.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_111.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

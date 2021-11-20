@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-startup</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_104.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_106.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX510" HREF="pdp-user_toc.html">9.3  Startup Arguments to PDP++</A></H2>
+<P>
+<A NAME="IDX511"></A>
+<A NAME="IDX512"></A>
+
+</P>
+<P>
+PDP++ interprets a large number of startup arguments.  It looks for any
+of the arguments that can be passed to CSS (see section <A HREF="pdp-user_78.html">7.4.3  CSS Startup options</A>), which
+includes a script file that can be used to automate a set of actions to
+be taken in the simulator.  This is particularly useful for running
+simulations in the background.  The file <TT>`css/include/startup.css'</TT>
+provides an example of a startup file that loads in a saved project,
+sets some log files to record, and then runs the training or batch
+process.  After the process is completed, the program will quit (unless
+the CSS argument -i was given).
+
+</P>
+<P>
+The following arguments are PDP++ specific:
+<DL COMPACT>
+
+<DT><CODE>-nogui</CODE>
+<DD>
+This specifies that the graphical user interface (GUI) should not be
+started (only the CSS interface will be present).
+<DT><CODE>-p &#60;project_file&#62;</CODE>
+<DD>
+This specifies a project file to be loaded upon startup.  Note that any
+argument within the first two args containing ".proj" will be
+interpreted as a startup project to run.  Thus, one can type <CODE>bp++
+xor.proj.gz</CODE>, and it will automatically load the project.
+<DT><CODE>-d &#60;default_file&#62;</CODE>
+<DD>
+This specifies that the given default file should be used.  If this
+parameter is not given, then a default file based on the name of the
+executable (e.g., bp.def for bp++) will be used.  One can also write a
+<TT>`.pdpinitrc'</TT> file containing CSS code that sets the default file
+with the following kind of statement: <CODE>root-&#62;default_file =
+"default_file"</CODE>.  This can be based on the executable name by examining
+<CODE>argv[0]</CODE>, which contains the name of the executable being run.
+</DL>
+
+<P>
+In addition to the CSS arguments, PDP++ interprets all of the arguments
+for controlling the InterViews graphical user interface.  These
+arguments allow one to select a different "look and feel" from the
+default one, which is an enhanced version of the Motif style:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>-openlook</CODE>
+<DD>
+The Sun OpenLook look.
+<DT><CODE>-motif</CODE>
+<DD>
+A standard Motif look.  Note that the default is an enhanced SGI
+version of Motif, not this one.
+<DT><CODE>-monochrome</CODE>
+<DD>
+A Motif-like monochrome mode.  It is the default if you have a
+monochrome monitor.
+</DL>
+
+<P>
+If you are logging in remotely or are somehow restricted to a non
+XWindows environment, you have to use the <CODE>-nogui</CODE> argument.  This
+turns off the graphical user interface completely, and leaves you with
+the CSS interface.
+
+</P>
+<P>
+Note that when you run simulations in the background, you will want to
+use <CODE>-nogui</CODE>.
+
+</P>
+<P>
+Finally, there are some other InterViews arguments that might be useful:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>-nodbuf</CODE>
+<DD>
+This turns off double-buffering, which is on by default and results in
+smoother, flicker-free window updating, but also consumes much more
+display RAM from your XWindows server.  Users of XTerminals in
+particular might want to use this option.
+<A NAME="IDX513"></A>
+<DT><CODE>-visual &#60;dpy type&#62;</CODE>
+<DD>
+By using this option and passing your default visual class (use
+<CODE>xdpyinfo</CODE> to obtain the visual class(es) supported by your x
+display) (e.g., PseudoColor for standard 8 bit (256 color) X displays),
+you can obtain a private color map for the PDP++ session.  This can be
+useful if you are running out of colors in your shared colormap (e.g.,
+because Netscape is such a color hog!).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_104.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_106.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,615 @@
+*** g++-2.6-String.h	Tue May 23 15:52:23 1995
+--- ta_string.h	Tue May 23 15:55:33 1995
+***************
+*** 1,4 ****
+! // This may look like C code, but it is really -*- C++ -*-
+  /* 
+  Copyright (C) 1988 Free Software Foundation
+      written by Doug Lea (dl@rocky.oswego.edu)
+--- 1,41 ----
+! /* -*- C++ -*- */
+! /*=============================================================================
+! //									      //
+! // This file is part of the TypeAccess/C-Super-Script software package.	      //
+! //									      //
+! // Copyright (C) 1995 Randall C. O'Reilly, Chadley K. Dawson, 		      //
+! //		      James L. McClelland, and Carnegie Mellon University     //
+! //     									      //
+! // Permission to use, copy, and modify this software and its documentation    //
+! // for any purpose other than sale or distribution is hereby granted without  //
+! // fee, provided  that the above copyright notice and this permission notice  //
+! // appear in all copies of the software and related documentation.            //
+! //									      //
+! // PERMISSION TO MARKET, DISTRIBUTE, OR SELL THIS SOFTWARE OR ITS             //
+! // DOCUMENTATION IS EXPRESSLY *NOT* GRANTED AND IS RETAINED BY THE COPYRIGHT  //
+! // HOLDERS.					       			      //
+! // 									      //
+! // Note that the taString class, which is derived from the GNU String class,  //
+! // is Copyright (C) 1988 Free Software Foundation, written by Doug Lea, and   //
+! // is covered by the GNU General Public License, see ta_string.h.             //
+! // The iv_graphic library and some iv_misc classes were derived from the      //
+! // InterViews morpher example and other InterViews code, which is             //
+! // Copyright (C) 1987, 1988, 1989, 1990, 1991 Stanford University             //
+! // Copyright (C) 1991 Silicon Graphics, Inc.				      //
+! //									      //
+! // THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,         //
+! // EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 	      //
+! // WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  	      //
+! // 									      //
+! // IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE FOR		      //
+! // ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,    //
+! // OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,     //
+! // WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF  //
+! // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE     //
+! // OF THIS SOFTWARE.							      //
+! //     									      //
+! ==============================================================================*/
+! 
+  /* 
+  Copyright (C) 1988 Free Software Foundation
+      written by Doug Lea (dl@rocky.oswego.edu)
+***************
+*** 16,33 ****
+  Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+  
+  
+! #ifndef _String_h
+  #ifdef __GNUG__
+  #pragma interface
+  #endif
+! #define _String_h 1
+  
+  #include <iostream.h>
+! #include <Regex.h>
+  
+! struct StrRep                     // internal String representations
+! {
+    unsigned short    len;         // string length 
+    unsigned short    sz;          // allocated space
+    char              s[1];        // the string starts here 
+--- 53,89 ----
+  Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+  
++ // all unadorned references to string are hereby taString references
++ // which should be used in the case that there are multiple conflicting string
++ // types in use.
+  
+! #ifdef String
+! #undef String
+! #endif
+! #define String taString
+! #define SubString taSubString
+! #define StrRep taStrRep
+! 
+! #ifndef ta_string_h
+  #ifdef __GNUG__
+  #pragma interface
+  #endif
+! #define ta_string_h 1
+  
++ // ta_string is the string class used in the TA/CSS software
++ // it is based on the gnu libg++ string class, with the following
++ // modifications: 
++ // - constructors and conversion operators to/from ints, floats, and doubles
++ // - removal of the regexp versions of functions
++ // - reordering and commenting of overloaded functions so that the 
++ // 	const char* version is always the last one, so that it will
++ //	be the one scanned by TA
++ 
+  #include <iostream.h>
+! #include <stdlib.h>
+  
+! class StrRep {                   // internal String representations
+! public:
+    unsigned short    len;         // string length 
+    unsigned short    sz;          // allocated space
+    char              s[1];        // the string starts here 
+***************
+*** 83,94 ****
+    int               contains(const String&     y) const;
+    int               contains(const SubString&  y) const;
+    int               contains(const char* t) const;
+-   int               contains(const Regex&       r) const;
+  
+  // return 1 if target matches entire SubString
+  
+-   int               matches(const Regex&  r) const;
+- 
+  // IO 
+  
+    friend ostream&   operator<<(ostream& s, const SubString& x);
+--- 139,147 ----
+***************
+*** 97,103 ****
+  
+    unsigned int      length() const;
+    int               empty() const;
+!   const char*       chars() const;
+  
+    int               OK() const; 
+  
+--- 150,156 ----
+  
+    unsigned int      length() const;
+    int               empty() const;
+!   inline const char*       chars() const;
+  
+    int               OK() const; 
+  
+***************
+*** 117,123 ****
+    int               search(int, int, char) const;
+    int               match(int, int, int, const char*, int = -1) const;
+    int               _gsub(const char*, int, const char* ,int);
+-   int               _gsub(const Regex&, const char*, int);
+    SubString         _substr(int, int);
+  
+  public:
+--- 170,175 ----
+***************
+*** 131,138 ****
+--- 183,201 ----
+                      String(const char* t, int len);
+                      String(char c);
+  
++ // these are strangely missing in the original
++                     String(int i,const char* format = "%d");
++                     String(float f,const char* format = "%g");
++                     String(double f,const char* format = "%lg");
++ 
+                      ~String();
+  
++ // these are strangely missing in the original	
++   operator int()	{ return strtol(chars(), NULL, 0); }
++   operator float()	{ return atof(chars()); }
++   operator double()	{ return atof(chars()); }
++   operator char*() 	{ return (char*)chars(); }
++ 
+    String&           operator =  (const String&     y);
+    String&           operator =  (const char* y);
+    String&           operator =  (char        c);
+***************
+*** 147,154 ****
+  
+    void              prepend(const String&     y); 
+    void              prepend(const SubString&  y);
+-   void              prepend(const char* t);
+    void              prepend(char        c);
+  
+  
+  // procedural versions:
+--- 210,217 ----
+  
+    void              prepend(const String&     y); 
+    void              prepend(const SubString&  y);
+    void              prepend(char        c);
++   void              prepend(const char* t); // add to beginning of string
+  
+  
+  // procedural versions:
+***************
+*** 178,184 ****
+    friend inline void     cat(const String&,const String&, const char*, String&);
+    friend inline void     cat(const String&,const String&, char, String&);
+    friend inline void     cat(const String&,const SubString&,const String&,String&);
+!   inline friend void     cat(const String&,const SubString&,const SubString&,String&);
+    friend inline void     cat(const String&,const SubString&, const char*, String&);
+    friend inline void     cat(const String&,const SubString&, char, String&);
+    friend inline void     cat(const String&,const char*, const String&,    String&);
+--- 241,247 ----
+    friend inline void     cat(const String&,const String&, const char*, String&);
+    friend inline void     cat(const String&,const String&, char, String&);
+    friend inline void     cat(const String&,const SubString&,const String&,String&);
+!   friend inline void     cat(const String&,const SubString&,const SubString&,String&);
+    friend inline void     cat(const String&,const SubString&, const char*, String&);
+    friend inline void     cat(const String&,const SubString&, char, String&);
+    friend inline void     cat(const String&,const char*, const String&,    String&);
+***************
+*** 208,214 ****
+    int               index(const String&     y, int startpos = 0) const;      
+    int               index(const SubString&  y, int startpos = 0) const;      
+    int               index(const char* t, int startpos = 0) const;  
+!   int               index(const Regex&      r, int startpos = 0) const;       
+  
+  // return 1 if target appears anyhere in String; else 0
+  
+--- 271,277 ----
+    int               index(const String&     y, int startpos = 0) const;      
+    int               index(const SubString&  y, int startpos = 0) const;      
+    int               index(const char* t, int startpos = 0) const;  
+! // return position of target in string or -1 for failure
+  
+  // return 1 if target appears anyhere in String; else 0
+  
+***************
+*** 215,222 ****
+    int               contains(char        c) const;
+    int               contains(const String&     y) const;
+    int               contains(const SubString&  y) const;
+-   int               contains(const char* t) const;
+-   int               contains(const Regex&      r) const;
+  
+  // return 1 if target appears anywhere after position pos 
+  // (or before, if pos is negative) in String; else 0
+--- 278,283 ----
+***************
+*** 225,231 ****
+    int               contains(const String&     y, int pos) const;
+    int               contains(const SubString&  y, int pos) const;
+    int               contains(const char* t, int pos) const;
+!   int               contains(const Regex&      r, int pos) const;
+  
+  // return 1 if target appears at position pos in String; else 0
+  
+--- 286,293 ----
+    int               contains(const String&     y, int pos) const;
+    int               contains(const SubString&  y, int pos) const;
+    int               contains(const char* t, int pos) const;
+!   int               contains(const char* t) const;
+! // return 1 if target appears anywhere in string
+  
+  // return 1 if target appears at position pos in String; else 0
+  
+***************
+*** 233,239 ****
+    int               matches(const String&     y, int pos = 0) const;
+    int               matches(const SubString&  y, int pos = 0) const;
+    int               matches(const char* t, int pos = 0) const;
+!   int               matches(const Regex&      r, int pos = 0) const;
+  
+  //  return number of occurences of target in String
+  
+--- 295,301 ----
+    int               matches(const String&     y, int pos = 0) const;
+    int               matches(const SubString&  y, int pos = 0) const;
+    int               matches(const char* t, int pos = 0) const;
+! // return 1 if target appears at position pos in String; else 0
+  
+  //  return number of occurences of target in String
+  
+***************
+*** 241,246 ****
+--- 303,309 ----
+    int               freq(const String&     y) const;
+    int               freq(const SubString&  y) const;
+    int               freq(const char* t) const;
++ //  return number of occurences of target in String
+  
+  // SubString extraction
+  
+***************
+*** 248,254 ****
+  // this leaves open the possiblility of indirectly modifying the
+  // String through the SubString
+  
+-   SubString         at(int         pos, int len);
+    SubString         operator () (int         pos, int len); // synonym for at
+  
+    SubString         at(const String&     x, int startpos = 0); 
+--- 311,316 ----
+***************
+*** 255,295 ****
+    SubString         at(const SubString&  x, int startpos = 0); 
+    SubString         at(const char* t, int startpos = 0);
+    SubString         at(char        c, int startpos = 0);
+!   SubString         at(const Regex&      r, int startpos = 0); 
+  
+    SubString         before(int          pos);
+    SubString         before(const String&      x, int startpos = 0);
+    SubString         before(const SubString&   x, int startpos = 0);
+-   SubString         before(const char*  t, int startpos = 0);
+    SubString         before(char         c, int startpos = 0);
+!   SubString         before(const Regex&       r, int startpos = 0);
+  
+    SubString         through(int          pos);
+    SubString         through(const String&      x, int startpos = 0);
+    SubString         through(const SubString&   x, int startpos = 0);
+-   SubString         through(const char*  t, int startpos = 0);
+    SubString         through(char         c, int startpos = 0);
+!   SubString         through(const Regex&       r, int startpos = 0);
+  
+    SubString         from(int          pos);
+    SubString         from(const String&      x, int startpos = 0);
+    SubString         from(const SubString&   x, int startpos = 0);
+-   SubString         from(const char*  t, int startpos = 0);
+    SubString         from(char         c, int startpos = 0);
+!   SubString         from(const Regex&       r, int startpos = 0);
+  
+    SubString         after(int         pos);
+    SubString         after(const String&     x, int startpos = 0);
+    SubString         after(const SubString&  x, int startpos = 0);
+-   SubString         after(const char* t, int startpos = 0);
+    SubString         after(char        c, int startpos = 0);
+!   SubString         after(const Regex&      r, int startpos = 0);
+  
+  
+  // deletion
+  
+- // delete len chars starting at pos
+-   void              del(int         pos, int len);
+  
+  // delete the first occurrence of target after startpos
+  
+--- 317,356 ----
+    SubString         at(const SubString&  x, int startpos = 0); 
+    SubString         at(const char* t, int startpos = 0);
+    SubString         at(char        c, int startpos = 0);
+!   SubString         at(int         pos, int len);
+!   // substring at position for length
+  
+    SubString         before(int          pos);
+    SubString         before(const String&      x, int startpos = 0);
+    SubString         before(const SubString&   x, int startpos = 0);
+    SubString         before(char         c, int startpos = 0);
+!   SubString         before(const char*  t, int startpos = 0);
+!   // substring before (not including) target string
+  
+    SubString         through(int          pos);
+    SubString         through(const String&      x, int startpos = 0);
+    SubString         through(const SubString&   x, int startpos = 0);
+    SubString         through(char         c, int startpos = 0);
+!   SubString         through(const char*  t, int startpos = 0);
+!   // substring through (including) target string
+  
+    SubString         from(int          pos);
+    SubString         from(const String&      x, int startpos = 0);
+    SubString         from(const SubString&   x, int startpos = 0);
+    SubString         from(char         c, int startpos = 0);
+!   SubString         from(const char*  t, int startpos = 0);
+!   // substring from (including) target string
+  
+    SubString         after(int         pos);
+    SubString         after(const String&     x, int startpos = 0);
+    SubString         after(const SubString&  x, int startpos = 0);
+    SubString         after(char        c, int startpos = 0);
+!   SubString         after(const char* t, int startpos = 0);
+!   // substring after (not including) target string
+  
+  
+  // deletion
+  
+  
+  // delete the first occurrence of target after startpos
+  
+***************
+*** 297,303 ****
+    void              del(const SubString&  y, int startpos = 0);
+    void              del(const char* t, int startpos = 0);
+    void              del(char        c, int startpos = 0);
+!   void              del(const Regex&      r, int startpos = 0);
+  
+  // global substitution: substitute all occurrences of pat with repl
+  
+--- 358,367 ----
+    void              del(const SubString&  y, int startpos = 0);
+    void              del(const char* t, int startpos = 0);
+    void              del(char        c, int startpos = 0);
+!   void              del(int         pos, int len);
+! // delete len chars starting at pos
+!   void              remove(const char* t, int startpos = 0) { del(t, startpos); }
+! // remove target string from string
+  
+  // global substitution: substitute all occurrences of pat with repl
+  
+***************
+*** 305,311 ****
+    int               gsub(const SubString&  pat, const String&     repl);
+    int               gsub(const char* pat, const String&     repl);
+    int               gsub(const char* pat, const char* repl);
+!   int               gsub(const Regex&      pat, const String&     repl);
+  
+  // friends & utilities
+  
+--- 369,375 ----
+    int               gsub(const SubString&  pat, const String&     repl);
+    int               gsub(const char* pat, const String&     repl);
+    int               gsub(const char* pat, const char* repl);
+! // global substitution: substitute all occurrences of pat with repl
+  
+  // friends & utilities
+  
+***************
+*** 313,320 ****
+  
+    friend int        split(const String& x, String res[], int maxn, 
+                            const String& sep);
+-   friend int        split(const String& x, String res[], int maxn, 
+-                           const Regex&  sep);
+  
+    friend String     common_prefix(const String& x, const String& y, 
+                                    int startpos = 0);
+--- 377,382 ----
+***************
+*** 333,355 ****
+  
+  // in-place versions of above
+  
+!   void              reverse();
+!   void              upcase();
+!   void              downcase();
+!   void              capitalize();
+  
+  // element extraction
+  
+    char&             operator [] (int i);
+    const char&       operator [] (int i) const;
+!   char              elem(int i) const;
+!   char              firstchar() const;
+!   char              lastchar() const;
+  
+  // conversion
+  
+                      operator const char*() const;
+!   const char*       chars() const;
+  
+  
+  // IO
+--- 395,417 ----
+  
+  // in-place versions of above
+  
+!   void              reverse();	// reverse order of string
+!   void              upcase();	// convert all letters to upper case
+!   void              downcase();	// convert all letters to lower case
+!   void              capitalize(); // capitalize the first letter of each word
+  
+  // element extraction
+  
+    char&             operator [] (int i);
+    const char&       operator [] (int i) const;
+!   char              elem(int i) const; // get the character at index i
+!   char              firstchar() const; // get the first character
+!   char              lastchar() const;  // get the last character
+  
+  // conversion
+  
+                      operator const char*() const;
+!   const char* 	    chars() const { return &(rep->s[0]); }
+  
+  
+  // IO
+***************
+*** 364,386 ****
+  
+  // status
+  
+!   unsigned int      length() const;
+!   int               empty() const;
+  
+- // preallocate some space for String
+    void              alloc(int newsize);
+  
+- // report current allocation (not length!)
+  
+    int               allocation() const;
+  
+  
+    void     error(const char* msg) const;
+  
+!   int               OK() const;
+  };
+  
+! typedef String StrTmp; // for backward compatibility
+  
+  // other externs
+  
+--- 426,448 ----
+  
+  // status
+  
+!   unsigned int      length() const; // how many characters in the string
+!   int               empty() const;  // true if the string is empty
+  
+    void              alloc(int newsize);
++ // preallocate some space for String
+  
+  
+    int               allocation() const;
++ // report current allocation (not length!)
+  
+  
+    void     error(const char* msg) const;
+  
+!   int               OK() const;	// check if the string is allocated properly, etc.
+  };
+  
+! //typedef String StrTmp; // for backward compatibility
+  
+  // other externs
+  
+***************
+*** 399,405 ****
+  
+  inline unsigned int String::length() const {  return rep->len; }
+  inline int         String::empty() const { return rep->len == 0; }
+- inline const char* String::chars() const { return &(rep->s[0]); }
+  inline int         String::allocation() const { return rep->sz; }
+  
+  inline unsigned int SubString::length() const { return len; }
+--- 461,466 ----
+***************
+*** 940,950 ****
+    return search(startpos, length(), y.chars(), y.length());
+  }
+  
+- inline int String::index(const Regex& r, int startpos) const
+- {
+-   int unused;  return r.search(chars(), length(), unused, startpos);
+- }
+- 
+  inline int String::contains(char c) const
+  {
+    return search(0, length(), c) >= 0;
+--- 1001,1006 ----
+***************
+*** 985,1001 ****
+    return match(p, length(), 0, y.chars(), y.length()) >= 0;
+  }
+  
+- inline int String::contains(const Regex& r) const
+- {
+-   int unused;  return r.search(chars(), length(), unused, 0) >= 0;
+- }
+  
+- inline int String::contains(const Regex& r, int p) const
+- {
+-   return r.match(chars(), length(), p) >= 0;
+- }
+- 
+- 
+  inline int String::matches(const SubString& y, int p) const
+  {
+    return match(p, length(), 1, y.chars(), y.length()) >= 0;
+--- 1041,1047 ----
+***************
+*** 1016,1028 ****
+    return match(p, length(), 1, &c, 1) >= 0;
+  }
+  
+- inline int String::matches(const Regex& r, int p) const
+- {
+-   int l = (p < 0)? -p : length() - p;
+-   return r.match(chars(), length(), p) == l;
+- }
+  
+- 
+  inline int SubString::contains(const char* t) const
+  {   
+    return S.search(pos, pos+len, t) >= 0;
+--- 1062,1068 ----
+***************
+*** 1043,1059 ****
+    return S.search(pos, pos+len, c) >= 0;
+  }
+  
+- inline int SubString::contains(const Regex& r) const
+- {
+-   int unused;  return r.search(chars(), len, unused, 0) >= 0;
+- }
+  
+- inline int SubString::matches(const Regex& r) const
+- {
+-   return r.match(chars(), len, 0) == len;
+- }
+- 
+- 
+  inline int String::gsub(const String& pat, const String& r)
+  {
+    return _gsub(pat.chars(), pat.length(), r.chars(), r.length());
+--- 1083,1089 ----
+***************
+*** 1062,1072 ****
+  inline int String::gsub(const SubString&  pat, const String& r)
+  {
+    return _gsub(pat.chars(), pat.length(), r.chars(), r.length());
+- }
+- 
+- inline int String::gsub(const Regex& pat, const String& r)
+- {
+-   return _gsub(pat, r.chars(), r.length());
+  }
+  
+  inline int String::gsub(const char* pat, const String& r)
+--- 1092,1097 ----

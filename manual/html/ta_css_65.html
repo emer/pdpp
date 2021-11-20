@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-basics-obj</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_64.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_66.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX334" HREF="ta_css_toc.html">8.1.1  What is an Object?</A></H3>
+<P>
+<A NAME="IDX335"></A>
+<A NAME="IDX336"></A>
+<A NAME="IDX337"></A>
+<A NAME="IDX338"></A>
+<A NAME="IDX339"></A>
+<A NAME="IDX340"></A>
+<A NAME="IDX341"></A>
+<A NAME="IDX342"></A>
+<A NAME="IDX343"></A>
+
+</P>
+<P>
+An object has both fields with data and functions (aka methods) which it
+can perform.  A PDP Unit as an object might have the fields
+<CODE>activation</CODE> and <CODE>netinput</CODE>, and some functions like
+<CODE>ComputeActivation()</CODE> and <CODE>ClearNetInput()</CODE>. In C++ this might
+look like:
+
+</P>
+<PRE>class Unit {
+  float         activation;     // this is a member holding activation
+  float         netinput;       // this is a member holding net input
+
+  virtual void  ComputeActivation(); // this is a function 
+  void          ClearNetInput();        // this is a function 
+}
+</PRE>
+
+<P>
+C++ also provides the mechanisms for object inheritance in which a new
+object can be defined as having the same fields and functions as its
+"parent" object with the addition of a few fields and/or functions of
+its own. In PDP++ the <B>BpUnit</B> object class inherits from the parent
+<B>Unit</B> class and adds fields such as <CODE>bias weight</CODE> and a BackProp
+version of <CODE>ComputeActivation</CODE>. In C++ this might look like:
+
+</P>
+<PRE>class BpUnit : public Unit {
+  float         biasweight;     // a new member in addition to others
+
+  void          ComputeActivation(); // redefining this function
+  void          ClearBiasWeight();  // adding a new function
+}
+</PRE>
+
+<P>
+<A NAME="IDX344"></A>
+<A NAME="IDX345"></A>
+<A NAME="IDX346"></A>
+By <I>overloading</I> the ComputeActivation function the BpUnit redefines the
+way in which the activation is computed. Since it doesn't overload the
+ClearNetInput function, the BPUnit clears its net input in the exact
+same way as the standard unit would. The new function ClearBiasWeight
+exists only on the BpUnit and is not available on the base Unit
+class. Through this type of class inheritance, PDP++ provides a
+hierarchical class structure for its objects.
+
+</P>
+<P>
+For a slightly more detailed treatment of some of the basic ideas in OOP
+and C++, see section <A HREF="ta_css_16.html">5.3.4  Features of C++ for C Programmers</A>.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_64.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_66.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

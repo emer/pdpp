@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - gui-subgroup</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_52.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_54.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX135" HREF="pdp-user_toc.html">6.5  The SubGroup Menu(s)</A></H2>
+<P>
+<A NAME="IDX136"></A>
+<A NAME="IDX137"></A>
+
+</P>
+<P>
+A subgroup menu appears in the menubar of a WinBase object for each of
+the group members of the object. The name of the menu corresponds to the
+name of the group member (e.g., The Layer object has a group of units
+and a group of projections. It would have two subgroup menus, one
+labeled <CODE>.units</CODE> and a second labeled <CODE>.projections</CODE>. The "."
+before the name of the subgroup is used to indicate that the subgroups
+are sub-objects of the WinBase object. In the CSS script language one
+would access objects in these subgroups using the "." operator. (e.g.,
+To access the first network in the project one would type
+<SAMP>`.projects.networks[0]'</SAMP>). In addition the subgroup menus appear in
+a non-italicized font to distinguish them from the "Object" and "Action"
+menus of the WinBase. The subgroup menu's have the following menu
+choices.  Occasionally subgroup menus may add additional menu choices as
+well (e.g., The Processes submenu of the Project has the menu choice
+<I>Control Panel</I> which opens a control panel dialog for one of the
+processes in the subgroup). Some of the group operations require the use
+of a file requester. See section <A HREF="pdp-user_62.html">6.19  File Requester</A>.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Edit</CODE>
+<DD>
+<A NAME="IDX138"></A>
+The Edit action brings up a Group Edit Dialog for the group or an Edit
+Dialog for an individual object (section <A HREF="pdp-user_54.html">6.6  The Edit Dialog</A>).
+<DT><CODE>New</CODE>
+<DD>
+<A NAME="IDX139"></A>
+The New action allows the use to create new objects in the group or in a
+subgroup of the group. The user can chose to create objects of the
+base object type, objects of a subclass of the base object type, or a
+subgroup object. A popup dialog appears which enables the user to select
+the number of objects to create, the type of objects, and where to place
+them. Sometimes the popup dialog may have additional fields and toggles
+which are particular to the item being created. If the auto_edit flag in the
+global settings (see section <A HREF="pdp-user_58.html">6.17  Settings Affecting GUI Behavior</A>) is turned on, an edit
+dialog will be created for the newly created objects when button-1 (left
+button) is pressed on the OK button of the popup dialog. If button-2 (middle
+button) is pressed the edit dialog will be created only if the auto_edit
+variable is off. When button-3 (right button) is pressed an edit dialog will
+always be created.
+<DT><CODE>Open In</CODE>
+<DD>
+<A NAME="IDX140"></A>
+The "Open in" action allows the user to open a previously-saved object
+file and add the data into the group. See section <A HREF="pdp-user_90.html">8.1.3  Saving and Loading Objects</A>.
+<DT><CODE>Load Over</CODE>
+<DD>
+<A NAME="IDX141"></A>
+The "Load Over" action allows the user to open a previously-saved object
+file and overwrite the objects in the group with the data in the file. See section <A HREF="pdp-user_90.html">8.1.3  Saving and Loading Objects</A>.
+<DT><CODE>Save</CODE>
+<DD>
+<A NAME="IDX142"></A>
+The Save action allows the user to save the group or a group element as
+a PDP++ object file using the file requester or the object's most
+recently used name for saving. See section <A HREF="pdp-user_90.html">8.1.3  Saving and Loading Objects</A>.
+<DT><CODE>Save As</CODE>
+<DD>
+<A NAME="IDX143"></A>
+The Save As action allows the user to save the group or a group element in
+a new PDP++ object file using the file requester. See section <A HREF="pdp-user_90.html">8.1.3  Saving and Loading Objects</A>.
+<DT><CODE>Remove</CODE>
+<DD>
+<A NAME="IDX144"></A>
+The Remove action allows the user to remove the group or a group
+element. The user is prompted with a confirmation dialog to confirm the
+choice. However, If the chosen object is referenced by other objects
+then it will not be deleted.
+<DT><CODE>Duplicate</CODE>
+<DD>
+<A NAME="IDX145"></A>
+The Duplicate action allows the user to add a duplicate of one of the
+objects in the group to the group or its subgroups.
+<DT><CODE>Move Within</CODE>
+<DD>
+<A NAME="IDX146"></A>
+This allows the user to move objects to new positions within the group
+(e.g., for rearranging the order of layers in the network, which is
+important for the feedforward Bp algorithm).
+<DT><CODE>View Window</CODE>
+<DD>
+<A NAME="IDX147"></A>
+View Window brings the window associated with selected object to the
+front, deiconifies it, or creates it if a window does not exist.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_52.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_54.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

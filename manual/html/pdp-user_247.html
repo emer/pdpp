@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_246.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_248.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX1672" HREF="pdp-user_toc.html">18  Programming in PDP++</A></H1>
+
+<P>
+This chapter contains some useful information for those who want to add
+new functionality to the PDP++ software by compiling their own
+executable.  By creating new subclasses of existing classes, and using
+these new classes in your simulations, it should be possible to make
+PDP++ do exactly what you want it to.
+
+</P>
+<P>
+Before taking this step, you should be reasonably comfortable with the
+CSS language and using it to access objects in the simulator.  Further,
+you will need to know (or learn about) C++ in a bit more detail than is
+covered in the CSS section of this manual.  There are a number of good
+books on this subject available in most bookstores.
+
+</P>
+<P>
+This chapter describes how to set up the makefiles in your own directory
+where you will compile your executable.  It then describes various
+coding conventions and extensions to the basic C++ language that we have
+added to facilitate programming in PDP++.  We have established a standard
+way of dealing with creating, copying, and deleting objects.  In
+addition, each object has special functions that allow groups to manage
+them.  All of these "coding conventions" are described in this chapter.
+
+</P>
+<P>
+We have developed a run-time-type-information (RTTI) system called
+TypeAccess, which provides type information about most classes at
+run-time.  This can be used to determine what kind of unit a Unit*
+object <EM>really</EM> is, for example (i.e., is it a BpUnit or a
+MyWackyBpUnit?).  
+
+</P>
+<P>
+The TypeAccess system requires a more complicated than normal set of
+makefiles.  Fortunately, it is reasonably straightforward to use the
+makefiles we have developed, so you won't have to deal with much of this
+complexity. 
+
+</P>
+<P>
+Most of the graphical interface (i.e., edit dialogs, menus, etc) is
+generated automatically from the information provided by TypeAccess. The
+same is true for the way you can transparently access hard-coded types
+and objects through CSS.  Thus, you don't need to do anything special to
+be able to use your newly defined classes exactly in the way that you
+use the ones that come with the software.
+
+</P>
+<P>
+There are some special keywords that you can put in the comments for
+your classes and class members and methods called "comment directives".
+These comment directives allow you to control various aspects of how the
+GUI and CSS treat your objects.  These comment directives are described
+in this chapter.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_248.html">1                   Makefiles and Directory Organization</A>
+<LI><A HREF="pdp-user_249.html">2                  The TypeAccess System</A>
+<LI><A HREF="pdp-user_255.html">3                 Standard TypeAccess Comment Directives</A>
+<LI><A HREF="pdp-user_261.html">4                 Coding Conventions and Standards</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_246.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_248.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

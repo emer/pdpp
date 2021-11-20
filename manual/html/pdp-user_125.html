@@ -1,0 +1,184 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_124.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_126.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX664" HREF="pdp-user_toc.html">10.4  Units</A></H2>
+<P>
+<A NAME="IDX665"></A>
+<A NAME="IDX666"></A>
+<A NAME="IDX667"></A>
+
+</P>
+<P>
+Units are the basic computational elements of networks.  They typically
+integrate information from a number of sources (inputs), and perform
+some relatively simple type of processing on these inputs, and then
+output a single value which somehow summarizes its response to the
+inputs.
+
+</P>
+<P>
+The basic <B>Unit</B> class in PDP++ contains real valued variables for
+representing a unit's activation and its net input from other units as
+well as its target pattern and/or external training input. In addition
+the unit class contains subgroups of sending and receiving connections
+between other units, and a 'bias' connection, which may or may not be
+present depending on the algorithm. A unit also has a position which
+represents its relative offset from its layer's position in the netview
+(see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).
+
+</P>
+<P>
+As with many objects in PDP++, the <B>Unit</B> relies on a corresponding
+<B>UnitSpec</B> to provide most of the functions and parameters that
+control the unit's behavior.  The unit itself contains the state
+variables.  Thus, different units can have different parameters and
+functions simply by changing which <B>UnitSpec</B> they point to.
+
+</P>
+<P>
+The following variables are found on the <B>Unit</B>:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>UnitSpec_SPtr spec</CODE>
+<DD>
+<A NAME="IDX668"></A>
+A pointer to the unit specifications for this unit (see below).
+<DT><CODE>Geometry pos</CODE>
+<DD>
+<A NAME="IDX669"></A>
+Specifies the unit's 3-D position relative to the layer. Used for
+display purposes and optionally for certain projection patterns
+<DT><CODE>ExtType ext_flag</CODE>
+<DD>
+<A NAME="IDX670"></A>
+This flag indicates which kind of external input unit last
+received. This may have one of four values:
+<DL COMPACT>
+
+<DT><CODE>NO_EXTERNAL</CODE>
+<DD>
+Indicates that the unit received no input.
+<DT><CODE>TARG</CODE>
+<DD>
+Indicates that the unit received a target value, which is in the
+<CODE>targ</CODE> field.
+<DT><CODE>EXT</CODE>
+<DD>
+Indicates that the unit received external input, which is in the
+<CODE>ext</CODE> field.
+<DT><CODE>TARG_EXT</CODE>
+<DD>
+Indicates that the unit received both a target and external input.
+<DT><CODE>COMP</CODE>
+<DD>
+Indicates that the unit has a comparison value in its <CODE>targ</CODE> field.
+This is for computing an error statistic or other comparisons, but not
+for training the network.
+<DT><CODE>COMP_TARG</CODE>
+<DD>
+Both a comparison and a target (this is redundant, since all target
+values are included in comparisons anyway..)
+<DT><CODE>COMP_EXT</CODE>
+<DD>
+Both a comparsion and an external input.
+<DT><CODE>COMP_TARG_EXT</CODE>
+<DD>
+All three.
+</DL>
+
+<DT><CODE>float targ</CODE>
+<DD>
+<A NAME="IDX671"></A>
+The target value that the unit is being taught to achieve (i.e.,
+for output units in a backpropagation network).
+<DT><CODE>float ext</CODE>
+<DD>
+<A NAME="IDX672"></A>
+The external input that the unit received.  Depending on the
+algorithm, this can be added into the net input for the unit (soft
+clamping), or the unit' activation can be set to this value (hard
+clamping).
+<DT><CODE>float act</CODE>
+<DD>
+<A NAME="IDX673"></A>
+The unit's activation value, which is typically a function of its net
+input.
+<DT><CODE>float net</CODE>
+<DD>
+<A NAME="IDX674"></A>
+The unit's net input value, which is typically computed as a function of
+the sending unit's activations times their weights.
+<DT><CODE>Con_Group recv</CODE>
+<DD>
+<A NAME="IDX675"></A>
+This group contains the unit's receiving connections.  Each projection
+creates its own sub-group within this group (see section <A HREF="pdp-user_91.html">8.2  Groups</A>), so
+<CODE>recv</CODE> just contains sub-groups which themselves contain the actual
+connections. 
+<DT><CODE>Con_Group send</CODE>
+<DD>
+<A NAME="IDX676"></A>
+This group contains sub-groups containing the unit's sending
+connections, one sub-group per projection (just like <CODE>recv</CODE>).
+<DT><CODE>Connection* bias</CODE>
+<DD>
+<A NAME="IDX677"></A>
+A pointer to a <B>Connection</B> object which contains the bias weight for
+this Unit.  Bias weights are treated as special connections which do not
+have a corresponding sending unit.  This pointer may be NULL if the unit
+does not have a bias weight.  The type of connection created here is
+specified by the <CODE>bias_con_type</CODE> member of the UnitSpec, and the
+ConSpec for this connection is in the <CODE>bias_spec</CODE> member of the
+UnitSpec.
+</DL>
+
+<P>
+The basic <B>UnitSpec</B> class defines the set of computational functions
+on the unit, and has parameters which control the unit's behavior.
+Specific algorithms add more parameters to this object.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>MinMaxRange act_range</CODE>
+<DD>
+<A NAME="IDX678"></A>
+The legal range of activation values for the unit.
+<DT><CODE>TypeDef* bias_con_type</CODE>
+<DD>
+<A NAME="IDX679"></A>
+The type of bias connection to create in the unit.  The default value
+for this is set by different algorithms, and it can be NULL if no bias
+connections are to be created.  The 'Build' operation should be
+performed if this connection type is changed manually.
+<DT><CODE>ConSpec_SPtr bias_spec</CODE>
+<DD>
+<A NAME="IDX680"></A>
+This ConSpec controls the behavior of the bias on the unit in an
+algorithm-dependent fashion.
+</DL>
+
+<P>
+Note: the following information should be useful to those who wish to
+program in PDP++, but is not necessary for the average user to
+understand.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_126.html">1               Implementational Details About Units</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_124.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_126.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

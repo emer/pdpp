@@ -1,0 +1,54 @@
+=============================================================
+Pre FunLookup::Eval inline & optimization:
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_1000.epc.log
+Leabra 1000:    weights: 2e+06  pats: 20        con_trav: 3.68e+09
+secs:   Mcon/sec:
+126     29.2063
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_500.epc.log
+Leabra 500:     weights: 500000         pats: 50        con_trav: 1.55e+09
+secs:   Mcon/sec:
+28      55.3571
+
+Leabra:         weights: 20000  pats: 500       con_trav: 6.2e+08
+ecs:   Mcon/sec:
+15.72   39.4402
+15
+
+=============================================================
+Post FunLookup::Eval:
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_1000.epc.log
+Leabra 1000:    weights: 2e+06  pats: 20        con_trav: 3.68e+09
+secs:   Mcon/sec:
+100     36.8     = 1.26
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_500.epc.log
+Leabra 500:     weights: 500000         pats: 50        con_trav: 1.55e+09
+secs:   Mcon/sec:
+26      59.6154   = 1.077
+
+Leabra:         weights: 20000  pats: 500       con_trav: 6.2e+08
+secs:   Mcon/sec:
+14.31   43.3263   = 1.098
+14
+
+=============================================================
+Post C_UpdateWeights split into separate fun for act_reg, got rid of
+InitDelta init of con_group->net.
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_1000.epc.log
+Leabra 1000:    weights: 2e+06  pats: 20        con_trav: 3.68e+09
+secs:   Mcon/sec:
+102     36.0784  = slower -- anomolous?
+
+Saving Log: Epoch_0_GraphLog to leabra_bench_500.epc.log
+Leabra 500:     weights: 500000         pats: 50        con_trav: 1.55e+09
+secs:   Mcon/sec:
+23      67.3913  = 1.13
+
+Leabra:         weights: 20000  pats: 500       con_trav: 6.2e+08
+secs:   Mcon/sec:
+12.84   48.2866 = 1.11
+12

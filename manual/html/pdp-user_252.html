@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-typea-stru</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_251.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_253.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1674" HREF="pdp-user_toc.html">18.2.3  Structure of TypeAccess Type Data</A></H3>
+
+<P>
+The classes used in storing type information in the TypeAccess system
+are all defined in the <TT>`ta/typea.h'</TT> header file.  Basically, there
+are a set of <B>Space</B> objects, which all derive from a basic form of
+the <CODE>List</CODE> object (defined in <TT>`ta/ta_list.h'</TT>, which represent
+type spaces, member spaces, method spaces, etc.  These are just
+containers of objects.  The spaces are: <B>TypeSpace</B>, <B>MemberSpace</B>,
+<B>MethodSpace</B>, <B>EnumSpace</B>, <B>TokenSpace</B>.  Note that they contain
+functions for finding, printing, and generally manipulating the objects
+they contain.
+
+</P>
+<P>
+There are corresponding <B>TypeDef</B>, <B>MemberDef</B>, <B>MethodDef</B>, and
+<B>EnumDef</B> objects which hold specific information about the
+corresponding aspect of type information.  The <B>TypeDef</B> contains the
+following fields:
+
+</P>
+<P>
+<A NAME="IDX1675"></A>
+<DL COMPACT>
+
+<DT><CODE>String name</CODE>
+<DD>
+<A NAME="IDX1676"></A>
+Holds the name of the type.
+<DT><CODE>String desc</CODE>
+<DD>
+<A NAME="IDX1677"></A>
+A description which is obtained from the user's comment
+following the declaration of the type.
+<DT><CODE>uint size</CODE>
+<DD>
+<A NAME="IDX1678"></A>
+The size of the object in bytes.
+<DT><CODE>int ptr</CODE>
+<DD>
+<A NAME="IDX1679"></A>
+The number of pointers this type is from a basic non-pointer type.
+<DT><CODE>bool ref</CODE>
+<DD>
+<A NAME="IDX1680"></A>
+True if this is a reference type.
+<DT><CODE>bool internal</CODE>
+<DD>
+<A NAME="IDX1681"></A>
+True if this type information was automatically or internally
+generated.  This typically refers to pointer and reference types which
+were created when the scanner encountered their use in arguments or
+members of other classes that were being scanned.
+<DT><CODE>bool formal</CODE>
+<DD>
+<A NAME="IDX1682"></A>
+True for basic level objects like <CODE>TA_class</CODE> and
+<CODE>TA_template</CODE> which are are formal parents (<CODE>par_formal</CODE>) of
+types that users declare.  These provide a way of determining some basic
+features of the type.  Formal type objects are declared and installed
+automatically by the type scanning system.
+<DT><CODE>bool pre_parsed</CODE>
+<DD>
+<A NAME="IDX1683"></A>
+True if this type was registered as previously parsed by the
+type scanning system (i.e., it encountered an <SAMP>`extern TypeDef
+TA_xxx'</SAMP> for this type, where xxx is the name of the type).  These types
+don't get included in the list of types for this directory.  This
+makes it possible to do type scanning on a complex set of nested
+libraries.
+<DT><CODE>String_PArray inh_opts</CODE>
+<DD>
+<A NAME="IDX1684"></A>
+These are the options (comment directives) that are inherited by this
+type (i.e., those declared with a <CODE>##</CODE> instead of a <CODE>#</CODE>).
+<DT><CODE>String_PArray opts</CODE>
+<DD>
+<A NAME="IDX1685"></A>
+These are all of the options (comment directives) for this type,
+including inherited and non-inherited ones.
+<DT><CODE>String_PArray lists</CODE>
+<DD>
+<A NAME="IDX1686"></A>
+A list of the <CODE>#LIST_xxx</CODE> values declared for this type.
+<DT><CODE>TypeSpace parents</CODE>
+<DD>
+<A NAME="IDX1687"></A>
+A list of parents of this type.  There are multiple parents for
+multiple-inheritance <CODE>class</CODE> types, and for <CODE>internal</CODE> types
+which are the combination of basic types, such as <CODE>unsigned long</CODE>,
+etc.
+<DT><CODE>int_PArray par_off</CODE>
+<DD>
+<A NAME="IDX1688"></A>
+A list of offsets from the start of memory occupied by this
+class where the parent object begins.  These are used for multiply
+inherited class types.  They are in a one-to-one correspondence with the
+<CODE>parents</CODE> entries.
+<DT><CODE>TypeSpace par_formal</CODE>
+<DD>
+<A NAME="IDX1689"></A>
+A list of the formal parents of this type, including
+<CODE>TA_class</CODE>, etc.
+<DT><CODE>TypeSpace par_cache</CODE>
+<DD>
+<A NAME="IDX1690"></A>
+A special cache of frequently-queried type parents.  Currently
+if a type derives from <B>taBase</B>, then <CODE>TA_taBase</CODE> shows up here
+(because a lot of the TypeAccess code checks if something is derived
+from the basic type-aware type <B>taBase</B>).
+<DT><CODE>TypeSpace children</CODE>
+<DD>
+<A NAME="IDX1691"></A>
+A list of all the types that are derived from this one.
+<DT><CODE>void** instance</CODE>
+<DD>
+<A NAME="IDX1692"></A>
+A pointer to a pointer of an instance of this type, if it is
+kept.  The <CODE>GetInstance</CODE> function should be used to get the actual
+instance pointer.
+<DT><CODE>TokenSpace tokens</CODE>
+<DD>
+<A NAME="IDX1693"></A>
+A list of the actual instances or tokens of this type that have
+been created by the user (the <CODE>TAI_xxx</CODE> instance object is not
+registered here).  These are not kept if the type does not record tokens
+(see the <CODE>#NO_TOKENS</CODE> comment directive, section <A HREF="pdp-user_256.html">18.3.1  Object Directives</A>).
+<DT><CODE>taivType* iv</CODE>
+<DD>
+<A NAME="IDX1694"></A>
+A pointer to an object which defines how a token of this type
+appears in a GUI edit dialog.  There is a "bidding" procedure which
+assigns these objects, allowing for the user to add new specialized
+representations which out-bid the standard ones.  This bidding takes
+place when the gui stuff is initialized, and the results are stored
+here.
+<DT><CODE>taivEdit* ive</CODE>
+<DD>
+<A NAME="IDX1695"></A>
+This is like the <CODE>iv</CODE> pointer, except it is the object which is
+used to generate the entire edit dialog for this object.  It also
+is the result of a bidding procedure.
+<DT><CODE>taBase_Group* defaults</CODE>
+<DD>
+<A NAME="IDX1696"></A>
+These are pointers to different <B>TypeDefault</B> objects for this type.
+Each <B>TypeDefault</B> object is for a different scope where these types
+can be created (i.e., a different <B>Project</B> in the PDP++ software).
+<DT><CODE>EnumSpace enum_vals</CODE>
+<DD>
+<A NAME="IDX1697"></A>
+Contains the enum objects contained within a given <CODE>enum</CODE>
+declaration.
+<DT><CODE>TypeSpace sub_types</CODE>
+<DD>
+<A NAME="IDX1698"></A>
+These are the sub-types declared with a <CODE>typedef</CODE>, <CODE>enum</CODE>, or
+as part of a template instantiation within a <CODE>class</CODE> object.
+<DT><CODE>MemberSpace members</CODE>
+<DD>
+<A NAME="IDX1699"></A>
+These are the members of a <CODE>class</CODE> object.
+<DT><CODE>MethodSpace methods</CODE>
+<DD>
+<A NAME="IDX1700"></A>
+These are the methods of a <CODE>class</CODE> object.
+<DT><CODE>TypeSpace templ_pars</CODE>
+<DD>
+<A NAME="IDX1701"></A>
+These are the template parameters for template objects.  In the
+<CODE>template</CODE> itself, they are the formal parameters (i.e., <CODE>T</CODE>),
+but in the template instance they point to the actual types with which
+the template was instantiated.
+</DL>
+
+<P>
+The most important functions on the <B>TypeDef</B> object are as follows:
+
+</P>
+<P>
+<A NAME="IDX1702"></A>
+<DL COMPACT>
+
+<DT><CODE>bool HasOption(const char* op)</CODE>
+<DD>
+<A NAME="IDX1703"></A>
+Checks to see if the given option (comment directive) (don't
+include the <CODE>#</CODE>) is present on this type.
+<DT><CODE>String OptionAfter(const char* op)</CODE>
+<DD>
+<A NAME="IDX1704"></A>
+Returns the portion of the option (comment directive) after the
+given part.  This is used for things like <CODE>#MENU_ON_xxx</CODE> to obtain
+the xxx part.  If option is not present, an empty string is returned.
+<DT><CODE>InheritsFrom(TypeDef* tp)</CODE>
+<DD>
+<A NAME="IDX1705"></A>
+Checks if this type inherits from the given one (versions that take
+a string and a reference to a <B>TypeDef</B> are also defined).
+Inheritance is defined only for classes, not for a pointer to a given
+class, for example.  Thus, both the argument and the type this is called
+on must be non-pointer, non-reference types.
+<DT><CODE>DerivesFrom(TypeDef* tp)</CODE>
+<DD>
+<A NAME="IDX1706"></A>
+Simply checks if the given type appears anywhere in the list of
+parents for this type.  Thus, a pointer to a class derives from that
+class, but it does not inherit from it.
+<DT><CODE>String GetValStr(void* base, void* par=NULL, MemberDef* memb_def=NULL)</CODE>
+<DD>
+<A NAME="IDX1707"></A>
+Uses the type-scanned information to obtain a string representation
+of the value of an instance of this type.  <CODE>base</CODE> is a pointer to
+the start of a token of this type, and <CODE>par</CODE> and <CODE>member_def</CODE>
+can be passed if it is known that this token is in a parent class at a
+particular member def.  This and the following function are used widely,
+including for saving and loading of objects, etc.
+<DT><CODE>SetValStr(const char* val, void* base, void* par=NULL, MemberDef* memb_def=NULL)</CODE>
+<DD>
+<A NAME="IDX1708"></A>
+Takes a string representation of a type instance, and sets the
+value of the token accordingly (it is the inverse of <CODE>GetValStr</CODE>). 
+<DT><CODE>CopyFromSameType(void* trg_base, void* src_base, MemberDef* memb_def=NULL)</CODE>
+<DD>
+<A NAME="IDX1709"></A>
+Uses the type-scanned information to copy from one type instance to
+the next.  Any class objects that are members are copied using that
+object's copy operator if one is defined (this is only known for
+derivatives of the <B>taBase</B> base class).
+<DT><CODE>Dump_Save(ostream&#38; strm, void* base, void* par=NULL, int indent=0)</CODE>
+<DD>
+<A NAME="IDX1710"></A>
+This will save the given type object to a file.  Files are saved in an
+ASCII format, and are capable of saving pointers to other objects when
+these objects derive from the <B>taBase</B> object.  Special code is
+present for dealing with groups of objects stored in the <B>taList</B> or
+<B>taGroup</B> classes.  See section <A HREF="pdp-user_254.html">18.2.5  The Dump-file Format for Saving/Loading</A> for more details.
+<DT><CODE>Dump_Load(istream&#38; strm, void* base, void* par=NULL)</CODE>
+<DD>
+<A NAME="IDX1711"></A>
+This will load a file saved by the <CODE>Dump_Save</CODE> command.
+</DL>
+
+<P>
+The other <B>Def</B> objects are fairly straightforward.  Each includes a
+<CODE>name</CODE> and <CODE>desc</CODE> field, and a list of <CODE>opts</CODE> (comment
+directives) and <CODE>lists</CODE>.  Also, each contains an <CODE>iv</CODE> field
+which represents the item in the GUI edit dialog, and is the result of a
+bidding process (see the <CODE>iv</CODE> field in the <B>TypeDef</B> object
+above).  They all have the <CODE>HasOption</CODE> and <CODE>OptionAfter</CODE>
+functions plus a number of other useful functions (see the
+<TT>`ta/typea.h'</TT> for details).
+
+</P>
+<P>
+<B>MemberDef</B> objects contain the following additional fields. Note that
+derived classes contain links (<EM>not copies</EM>) of the members and
+methods they inherit from their parent, except when the class has
+multiple parents, in which case copies are made for the derived class
+because the offset information will no longer be the same for the
+derived class.
+
+</P>
+<P>
+<A NAME="IDX1712"></A>
+<DL COMPACT>
+
+<DT><CODE>TypeDef* type</CODE>
+<DD>
+<A NAME="IDX1713"></A>
+The type of the member.
+<DT><CODE>ta_memb_ptr off</CODE>
+<DD>
+<A NAME="IDX1714"></A>
+The address or offset of this member relative to the start of
+the memory allocated for the class in which this member was declared.
+<DT><CODE>int base_off</CODE>
+<DD>
+<A NAME="IDX1715"></A>
+The offset to add to the base address (address of the start of
+the class object) to obtain the start of the class this member was
+declared in.  This is for members of parents of multiply-inherited
+derived classes.
+<DT><CODE>bool is_static</CODE>
+<DD>
+<A NAME="IDX1716"></A>
+True if the member was declared <CODE>static</CODE>.  Thus, it can be
+accessed without a <CODE>this</CODE> pointer.  The <CODE>addr</CODE> field contains
+its absolute address.
+<DT><CODE>void* addr</CODE>
+<DD>
+<A NAME="IDX1717"></A>
+The absolute address (not relative to the class object) of a
+static member.
+<DT><CODE>bool fun_ptr</CODE>
+<DD>
+<A NAME="IDX1718"></A>
+True if the member is actually a pointer to a function.
+</DL>
+
+<P>
+The <B>MethodDef</B> object contains the following additional variables:
+
+</P>
+<P>
+<A NAME="IDX1719"></A>
+<DL COMPACT>
+
+<DT><CODE>TypeDef* type</CODE>
+<DD>
+<A NAME="IDX1720"></A>
+The type of the method.
+<DT><CODE>bool is_static</CODE>
+<DD>
+<A NAME="IDX1721"></A>
+True if the method was declared <CODE>static</CODE>.
+<DT><CODE>ta_void_fun addr</CODE>
+<DD>
+<A NAME="IDX1722"></A>
+The address of a <CODE>static</CODE> method.  Non-static methods do
+not have their addresses recorded.  Methods are called via the
+<CODE>stubp</CODE> function, if the <CODE>-css</CODE> option was used during
+scanning.
+<DT><CODE>int fun_overld</CODE>
+<DD>
+<A NAME="IDX1723"></A>
+The number of times this function was overloaded (i.e., a
+function of the same name was declared in the class or its parents).
+TypeAccess does not perform name mangling on functions, so only one
+instance of a given method is recorded.  It is the last one that the
+scanner encounters that is kept.
+<DT><CODE>int fun_argc</CODE>
+<DD>
+<A NAME="IDX1724"></A>
+The number of arguments for this function.
+<DT><CODE>int fun_argd</CODE>
+<DD>
+<A NAME="IDX1725"></A>
+The index where the arguments start having default values.
+Thus, the function can be called with a variable number of arguments
+from <CODE>fun_argd</CODE> to <CODE>fun_argc</CODE>.
+<DT><CODE>TypeSpace arg_types</CODE>
+<DD>
+<A NAME="IDX1726"></A>
+These are the types of the arguments.
+<DT><CODE>String_PArray arg_names</CODE>
+<DD>
+<A NAME="IDX1727"></A>
+These are the names of the arguements (in one-to-one correspondence with
+the types).
+<DT><CODE>css_fun_stub_ptr stubp</CODE>
+<DD>
+<A NAME="IDX1728"></A>
+A pointer to a "stub" function which calls this method using
+<B>cssEl</B> objects as arguments.  This function is defined in the
+<TT>`xxx_TA.cc'</TT> file if the <CODE>-css</CODE> argument is given to
+<TT>`maketa'</TT>.  The <B>cssEl</B> objects have conversion functions for most
+types of arguments, so that the function is called by casting the
+arguments into the types expected by the function.  Pointers to class
+objects are handled by <CODE>cssTA</CODE> objects which have a pointer and a
+corresponding <CODE>TypeDef</CODE> pointer, so they know what kind of object
+they point to, making conversion type-safe.  These stubs return a cssEl
+object.  They also take a <CODE>void*</CODE> for the <CODE>this</CODE> object.
+These stubs are used both by CSS and to call methods from the edit
+dialogs from menus and buttons.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_251.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_253.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

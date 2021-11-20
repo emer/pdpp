@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-prjn</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_116.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_118.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX607" HREF="pdp-user_toc.html">10.3.1  The Projection Class</A></H3>
+<P>
+<A NAME="IDX608"></A>
+
+</P>
+<P>
+The projection object is primarily concerned with specifying
+<EM>where</EM> to receive connections from.  Also, it determines what type
+of connections (and connection groups and connection specs) should be
+created:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>PrjnSource from_type</CODE>
+<DD>
+<A NAME="IDX609"></A>
+Type of the projection source. This can have one of the following values:
+
+<IL>
+<LI>NEXT:
+
+Receive connections from the next layer in network.
+<LI>PREV:
+
+Receive connections from the previous layer in network.
+<LI>SELF:
+
+Receive connections from the same layer this projection is in.
+<LI>CUSTOM:
+
+Receive connections from the layer specified in the projection.
+</IL>
+
+<DT><CODE>Layer* from</CODE>
+<DD>
+<A NAME="IDX610"></A>
+The layer this projection receives from. This is set automatically if
+<CODE>from_type</CODE> is not set to <CODE>CUSTOM</CODE>.
+<DT><CODE>ProjectionSpec_Sptr spec</CODE>
+<DD>
+<A NAME="IDX611"></A>
+Points to the <B>ProjectionSpec</B> which controls the pattern of
+connectivity for this projection.
+<DT><CODE>TypeDef con_type</CODE>
+<DD>
+<A NAME="IDX612"></A>
+The type of <B>Connection</B> to create when making connections.
+<DT><CODE>TypeDef con_gp_type</CODE>
+<DD>
+<A NAME="IDX613"></A>
+The type of connection group to create when making connections.
+<DT><CODE>ConSpec_SPtr con_spec</CODE>
+<DD>
+<A NAME="IDX614"></A>
+The connection specification to use for the connections.
+</DL>
+
+<P>
+The Projection class has a number of member functions, most of which
+have the same function as those defined on the Layer and the Network.
+Refer to section <A HREF="pdp-user_115.html">10.2  Layers and Unit Groups</A> and section <A HREF="pdp-user_113.html">10.1  The Network Object</A> for further details.  The
+following are specific to projections:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Copy_Weights(Projection* src)</CODE>
+<DD>
+<A NAME="IDX615"></A>
+Copies the weights values from an equal sized projection to the weight
+values of the connections on this Projection.
+<DT><CODE>ApplyConSpec()</CODE>
+<DD>
+<A NAME="IDX616"></A>
+Sets the conspec of the all the connections for this projection to the
+projection's <CODE>con_spec</CODE> without rebuilding them.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_116.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_118.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

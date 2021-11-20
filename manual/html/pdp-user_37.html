@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-logs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_36.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_38.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.5  Creating Logs For Viewing Data</A></H3>
+
+<P>
+Before you run the network, you need to create logs of the results of
+training and testing and views that allow you to examine the contents of
+these logs.  We'll create a Log with a <B>GraphLogView</B> to follow the
+<B>SE_Stat</B> over epochs and Log with a <B>GridLogView</B> to follow the
+activations of the output units at test.
+
+</P>
+<P>
+To create the <B>GraphLogView</B>, select <I>.logs</I> / <I>New</I> /
+<I>GraphLog</I>, and hit <I>Ok</I> in the New dialog.  It will automatically
+prompt you for which process you want to update this view, which should
+be <I>Epoch_0</I>.  This will cause the <B>GraphLogView</B> to get information
+from this process about what is being monitored there: the <B>SE_Stat</B>,
+summed across output units and across patterns in the epoch.  By default
+the epoch number will be used at the X axis, so this GraphLogView is now
+ready.
+
+</P>
+<P>
+To create the <B>GridLogView</B>, select <I>.logs</I> / <I>New</I> / <I>GridLog</I>,
+and specify that <I>Trial_1</I> should update this log.  Again, the header
+for the data that are being monitored is automatically retrieved.
+
+</P>
+<P>
+As an advanced example of setting up a grid log, we now describe how you
+may be able to set up a special GridLog associated with your Test process
+(Epoch_1) that displays the weights in your network at the end of each
+test that you run.  This may or may not be something you really need to
+do depending on your goals.  But the example shows some advanced
+features that are useful and powerful, so we go through it to expose you
+to them.
+
+</P>
+<P>
+1a. Create a monitor stat for each projection.  Make sure <I>r.wt</I> is the
+current variable displayed, and that you are in <CODE>Select</CODE> mode
+instead of <CODE>View</CODE> mode. Now select the projection in the netview
+which connects the hidden and output layers. Then click <I>Monitor
+Values</I> / <I>new</I>.  For <I>In Process</I>, select <I>EpochProcess</I> /
+<I>Epoch_1</I>, and for <I>Loop/Final</I> select <I>FINAL</I>, then <I>OK</I>. We
+selected <I>Final</I> here since we want to log the values of the weight at
+the end of each epoch.
+
+</P>
+<P>
+1b. Repeat step 1 selecting the input-&#62;hidden layer projection instead.
+
+</P>
+<P>
+2. Create a new GridLog with <I>.logs</I> / <I>New</I> / <I>GridLog</I>, then
+<I>OK</I> the popup, and select <I>Epoch_1</I> as the updater for this log.
+
+</P>
+<P>
+3. Now comes the interesting part.  We're going to re-arrange this
+display so it displays the weights in a way that better reflects the
+network's structure.  To do this we are going to change the geometry and
+layout of the weight matrices for each projection.  In the GridLog there
+is a "header" at the top associated with each column in the log (the
+sum-squared error, the EpochCounterStat (labeled <I>epoch</I>) and each of
+the two projections you are monitoring, each labeled <I>wt</I>).  We can
+manipulate these headers with the mouse to rearrange their layout.
+
+</P>
+<P>
+3a. Use the middle button (or shift plus left button) to reshape the
+layout.  We first want to reshape the hidden-to-output weights to be 2
+units wide by 4 units tall, so that each row of units will be the
+weights from one of the four output units.  Move the mouse to the right
+hand side of the first <I>wt</I> grid, and middle-click and hold it down
+while dragging upwards and to the left into a shape that is 4 tall and 2
+wide -- it will not let you configure a shape that doesn't hold all 8
+of the weight values, so you need to keep that in mind as you configure.
+It may take a few tries to get this right.
+
+</P>
+<P>
+3b. Next we want to reshape the input-to-hidden weights to be 4 units
+wide by 2 tall, so that gain one row represents the weights for one
+receiving unit.   Do this using the right mouse button.  You can also
+use the left mouse button to move the columns around, and if you want to
+relabel the columns, that can be done by right-mouse-button clicking on
+the headers.
+
+</P>
+<P>
+4. Then, press <I>Run</I> in the test epoch process control panel to see
+the weights!  To verify the weigh values and understand how they
+correspond to those in the NetView, click on <I>r.wt</I> in the NetView,
+(make sure you are in <I>View</I> mode), and select the first hidden unit.
+The weights from the input units should be the same as those in the
+GridLog for the first row of the bottom set of weights.  Similarly, the
+second hidden unit's weights are those in the second row of the bottom
+set of weights.  The next set of weights are best viewed using <I>s.wt</I>
+to look at the <EM>sending</EM> weights from the hidden units to the
+output units.  The sending weights for the first hidden unit are shown
+in the top row of the top set of weights in the GridLog.  Those for the
+second hidden unit are in the second row.  This will all be much clearer
+in a fully trained network!
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_36.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_38.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

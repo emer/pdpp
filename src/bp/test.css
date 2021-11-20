@@ -1,0 +1,3 @@
+{ BpUnitSpec* ths = .projects[0].specs[0];
+  ths->err_fun = "Bp_CrossEnt_Error";
+}

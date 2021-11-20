@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_180.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_182.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX1084" HREF="pdp-user_toc.html">13  Logs and Graphs</A></H1>
+
+<P>
+<A NAME="IDX1085"></A>
+<A NAME="IDX1086"></A>
+<A NAME="IDX1087"></A>
+<A NAME="IDX1088"></A>
+
+</P>
+<P>
+Logs provide a convenient method of recording information from the
+processes. This information can be as simple as the epoch number of
+training or as complicated as a multi-variable statistic. In PDP++
+logs are stored on the Project, and pointed to by a process. Like the
+network, logs may have many views.  Logs are color-coded brown in the
+default color scheme (get it?).
+
+</P>
+<P>
+Processes interface with a log by sending it both header and data
+information. The header information provides the labels for the columns
+of data. Each line of data provides a row of information for each of the
+fields in header line.
+
+</P>
+<P>
+Logs can record data to log files, which contain columns and rows of
+data in text format.  Each line of the log file contains an identifier
+that indicates the name of the process which generated the data (or
+just _H:) if there is only one updating process. At the start of a log
+file, a row of header information is recorded, which identifies the
+data in the columns.  Both of these identifiers can be removed with
+the shell script <TT>`bin/getlogdata'</TT>, which strips them from the
+file, and writes a new file with a <TT>`.logd'</TT> extension.
+
+</P>
+<P>
+Note that the log data file is distinct from the object save file,
+which will save the parameters associated with the log object, but not
+the data in the log itself.  Thus, projects do not save any current
+log data.  It has to be specifically saved in a log file.  Functions
+to save and load log files are found in the <CODE>Logfile</CODE> menu.
+
+</P>
+<P>
+Also, the log object maintains an internal buffer of log data (the size
+of which can be set by editing the log, see next section).  This buffer
+can be directly accessed through the script language to perform various
+data analysis operations.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_182.html">1               PDPLog Variables</A>
+<LI><A HREF="pdp-user_183.html">2               PDPLog Functions</A>
+<LI><A HREF="pdp-user_184.html">3                   Log Views</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_180.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_182.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

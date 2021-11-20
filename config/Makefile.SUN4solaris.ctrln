@@ -1,0 +1,49 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SUN4solaris - cfront (CC) using centerline
+
+# use the CC includes
+IOS_INCLUDES = CLC++
+
+IV = /vobs/dev/iv/installed
+CENTERLINE = $(LOCAL)/CenterLine
+
+IDIRS_EXTRA = -I$(CENTERLINE)/clc++/sparc-solaris2/incl
+
+LDIRS_EXTRA = -R$(CENTERLINE)/sparc-solaris2/lib/a1 -R$(PDPDIR)/lib/$(CPU)
+
+DEFINES =  -DSOLARIS -Dsparc -D__sparc__ -D__sun__ -DNO_SIGNED -DNO_BUILTIN_BOOL
+
+CXX_SHARED = $(CENTERLINE)/bin/CC +a1 -ec "-PIC -w" +V -D__ANSI_CPP__
+CXXL_SHARED = $(CENTERLINE)/bin/CC +a1 -ec "-PIC -w" +V -D__ANSI_CPP__
+CC_SHARED =  acc -PIC -U__GNUG__
+CXX_NONSHARED = $(CENTERLINE)/bin/CC +a1 -ec -w +V -D__ANSI_CPP__
+CXXL_NONSHARED = $(CENTERLINE)/bin/CC +a1 -ec -w +V -D__ANSI_CPP__
+CC_NONSHARED =  acc -U__GNUG__
+
+GENERIC_LIB = -lnsl -lsocket -lintl -lm -ldl
+
+AR_CMD_SHARED = ld -assert pure-text -o 
+LIB_EXT_SHARED = so
+
+# use gnu cccp instead cuz it works!
+#cppC = /usr/local/bin/cccp -lang-c++ -nostdinc++
+cppC = $(CENTERLINE)/clc++/sparc-solaris2/clpp -lang-c++ -D__ANSI_CPP__
+
+# use gnu cc insted of clcc for backend c compiler
+# (this is not actually used by CC!)
+#ccC = /usr/local/bin/gcc -U__GNUG__
+ccC = $(CENTERLINE)/bin/clcc -ansi -w -U__GNUG__ -D__ANSI_CPP__
+
+# not using shared libraries
+
+DEBUG_FLAG = -O
+DEBUG_OPT_FLAG =
+OPT_FLAG = -O
+
+# no vt file
+
+MAKETA_FLAGS_CPU = -old_cfront
+
+TA_CCFLAGS = $(DEBUG_OPT_FLAG) $(TA_CCFLAGS_XX)
+

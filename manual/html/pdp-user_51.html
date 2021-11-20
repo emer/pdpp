@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - gui-object</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_50.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_52.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX115" HREF="pdp-user_toc.html">6.3  The "Object" Menu</A></H2>
+<P>
+<A NAME="IDX116"></A>
+<A NAME="IDX117"></A>
+
+</P>
+<P>
+The "Object" menu always appears as the left most menu in a WinBase's
+menubar.  The "Object" menu for each object is used to perform file
+based actions on the object itself. Many of these actions involve the
+use of a file requester dialog. See section <A HREF="pdp-user_62.html">6.19  File Requester</A>.  These
+actions on the object can also be called through css (e.g., the Print
+action can be called from css as <SAMP>`object.Print()'</SAMP>).  The "Object"
+menu has the following menu actions:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Load</CODE>
+<DD>
+<A NAME="IDX118"></A>
+Load a text object dump of an object of the same class as this object on
+top of this object, replacing the values of fields of this object with
+the values of the saved object's fields. The saved object file is
+selected with the file requester.
+<DT><CODE>Save</CODE>
+<DD>
+<A NAME="IDX119"></A>
+Save a text object dump of this object in a file created with the file
+requester, or with the object's most recently used filename for saving.
+<DT><CODE>SaveAs</CODE>
+<DD>
+<A NAME="IDX120"></A>
+Save a text object dump of this object in a -new- file
+created with the file requester.
+<DT><CODE>Edit</CODE>
+<DD>
+<A NAME="IDX121"></A>
+The Edit menu action brings up an Edit Dialog on the object.
+See section <A HREF="pdp-user_54.html">6.6  The Edit Dialog</A>.
+<DT><CODE>Close</CODE>
+<DD>
+<A NAME="IDX122"></A>
+The Close menu action will attempt to close/delete the object.
+If the object is referenced or pointed to by other objects, then
+it will not actually be deleted, only the windows which display
+it will be removed. The user must confirm the deletion if it
+is possible to safely delete the object. <B>NOTE THAT CLOSE IS NOT
+ICONIFY!, it really does delete the object, not just close the menu.</B>
+<DT><CODE>Copy From</CODE>
+<DD>
+<A NAME="IDX123"></A>
+Copies from another object of the same or related type -- replace all
+of the current data in the object with those in another.  In the menu,
+only the same or subtypes of this object will be shown, but in the
+script, any type of related object can be passed to this function.
+<DT><CODE>Copy To</CODE>
+<DD>
+<A NAME="IDX124"></A>
+Copies the data in this object to another object.  This can be useful
+if you want to copy from a more basic type of object (e.g., Environment)
+to a derived type (e.g., FreqEnv) -- CopyFrom won't show the more basic
+type of object to copy from, but CopyTo will show the derived type.
+<DT><CODE>DuplicateMe</CODE>
+<DD>
+<A NAME="IDX125"></A>
+Makes another copy of this object -- creates a new object and then
+copies from this current object to that new object.  Note this is
+DuplicateMe in the script code.
+<DT><CODE>ChangeMyType</CODE>
+<DD>
+<A NAME="IDX126"></A>
+Changes the type of this object to be another related type (e.g., change
+to a FreqEnv from an Environment).  Will usually do a good job of
+updating the various links to this object if changed.  Not good for
+objects within a network, or generally for Stat objects that are
+aggregated.  This is ChangeMyType in the script code.
+<DT><CODE>SelectForEdit</CODE>
+<DD>
+<A NAME="IDX127"></A>
+Allows you to select a field (member) of this object to be edited in a
+<B>SelectEdit</B> object, which consolidates parameters and functions
+across multiple objects into a single edit dialog
+(see section <A HREF="pdp-user_111.html">9.7  Select Edit Dialogs</A>).
+<DT><CODE>SelectFunForEdit</CODE>
+<DD>
+<A NAME="IDX128"></A>
+Allows you to select a function (method) of this object to be
+accessible from a <B>SelectEdit</B> object, which consolidates parameters
+and functions across multiple objects into a single edit dialog
+(see section <A HREF="pdp-user_111.html">9.7  Select Edit Dialogs</A>).
+<DT><CODE>Help</CODE>
+<DD>
+<A NAME="IDX129"></A>
+Will automatically pull up a help browser for information relevant to
+this object.  Depends on the browser actually running on your system, as
+specified in the Settings on the root object.
+<DT><CODE>Print</CODE>
+<DD>
+<A NAME="IDX130"></A>
+The Print menu action will save a snapshot of the entire object's window
+to a file in Postscript format using a file requester.  Note that this
+printout file uses structured graphics so it will scale well if resized,
+etc.
+<DT><CODE>Print Data</CODE>
+<DD>
+<A NAME="IDX131"></A>
+The Print data menu action will save a snapshot of the window's data,
+not including the menubars and window decoration, to a file in
+Postscript format using a file requester.
+<DT><CODE>Update Menus</CODE>
+<DD>
+<A NAME="IDX132"></A>
+If objects are created or deleted, sometimes the menus of their parent
+objects can become out of date. If this appears to be the case then
+use the "update menus" menu action on the parent object to fix the menus.
+The "update menus" menu action recursively traverses the menus of the
+object and its subobjects, adding and deleting menu items appropriately.
+<DT><CODE>Iconify</CODE>
+<DD>
+<A NAME="IDX133"></A>
+This will iconify the window (shrink down to an iconic representation,
+to get it out of your way).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_50.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_52.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

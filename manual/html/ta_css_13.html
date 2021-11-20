@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - css-c++-diff</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_12.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_14.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A HREF="ta_css_toc.html">5.3.1  Differences Between CSS and C++</A></H3>
+
+<P>
+The primary difference between CSS and C++ is that CSS does not support
+the complex set of rules which determine which of a set of functions
+with the same name should be called given a particular set of arguments.
+Thus, CSS does not allow multiple functions with the same name.  By
+avoiding the function-call resolution problems, CSS is much faster and
+smaller than it otherwise would be.
+
+</P>
+<P>
+One consequence of the lack of name resolution is that only default (no
+argument) constructors can be defined.  This also obviates the need for
+the special parent-constructor calling syntax.
+
+</P>
+<P>
+Also, at the present time, CSS does not support the definition of
+<CODE>operator</CODE> member functions that redefine the operation of the
+various arithmetic operators.  Further, it does not provide access
+control via the <CODE>private</CODE>, <CODE>public</CODE>, and <CODE>protected</CODE>
+keywords, or the <CODE>const</CODE> type control, though these are parsed (and
+ignored).  Thus, it also does not deal with the <CODE>friend</CODE> constructs
+either.  While these language features could be added, they do not make
+a great deal of sense for the interactive script-level programming that
+CSS is designed to handle.
+
+</P>
+<P>
+CSS <EM>does</EM> support multiple inheritance, and the overloading of
+derived member functions.  It does not support the inlining of
+functions, which is a compiler-level optimization anyway.  The keyword
+<CODE>inline</CODE> will be parsed, but ignored.
+
+</P>
+<P>
+Also, note that CSS gives one access to hard-coded classes and types
+(via TypeAccess), in addition to those defined in the script.
+
+</P>
+<P>
+Templates are not supported for script-based classes, but are supported
+in hard-coded classes (via TypeAccess).
+
+</P>
+<P>
+Exception handling is not supported, and probably will not be.
+
+</P>
+<P>
+Since the primary use of CSS is for relatively simple pieces of code
+that glue together more complex hard-coded objects, and not implementing
+large programs, the present limitations of CSS will probably not affect
+most users.
+
+</P>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_12.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_14.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

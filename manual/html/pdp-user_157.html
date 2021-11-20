@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-epoch-dmem</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_156.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_158.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX944" HREF="pdp-user_toc.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A></H4>
+<P>
+<A NAME="IDX945"></A>
+<A NAME="IDX946"></A>
+<A NAME="IDX947"></A>
+<A NAME="IDX948"></A>
+<A NAME="IDX949"></A>
+
+</P>
+<P>
+The EpochProcess supports distributed memory (<EM>dmem</EM>) computation
+by farming out events across different distributed memory processors.
+For example, if you had 4 such processors available, and an
+environment of 16 events, each processor could process 4 of these
+events, resulting in a theoretical speedup of 4x.
+
+</P>
+<P>
+In all dmem cases (see section <A HREF="pdp-user_114.html">10.1.0.1  Distributed Memory Computation in the Network</A> for Network-level dmem) each
+processor maintains its own copy of the entire simulation project, and
+each performs largely the exact same set of functions to remain
+identical throughout the computation process.  Processing only
+diverges at carefully controlled points, and the results of this
+divergent processing are then shared across all processors so they can
+re-synchronize with each other.  Therfore, 99.99% of the code runs
+exactly the same under dmem as it does under a single-process, making
+the code extensions required to support this form of dmem minimal.
+
+</P>
+<P>
+If learning is taking place, the weight changes produced by each of
+these different sets of events must be integrated back together.
+<EM>This is means that weights must be updated in SMALL_BATCH or
+BATCH mode when using dmem.</EM>
+
+</P>
+<P>
+Epoch-wise distributed memory computation can be combined with
+network-wise dmem (see section <A HREF="pdp-user_114.html">10.1.0.1  Distributed Memory Computation in the Network</A>).  The Network level
+<CODE>dmem_nprocs</CODE> parameter determines how many of the available
+processors are allocated to the network.  If there are multiples of
+these numbers of processors left over, they are allocated to the
+Epoch-level dmem computation, up to a maximum specified by the
+EpochProcess <CODE>dmem_nprocs</CODE> (which defaults to 1024, essentially
+saying, take all the remaining processors available).  For example, if
+there were 8 processors available, and each network was allocated 2
+processors, then there would be 4 sets of networks available for dmem
+processing of events.  Groups of two processors representing a
+complete network would work together on a given set of events.
+
+</P>
+<P>
+If <CODE>wt_update</CODE> is set to <CODE>BATCH</CODE>, then weights are
+synchronized across processors at the end of each epoch.  Results
+should be identical to those produced by running on a single-processor
+system under BATCH mode.
+
+</P>
+<P>
+If <CODE>wt_update</CODE> is <CODE>SMALL_BATCH</CODE>, then the <CODE>batch_n</CODE>
+parameter is <EM>divided</EM> by the number of dmem processors at work
+to determine how frequently to share weight changes among processors.
+If <CODE>batch_n</CODE> is an even multiple of the number of dmem processors
+processing events, then results will be identical to those obtained on
+a single processor.  Otherwise, the effective batch_n value will be
+different.  For example, if there are 4 dmem processors, then a value
+of batch_n = 4 means that weights changes are applied after each
+processor processes one event.  However, batch_n = 6 cannot be
+processed in this way: changes will occur as though batch_n = 4.
+Similarly, batch_n = 1 actually means batch_n = 4.  If batch_n = 8,
+then weight changes are applied after every 2 sets of dmem event
+processing steps, etc.
+
+</P>
+<P>
+Note that <CODE>wt_update</CODE> cannot be <CODE>ONLINE</CODE> in dmem mode, and
+will be set to <CODE>SMALL_BATCH</CODE> automatically by default.
+
+</P>
+<P>
+For the <B>SequenceEpoch</B> process in <CODE>SMALL_BATCH</CODE> mode, weight
+updates can occur either at the <CODE>SEQUENCE</CODE> or <CODE>EVENT</CODE> level
+as determined by the <CODE>small_batch</CODE> field setting.  At the
+sequence level, each processor gets a different <EM>sequence</EM> to
+process (instead of a different event), and weight changes are shared
+and applied every <CODE>batch_n</CODE> <EM>sequences</EM> (subject to the same
+principles as for events as just described above, to maintain
+equivalent performance in single and dmem processing modes).  At the
+event level, each processor works on a different event within the
+sequence, and weight changes are applied every batch_n events as in a
+normal epoch process.  In addition, it is guaranteed that things are
+always synchronized and applied at the end of the sequence.
+
+</P>
+<P>
+Note that the event-wise model may not be that sensible under dmem if
+there is any state information carried between events in a sequence
+(e.g., a SRN context layer or any other form of active memory), as is
+often the case when using sequences, because this state information is
+NOT shared between processes within a sequence (it cannot be -- events
+are processed in parallel, not in sequence).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_156.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_158.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

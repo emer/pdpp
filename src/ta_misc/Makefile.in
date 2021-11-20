@@ -1,0 +1,52 @@
+# ta_misc makefile for g++
+
+##################################
+# these are the things to set
+#
+
+# reset opt flags to not do anything for linux, crashes with dynamic linking
+#OPT_FLAGS=
+
+LIBS =  -ltamisc -livgraphic -lcss -ltypea -livmisc -lreadline -ltermcap -ltastring\
+	$(IV_LIB) -lX11 $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+PROJNAME = ta_misc
+PROJDIR  = ta_misc
+
+EXE = test
+
+LIB = libtamisc.$(LIB_EXT)
+
+FLAGS =
+MAKETA_FLAGS = -hx -css -instances $(FLAGS)
+
+TAHEADS = $(VPATH)/win_base.h $(VPATH)/win_base_tmplt.h $(VPATH)/minmax.h \
+	$(VPATH)/random.h $(VPATH)/tdgeometry.h $(VPATH)/aggregate.h\
+	$(VPATH)/colorscale.h $(VPATH)/array_iv.h $(VPATH)/fontspec.h \
+	$(VPATH)/datatable.h $(VPATH)/datatable_tmplt.h $(VPATH)/datatable_iv.h \
+	$(VPATH)/ta_file.h $(VPATH)/script_base.h \
+	$(VPATH)/fun_lookup.h
+
+HEADS = win_base.h win_base_tmplt.h minmax.h aggregate.h fontspec.h \
+	random.h tdgeometry.h colorscale.h colorbar.h array_iv.h\
+	datatable.h datatable_tmplt.h ta_file.h script_base.h fun_lookup.h\
+	axis.h picker.bm picker_mask.bm datagraph.h datatable_iv.h\
+	$(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS =  win_base.cc minmax.cc random.cc tdgeometry.cc aggregate.cc fontspec.cc \
+	colorscale.cc colorbar.cc datatable.cc datagraph.cc array_iv.cc\
+	datatable_iv.cc	axis.cc ta_file.cc script_base.cc fun_lookup.cc test.cc\
+	 $(PROJNAME)_TA.cc
+
+OBJS =  win_base.o minmax.o random.o tdgeometry.o aggregate.o fontspec.o\
+	colorscale.o colorbar.o datatable.o datagraph.o array_iv.o fun_lookup.o\
+	datatable_iv.o axis.o ta_file.o script_base.o $(PROJNAME)_TA.o
+EXEOBJS = test.o
+
+DEPS = 	win_base.d minmax.d random.d tdgeometry.d aggregate.d fontspec.d \
+	colorscale.d colorbar.d	datatable.d datagraph.d array_iv.d fun_lookup.d\
+	axis.d ta_file.d script_base.d datatable_iv.d test.d $(PROJNAME)_TA.d
+
+default: optLib
+#default: dbgBin
+#default: dbgLib

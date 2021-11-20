@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-scripts</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_11.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_13.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX22" HREF="pdp-user_toc.html">3.4  Scripts: General Extensibility</A></H2>
+<P>
+<A NAME="IDX23"></A>
+<A NAME="IDX24"></A>
+<A NAME="IDX25"></A>
+<A NAME="IDX26"></A>
+
+</P>
+<P>
+It is impossible to anticipate all of the things that a user might want
+to do in running and controlling a simulation.  For this reason, we have
+built a powerful script language into the PDP++ software.  This script
+language, called CSS for C-Super-Script or C^C, is essentially a C/C++
+interpreter, and thus does not require the user to learn any new syntax
+apart from that which would be required to program additions to the
+software itself.  This shared syntax means that code developed initially
+in the script language can be compiled into the software later for
+faster performance, without requiring significant modifications.
+
+</P>
+<P>
+CSS scripts are used in several places throughout the software.  They
+have been added to some of the basic objects to enable their function to
+be defined and extended at run time.  Examples of these include a
+<B>ScriptEnv</B>, which allows an <B>Environment</B> to be defined dynamically
+and have events that are generated on the fly, potentially in response
+to the output of the network itself (see section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>).  The
+<B>ScriptPrjnSpec</B> allows arbitrary patterns of connectivity to be
+defined (see section <A HREF="pdp-user_124.html">10.3.3.5  Miscellaneous other Projection Types</A>).  The <B>ScriptStat</B> allows arbitrary
+statistics to be computed and recorded in the data logs during training
+and testing (see section <A HREF="pdp-user_179.html">12.8.8  Miscellaneous Other Stat Types</A>).
+
+</P>
+<P>
+In addition to these targeted uses, scripts can be used to perform
+miscellaneous tasks or repetitive functions at any level of the
+software.  It is possible to attach a set of scripts to a given process,
+run them automatically when the process starts up, and even record
+actions performed in the user interface as script code that can be
+replayed later, edited for other uses, etc.  For more information on
+these objects, see section <A HREF="pdp-user_110.html">9.6  Project Scripts</A>.
+
+</P>
+<P>
+Finally, the script language provides a means for interacting with a
+simulation when the graphical interface cannot be used, such as over
+dial-up lines when working from home, etc.  Anything that can be done in
+the GUI can be done in the script language, although it is not quite as
+easy.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_11.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_13.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

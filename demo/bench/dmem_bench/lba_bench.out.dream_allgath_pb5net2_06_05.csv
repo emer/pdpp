@@ -1,0 +1,4 @@
+procs, 10, units, 50, cons, 12500, MCons, 1500, Mcon/sec,    465.8, secs, 3.22
+procs, 10, units, 100, cons, 50000, MCons, 1500, Mcon/sec,    652.2, secs, 2.3
+procs, 10, units, 200, cons, 200000, MCons, 1440, Mcon/sec,    770.1, secs, 1.87
+procs, 10, units, 500, cons, 1.25e+06, MCons, 1500, Mcon/sec,    769.2, secs, 1.95

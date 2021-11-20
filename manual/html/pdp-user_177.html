@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-rt</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_176.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_178.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1072" HREF="pdp-user_toc.html">12.8.6  Reaction-time Based on Crossing an Activation Threshold</A></H3>
+
+<P>
+<A NAME="IDX1073"></A>
+<A NAME="IDX1074"></A>
+The <B>ActThreshRTStat</B> records a reaction time (RT) from the network
+based on when activation levels in given layer (typically the output
+layer) exceed threshold. Experience in a variety of cases has shown
+that human reaction times can be best modeled by recording the number
+of processing cycles it takes for a response/output layer unit to
+exceed some kind of activity threshold.  In contrast, recording RT
+based on the change in activation over time going below a threshold
+(in <TT>`cs++'</TT> this is <B>CsMaxDa</B>; in <TT>`leabra++'</TT> it is
+<B>LeabraMaxDa</B>) is typically not such a good measure of human
+reaction time.
+
+</P>
+<P>
+This stat should typically be created in the <CODE>loop_stats</CODE> of the
+<B>SettleProcess</B>.  To configure this stat, just set the <CODE>layer</CODE>
+pointer to point to the response/output layer in the network, and set
+the <CODE>act_thresh</CODE> to the activation threshold.  Two values are
+recorded in this stat:
+
+</P>
+<P>
+<CODE>max_act</CODE> records the maximum activation in the response layer,
+and setting a stopcrit on this will actually result in stopping
+settling upon reaching threshold (note that the val of this stopcrit
+is automatically set to be the same as the <CODE>act_thresh</CODE> value,
+but the stopcrit flag is not active by default, so that it will not
+stop processing).
+
+</P>
+<P>
+<CODE>rt_cycles</CODE> records the number of settling cycles at the point
+when the maximum activation in the layer exceeded the <CODE>max_act</CODE>
+threshold (regardless of whether the settle process actually
+stopped at this point). 
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_176.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_178.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,18 @@
+demo/bp_misc:
+	
+	bp_softmax.proj.gz		demo of a network using SoftMax output
+					units, in a simple categorization net.
+
+	gen_rnd_prototypes.css		CSS script that calls the Generate
+					functions in the environment to produce
+					random exemplars of random prototypes.
+					These patterns are used in bp_softmax.projg.z
+
+	bp_dig_xval.proj.gz		demo of cross-validation setup in bp
+					using handwritten digits.
+
+	bp_ft_dbd.proj.gz		demo of delta-bar-delta (dbd) in bp using
+					the Hinton (1986) family trees problem.
+
+	*.distmat			distance matrix files produced by
+					gen_rnd_prototypes.css

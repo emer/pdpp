@@ -1,0 +1,79 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# IBMaix - xlC
+
+# use opt malloc (otherwise get mysterious bug)
+GENERIC_LIB = -lm -lC
+
+# use the CC includes
+IOS_INCLUDES = xlC
+
+#include CC iostream stuff
+IDIRS_EXTRA = -I/usr/lpp/xlC/include -I/
+
+DEFINES = -DAIXV4 -Dibm -DNO_BUILTIN_BOOL -DNO_SIGNED
+
+# maybe put -bnso on nonshared, but this did not work on tests
+#  and resulted in many unresolved symbols
+
+CC_NONSHARED = xlC -+ 
+CXX_NONSHARED = xlC
+CC_SHARED = xlC -+
+CXX_SHARED = xlC
+
+LIB_EXT_SHARED = a
+
+# make non shared libs on first pass
+
+AR_PRE_CMD_SHARED = $(AR_PRE_CMD_NONSHARED)
+AR_CMD_SHARED = $(AR_CMD_NONSHARED)
+RANLIB_CMD_SHARED = $(RANLIB_CMD_NONSHARED)
+
+#AR_PRE_CMD_SHARED = makeC++SharedLib -o libshared.o -p 0 
+#AR_CMD_SHARED = ar rc $@ libshared.o ; echo 
+#RANLIB_CMD_SHARED = $(RM) libshared.o ; echo
+
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+# shared libs aren't quite working yet
+# LIB_PASS2_CMD = makeC++SharedLib -o libshared.o $(LDIRS) $(EXTERNAL_LIBS) -p 0 $(OBJS) ; $(RM) $(LIB); $(AR_CMD) $(LIB) libshared.o; $(RM) libshared.o; $(CP) $(LIB) lib_include
+
+# from the xlC man page
+#  -Q        (C++) Requests inlining of inline routines.
+#              except it also says not to use it for c++!!
+#  -qlanglvl=extended (allows trailing commas in enums, among other things)
+#             this also does not work for c+!!
+MACH_FLAGS = 
+
+# from the xlC man page
+#           hd          Generate additional information for use with the
+#                       HeapView Debugger
+#          info        Produce more warning and information messages for
+
+# DEBUG_FLAG = -g -qhd -qinfo
+DEBUG_FLAG = -g -qhd
+DEBUG_OPT_FLAG = 
+
+#          strict      Valid only at -O3.  This option turns off aggresive
+#                      optimizations which have the potential to alter the
+#                      semantics of a user's program. This option also sets
+#                      -qfloat=nofltint:norsqrt.
+
+OPT_FLAG = -O2 -qarch=pwr2 -qfloat=hsflt
+
+# xlc does vt stuff automatically
+
+# vt file needed for virtual table stuff: not needed
+
+# not using TI
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+# since AIX make creates .u files
+MAKEDEP_TMP_FILE = /dev/null
+
+# AIX complians about files being in use
+CP = /bin/cp -f

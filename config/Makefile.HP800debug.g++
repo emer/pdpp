@@ -1,0 +1,21 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# HP800debug - g++
+
+# this is pretty sparse because Makefile.defs is set up for g++
+
+IOS_INCLUDES = g++-2.8.1
+
+#include x libs
+LDIRS_EXTRA = -L/usr/lib/X11R5
+
+# doesn't need ranlib
+RANLIB = ls
+
+# use debug version of IV
+
+IV_LIB = -lIVg++debug
+
+DEBUG_FLAG = -g
+DEBUG_OPT_FLAG = 
+OPT_FLAG = -g

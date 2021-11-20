@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-grid</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_193.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_195.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1181" HREF="pdp-user_toc.html">13.3.5  The Grid LogView</A></H3>
+<P>
+<A NAME="IDX1182"></A>
+<A NAME="IDX1183"></A>
+
+</P>
+<IMG SRC="pics/xor.gridlogview.gif" ALIGN="MIDDLE" ALT="The GridLogView">
+<P>
+<B> Figure: </B> The GridLogView
+<P>
+
+<P>
+The GridLogView is similar to the TextLogView in that it displays from
+top to bottom sequential lines of Log data. It differs however in that
+the values of the data can be displayed as colored blocks similar to the
+units in the NetView as well as the text output style of the
+TextLogView.  
+
+</P>
+<P>
+In addition, the columns of Log data can be arranged in a custom fashion
+in a 2-D grid for each "line" of data. This is useful especially for
+MonitorStats which generate a separate column of data for each value
+recorded from the NetView.  For Example: If a MonitorStat was monitoring
+the activations a 5x5 layer it would generate 25 columns of data. In the
+GridLogView these 25 columns could be arranged as in a 5x5 grid in the
+same layout as the units in the monitored Layer.  Indeed, a monitored
+layer automatically sets its geometry to be used for the default
+configuration of the GridLogView.
+
+</P>
+<P>
+The header label information in the GridLogView is also different in
+that is is arranged in the same grid layout as the data and its field
+header name labels are selectable and manipulable with the mouse.  This
+allows complete interactive configuration of the GridLogView display, as
+follows:
+
+</P>
+<DL COMPACT>
+
+<DT><B>Move with left-mouse-button (LMB)</B>
+<DD>
+Clicking and dragging on a header item will move it, in unit-level
+chunks, and will then update the display of all the corresponding data
+for that column.  Items can be moved anywhere, and overlap is not a
+problem (previous versions would crash upon overlap).
+<DT><B>Reshape with Shift-LMB or middle-mouse-button</B>
+<DD>
+For items that are displayed in the header with a grid of boxes (e.g.,
+monitored values), you can reshape the grid.  The grid will not shrink
+below the number of elements to be displayed, so keep that in mind as
+you reshape it.
+<DT><B>Edit with right-mouse-button (RMB)</B>
+<DD>
+Clicking with the right mouse button will pull up the GridLogViewSpec
+for that item for more detailed configuration
+(see section <A HREF="pdp-user_196.html">13.3.5.2  Customizing the GridLogView Display</A>). 
+</DL>
+
+<P>
+Resizing the GridLogView window changes the number of visible data
+lines, always in such a way as to keep the grids roughly square.  So, if
+you want to have more items in the display, this can also be achieved by
+making the window narrower!
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_195.html">1      The GridLogView object</A>
+<LI><A HREF="pdp-user_196.html">2       Customizing the GridLogView Display</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_193.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_195.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

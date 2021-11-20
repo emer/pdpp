@@ -1,0 +1,107 @@
+This file contains some useful instructions for using PDP++ under the
+Microsoft Windows operating system.
+
+--------------------------------------
+"Features" of the Graphical Interface:
+--------------------------------------
+
+The interface for the simulator has a few peculiarities:
+
+- To start editing in an edit field, you need to have the mouse over
+  that field.  Once you begin editing, the mouse only needs to be in
+  the window, but not necessarily over the field.
+
+- Use Ctrl-u to select the entire field, and subsequent typing will
+  replace previous contents.
+
+- Menus will stay put if you move their parent window while one is
+  open.
+
+- To view weights in the network, you must have the View button
+  selected in the network window -- this button is normally selected
+  automatically when you select a weight variable (e.g., r.wt), but if
+  the weight variable is already selected, then you must hit the View
+  button yourself.
+
+- Occasionaly, the PDP++Root window (or other graphical windows) may
+  become unresponsive to the mouse.  This can be fixed by simply
+  hitting Enter while in the console window.
+
+------------------------
+Configuring the Taskbar:
+------------------------
+
+Because the simulator uses many windows, the windows taskbar often
+does not adequetly display the names of the windows.  This can be
+remediated by dragging the top of the bar up, allowing more room for
+each icon.  Here is another approach:
+
+Grab the taskbar, drag it to the right edge of the screen, drag the
+left edge to widen it, and then set it to auto hide (right click on
+the taskbar, and select Properties to expose this option, or go to the
+Start menu/Settings/Taskbar).  When all this has been done, the window
+list can be exposed by bringing the pointer to the right edge of the
+screen.
+
+--------------
+Customization:
+--------------
+
+Some of the general configuration options documented in the PDP++
+manual are based on XResources, and need to be configured under
+windows by creating an "application defaults" file that is formatted
+much like the XResources.  There are two steps for creating this
+application defaults file:
+
+1. Edit C:\WINDOWS\WIN.INI, and add the following two lines:
+
+[InterViews]
+location = C:\PDP++
+
+Where the location should be the actual location where you installed
+the software.
+
+2. Create a sub-directory under C:\PDP++ (again, use the actual
+location) called "app-defaults", and then create a file called
+"InterViews" in that directory.  This file should contain resource
+values you want to set.  For example, to change the amount of time to
+detect a double-click, you would enter:
+
+*clickDelay: 400
+
+---------------------
+Memory Configuration:
+---------------------
+
+The PDP++ executables are compiled using an environment called cygwin
+developed by Cygnus Solutions (now owned by Red Hat Software).  The
+default cygwin configuration has an upper limit of 128MB, which should
+work for most simulations.  However, you might want to increase this
+limit if you are exploring larger simulations.
+
+Open regedit (or regedt32) and find the key
+HKEY_CURRENT_USER\Software\Cygnus Solutions\Cygwin\
+
+If this does not exist, you must create a new Key called 
+Cygnus Solutions, and then another within it called Cygwin.
+
+Then, create a new DWORD value under this key called
+"heap_chunk_in_mb" that contains the maximum amount of memory (in Mb)
+your application needs (watch the hex/decimal toggle -- you'll
+probably want to set it to decimal).  For example if you wanted to set
+the memory limit to 256Mb, just enter 256.  Exit and restart all
+cygwin applications (e.g., pdp++).
+
+--------------
+Misc Comments: 
+--------------
+
+- The simulator consumes a lot of memory when running large
+  simulations,  and this may not be handled gracefully under windows
+  -- it is advisable not to run additional programs unless you have
+  lots of extra RAM in the computer.
+
+- Loading large simulations may take some time and the computer may
+  appear to be "dead" during this time (e.g., the pointer might
+  freeze) -- just be patient and wait for it to complete the loading
+  task.

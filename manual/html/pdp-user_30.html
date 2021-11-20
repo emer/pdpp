@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-changing</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_29.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_31.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.10  Changing Things</A></H3>
+
+<P>
+Our network has succeeded in learning XOR, but none too quickly.  The
+question arises, can backpropagation do a better job?  The first thing
+that might occur to you to try is increasing the learning rate, so
+let's try that.
+
+</P>
+<P>
+Before you can change the learning rate, you must understand how such
+variables are handled in the simulator.  The simulator is set up so that
+it is possible to have different learning rates for different weights.
+This would, for example, allow us to have one learning rate for the
+weights from the input layer to the hidden layer, and a different
+learning rate for the weights from the hidden layer to the output layer.
+To allow this, parameters such as the learning rate are stored in
+structures called <EM>specifications</EM> or <B>Spec</B>s.  Each bias weight
+and each group of receiving weights (i.e., all the weights coming to a
+particular unit from a particular layer) has associated with it a
+pointer to a specification, and parameters such as the learning rate are
+read from the specification when they are used.  Our network has been
+set up so that all of the weights and biases share the same
+specification.  This specification is called a connection specification
+or <B>ConSpec</B>, and since it is the one we are using in this XOR network
+we have called it "XORConSpec".
+
+</P>
+<P>
+One can look at this specification by selecting in the <B>Project</B>
+window <I>.specs</I> / <I>Edit</I> / <I>XORConSpec</I>.  When this pops up we can
+see that there are actually several variables associated with this Spec,
+including <CODE>lrate</CODE>, <CODE>momentum</CODE>, and <CODE>decay</CODE>.  We can
+change any one of these, but for now click in the <CODE>lrate</CODE> field and
+change the value to, say, 1.0.  Then click <I>Apply</I> or <I>Ok</I> (which
+applies and closes the pop-up).
+
+</P>
+<P>
+To see what happens with this higher learning rate, go ahead and <I>Re
+Init</I> on the Train Control panel as before.  Before you hit <I>Run</I> you
+may wish to <I>Clear</I> the <B>GraphLogView</B>.
+
+</P>
+<P>
+One can modify the learning process in other ways. For example, one can
+change the <CODE>momentum</CODE> parameter, or introduce <CODE>decay</CODE>.  These
+parameters are also associated with the <B>ConSpec</B> and can be
+modified in the same way as the <CODE>lrate</CODE>.  For more information
+about these parameters, see section <A HREF="pdp-user_200.html">14.1.2  Bp Connection Specifications</A>.
+
+</P>
+<P>
+Another parameter of the Backpropagation model is the range of values
+allowed when initializing the connection weights.  This is controlled by
+the <CODE>var</CODE> parameter of the <CODE>rnd</CODE> field of the <B>ConSpec</B>.
+The default value of 0.5 can be increased to larger values, such as 1.0,
+thereby giving a larger range of variation in the initial values of the
+weights (and biases).
+
+</P>
+<P>
+One can also modify the learning process by selecting different options
+in the <B>EpochProcess</B>.  For example, as initially configured, the XOR
+problem is run using <CODE>SEQUENTIAL</CODE> order of pattern presentation,
+and the mode of weight updating is <CODE>BATCH</CODE>.  <CODE>SEQUENTIAL</CODE>
+order simply means that the patterns are presented in the order listed
+in the environment.  The other two options are <CODE>PERMUTED</CODE> (each
+pattern presented once per epoch, but the order is randomly rearranged)
+and <CODE>RANDOM</CODE> (on each trial one of the patterns is selected at
+random from the set of patterns, so that patterns only occur once per
+epoch on the average).
+
+</P>
+<P>
+The options for weight updating are <CODE>BATCH</CODE>, which means that the
+weights are updated at the end of the epoch; <CODE>ON LINE</CODE>, which means
+that the weights are updated after the presentation of each pattern,
+<CODE>SMALL BATCH</CODE>, which means that the weights are updated after every
+<CODE>batch_n</CODE> patterns, and <CODE>TEST</CODE>, which means that the weights
+are not updated at all.
+
+</P>
+<P>
+These characteristics of the processing are managed by the "Epoch_0"
+process that is subordinate to the "Train_0" process---
+and so to change them select <I>.processes</I> / <I>Edit</I> /
+<I>Epoch_0</I> from the <B>Project</B> window menu bar.  The dialog that
+pops up indicates the current values of these options (sequential and
+batch) next to their labels (<CODE>order</CODE> and <CODE>wt update</CODE>).  Click
+on the current value of the option and the alternatives will be
+displayed; then select the one you want, and click <I>Apply</I> or <I>Ok</I>
+when done.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_29.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_31.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

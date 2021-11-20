@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-seq</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_211.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_213.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1301" HREF="pdp-user_toc.html">14.2.5  RBp Sequence Processes and TimeEvents</A></H3>
+<P>
+<A NAME="IDX1302"></A>
+<A NAME="IDX1303"></A>
+<A NAME="IDX1304"></A>
+<A NAME="IDX1305"></A>
+
+</P>
+<P>
+The <B>RBpSequence</B> process is a special <B>SequenceProcess</B> that knows
+how to appropriately treat sequences of events that have time values
+associated with them.  The classes <B>TimeEnvironment,
+TimeEvent_MGroup</B>, and <B>TimeEvent</B> together define an environment
+which consists of sequences (groups) of events where each event is
+specified to occur at a particular time.  Furthermore, the environment
+defines certain simple forms of interpolation, which allows trajectories
+to be formed by specifying crucial points on the trajectory, but not
+everything in between.  Also, the <B>RBpSequence</B> process uses the
+<CODE>end_time</CODE> of the <B>TimeEvent_MGroup</B> to set the <CODE>time_window</CODE>
+of the trial process, so that exactly one backprop phase will happen per
+sequence.
+
+</P>
+<P>
+If a <B>TimeEnvironment</B> is not being used, a <B>RBpSequence</B> will
+simply run the sequence of events in each event group, one by one,
+through the trial process.  This would make each event in the sequence
+appear at tick-wise intervals (i.e., every <CODE>dt</CODE>).  In contrast, the
+<B>TimeEnvironment</B> based events have the benefit of making the
+environment invariant with respect to changes in <CODE>dt</CODE>, which can be
+very useful when <CODE>dt</CODE> is changed during training, etc.
+
+</P>
+<P>
+A <B>TimeEnvironment</B>, aside from setting the default types of events
+and event groups to also be time-based ones, has a default interpolation
+parameter:
+
+</P>
+<P>
+<A NAME="IDX1306"></A>
+<DL COMPACT>
+
+<DT><CODE>Interpolate interpolate</CODE>
+<DD>
+<A NAME="IDX1307"></A>
+The following forms of interpolation are defined:
+<DL COMPACT>
+
+<DT><CODE>PUNCTATE</CODE>
+<DD>
+Each event appears for the single slice of time that it has
+specified.
+
+<DT><CODE>CONSTANT</CODE>
+<DD>
+Events persist with the same activations from the time on the event
+until the next event comes along.
+
+<DT><CODE>LINEAR</CODE>
+<DD>
+Performs linear interpolation from one event to the next.
+</DL>
+</DL>
+
+<P>
+As with all sequence-based environments (see section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>), a sequence of
+events is defined by putting all the events in a subgroup.
+<B>TimeEvent</B>s should be put in subgroups of type <B>TimeEvent_MGroup</B>,
+which is where the specific form of interpolation to be used for this
+particular sequence, and the total duration of the sequence, are
+specified:
+
+</P>
+<P>
+<A NAME="IDX1308"></A>
+<DL COMPACT>
+
+<DT><CODE>Interpolate interpolate</CODE>
+<DD>
+<A NAME="IDX1309"></A>
+This is just like the interpolation variable on the environment, except
+it includes the <CODE>USE_ENVIRO</CODE> option, which uses whatever is set on
+the environment object.  Thus, one can have different sequences use
+different kinds of interpolation, or they can defer to the environment.
+<DT><CODE>float end_time</CODE>
+<DD>
+<A NAME="IDX1310"></A>
+The total duration of the sequence.  It is automatically set to
+be as long as the latest event in the group, but you can set it to be
+longer to cause a <CODE>CONSTANT</CODE> interpolation to hold onto the event
+until <CODE>end_time</CODE> has been reached.
+</DL>
+
+<P>
+<A NAME="IDX1311"></A>
+<A NAME="IDX1312"></A>
+The time event object is just like a regular event except that it adds a
+time field, which specifies when this event is to first be presented to
+the network.  How long it is presented depends on the interpolation
+scheme and how soon another event follows it.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_211.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_213.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,23 @@
+extern RndSeed* seed;
+
+void Main() {
+
+  if(seed==0) {
+    seed = new RndSeed;
+  }
+
+  NEpochProcess* nep = *(owner.owner);
+  MultiEnvProcess* mep = nep.FindSuperProc(MultiEnvProcess);
+
+  if(mep.env.val==0) {
+    seed.NewSeed();
+  }
+
+  seed.OldSeed();
+
+  .networks[0].InitWtState(); 
+  .scripts[4].Run(); // moves weights from slot net to real net
+}
+
+Main();
+

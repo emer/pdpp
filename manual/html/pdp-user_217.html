@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_216.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_218.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX1327" HREF="pdp-user_toc.html">15  Constraint Satisfaction</A></H1>
+
+<P>
+<A NAME="IDX1328"></A>
+<A NAME="IDX1329"></A>
+<A NAME="IDX1330"></A>
+<A NAME="IDX1331"></A>
+<A NAME="IDX1332"></A>
+<A NAME="IDX1333"></A>
+<A NAME="IDX1334"></A>
+
+</P>
+<P>
+Constraint satisfaction is an emergent computational property of neural
+networks that have recurrent connectivity, where activation states are
+mutually influenced by each other, and settling over time leads to
+states that satisfy the constraints built into the weights of the
+network, and those that impinge through external inputs.
+
+</P>
+<P>
+Constraint satisfaction can solve complicated computational problems
+where the interdependencies among different possible solutions and
+high-dimensional state spaces make searching or other techniques
+computationally intractable.  The extent to which a network is
+satisfying its constraints can be measured by a global energy or
+"goodness" function.  Proofs regarding the stability of equilibrium
+states of these networks and derivations of learning rules have been
+made based on these energy functions.
+
+</P>
+<P>
+In the PDP++ software, a collection of constraint satisfaction style
+algorithms have been implemented under a common framework.  These
+algorithms include the binary and continuous Hopfield style networks
+<CITE>Hopfield, 1982, 1984</CITE>, the closely related Boltzmann Machine
+networks <CITE>Ackley, Hinton and Sejnowski, 1985</CITE>, the interactive
+activation and competition (IAC) algorithm <CITE>McClelland and
+Rumelhart, 1981</CITE>, and GRAIN networks <CITE>Movellan and McClelland,
+1994</CITE>.
+
+</P>
+<P>
+In addition to recurrent activation propagation and settling over time,
+these algorithms feature the important role that noise can play in
+avoiding sub-optimal activation states.  The work with the GRAIN
+algorithm extends the role of noise by showing that the network can
+learn to settle into different distributions of activation states in a
+probabilistic manner.  Thus, one can teach a network to go to one state
+roughly 70 percent of the time, and another state roughly 30 percent of
+the time.  These distributions of possible target states can be
+specified by using a probability environment, which is described in a
+subsequent section.
+
+</P>
+<P>
+Also, learning takes place in these networks through a more local form
+of learning rule than error backpropagation.  This learning rule,
+developed for the Boltzmann machine, has been shown to work in a wide
+variety of activation frameworks, including deterministic networks.
+This rule can be described as a "contrastive Hebbian learning" (CHL)
+function, since it involves the subtraction of two simple Hebbian terms
+computed when the network is in two different "phases" of settling.
+
+</P>
+<P>
+The two phases of settling required for learning are known as the
+<I>minus</I> (negative) and <I>plus</I> (positive) phase.  The minus phase is
+the state of the network when only inputs are presented to the network.
+The plus phase is the state of the network when both inputs and desired
+outputs are presented.  The CHL function states that the weights should
+be updated in proportion to the difference of the coproduct of the
+activations in the plus and minus phases:
+
+</P>
+<PRE>  cn-&#62;dwt = lrate * (ru-&#62;act_p * su-&#62;act_p - ru-&#62;act_m * su-&#62;act_m)
+</PRE>
+
+<P>
+where <CODE>ru</CODE> is the receiving unit and <CODE>su</CODE> is the sending unit
+across the connection <CODE>cn</CODE>, and <CODE>act_m</CODE> is the activation in
+the minus phase, and <CODE>act_p</CODE> is the activation in the plus phase.
+
+</P>
+<P>
+It turns out that in order to learn distributions of activation states,
+one needs to collect many samples of activation states in a stochastic
+network, and update the weights with the expected values of the
+coproducts of the activations, but the general idea is the same.  This
+learning rule can be shown to be minimizing the cross-entropy between
+the distributions of the activations in the minus and plus phases, which
+is the basis of the Boltzmann machine derivation of the learning rule.
+
+</P>
+<P>
+The PDP++ implementation allows you to perform learning in both the
+stochastic mode, and with deterministic networks using the same basic
+code.  Also, there is support for <I>annealing</I> and <I>sharpening</I>
+schedules, which adapt the noise and gain parameters (respectively) over
+the settling trajectory.  Using these schedules can result in better
+avoidance of sub-optimal activation states.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_218.html">1                     Overview of the Cs Implementation</A>
+<LI><A HREF="pdp-user_219.html">2                      Cs Connection Specifications</A>
+<LI><A HREF="pdp-user_220.html">3                     Cs Unit Specifications</A>
+<LI><A HREF="pdp-user_221.html">4                     Cs Processes</A>
+<LI><A HREF="pdp-user_222.html">5                    Cs Statistics</A>
+<LI><A HREF="pdp-user_226.html">6                     Cs Defaults</A>
+<LI><A HREF="pdp-user_227.html">7                 The Probability Environment and Cs</A>
+<LI><A HREF="pdp-user_228.html">8                     Cs Implementation Details</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_216.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_218.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

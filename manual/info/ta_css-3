@@ -1,0 +1,1216 @@
+This is ta_css, produced by makeinfo version 4.1 from ta_css.texi.
+
+
+File: ta_css,  Node: css-commands,  Next: css-functions,  Prev: css-types,  Up: css-ref
+
+CSS Commands
+------------
+
+   The following are the commands available in CSS.  Commands are a
+little bit "special" in that they are typically executed immediately,
+they can be called with arguments without using the parentheses
+required in normal C functions (though they can be used if desired),
+and they do not need to be terminated with a semicolon (note that
+this also means that commands cannot extend across more than one
+line).  Also, they do not generate return values.  In general,
+commands provide debugging and program management (loading, listing,
+etc) kinds of facilities.
+
+`alias <cmd> <new_nm>'
+     Gives a new name to an existing command.  This is useful for
+     defining shortcuts (e.g., `alias list ls'), but does not allow
+     more complex functionality.  For that, either define a new
+     function, or use a pre-processor `#define' macro.
+
+`chsh <script_path>'
+     Switches the CSS interface to access the CSS script object
+     pointed to by the given path.  This is for hard-coded objects
+     that have CSS script objects in them (of type `cssProgSpace').
+
+`clearall'
+     Clears out everything from the current program space.  This is
+     like restarting the CSS shell, compared to `reset' which does
+     not remove any variables defined at the top-level.
+
+`commands'
+     Shows a list of the currently available commands (including any
+     aliases that have been defined, which will appear at the end of
+     the list).
+
+`constants'
+     Shows a list of the pre-defined constants that have been defined
+     in CSS.  These are just like globally-defined `Int' and `Real'
+     values, and thus they can be assigned to different values
+     (though this is obviously not recommended).
+
+`cont'
+     Continues the execution of a program that was stopped either by a
+     breakpoint or by single-stepping.  To continue at a particular
+     line in the code, use the `goto' command.
+
+`debug <level>'
+     Sets the debug level.  Level 1 provides a trace of the source
+     lines executed.  Level 2 provides a more detailed, machine-level
+     trace, and causes `list' to show the program at the machine
+     level instead of at the usual source level. Levels greater than
+     2 provide increasing amounts of detail about the inner workings
+     of CSS, which should not be relevant to most users.
+
+`define'
+     Toggles the mode where statements that are typed in become part
+     of the current program to be executed later (define mode), as
+     opposed the default (run mode) where statements are executed
+     immediately after entering them.
+
+`defines'
+     Shows a list of all of the current `#define' pre-processor
+     macros.
+
+`edit <object> [<wait>]'
+     If the GUI (graphical user interface) is active (i.e., by using
+     `-gui' to start up CSS), `edit' will bring up a graphical edit
+     dialog for the given object, which must be either a
+     script-defined or hard-coded `class' object.  The optional
+     second argument, if `true', will cause the system to wait for
+     the user to close the edit dialog before continuing execution of
+     the script.
+
+`enums'
+     Shows a list of all the current `enum' types.  Note that most
+     `enum' types are defined within a `class' scope, and can be
+     found there by using the `type' command on the class type.
+
+`exit'
+     Exits from the program (CSS), or from another program space if
+     `chsh' (or its GUI equivalent) was called.
+
+`frame [<back>]'
+     Shows the variables and their values associated with the current
+     block or frame of processing.  The optional argument gives the
+     number of frames back from the current one to display.  This is
+     most relevant for debugging at a breakpoint, since otherwise
+     there will only be a single, top-level frame to display.
+
+`functions'
+     Shows a list of all of the currently defined functions.
+
+`globals'
+     Shows a list of all of the currently defined global variables,
+     including those in the script and hard-coded ones.
+
+`goto <src_ln>'
+     Continues execution at the given source line.
+
+`help [<expr>]'
+     Shows a short help message, including lists of commands and
+     functions available.  When passed argument (command, function,
+     class, etc), provides help information for it.
+
+`inherit <object_type>'
+     Shows the inheritance path for the given object type.
+
+`list [<start_ln> [<n_lns>]] [<function>]'
+     Lists the program source (or machine code, if `debug' is 2 or
+     greater), optionally starting at the given source line number,
+     and continuing for either 20 lines (the initial default) or the
+     number given by the second argument (which then becomes the new
+     default).  Alternatively, a function name can be given, which
+     will start the listing at the beginning of that function (even
+     if the function is `extern'al and does not appear in a
+     line-number based list).  `list' with no arguments will resume
+     where the last one left off.
+
+`load <program_file>'
+     Loads and compiles a new program from the given file.
+
+`mallinfo'
+     Generates a listing of the current `malloc' memory allocation
+     statistics, including changes from the last time the command was
+     called.
+
+`print <expr>'
+     Prints the results of the given expression (which can be any
+     valid CSS expression), giving some type information and
+     following with a new line (`\n').  This is useful for debugging,
+     but not for printing values as part of an executing program.
+
+`printr <object>'
+     Prints an object and any of its sub-objects in a indented style
+     output.  This can be very long for objects near the top of the
+     object hierarchy (i.e., the root object), so be careful!
+
+`reload'
+     Reloads the current program from the last file that was `load'ed.
+     This is useful because you do not have to specify the program
+     file when making a series of changes to a program.
+
+`remove <var_name>'
+     Removes given variable from whatever space it was defined in.
+     This can be useful if a variable was defined accidentally or
+     given the wrong name during interactive use.
+
+`reset'
+     Reset is like `clearall', except that it does not remove any
+     top-level variables that might have been defined.  Neither of
+     these commands will remove anything declared `extern'.
+
+`restart'
+     Resets the script to start at the beginning.  This is useful if
+     you want to stop execution of the program after a break point.
+
+`run'
+     Runs the script from the start (as opposed to `cont' which
+     continues execution from the current location).
+
+`setbp <src_ln>'
+     Sets a breakpoint at the given source-code line.  Execution of
+     the program will break when it gets to that line, and you will
+     be able to examine variables, etc.
+
+`setout <ostream>'
+     Sets the default output of CSS commands to the given stream.
+     This can be used to redirect listings or program tracing output
+     to a file.
+
+`settings'
+     Shows the current values of various system-level settings or
+     parameters.  These settings are all static members of the class
+     `ta_Misc', and can be set by using the scoped member name, for
+     example: `ta_Misc::display_width = 90;'
+
+`shell <"shell_cmd">'
+     Executes the given Unix shell command (i.e., `shell "ls -lt"').
+
+`showbp'
+     Shows a list of all currently defined breakpoints, and the
+     source code line they point to.
+
+`source <cmd_file>'
+     Loads a file which contains a series of commands or statements,
+     which are executed exactly as if they were entered from the
+     keyboard.  Note that this is different than `load'ing a program,
+     which merely compiles the program but does not execute it
+     immediately thereafter.  `source' uses run mode, while `load'
+     uses define mode.
+
+`stack'
+     Displays the current contents of the stack.  This can be useful
+     for debugging.
+
+`status'
+     Displays a brief listing of various status parameters, such as
+     current source line, depth, etc.
+
+`step <step_n>'
+     Sets the single-step mode for program execution.  The parameter
+     is the number of lines to step through before pausing.  A value
+     of 0 turns off single stepping.
+
+`tokens <obj_type>'
+     Lists the instances of the given object type which are known to
+     have been created.  Many object types do not register tokens,
+     which will be indicated in the results of this command if
+     applicable.  It is possible to refer to the objects by their
+     position in this list with the `Token' function, which can be a
+     useful shortcut to using the object's path.
+
+`trace [<level>]'
+     Displays a trace of the functions called up to the current one
+     (i.e., as called from within a breakpoint). A trace level of 0
+     (the default) just gives function names, line numbers, and the
+     source code for the function call, while level 1 adds stack
+     information, level 2 adds stack and auto variable state
+     information, and level 3 gives a complete dump of all available
+     information.
+
+`type <type_name>'
+     Gives type information about the given type.  This includes full
+     information about classes (both hard-coded and script-defined),
+     including members, functions, scoped types (enums), etc.
+
+`undo'
+     This undoes the previous statement, when in `define' mode.
+
+`unsetbp <src_ln>'
+     Removes a breakpoint associated with the given source-code line
+     number.
+
+
+File: ta_css,  Node: css-functions,  Next: css-settings,  Prev: css-commands,  Up: css-ref
+
+CSS Functions
+-------------
+
+   The following functions are built into CSS, and provide some of the
+basic functionality found in the standard C library.  Note that the
+`String' and `stream' objects encapsulate many commonly-used C
+library functions, which have not in general been reproduced in CSS
+(with the exception of some of the file functions).
+
+`Int access(String fname, int ac_type)'
+     This POSIX command determines if the given file name is
+     accessible according to the ac_type argument, which should be
+     some bitwise OR of the enums `R_OK W_OK X_OK F_OK'.  Returns
+     success and sets errno flag on failure.
+
+`Real acos(Real x)'
+     The arc-cosine (inverse cosine) - takes an X coordinate and
+     returns the angle (in radians) such that cos(angle)=X.
+
+`Real acosh(Real x)'
+     The hyperbolic arc-cosine.
+
+`Int alarm(int seconds)'
+     Generate an alarm signal in the given number of seconds.  Returns
+     success and sets errno flag on failure.
+
+`Real asin(Real x)'
+     The arc-sine (inverse sine) - takes a Y coordinate and returns
+     the angle (in radians) such that sin(angle)=Y.
+
+`Real asinh(Real x)'
+     The hyperbolic arc-sine.
+
+`Real atan(Real x)'
+     The arc-tangent (inverse tangent) - takes a Y/X slope and
+     returns angle (in radians) such that tan(angle)=Y/X.
+
+`Real atan2(Real y, Real x)'
+     The arc-tangent (inverse tangent) - takes a Y/X slope and
+     returns angle (in radians) such that tan(angle)=Y/X.
+
+`Real atanh(Real x)'
+     The hyperbolic arc-tangent.
+
+`Real beta(Real z, Real w)'
+     The Beta function.
+
+`Real beta_i(Real a, Real b, Real x)'
+     The incomplete Beta function.
+
+`Real bico_ln(Int n, Int j)'
+     The natural logarithm of the binomial coefficient "n choose j".
+     The number of ways of choosing j items out of a set containing n
+     elements:
+            / n \        n!
+            |   |  = ------------
+            \ j /      k! (n-k)!
+
+`Real binom_cum(Int n, Int j, Int p)'
+     The cumulative binomial probability of getting j _or more_ in n
+     trials of probability p.
+
+`Real binom_den(Int n, Int j, Real p)'
+     The binomial probability density function for j "successes" in n
+     trials, each with probability p of success.
+                         / n \   j      (n-j)
+            P(n,j,p) =   |   |  p  (1-p)
+                         \ j /
+
+`Real binom_dev(Int n, Real p)'
+     The binomial random deviate: produces an integer number of
+     successes for a binomial distribution with p probability over n
+     trials.
+
+`Int CancelEditObj(obj)'
+     Cancels the edit dialog for the given object that would have
+     been opened by `EditObj'.
+
+`Real ceil(Real x)'
+     Rounds up the value to the next-highest integral value.
+
+`int chdir(String dir_name)'
+     Change the current directory to given argument.  Returns success
+     and sets errno flag on failure.
+
+`Real chisq_p(Real X, Real v)'
+     Gives the chi-squared statistic P(X^2 | v).
+
+`Real chisq_q(Real X, Real v)'
+     Gives the complement of the chi-squared statistic Q(X^2 | v).
+
+`Int chown(String fname, int user, int group)'
+     Changes the ownership of the given file to the given user and
+     group numbers.  Returns success and sets errno flag on failure.
+
+`Real clock()'
+     Returns processor time used by current process in seconds (with
+     fractions expressed in decimals).
+
+`Real cos(Real x)'
+     The cosine of angle x (given in radians).  Use `cos(x / DEG)' if
+     x is in degrees.
+
+`Real cosh(Real x)'
+     The hyperbolic cosine of angle x.
+
+`String ctermid()'
+     Returns the character-id of the current terminal.
+
+`String cuserid()'
+     Returns the character-id of the current user.
+
+`String_Array& Dir([String& dir_nm])'
+     Fills an array with the names of all the files in the given
+     directory (defaults to "." if no directory name is passed).  The
+     user should copy the array if they want to keep it around, since
+     the one returned is just a pointer to an internal array object.
+
+`Real drand48()'
+     Returns a uniformly-distributed random number between 0 and 1.
+
+`Int EditObj(<object>, [Int wait])'
+     This is the function version of the `edit' command.  If the GUI
+     (graphical user interface) is active (i.e., by using `-gui' to
+     start up CSS), edit will bring up a graphical edit dialog for
+     the given object, which must be either a script-defined or
+     hard-coded `class' object.  The optional second argument, if
+     TRUE, will cause the system to wait for the user to close the
+     edit dialog before continuing execution of the script.
+
+`Real erf(Real x)'
+     The error function, which provides an approximation to the
+     integral of the normal distribution.
+
+`Real erf_c(Real x)'
+     The complement of the error function.
+
+`Real exp(Real x)'
+     The natural exponential (e to the power x).
+
+`css* Extern(String& name)'
+     Returns the object with the given name on the 'extern' variable
+     list.  This provides a mechanism for passing arbitrary (i.e.,
+     class objects) data across different name spaces (i.e., across
+     different instances of the css program space), since you can
+     pass the name of the extern class object that contains data
+     relevant to another script, and use this function to get that
+     object from its name.
+
+`Real fabs(Real x)'
+     The absolute value of x.
+
+`Real fact_ln(Int x)'
+     The natural logarithm of the factorial of x (x!).
+
+`void fclose(FILE fh)'
+     Closes the file, which was opened by `fopen'.  The FILE type is
+     not actually a standard C FILE, but actually a `fstream' type, so
+     stream operations can be performed on it.
+
+`Real floor(Real x)'
+     Rounds the value down to the next lowest integral value.
+
+`Real fmod(Real x, Real y)'
+     Returns the value of x modulo y (i.e., `x % y') for
+     floating-point values.
+
+`FILE fopen(String& file_nm, String& mode)'
+     Opens given file name in the given mode, where the modes are
+     "r", "w", and "a" for read, write and append. The FILE type is
+     not actually a standard C FILE, but actually a `fstream' type,
+     so stream operations can be performed on it.
+
+`void fprintf(FILE strm, v1 [,v2...])'
+     Prints the given arguments (which must be comma separated) to the
+     stream.  Values to be printed can be of any type, and are
+     actually printed with the `<<' operator of the stream classes.
+     Unlike the standard C function, there is no provision for
+     specifying formatting information.  Instead, the formatting must
+     be specified by changing the parameters of the stream object.
+     The FILE type is not actually a standard C FILE, but actually a
+     `fstream' type, so stream operations can be performed on it.
+
+`Real Ftest_q(Real F, Real v1, Real v2)'
+     Gives the F probability distribution for P(F | (v1 < v2)).
+     Useful for performing statistical significance tests.  The _q
+     suffix means that this is the complement distribution.
+
+`Real gamma_cum(Int i, Real l, Real t)'
+     The cumulative gamma distribution for event i with parameters
+     l=lambda and t=time, which is the same as `gamma_p(j, l * t)'.
+
+`Real gamma_den(Int j, Real l, Real t)'
+     The gamma probability density function for j events, l=lambda,
+     and t=time.
+                           j  (j-1)
+                          l  t         -lt
+            P(j,l,t)  =  -----------  e           (t > 0)
+                              j!
+
+`Real gamma_dev(Int j)'
+     A random gamma deviate: how long it takes to wait until j events
+     occur with a unit lambda (l=1).
+
+`Real gamma_ln(Real z)'
+     The natural logarithm of the gamma function, which is a
+     generalization of (n-1)! to real-valued arguments. Note that
+     this is not the gamma probability distribution.
+                          x
+                        /   z-1  -t
+            Gamma(z) =  |  t    e   dt
+                        /
+                         0
+
+`Real gamma_p(Real a, Real x)'
+     The incomplete gamma function:
+                                    x
+                          1       /   a-1  -t
+            P(a,x) =  --------    |  t    e   dt          (a > 0)
+                      Gamma(a)    /
+                                   0
+
+`Real gamma_q(Real a, Real x)'
+     The incomplete gamma function as the complement of `gamma_p'
+                                   inf
+                          1       /   a-1  -t
+            P(a,x) =  --------    |  t    e   dt          (a > 0)
+                      Gamma(a)    /
+                                   x
+
+`Real gauss_cum(Real x)'
+     The cumulative of the Gaussian or normal distribution up to
+     given x (sigma = 1, mean = 0).
+
+`Real gauss_den(Real x)'
+     The Gaussian or normal probability density function at x with
+     sigma = 1 and mean = 0.
+
+`Real gauss_inv(Real p)'
+     Inverse of the cumulative for p: returns z value for given p.
+
+`Real gauss_dev()'
+     Returns a Gaussian random deviate with unit variance and 0 mean.
+
+`String getcwd()'
+     Returns the current working directory path.
+
+`String getenv(String var)'
+     Returns the environment variable definition for varable var.
+
+`Int getegid()'
+     Returns the current effective group id number for this process.
+
+`Int geteuid()'
+     Returns the current effective user id number for this process.
+
+`Int getgid()'
+     Returns the current group id number for this process.
+
+`Int getuid()'
+     Returns the current user id number for this process.
+
+`String getlogin()'
+     Returns the name the current user logged in as.
+
+`Int getpgrp()'
+     Returns the process group id for current process.
+
+`Int getpid()'
+     Returns the process id for current process.
+
+`Int getppid()'
+     Returns the parent process id for current process.
+
+`Int gettimesec()'
+     Returns current time of day in seconds.
+
+`Int gettimmesec()'
+     Returns current time of day in microseconds.
+
+`Real hyperg(Int j, Int s, Int t, Int n)'
+     The hypergeometric probability function for getting j number of
+     the "target" items in an environment of size "n", where there
+     are "t" targets and a sample (without replacement) of this
+     environment of size "s" is taken.
+
+`Int isatty()'
+     Returns true if the current input terminal is a tty (as opposed
+     to a file or a pipe or something else).
+
+`Int link(String from, String to)'
+     Creates a hard link from given file to other file.  (see also
+     symlink).  Returns success and sets errno flag on failure.
+
+`Real log(Real x)'
+     The natural logarithm of x.
+
+`Real log10(Real x)'
+     The logarithm base 10 of x.
+
+`Int lrand48()'
+     Returns a uniformly-distributed random number on the range of the
+     integers.
+
+`MAX(<v1>, <v2>) or max(<v1>, <v2>)'
+     Works like the commonly-used `#define' macro that gives the
+     maximum of the two given arguments.  The return type is that of
+     the maximum-valued argument.
+
+`MIN(<v1>, <v2>) or min(<vi>, <v2>)'
+     Just like `MAX', except it returns the minimum of the two given
+     arguments.
+
+`Int pause()'
+     Pause (wait) until an alarm or other signal is received.  Returns
+     success and sets errno flag on failure.
+
+`void perror(String prompt)'
+     Prints out the current error message to stderr (cerr).  The
+     prompt argument is printed before the error message.  Also, the
+     global variable `errno' can be checked.  Further, there is an
+     include file in css/include called errno.css that defines an
+     enumerated type for the defined values of errno.
+
+`Real poisson_cum(Int j, Real l)'
+     The cumulative Poisson distribution for getting 0 to j-1 events
+     with an exected number of events of l (lambda).
+
+`Real poisson_den(Int j, Real l)'
+     The Poisson probability density function for j events given an
+     expected number of events of l (lambda).
+                         j
+                        l    -l
+            P(j, l) =  ---- e
+                        j!
+
+`Real poisson_dev(Real l)'
+     A random Poisson deviate with a mean of l (lambda).
+
+`Real pow(Real x, Real y)'
+     Returns x to the y power.  This can also be expressed in CSS as
+     x ^ y.
+
+`void PrintR(<object>)'
+     This is the function version of the `printr' command.  Prints an
+     object and any of its sub-objects in a indented style output.
+     This can be very long for objects near the top of the object
+     hierarchy (i.e., the root object), so be careful!
+
+`void printf(v1 [,v2...])'
+     Prints the given arguments (which must be comma separated) to the
+     standard output stream.  Values to be printed can be of any
+     type, and are actually printed with the `<<' operator of the
+     stream classes.  Unlike the standard C function, there is no
+     provision for specifying formatting information.  Instead, the
+     formatting must be specified by changing the parameters of the
+     standard stream output object, `cout'.  The FILE type is not
+     actually a standard C FILE, but actually a `fstream' type, so
+     stream operations can be performed on it.
+
+`Int putenv(String env_val)'
+     Put the environment value into the list of environment values
+     (avail through getenv).
+
+`Int random()'
+     Returns a uniformly-distributed random number on the range of the
+     integers.  CSS actually uses the `lrand48' function to generate
+     the number given the limitations of the standard `random'
+     generator.
+
+`String_Array& ReadLine(istream& strm)'
+     Reads a line of data from the given stream, and returns a
+     reference to an internal array (which is reused upon a
+     subsequent call to ReadLine) of strings with elements containing
+     the whitespace-delimited columns of the line.  The size of the
+     array gives the number of columns, etc.  This allows one to
+     easily implement much of the functionality of awk.  See the file
+     `css_awk.css' in `css/include' for an example.
+
+`Int rename(String from, String to)'
+     Renames given file.  Returns success and sets errno flag on
+     failure.
+
+`Int rmdir(String dir_name)'
+     Removes given directory.  Returns success and sets errno flag on
+     failure.
+
+`Int setgid(Int id)'
+     Sets group id for given process to that given.  Note that only
+     the super-user can in general do this.  Returns success and sets
+     errno flag on failure.
+
+`Int setpgid(Int id)'
+     Sets process group id for given process to that given.  Note
+     that only the super-user can in general do this.  Returns
+     success and sets errno flag on failure.
+
+`Int setuid(Int id)'
+     Sets user id for given process to that given.  Note that only the
+     super-user can in general do this.  Returns success and sets
+     errno flag on failure.
+
+`Real sin(Real x)'
+     The sine of angle x (given in radians).  Use `sin(x / DEG)' if x
+     is in degrees.
+
+`Real sinh(Real x)'
+     The hyperbolic sine of x.
+
+`Real sqrt(Real x)'
+     The square-root of x.
+
+`void srand48(Int seed)'
+     Provides a new random seed for the random number generator.
+
+`Int sleep(Int seconds)'
+     Causes the process to wait for given number of seconds.  Returns
+     success and sets errno flag on failure.
+
+`Real students_cum(Real t, Real v)'
+     Gives the cumulative Student's distribution for v degrees of
+     freedom t test.
+
+`Real students_den(Real t, Real v)'
+     Gives the Student's distribution density function for v degrees
+     of freedom t test.
+
+`Int symlink(String from, String to)'
+     Creates a symbolic link from given file to other file.  (see
+     also link).  Returns success and sets errno flag on failure.
+
+`void system(String& cmd)'
+     Executes the given command in the Unix shell.
+
+`Real tan(Real x)'
+     The tangent of angle x (given in radians).  Use `tan(x / DEG)'
+     if x is in degrees.
+
+`Real tanh(Real x)'
+     The hyperbolic tangent of x.
+
+`Int tcgetpgrp(Int file_no)'
+     Gets the process group associated with the given file descriptor.
+     Returns success and sets errno flag on failure.
+
+`Int tcsetpgrp(Int file_no)'
+     Sets the process group associated with the given file descriptor.
+     Returns success and sets errno flag on failure.
+
+`String ttyname(Int file_no)'
+     Returns the terminal name associated with the given file
+     descriptor.
+
+`Token(<obj_type>, Int tok_no)'
+     Returns the token of the given type of object at index `tok_no'
+     in the list of tokens.  Use the `tokens' command to obtain a
+     listing of the tokens of a given type of object.
+
+`TypeDef Type(String& typ_nm | <obj_type>)'
+     Returns a type descriptor object (generated by TypeAccess), for
+     the given type name or type object (the type object can be used
+     directly in some situations, but not all).
+
+`Int unlink(String fname)'
+     Unlinks (removes) the given file name.
+
+
+File: ta_css,  Node: css-settings,  Prev: css-functions,  Up: css-ref
+
+Parameters affecting CSS Behavior
+---------------------------------
+
+   All of the settings that control the behavior of CSS are contained
+in the global object called `cssSettings'.  This is actually just a
+reference to the `taMisc' class, which is part of the TypeAccess
+system.  The members of this class that can be set by the user are
+listed below (see also *note gui-settings::):
+
+`int display_width'
+     Width of the shell display in characters.
+
+`int sep_tabs'
+     Number of tabs to separate items by in listings.
+
+`int search_depth'
+     The recursive depth at which css stops searching for an object's
+     path.
+
+`TypeInfo type_info'
+     The amount of information about a class type that is reported
+     when the "type" command is used in CSS.
+
+
+     Type_info has one of the following values:
+
+
+
+          `MEMB_OFFSETS'       shows the byte offset of members
+
+          `All_INFO'          shows all type info except memb_offsets
+
+          `NO_OPTIONS'        shows all info except type options
+
+          `NO_LISTS'          shows all info but lists
+
+          `NO_OPTIONS_LISTS'  shows all info but options and lists
+
+
+
+     The default is `NO_OPTIONS_LISTS'
+
+
+
+File: ta_css,  Node: css-errors,  Next: css-hard,  Prev: css-ref,  Up: css
+
+Common User Errors
+==================
+
+   The following are common user errors, which you can anticipate and
+avoid by reading about them in advance.
+
+   *Forgetting the semicolon:* CSS, being essentially like C or C++,
+requires most statements to end with a semicolon (;). This allows one
+to spread statements over multiple lines, since the semicolon and not
+the newline indicates the end of a statement.  However, it is easy to
+forget it when typing stuff in interactively.  The consequences of
+this are that the following command or statement will be treated as
+if it was part of the one where the semicolon was forgotten, usually
+resulting in a `Syntax Error'.  Note that commands are exempt from
+the semicolon requirement, and, as a corollary, can not be extened
+across multiple lines.
+
+   *Delayed impact of syntax error:*  This happens when the user types
+in something erroneous (i.e., something that will result in a Syntax
+Error), without following it with a semicolon (usually because it was
+supposed to be a command, which does not require a semicolon).
+However, because the entry was neither a command nor followed by a
+semicolon, it treats the following material as being on the same line,
+so that only after the second line has been entered (typically), is
+the first syntax error caught.  The solution is to simply press enter
+a couple of times (or hit the semicolon and press enter), which will
+clear out the preceding line and let you continue on.
+
+   *Trying to `print' or do something else with a `void':* If an
+expression cannot be evaluated (resulting in a `void' value), or a
+function is called which returns a type of `void' (i.e., nothing is
+returned), and the result of this expression is then printed or
+passed to some other function, the following error will result:
+`Incomplete argument list for: <function_name>, Should have: 1 Got:
+0'.  Since the void does not get passed to the function or command
+which is expecting an argument, the function/command (typically
+`print') complains with the above error.
+
+
+File: ta_css,  Node: css-hard,  Prev: css-errors,  Up: css
+
+Compiling CSS files as C++ Hard Code
+====================================
+
+   Because they use the standard C++ syntax, CSS script files can be
+compiled into "hard" code that runs (fast) as a stand-alone
+application.  Of course, the files must not use any of the CSS
+shortcuts, and must otherwise be standard C++ code (i.e., no
+executable code outside of functions, using the correct `.' or `->'
+operator, etc).
+
+   There are three main steps that are needed to compile your CSS
+code.  The first, which need only be done once, is the creation of the
+appropriate libraries that will be linked with the C++ compiled code
+to produce an executable.  The second is formatting your file so that
+it can be both run by CSS and compiled by C++.  The third is creating
+a Makefile which will allow C++ to compile your file.  An example of
+this is provided in the directory `demo/css'.
+
+   There are two special libraries that are linked into your C++
+executable, one in the `src/ta' directory, and one in the `src/css'
+directory.  Both can be made using top-level Makefile commands, or by
+going into the directories separately.  `make LibMin' makes a library
+which contains the minimal type-access stuff from the `src/ta'
+directory of the distribution, and it makes the `libtypea_min'
+library.  `make hard_css' makes a library of special functions in
+`src/css' (e.g., the "special math" functions which have been added
+into CSS and are not part of the standard C library, and the Dir and
+ReadLine functions).  This library is `libhard_css'.  Both of these
+libraries will be visible to the C++ compiler using the makefiles as
+described below.
+
+   The CSS file needs to have a couple of conditially-included
+elements that resolve the basic differences between CSS and C++.
+Basically, this amounts to including a header file that estabilshes
+some defines and includes some commonly-used standard library
+headers, which are automatically present in CSS.  This is the
+`css/hard_of_css.h' file.  It is only included when compiling by
+making it conditional on the pre-processor define `__CSS__', which is
+automatically defined by CSS.  Also, `hard_of_css.h' defines a `main'
+function which calls a function called `s_main', which is the actual
+main function that should be defined in your script.
+
+   The following example illustrates these elements, and can be used
+as a template for making your own CSS files compilable (see `demo/css'
+for a larger example):
+
+     #ifndef __CSS__
+     #include <css/hard_of_css.h>
+     #endif
+     
+     void s_main(int ac, String* av) {
+       // do stuff here..
+     }
+     
+     // in css, call our main function as the thing we actually run..
+     #ifdef __CSS__
+     s_main(argc, argv);
+     #endif
+
+   In order to make the C++ compiling environment as similar to CSS as
+possible, a variant of the same Makefile can be used.  This assumes
+that the makefiles for your CPU type are correct (i.e., those used in
+installing the PDP++/CSS source-code distribution (*note inst::,
+*Note inst-prog::)).  The following steps will result in a Makefile
+that will enable you to compile your CSS code.
+
+   1) Copy the sample makefile in `config/Makefile.hard_of_css' into
+the directory where your CSS file is to be compiled, and name it
+`Makefile.in'.
+
+   2) Edit this file and ensure that the PDPDIR path is pointing to
+the installed pdp++ distribution.
+
+   3) Then, do a `make -f Makefile.in InitMakefile', which will make a
+`Makefile' in the current directory that can be used to compile your
+file.
+
+   4) To compile, just type `make <filenm>', where `<filenm>' is the
+CSS file without any extension (i.e., the name of the executable that
+will be produced.  Some C++ compilers will complain if the file does
+not end in a "standard" C++ extension like .cc or .C, so you may have
+to rename it or create a symbolic link from your .css file (CSS does
+not care about using a non .css extension, as long as you specify the
+entire file name).
+
+
+File: ta_css,  Node: prog,  Next: gui,  Prev: css,  Up: Top
+
+Programming with TypeAccess
+***************************
+
+   This chapter contains some useful information for those who want
+to add new functionality to the PDP++ software by compiling their own
+executable.  By creating new subclasses of existing classes, and using
+these new classes in your simulations, it should be possible to make
+PDP++ do exactly what you want it to.
+
+   Before taking this step, you should be reasonably comfortable with
+the CSS language and using it to access objects in the simulator.
+Further, you will need to know (or learn about) C++ in a bit more
+detail than is covered in the CSS section of this manual.  There are
+a number of good books on this subject available in most bookstores.
+
+   This chapter describes how to set up the makefiles in your own
+directory where you will compile your executable.  It then describes
+various coding conventions and extensions to the basic C++ language
+that we have added to facilitate programming in PDP++.  We have
+established a standard way of dealing with creating, copying, and
+deleting objects.  In addition, each object has special functions
+that allow groups to manage them.  All of these "coding conventions"
+are described in this chapter.
+
+   We have developed a run-time-type-information (RTTI) system called
+TypeAccess, which provides type information about most classes at
+run-time.  This can be used to determine what kind of unit a Unit*
+object _really_ is, for example (i.e., is it a BpUnit or a
+MyWackyBpUnit?).
+
+   The TypeAccess system requires a more complicated than normal set
+of makefiles.  Fortunately, it is reasonably straightforward to use
+the makefiles we have developed, so you won't have to deal with much
+of this complexity.
+
+   Most of the graphical interface (i.e., edit dialogs, menus, etc) is
+generated automatically from the information provided by TypeAccess.
+The same is true for the way you can transparently access hard-coded
+types and objects through CSS.  Thus, you don't need to do anything
+special to be able to use your newly defined classes exactly in the
+way that you use the ones that come with the software.
+
+   There are some special keywords that you can put in the comments
+for your classes and class members and methods called "comment
+directives".  These comment directives allow you to control various
+aspects of how the GUI and CSS treat your objects.  These comment
+directives are described in this chapter.
+
+* Menu:
+
+* prog-make::                   Makefiles and Directory Organization
+* prog-typea::                  The TypeAccess System
+* prog-comdir::                 Standard TypeAccess Comment Directives
+* prog-coding::                 Coding Conventions and Standards
+
+
+File: ta_css,  Node: prog-make,  Next: prog-typea,  Prev: prog,  Up: prog
+
+Makefiles and Directory Organization
+====================================
+
+   The PDP++ code should be installed in `/usr/local/pdp++', or some
+such similar place.  This path will be referred to from here on out as
+PDPDIR.  This directory contains a set of sub-directories, like
+`demo' and `manual', etc. which contain different pieces of the
+distribution.  See *Note inst-prog:: for instructions on how to
+install and compile the source distribution of the PDP++ software.  In
+order compile your own additions to the software, you must install and
+compile the source code distribution!
+
+   The critical directories from a programmer's perspective are the
+`src', which contains the source code, `config', which contains the
+Makefile configuration stuff, `include' which has links to the header
+files, and `lib' which has links to the various libraries.
+
+   Each sub-directory within the `src' directory contains code
+relevant to some sub-component of the PDP++ software.  These
+directories are as follows:
+`ta_string'
+     The basic String class used throughout the software.  It is a
+     slightly modified version of the GNU String class that is
+     distributed with the libg++ distribution (version 2.6.2).
+
+`iv_misc'
+     Contains a number of extra pieces of code that supplement the
+     InterViews GUI toolkit.
+
+`ta'
+     Contains the TypeAccess system, which gives classes the ability
+     to know all about themselves and other classes at run time.  The
+     use of this software is what makes the largely automatic
+     interface used in PDP++ possible.  It is described further in
+     *Note prog-typea::.  This directory also contains a lot of basic
+     objects, like Array (*Note obj-array::), List and Group (*Note
+     obj-group::) objects.
+
+`css'
+     Contains the code for the CSS script language (*note css::).
+
+`iv_graphic'
+     Contains a set of objects which implement a graphical object
+     manipulation environment that is used in the network viewer
+     (*note net-view::) and the graph log (*note log-views-graph::).
+
+`ta_misc'
+     Contains a smorgasbord of various objects that might have
+     general applicability, and are not specifically PDP objects.
+
+`pdp'
+     Where all of the specific pdp code is.
+
+`bp'
+     Implements bp and rbp.
+
+`cs'
+     Implements cs.
+
+`so'
+     Implements so.
+
+`bpso'
+     Implements the combined bp and so executable (just links the
+     libraries).
+
+`leabra'
+     Implements the leabra algorithm.
+
+   Each directory has a set of include files which can be accessed as
+<xxx/yyy.h>, where xxx is one of the directory names given above.  In
+addition, each directory has its own library, which is just
+`libxxx.a', where xxx is the name of the directory (without any
+underbars).  The bp, cs and so directories have a library name of
+libpdp_xx.a, to indicate that they are part of the pdp software.
+
+   All of the compilation results (e.g. object files) go in a
+subdirectory named after the CPU type being used.  The user must set
+the CPU environmental variable appropriately, as per the definitions
+used in the InterViews system.  The ones that everything has been
+tested and compiled on are listed in the installation guide (*note
+inst::), and the INSTALL file.
+
+   Other possibilities are listed in *Note inst-prog::.  This should
+be the same as when the system was first installed.
+
+   The include files and library are made in two stages.  The first
+stage involves compiling the object files into the CPU subdirectory.
+Then, if everything goes ok, the library is made, which is then
+copied into a further subdirectory of the CPU subdirectory called
+`lib_include'.  Also, all of the header files are compared with those
+already in the `lib_include' subdirectory (if any), and those ones
+that are different are copied over.  It is these header files in
+`lib_include' that the `PDPDIR/include' directory makes links to, and
+thus these are the ones that are included by other programs.  This
+setup allows one to test out a set of code by making an executable in
+a given directory and getting things working before installing the
+new header files and library for the rest of the system to use.
+
+   In order to add functionality to the software, one needs to create
+a new directory, and then include various files from the above
+directories, and link in their respective libraries.  This directory
+can be located in the same master directory as the main distribution,
+or it can be located in your own home directory somewhere.  This
+latter option is the preferred one.
+
+   We have developed a shell file that does all of the things
+necessary to create your own directory.  The first step is to make a
+master directory off of your home directory, typically called `pdp++'.
+
+   Then, run the `PDPDIR/bin/mknewpdp' command from this new
+`home/pdp++' directory with an argument which is the name of the
+directory/executable that you want to make.  This will give you
+step-by-step instructions.  In the end, you will end up with a
+directory that contains some sample code in the form of a .h and .cc
+file with the same name as the directory.
+
+   The script will have installed a `Makefile' in your directory which
+is the same as the one's found in the main PDP++ directories.  These
+makefiles are constructed by concatenating together a bunch of pieces
+of makefiles, some of which contain standard make actions, and others
+which contain specific defaults for particular machines.  All of the
+pieces are found in the `PDPDIR/config' directory.
+
+   The makefiles named `Makefile.CPU.[CC|g++]' are the
+machine-specific files that you should edit to make sure they have all
+the right settings for your system.  This should have been done
+already during the installation of the PDP++ source code
+distribution, see *Note inst-prog:: for details.
+
+   To these pieces is added the specific list of files that need to
+be made in your directory. This is specified in the `Makefile.in'
+file.  This is the only makefile you should edit. It can be used to
+override any of the settings in the standard makefiles, simply by
+redefining definitions or actions.  If you add files to your
+directory, follow the example for the one already in your default
+`Makefile.in' that was installed with the `mknewpdp' command.
+
+   Note that there are a couple of compiler-specific "extra" files in
+the directory.  These have the name of the directory plus a `_vt.cc'
+or `_it.cc' suffix.  The `_vt' file is for virtual table
+instantiation, which is controlled in cfront with the +e0/+e1
+arguments.  It simply includes most of the header files in the
+software.  We have found that by compiling everything except the
+`_vt' file with +e0 that the executables are much smaller.  This is
+even true in cfront versions where they had "fixed" this problem.
+You can try doing the other way by leaving out the +e args and not
+using the `_vt' file (see the definitions in
+`PDPDIR/config/Makefile.defs' for how to do this: change your
+`Makefile.CPU' file and recompile the entire distribution first..).
+
+   The `_ti.cc' is the template instantiation file needed by gnu g++
+version 2.6.3 (reportedly, it won't be needed in 2.7).  It contains
+explicit instantiations of all of the templates used in each library.
+For user directories, this probably isn't needed, but its there if you
+do declare any templates and encounter link problems with g++.  Also,
+the `Makefile.CPU.g++' show how this file gets included in the making
+of a given project.
+
+   New for 2.0: All of the makefile actions, as shown below, are now
+available using a consistent syntax structure: all lower case, with
+underbars separating different words.  This makes it much easier to
+remember what command to type.  The old eclectic combinations of upper
+and lower case words, etc are still available if you already know
+them.
+
+   The commonly-used actions that are defined in the makefile are as
+follows:
+`make bin, make opt_bin, make dbg_bin'
+     Makes the binary from the files in this directory. Bin makes the
+     default form specified in the make file, while opt and dbg make
+     optimized and debug versions, respectively.
+
+`make re_bin, make opt_re_bin, make dbg_re_bin'
+     Same as above, except it first removes the executable before
+     making.  This is useful if a library has changed but no header
+     files from that library were changed.
+
+`make lib, make opt_lib, make dbg_lib'
+     Like the above, except it makes a library containing the
+     relevant .o files.
+
+`make new_makefile'
+     This makes a new version of the `Makefile' file in the current
+     directory.  This concatenates all of the different parts that
+     together make up a single `Makefile'.  However, it does not make
+     a `CPU' directory, which is necessary to actually compile (see
+     `cpu_dir' next).
+
+`make cpu_dir, make local_cpu_dir'
+     This makes and configures a directory with the same name as the
+     `CPU' environmental variable (reflecting the CPU type of the
+     machine) suitable for compiling the object files into.  If
+     `local_cpu_dir' is made first, then this directory is actually a
+     symbolic link to a directory created on a disk local to the
+     current machine, so that compilation will be faster than if the
+     directory where the source is located is a networked (slow)
+     directory (i.e., NFS).  The `cpu_dir' action copies the current
+     `Makefile' into the directory, and configures the directory for
+     compiling.  Note that these actions remove any existing
+     dependency information, so that a `depend' action should be made
+     following either of them.
+
+`make depend'
+     This automatically adds dependency information for the files in
+     this directory onto the `CPU/Makefile' file.  This allows the
+     make command to know when to compile these files after something
+     they depend on has been touched (edited).
+
+`make makefiles, make make_depend, make new_make_depend'
+     These actions simply combine some of the above steps together
+     into one action.  `makefiles' does a `new_makefile' and then a
+     `cpu_dir', `make_depend' does a `cpu_dir' and then a `depend',
+     and `new_make_depend' does all three of the necessary steps:
+     `new_makefiles', `cpu_dir', and `depend'.  The only reason you
+     should not use the latter all the time is if your `make' program
+     has trouble using a new `Makefile' (i.e., as created by the
+     `make new_makefiles' action) for calling the subsequent actions.
+     In this case, you have to first do a `make new_makefiles' and
+     then you can do a `make make_depend'.
+
+`make force_ta'
+     Forces a call to the TypeAccess scanning program `maketa'.
+
+
+File: ta_css,  Node: prog-typea,  Next: prog-comdir,  Prev: prog-make,  Up: prog
+
+The TypeAccess System
+=====================
+
+   The TypeAccess system consists of a set of objects that can hold
+type information about class objects.  This type information includes
+the names and types of all the members and methods in a class, the
+parents of the class, etc.  This information can be used by classes to
+get information about themselves at run time.  In addition, the
+TypeAccess system provides a set of type-aware base classes and macros
+for defining derived versions of these that can be used to easily
+incorporate run-time type information into any C++ system.
+
+   In addition to being type-aware, the base classes can use their
+own type information to save and load themselves automatically to and
+from ASCII format text files.  Further, there is an extensible
+graphical interface based on InterViews which can automatically build
+editing dialogs for filling in member values and calling member
+functions on arbitrary objects.  Finally, the type information can be
+used to provide a transparent script-level interface to the objects
+from the CSS script language.  This provides the benefits of compiled
+C++ for fast execution, and the ability to perform arbitrary
+interactive processing in an interpreter using the C++ language
+supported by CSS.
+
+   Many features of the interface and script level interface, as well
+as various options that affect the way objects are saved and loaded,
+can be specified in comments that follow the declaration of classes,
+members, and methods.  These comment directives constitute a secondary
+programming language of sorts, and they greatly increase the
+flexibility of the interface.  They are documented in *Note
+prog-comdir::.
+
+   Thus, the PDP++ software gets much of its functionality from the
+TypeAccess system.  It provides all of the basic interface and
+file-level functionality so that the programmer only needs to worry
+about defining classes that perform specific tasks.  These classes can
+then be flexibly used and manipulated by the end user with the generic
+TypeAccess based interface.
+
+* Menu:
+
+* prog-typea-files::            Scanning Type Information using `maketa'
+* prog-typea-args::             Startup Arguments for `maketa'
+* prog-typea-stru::             Structure of TypeAccess Type Data
+* prog-typea-base::             The Type-Aware Base Class taBase
+* prog-typea-dump::             The Dump-file Format for Saving/Loading
+

@@ -1,0 +1,26 @@
+This file contains some useful instructions for using PDP++ under the
+Mac OSX (Darwin) operating system.
+
+------------------------------------------------------
+Installing XFree86 XWindows Server (4.x):
+------------------------------------------------------
+
+PDP++ depends on having an XWindows (X11) server running on your mac.
+Apple now has their own version of the XFree86 X11 server, which runs
+very smoothly under the standard OSX window manager.  This is the
+recommended solution.  Read more about it and download from:
+
+http://www.apple.com/macosx/x11/
+
+------------------------------------------------------
+The Package version:
+------------------------------------------------------
+
+The executables + extra stuff is available as a Mac OSX package, which
+installs into Applications/PDP++.  However, it depends on X11 to run,
+so these executables are set to launch X11, and then you have to type
+the name of the executable in the xterm to actually run it under X11.
+
+If someone can tell me how to make a mac-native running executable
+that can be run by clicking directly, this would be appreciated.
+

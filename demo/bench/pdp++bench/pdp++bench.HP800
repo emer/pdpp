@@ -1,0 +1,54 @@
+#! /bin/csh -f
+
+# machine-specific defines
+set DEFINES="-DHP800 -DNO_BUILTIN_BOOL"
+#set DEFINES="-DHP800"
+
+set FLAGS=""
+
+# pdp++ coding options
+#set FLAGS="-DNO_DECAY -DNO_MOMENTUM_OPTS -DNO_WT_LIMITS"
+#set FLAGS="-DNO_DECAY"
+#set FLAGS="-DNO_MOMENTUM_OPTS"
+#set FLAGS="-DNO_WT_LIMITS"
+
+#set FLAGS="-DSEND_BASED"
+#set FLAGS="-DSEND_NET"
+#set FLAGS="-DSEND_BASED -DSEND_NET"
+
+#set FLAGS="-DRANDOM_SPACE"
+#set FLAGS="-DNO_PRE_ALLOC"
+#set FLAGS="-DLOAD_STYLE"
+
+# compiler command
+# optimal compiler
+set CC="CC +O2"
+
+#set CC="CC +T +a1 -g"
+#set CC="CC +T +a1 +O2"
+#set CC="CC +T +a1 +O2 +Z"
+
+#set CC="CC +O2"
+#set CC="CC +O2 +Z"
+
+#set CC = "g++ -O"
+#set CC = "g++ -O2"
+#set CC = "g++ -O3"
+#set CC = "g++ -O2 -ffast-math"
+#set CC = "g++ -O2 -fomit-frame-pointer"
+#set CC = "g++ -O2 -funroll-loops"
+#set CC = "g++ -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+
+$CC $FLAGS $DEFINES -c pdp++base.cc -o pdp++base.o
+$CC $FLAGS $DEFINES -c pdp++bench.cc -o pdp++bench.o
+$CC $FLAGS $DEFINES -o pdp++bench pdp++base.o pdp++bench.o -lm
+
+#$CC -c +e0 $FLAGS $DEFINES pdp++bench.cc -o pdp++bench.o
+#$CC -c +e1 $FLAGS $DEFINES pdp++bench_vt.cc -o pdp++bench_vt.o
+#$CC $FLAGS $DEFINES pdp++bench.o pdp++bench_vt.o -o pdp++bench -lm
+
+echo $CC $FLAGS
+./pdp++bench 500 100
+./pdp++bench 100 2500
+./pdp++bench 10	250000

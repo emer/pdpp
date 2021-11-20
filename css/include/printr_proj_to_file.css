@@ -1,0 +1,11 @@
+// source this file in css to get a dump of all objects under the project
+// to 'printr_proj.out' file, which can be used to grep for things or
+// find any refn=0 cases, etc.
+
+fstream strm;
+strm.open("printr_proj.out", ios::out);
+setout strm
+printr .projects[0]
+setout cout
+strm.close();
+

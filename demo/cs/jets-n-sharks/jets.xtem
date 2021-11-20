@@ -1,0 +1,98 @@
+define: layout
+$  Jets   $      Art           Phil          _Art          _Phil     cycle $  
+   Sharks        Al            Ike           _Al           _Ike      
+                 Sam           Nick          _Sam          _Nick     
+   in20s         Clyde         Don           _Clyde        _Don      
+   in30s         Mike          Ned           _Mike         _Ned      
+   in40s         Jim           Karl          _Jim          _Karl     
+                 Greg          Ken           _Greg         _Ken      
+   JH            John          Earl          _John         _Earl     
+   HS            Doug          Rick          _Doug         _Rick     
+   College       Lance         Ol            _Lance        _Ol       
+                 George        Neal          _George       _Neal     
+   Single        Pete          Dave          _Pete         _Dave     
+   Married       Fred                        _Fred     
+   Divorce       Gene                        _Gene     
+                 Ralph                       _Ralph    
+   Pusher    
+   Burglar   
+   Bookie    
+end
+cycleno	   variable	1	$ 	2 	cycleno    4	1
+extinput   look		2	$	0	extinput   2 100. 14 jets.loo
+activation look		1	$ 	1 	activation 3 100. 14 jets.loo
+
+
+
+PDP_Graphics_Window x_window 0 0 50 50 500 360
+pdp_scale x_scale 1 0 24 11 h 24 14 11 -1 1 blue white red
+Jets	x_label 0 0	 1 3	 h 4
+Art	x_label 0 0	 1 17	 h 3
+Phil	x_label 0 0	 1 31	 h 4
+_Art	x_label 0 0	 1 45	 h 4
+_Phil	x_label 0 0	 1 59	 h 5
+Sharks	x_label 0 0	 2 3	 h 6
+Al	x_label 0 0	 2 17	 h 2
+Ike	x_label 0 0	 2 31	 h 3
+_Al	x_label 0 0	 2 45	 h 3
+_Ike	x_label 0 0	 2 59	 h 4
+Sam	x_label 0 0	 3 17	 h 3
+Nick	x_label 0 0	 3 31	 h 4
+_Sam	x_label 0 0	 3 45	 h 4
+_Nick	x_label 0 0	 3 59	 h 5
+in20s	x_label 0 0	 4 3	 h 5
+Clyde	x_label 0 0	 4 17	 h 5
+Don	x_label 0 0	 4 31	 h 3
+_Clyde	x_label 0 0	 4 45	 h 6
+_Don	x_label 0 0	 4 59	 h 4
+in30s	x_label 0 0	 5 3	 h 5
+Mike	x_label 0 0	 5 17	 h 4
+Ned	x_label 0 0	 5 31	 h 3
+_Mike	x_label 0 0	 5 45	 h 5
+_Ned	x_label 0 0	 5 59	 h 4
+in40s	x_label 0 0	 6 3	 h 5
+Jim	x_label 0 0	 6 17	 h 3
+Karl	x_label 0 0	 6 31	 h 4
+_Jim	x_label 0 0	 6 45	 h 4
+_Karl	x_label 0 0	 6 59	 h 5
+Greg	x_label 0 0	 7 17	 h 4
+Ken	x_label 0 0	 7 31	 h 3
+_Greg	x_label 0 0	 7 45	 h 5
+_Ken	x_label 0 0	 7 59	 h 4
+JH	x_label 0 0	 8 3	 h 2
+John	x_label 0 0	 8 17	 h 4
+Earl	x_label 0 0	 8 31	 h 4
+_John	x_label 0 0	 8 45	 h 5
+_Earl	x_label 0 0	 8 59	 h 5
+HS	x_label 0 0	 9 3	 h 2
+Doug	x_label 0 0	 9 17	 h 4
+Rick	x_label 0 0	 9 31	 h 4
+_Doug	x_label 0 0	 9 45	 h 5
+_Rick	x_label 0 0	 9 59	 h 5
+College	x_label 0 0	 10 3	 h 7
+Lance	x_label 0 0	 10 17	 h 5
+Ol	x_label 0 0	 10 31	 h 2
+_Lance	x_label 0 0	 10 45	 h 6
+_Ol	x_label 0 0	 10 59	 h 3
+George	x_label 0 0	 11 17	 h 6
+Neal	x_label 0 0	 11 31	 h 4
+_George	x_label 0 0	 11 45	 h 7
+_Neal	x_label 0 0	 11 59	 h 5
+Single	x_label 0 0	 12 3	 h 6
+Pete	x_label 0 0	 12 17	 h 4
+Dave	x_label 0 0	 12 31	 h 4
+_Pete	x_label 0 0	 12 45	 h 5
+_Dave	x_label 0 0	 12 59	 h 5
+Married	x_label 0 0	 13 3	 h 7
+Fred	x_label 0 0	 13 17	 h 4
+_Fred	x_label 0 0	 13 45	 h 5
+Divorce	x_label 0 0	 14 3	 h 7
+Gene	x_label 0 0	 14 17	 h 4
+_Gene	x_label 0 0	 14 45	 h 5
+Ralph	x_label 0 0	 15 17	 h 5
+_Ralph	x_label 0 0	 15 45	 h 6
+Pusher	x_label 0 0	 16 3	 h 6
+Burglar	x_label 0 0	 17 3	 h 7
+Bookie	x_label 0 0	 18 3	 h 6
+xextinput x_look  2 0 1 1 extinput 11 13 pdp_scale 0 14 jets.loo
+xactivation x_look  1 0 1 11 activation 17 13 pdp_scale 0 14 jets.loo

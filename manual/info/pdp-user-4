@@ -1,0 +1,969 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: how-proc,  Next: how-net,  Prev: how,  Up: how
+
+Questions about Processes
+=========================
+
+How to I set a stopping criterion for training?
+     The stopping criterion is part of the statistic process that has
+     the data on which the criterion is based.  Thus, if you want to
+     stop training based on sum-squared-error, the SE_Stat (*note
+     proc-stats-se::) is where to go to set the criterion.  The
+     criterion is always set in the statistic that is located in the
+     `loop_stats' of the process you wish to stop.  So, if you wan to
+     stop training, look in the TrainProcess (*note
+     proc-levels-train::) for the statistic.
+
+How do I record the activations of the units in my network?
+     This is accomplished by creating a MonitorStat, which gathers
+     information from the network and makes it available for logging.
+     The easiest way to do this is through the NetView (*note
+     net-view::), where you can select the objects to be monitored,
+     the variable to monitor, and it will create an appropriate
+     MonitorStat for you.  Or, you can use `Stats/RecordLayerValues'
+     from the Wizard (*note how-wizard::). Note that the monitor stat
+     is created in the schedule process that corresponds to the
+     time-grain at which you want the information recorded.  It is
+     the log of this process which will show the values you are
+     recording.  For more info, see *Note proc-stats-monitor::.
+
+How do I analyze the representations in my network (e.g., cluster plots, PCA, MDS)?
+     There are two basic strategies.  Both start by recording data
+     from the appropriate layer in the network (e.g., the hidden
+     layer), using a MonitorStat as described above.  The simplest,
+     but less automated, technique is just create a log of the
+     recorded data (e.g., if recording at the Trial process level,
+     create a log of the trial process - any kind of log will do, but
+     a GridLog might be the most appropriate), and then use the
+     `Analyze' menu on the log to analyze the data (*note
+     log-views-logview::).  When using this technique, you need to
+     remember to clear the log at the appropriate time so it contains
+     just the data you want to analyze.
+
+     A more automated technique involves copying the monitored
+     information into an environment using a CopyToEnvStat - the
+     environment serves as a kind of data buffer for the network
+     activations, and contains the necessary analysis routines.  Once
+     the data is copied into the environment, you can just use the
+     `Analyze' menu, or better yet, create a DispDataEnvProc that
+     automatically displays the results of an analysis of a data
+     environment.  This latter technique is employed by the Wizard
+     `Stats/Analyze Net Layer' function, which automates all of the
+     above steps, and is highly recommended.  Pieces of these steps
+     are also found in related wizard functions such as `Auto Analyze
+     Data Env' and `Save Values in Data Env'.  See *Note how-wizard::.
+
+     Regardless of the technique, the set of available analyses, which
+     include cluster plots, Principal Components Analysis (PCA), and
+     Multidimensional Scaling (MDS) are described in the Environment
+     `Analyze' menu (*note env-analyze::).
+
+How can I get receptive field plots from my network?
+     The UnitActRFStat (*note proc-stats-actrf::) and
+     DispNetWeightsProc (*note proc-special-misc::) processes both
+     support the display of receptive fields.  The former uses a
+     reverse-correlation technique that works for any set of layers,
+     regardless of connectivity, while the latter only plots directly
+     connected sets of weights.  These are supported by the Wizard
+     `Act Based Receptive Field' and `Display Net Weights' functions
+     (*note how-wizard::).
+
+How do I record a reaction time measure (cycles) from my network?
+     Experience in a variety of cases has shown that human reaction
+     times can be best modeled by recording the number of processing
+     cycles it takes for a response/output layer unit to exceed some
+     kind of activity threshold.  This can be measured with the
+     ActThreshRTStat *Note proc-stats-rt:: (see also the Wizard `Stop
+     On Act Thresh' function, *Note how-wizard::).  One can also use
+     the CyclesToSettle statistic (*note proc-stats-misc::) to record
+     however many cycles were used during a Settle process, but be
+     careful because the settle process is typically stopped by a
+     statistic that records the change in activation over time (in
+     `cs++' this is CsMaxDa; in `leabra++' it is LeabraMaxDa), to
+     ensure that the activation changes have gone below some
+     threshold.  This kind of change-based reaction time measure is
+     typically not such a good measure of human reaction time.
+
+How do I run my network in the background for training?
+     Often networks take a while to learn, and it is nice to be able
+     to run them in the background for a day or two. To do this, get
+     the network all setup to train, save it, and then use the
+     following type of command:
+          unix > pdp++ -nogui -f startup.css <myproj> <extra args> &
+     where `pdp++' refers to the PDP++ executable you are using (bp++,
+     cs++, etc), and `-nogui' tells it to not open up the graphical
+     user interface, and `-f startup.css' is a script file that will
+     automate the process of loading the project and running it.  For
+     more information on different startup arguments for PDP++, see
+     *Note proj-startup::.  Also, check out the comments at the top
+     of `startup.css' (located in the `css/include' directory) to see
+     what kinds of assumptions it makes about your project.  Also see
+     *Note proj-scripts:: for more useful scripts that you can use.
+     See *Note proj-signals:: for information on how to control the
+     process once it is running in the background.
+
+How do I automatically save my networks after training?
+     This can be accomplished by creating a SaveNetsProc or
+     SaveWtsProc in the `final_procs' group of an appropriate Batch
+     or Train process.  This process names the network with the name
+     field of the network object plus the current epoch and, if
+     present, batch counters.  You can set the mod value of this
+     process to save the networks at different intervals.  An example
+     project using this is `demo/bp/gridsearch_xor.proj.gz'.
+
+     There is a CSS script version of this process called
+     `save_networks.css' in the `css/include' directory, as well as a
+     modified version that saves networks that get below some
+     criterion (which is presumably higher than the stopping
+     criterion), called `save_good_nets.css'.  These scripts are
+     meant to be attached to ScriptProcess objects created in the
+     `loop_procs' group of an appropriate Batch or Train process.
+     They basically just issue a save command on the network, but
+     they also give the network a name based on the current epoch
+     and/or batch counters.  See these scripts for more detailed
+     documentation.
+
+How do I change one of the processes in my schedule process hierarchy?
+     All objects can be changed to a different type using the Change
+     Type menu option (ChangeMyType function in CSS).  In the project
+     view, just select the object you want to change, and hit the
+     Change Type button, and it will change the type, and reset all
+     the relevant pointers so your process hierarchy should remain
+     intact.
+
+How do I remove a higher-level process object without losing the lower-level ones?
+     If you remove a process object by using the .processes/ Remove
+     option, it will automatically remove all the processes below the
+     one removed.  However, if you do Object/Close on the object
+     itself, it will just remove itself and close-up the gap between
+     the remaining processes (in terms of stat aggregation, etc).
+     The Rmv Obj(s) button on the project view also does this kind of
+     remove.  Finally, you can use the Structure/RemoveSuperProc and
+     RemoveSubProc menu options on a process object itself to remove
+     its parent or sub process.
+
+Why can't I change the environment or network pointer in my process?
+     The `environment' and `network' pointers are automatically
+     inherited from the parent process in the hierarchy (this is true
+     for stats and other process objects hanging off of a given
+     process as well).  This means that you can only change these at
+     the top-level process in a given hierarchy.  On the other hand,
+     it means that when you want to change these pointers, you only
+     have to change them in one place and they are automatically
+     propagated to all processes (*note proc-base::).
+
+Where do I create a given statistic process?
+     Each statistic process "knows" where to create itself in the
+     standard schedule process hierarchy.  This default location will
+     be the one shown when you use the NewStat menu option in the
+     .processes menu on the project.  Use this to create your
+     statistic.  In general, most statistics should be created in a
+     relatively low-level process, such as the TrialProcess, since
+     most stats deal with data that changes event-by-event.  Remember
+     that you create the stat at the lowest level so that it can
+     compute the raw information, and these low-level values can be
+     aggregated up the processing hierarchy if higher-level
+     information is desired, see *Note proc-stats::.
+
+Why can't I change the name of my statistic?
+     First, the name of the statistic object is not the same as the
+     label that is associated with that object in the log (though
+     they are related), so changing one will not change the other.
+     The Stat object names are automatically set to reflect the
+     aggregation and layer settings of the stat, see *Note
+     proc-stats::.  This is true as long as the name contains the
+     type name of the stat (e.g., SE_Stat), so if you want to give a
+     stat a custom name, make sure it doesn't include the type name.
+
+     To change the label associated with the stat as it _appears in
+     the log_, you need to edit the StatVal object(s) that contains
+     the value of the statistic.  This object contains a `name'
+     field, which is what determines the label used by the log.
+     However, as it appears on most stats (e.g., SE_Stat), the `name'
+     field is hidden, so you have to use the CSS script to set it.
+     Typing:
+
+          css> .processes[1].loop_stats[0].se.Edit();
+
+     will pull up an editor for the epoch level SE_Stat StatVal
+     (which is the member `se' of an SE_Stat) in the
+     `demo/bp/xor.proj.gz' demo, and allow you to edit the name.
+     Alternatively you can use PDP++Root/Object/Browe and click your
+     way through the process hierarchy until you get to the variable
+     you want to change, and then hit Select to edit it.  You will
+     have to do a `GetHeaders' on the log to see this new name.
+     Other stats like ScriptStat have a list of StatVals, which, when
+     edited, allow you to edit the names directly.
+
+     An easier alternative is to simply change the `display_name' of
+     the ViewSpec in the relevant log.
+
+How do I get the epoch counter into my testing process?
+     The epoch counter, which is on the TrainProcess is not directly
+     available to a testing process, which typically is created at
+     the epoch level.  Thus, you need to add a EpochCounterStat to
+     the final stats of the process where you want to see the epoch
+     counter.  This gets the counter off of the network itself.  To
+     get other counters from the training process hierarchy (i.e.,
+     the batch counter), use the ProcCounterStat.  For more info, see
+     *Note proc-stats-misc::.
+
+How do I determine which event is closest to the output my network actually produced?
+     The ClosestEventStat does exactly this, see *Note
+     proc-stats-close-event::.
+
+How do I create a cross-validation setup?
+     Cross-validation is accomplished by periodically testing during
+     training.  Thus, you simply need to create a testing process
+     hierarchy, (at the Epoch level), and link your testing epoch
+     process into the `loop_procs' of the training process.  This can
+     be done with the Wizard `Processes/Cross Validation' function
+     (*note how-wizard::).  You should set the modulo factor (in the
+     `mod' field of the process) of your testing epoch process to
+     reflect the frequency with which you want to perform testing.
+     See `demo/bp_misc/bp_xval.proj.gz' for a demonstration of a
+     cross-validation training setup.
+
+How do I set the stopping criteria for training based on testing error (e.g., for cross-validation)?
+     Add an aggregator stat of the testing epoch stat in the
+     `final_stats' of your training epoch process (i.e., make an
+     SE_Stat there, set its `time_agg.from' to point to your test
+     epoch SE_Stat, use the `LAST' operator).  You will want to
+     create aggregates of this stat (which is itself an aggregator)
+     using `LAST', and set the stopping criterion in the aggregator
+     of this stat in the loop_stats of the train process.  This is
+     all accomplished by the Wizard `Processes/Cross Validation'
+     function.  The project `demo/bp_misc/bp_dig_xval.proj.gz'
+     contains an example of this.
+
+How do I graph both training and testing error (e.g., for cross-validation)?
+     If you follow the steps for the previous item, a graph log at
+     the level of the training epoch process will show both the
+     training and testing error.  Again, see the demo project.
+
+How do I make a hybrid network of two different types of
+     algorithms?  Since all schedule process types assume that a given
+     network has all of the appropriate types of objects (i.e.,
+     BpUnit's, BpCon's, etc for backprop), you have to create two
+     separate networks, and then link them together with a
+     BridgeProcess, see *Note proc-special-bridge::.
+
+How do I setup distributed memory processing across events?
+     The EpochProcess supports distributed memory processing of events
+     (using the MPI protocol), where each processor operates on a
+     different set of events, sharing its results with the other
+     processors to achieve processing of the entire epoch.  This
+     implies batch-mode weight updates.  This is very efficient, and
+     can produce nearly-linear speedups in the number of additional
+     processors used.  See *Note proc-epoch-dmem:: for details.
+
+
+File: pdp-user,  Node: how-net,  Next: how-env,  Prev: how-proc,  Up: how
+
+Questions about Networks
+========================
+
+   For information about how to build a network using the network
+viewer, see *Note net-build:: and the tutorial *Note tut-config::.
+Also, many questions can be answered by looking at the chapter on
+networks *Note net::.
+
+How to I get certain units to use a different parameter than others?
+     For example, if you want certain units to use a different
+     learning rate, or activation function, or gain, etc... This is
+     done by making a new UnitSpec or ConSpec (depending on where the
+     relevant parameter is), and telling the relevant units or
+     connections to use this new spec.  It is recommended that you
+     create the spec as a child of an existing spec (*note
+     obj-spec::), so that all the other parameters will automatically
+     be inherited by the new spec (except for the one you change).
+     The easiest way to apply a different spec is to select the
+     relevant units or projections, and use the Selections menu on the
+     NetView (*note net-view::) to set the spec.  The tutorial now
+     has an example of how to do this (*note tut-config-running::).
+
+What is the difference between Projections and Connections?
+     Projections specify the broad patterns of connectivity between
+     layers.  Connections are the actual unit-to-unit weights and
+     other parameters which actually implement this connectivity.
+     Thus, there is always a projection associated with a set of
+     connections. See *Note net-prjn:: for more details.
+
+How do I implement weight sharing/linking?
+     The TesselPrjnSpec (*note net-prjn-tessel::) and the LinkPrjnSpec
+     (*note net-prjn-misc::) are two types of projection
+     specifications (*note net-prjn::) that implement weight sharing.
+     The TesselPrjnSpec generates repeated patterns of connectivity,
+     and it can automatically link all of the repeated patterns
+     together with the same set of weights.  Thus, a set of units in
+     a receiving layer can all have the same receptive field from a
+     given sending layer, and all of the units can use the same set
+     of weights to define their receptive field.  The LinkPrjnSpec
+     allows individual or small groups of weights to be specifically
+     linked together, even if these connections are in different
+     layers in the network.  It does not generate any connectivity
+     itself, it simply causes existing connections to share weights.
+
+Can I temporarily lesion a layer in my network?
+     Sometimes, one wants to pre-train part of a network on one task,
+     and then subject the rest of the network to some more complex
+     task.  This process is greatly facilitated by being able to
+     create the entire network at the outset, and then temporarily
+     "lesion" certain layers during pre-training.  This can be
+     accomplished by simply checking the `lesion' flag on the Layer
+     object (*note net-layer::).
+
+Are there functions for lesioning the weights or units in the network?
+     Yes, `LesionCons', `AddNoiseToWeights', `TransformWeights', and
+     `PruneCons' all perform various manipulations on the weights in
+     a network, and could be used to simulation "lesions" of the
+     network.  `LesionUnits' lesions units.  These functions, like
+     most in the network, can be called at various levels of
+     granularity from a single group of weights (or units) up to the
+     entire network.  See (*note net-net::) for details.
+
+How can I use a specified (non-random) set of initial weight values?
+     There are several ways to do this.  One is to write a CSS script
+     to set the weight values by reading them in from a file or from
+     values coded into the script itself.  This script can be
+     attached to a ScriptPrjnSpec so it is run automatically when the
+     network is connected (*note net-prjn-misc::).  It is also
+     possible to use a TesselPrjnSpec (*note net-prjn-tessel::) or
+     RandomPrjnSpec (*note net-prjn-random::) in conjunction with the
+     `init_wts' flag to specify initial weight patterns, which are
+     used instead of the random ones whenever the network is
+     initialized (*note net-prjn-spec::).  You could also construct a
+     "donor" network that had the intial weights set as you wanted
+     them (by hand or whatever), and then use the `CopyFrom' or
+     `Copy_Weights' function to initialize your training net from the
+     donor net (*note net-net::).  Similarly, you could use
+     `WriteWeights' and `ReadWeights' to save and load weights from a
+     file.
+
+Is there a way to view the weights for a set of multiple units at the same time?
+     Yes - the function `GridViewWeights' on the network (in the
+     Actions menu) will display the entire weight matrix between two
+     layers of the network on a GridLog.  Also, you can plot a matrix
+     of events from an environment using the `EnvToGrid' function on
+     an environment (Generate menu).  This is useful for
+     activity-based receptive fields computed via the UnitActRFStat
+     (*note proc-stats-actrf::), which are stored in an Environment.
+
+How do I setup distributed memory processing across multiple processors?
+     The Network object supports distributed memory processing of
+     connections (using the MPI protocol), where each processor
+     maintains a different set of connections and performs operations
+     on only this subset, sharing its results with the other
+     processors to achieve processing of the entire network.  See
+     *Note net-dmem:: for details on how to configure this.  Given
+     the relatively large amount of communication required, this is
+     efficient only for relatively large networks (e.g., above 250
+     units per layer for 4 layers).  In benchmarks on Pentium 4 Xeon
+     cluster system connected with a fast Myrinet fiber optic
+     switched network connection, networks of 500 units per layer for
+     4 layers achieved _better_ than 2x speedup by splitting across 2
+     processors, presumably by making the split network fit within
+     processor cache whereas the entire one did not.  This did not
+     scale that well for more than 2 processors, suggesting that cache
+     is the biggest factor for this form of dmem processing.  However,
+     there is also the ability to distribute events across multiple
+     processors, which achieves more reliable speedups (*note
+     proc-epoch-dmem::).
+
+
+File: pdp-user,  Node: how-env,  Next: how-css,  Prev: how-net,  Up: how
+
+Questions about Environments
+============================
+
+How do I present events with different frequencies?
+     There is a type of environment that implements frequency-based
+     presentation of events.  See *Note env-freq:: for details.  Note
+     that you can do `Change Type' on an existing environment to
+     change it to a frequency environment, retaining all the
+     patterns, etc.  However, you'll also need to convert the
+     individual events to FreqEvents using change type on them.  An
+     alternative is to create a new FreqEnv, create the proper number
+     of Freq Events, and then do `CopyTo' on the original environment
+     to copy its stuff to the new one.
+
+How do I present sequences of events in order?
+     This requires both a structured environment and a set of
+     processes that can use that structure to present sequences.  The
+     environment must simply have the events in sub-groups where each
+     sub-group defines a different sequence of events (*note
+     env-seq::).  The SequenceEpoch and the SequenceProcess work
+     together to present sequenced events.  The SequenceEpoch
+     iterates through the different sequences (groups) of events (and
+     determines if they are randomized or not at that level), and the
+     SequenceProcess iterates through the events in a given sequence
+     (and determines the order of the events themselves).  See *Note
+     proc-special-seq:: for details.
+
+How do I read patterns/events from a file?
+     The function `ReadText' on the Environment object will read in
+     events from a text file, including files formatted for the old
+     PDP software.  This file has a simple format.  See *Note
+     env-import:: for details on the file format and how to use the
+     function.
+
+How do I read patterns/events from a file INCREMENTALLY during training?
+     The object FromFileEnv (*note env-other::) reads events one epoch
+     or one event at a time from a file (either text or binary
+     format) for presentation to the network.  This should be useful
+     for very large environments or very large patterns, or both.
+     Reading one event at a time uses the "interactive" interface to
+     the environment (GetNextEvent) meaning that the InteractiveEpoch
+     epoch process (*note proc-special-inter::) must be used.
+
+How do I present an arbirarily-selected event to the network?
+     First, view the Environment that contains the event, scroll the
+     list of events to the desired one, and use the
+     right-mouse-button to edit that event.  This brings up an 'Edit'
+     dialog, containing a 'PresentEvent' button at the bottom.
+     Clicking this button will present the event using the selected
+     TrialProcess (which must already be created, and determines
+     which network is used, etc).
+
+How do I have some events that set the output target, and others
+     that don't, or more generally, have events do different things
+     within the environment?  How an event is presented to the
+     network, and the very configuration of the event itself, is
+     determined by the EventSpec and its associated PatternSpecs.
+     These can be configured by hitting Edit Specs on the EnviroView.
+     To have different events do different things, you need two (or
+     more) different event specs.  Once you have configured the
+     different event specs, you can click on events (after doing Edit
+     Events) and select View: Action/Set Event Spec to set the event
+     specs for the selected events.
+
+How can I quickly update my Event specifications (pattern layout, size) from corresponding layers on the network.
+     Within the environment viewer, select UpdateAllEventSpecs in the
+     Actions menu - this will automatically update the events to match
+     the current network geometry.  This function is also available
+     in the Wizard.
+
+How do I create an interactive environment where events depend on network responses?
+     This is implemented through a combination of an
+     InteractiveScriptEnv environment (*note env-other::) and and an
+     InteractiveEpoch epoch process (*note proc-special-inter::).  See
+     `demo/leabra/nav.proj.gz' for a working example.
+
+How do I label the event pattern values so I know what they stand for?
+     The `value_names' field in the PatternSpec provide labels for
+     the pattern values.  These can be edited in the enviro view in
+     the Edit Specs mode, by clicking on a pattern and hitting the
+     Edit Names button. To see them, you need to make sure the Val
+     Txt: field in the viewer is set to NAMES or BOTH.
+
+
+File: pdp-user,  Node: how-css,  Next: how-wizard,  Prev: how-env,  Up: how
+
+Questions about CSS
+===================
+
+How do I know what functions or members are available in CSS?
+     Use the 'type' command, such as 'type UnitSpec', which will
+     display a list of all CSS-accesable type information for that
+     object, including descriptive comments.  If you just type 'type'
+     with no arguments, then a list of all defined types is presented.
+
+How do I call the copy operator (=) for a hard-coded objects in CSS?
+     Hard coded types are a little different than types defined
+     within CSS (e.g., a Unit is a hard-coded type), because they are
+     used to refer to things like units, layers, etc, in the network,
+     which are external to css. In particular, they are *always*
+     pointers. There is no such thing as a 'Unit un' in css - its
+     always really (implicitly) 'Unit* un'. So, dereferencing a
+     pointer to a hard-coded object doesn't do anything, meaning that
+     it can't tell the difference between assigning the pointer to
+     point to a new object, and copying the object that the pointer
+     currently points to.  To explicitly invoke the object's copy
+     operator, use the CopyFrom() member function (e.g., Unit* un =
+     .units[0]; un.CopyFrom(.units[1]); ).  Note that if you obtain a
+     pointer to a hard-coded object via a "path" in the object
+     hierarchy, then it knows that this is not just a free css
+     pointer, and it will apply CopyFrom when you do '='.
+
+How do I deal with errors in Scripts that are auto-running at startup?
+     If you startup the program with the project name on the command
+     line, then the project will load over and over again if there is
+     an error with a script that is set to run upon loading the
+     project (auto-run).  The solution is to load the project from
+     the Root menu, and to immediately move the mouse over the
+     xterminal window, and type a Return into that window when the
+     error occurs.  Then, you can debug the problem with the script
+     at the point where the error occurred.
+
+
+File: pdp-user,  Node: how-wizard,  Prev: how-css,  Up: how
+
+The Wizard Object
+=================
+
+   The Wizard object is located in the .wizards menu on the project -
+one is automatically created whenever a project is created or opened.
+In the default color scheme, the wizard has a whitish-blue-green
+(azure) background.  There are 6 main categories of actions that the
+wizard can perform, corresponding to the main types of simulation
+objects that can be created, which are arranged as button-menu's along
+the bottom of the Wizard dialog.
+
+   Typically, the wizard actions prompt you for all the information
+required - the one exception is the Network configuration, which is
+maintained in the values in the wizard dialog (`n_layers',
+`layer_cfg', `connectivity').  The `Defaults' menu has options for
+standard configurations of these network parameters.
+
+   So, if you want to make a network other than a simple three-layer
+architecture (the default), select `Defaults/Multi Layer Net' and
+specify how many of each type of layer (input, hidden, output) you
+want.
+
+   General usage: in general you can just proceed left-right,
+top-bottom in the menu buttons.  Once you have the configuration of
+the network as desired (either from the Defaults functions or just by
+setting by hand) then Network/Std Network will make the network for
+you.  The other options below this (for some versions) contain other
+optional kinds of network structures that can be constructed.  For
+example, `bp++' has an option for making an `SRN Context' layer for
+simple recurrent networks, and `leabra++' has a number of options
+including unit-based inhibition (instead of the usual kWTA).
+
+   The Environment/Std Env will construct a standard (basic)
+environment to fit the network configuration.  If you subsequently
+change the network configuration, the `Update Env Fm Net' will sync
+them back up.  Other options include making event groups (`Sequence
+Events', `Time Seq Events').  Note that the environment object, once
+constructed, has some useful generation functions in the `Generate'
+menu (*note env-gen::).
+
+   The Processes/Std Procs menu will make a standard process
+hierarchy for training your network, starting with a Batch process at
+the highest level.  The easiest way to manipulate these processes once
+created is in the Project view (*note proj-viewer::).  However, the
+`Processes' menu contains a number of options for commonly-used
+process types such as automatically saving networks (at the end of
+training), setting up an automatic testing process, cross-validation,
+and configuring the processes to deal with sequences of events within
+an epoch (event groups) (*note proc-special-seq::).
+
+   The Stats menu can be used to create statistics for monitoring the
+network as it trains.  `Record Layer Values' creates a `MonitorStat'
+(*note proc-stats-monitor::) to record layer data in a log associated
+with a given process.  Functions `Save Values In Data Env', `Auto
+Analyze Data Env', and `Analyze Net Layer' all support the analysis
+of recorded values (*note env-analyze::).  The `Act Based Receptive
+Field' creates an UnitActRFStat for recording a receptive field for
+any layer in the network from any other set of layers (even if they
+are not connected) using a "reverse correlation" technique as
+described in *Note proc-stats-actrf::.  It also automatically
+displays these weights at a higher level of processing.  `Display Net
+Weights' makes a DispNetWeightsProc (*note proc-special-misc::).
+`Stop On Act Thresh' makes an ActThreshRTStat to stop settling when
+network activations exceed threshold, providing a reaction time
+measure (*note proc-stats-rt::).  `Add Counters to Test' and `Get
+Stats From Proc' provide ways of sharing information across different
+process hierarchies (e.g., training and testing).  `Add Time Counter'
+creates a TimeCounterStat that generates an ever-increasing time
+counter that cuts across processing hierarchy loops, and is
+initialized by a TimeCounterResetProc (*note proc-stats-ctrs::).
+
+   The Logs/Std Logs menu creates standard logs (trial, epoch and
+batch), while `Log Process' provides a way of creating a log for a
+given processing level.
+
+
+File: pdp-user,  Node: gui,  Next: css,  Prev: how,  Up: Top
+
+Guide to the Graphical User Interface (GUI)
+*******************************************
+
+   This chapter provides a general guide and reference for using the
+graphical user interface to the PDP++ software.  This covers all of
+the generic aspects of the interface--details about specific parts of
+the interface like the network viewer are found in the the section of
+the manual that covers the object in question (e.g., *Note
+net-view::).
+
+* Menu:
+
+* gui-windows::                 Window Concepts and Operation
+* gui-object::                  The "Object" Menu
+* gui-actions::                 The "Actions" Menu
+* gui-subgroup::                The SubGroup Menu(s)
+* gui-edit::                    The Edit Dialog
+* gui-settings::                Settings Affecting GUI Behavior
+* gui-colors::                  Color Scale Specifications
+* gui-file-requester::          File Requester
+* gui-obj-chooser::             Object Chooser/Browser
+
+
+File: pdp-user,  Node: gui-windows,  Next: gui-object,  Prev: gui,  Up: gui
+
+Window Concepts and Operation
+=============================
+
+   In PDP++ the hierarchy of objects provides the basis for most of
+the gui (Graphical User Interface) interaction. To access a
+sub-object of a class, the best place to start is with the gui window
+for the parent class instance and work your way down to the
+sub-object. The higher levels of the hierarchy have windows which are
+mapped to the screen when the object is created. These windowing
+objects inherit from the base class WinBase. When PDP++ starts up,
+only one of these classes has been created and thus there is only one
+window on the screen. The initial object is an instance of the class
+PDPRoot, and is the top of the PDP hierarchy.
+
+* Menu:
+
+* gui-win-operation::           How to operate Windows
+* gui-menu-operation::          How to operate the Menus
+* gui-win-view::                Window Views
+
+
+File: pdp-user,  Node: gui-win-operation,  Next: gui-menu-operation,  Prev: gui-windows,  Up: gui-windows
+
+How to operate Windows
+----------------------
+
+   PDP++ relies on your window manager for positioning, and
+iconifying the graphical windows of the program. Please refer to your
+window manager's manual for more information on the mouse movements
+and button presses needed to accomplish these tasks. For all the
+window objects in PDP++ there are CSS commands which ask the window
+manager to position or iconify the windows associated with the
+object. It is up to the window manager to provide the correct
+behavior for these "hints". PDP++ WinBase Window's position and
+iconification status can be manipulated with the following commands:
+
+`GetWinPos()'
+     Stores the window's current position and size on the object.
+     When the object is saved the position and size of its window
+     will be saved as well so that the window has the correct
+     geometry when the object is loaded at a later time.
+
+`ScriptWinPos()'
+     Generates css script code for positioning the window at its
+     current location and prints the code  to the output window or to
+     a recording script.
+
+`SetWinPos(float left, float bottom, float width, float height)'
+     Asks the window manager to resize and move the window to the
+     specified parameters. If no parameters are given, this functions
+     uses the parameters stored on the object.
+
+`Resize (float width, float height)'
+     Asks the window manager to resize the window to the specified
+     parameters. If no parameters are given, this functions uses the
+     parameters stored on the object.
+
+`Move (float left, float bottom)'
+     Asks the window manager to move the window to the specified
+     parameters. If no parameters are given, this functions uses the
+     parameters stored on the object.
+
+`Iconify()'
+     Asks the window manager to iconify the window.
+
+`DeIconify()'
+     Asks the window manager to deiconify the window.
+
+
+File: pdp-user,  Node: gui-menu-operation,  Next: gui-win-view,  Prev: gui-win-operation,  Up: gui-windows
+
+How to operate Menus
+--------------------
+
+   In all WinBase windows, there is a horizontal menubar along the
+top. In this menubar is a "Object" menu (*note gui-object::), and also
+"Subgroup" menus (*note gui-subgroup::) for access to the sub-objects
+in this class.
+
+   To access the menus press and hold button-1 (left button) on the
+mouse while the mouse pointer is over the menu name. A smaller
+vertical menu window will pop up under the mouse pointer. Moving the
+mouse vertically while the button is still pressed will highlight the
+different choices in a the menu. Some of the items in the menu may
+have three dots `...' after them. When highlighting these menu items
+a cascaded menu will popup to the right of the selected menu item.
+The cascaded submenu may be traversed by moving the mouse pointer
+horizontally into the submenu, and then moving the mouse vertically
+as before. Again, button-1 must be pressed and held down during this
+operation. To select an item, release the mouse button while the
+mouse pointer is over the highlighted selection. To cancel the menu
+(to select nothing) move the mouse out of the menu and release the
+mouse button. Menu items which spawn submenus may not be selected. A
+menu may be pinned (it will stay on the screen after the mouse is
+released) by releasing the mouse while the pointer is on the menu
+name or on a submenu's name. A selection can be made from a pinned
+window by clicking (pressing and then releasing a button) on the
+desired selection. This will also cause the pinned menu to become
+unpinned and it will disappear.
+
+   Note: This applies specifically to the motif mode in InterViews.
+Open-look or other modes may be slightly different.
+
+
+File: pdp-user,  Node: gui-win-view,  Prev: gui-menu-operation,  Up: gui-windows
+
+Window Views
+------------
+
+   Some objects may have multiple windows. These multiple windows are
+called views, and provide alternative methods of interacting with the
+same object and its data. In a view window then menubar at the top of
+the window is split into a left menubar and a right menubar. The left
+menubar contains menus whose actions pertain the the base object of
+the view. The right menubar contains menus whose actions pertain to
+this particular view only. For instance, a network object may have
+multiple netviews. In each netview there will be the left and right
+menubars along the top of the window. In the left menubar one would
+find menus with function that are particular to the network, such as
+menus for adding new layers, or removing all connections. In the
+right menubar on would find menus with functions that are particular
+to the view, such as setting the colors or shape of the units in the
+view.
+
+   Each view has an associated list of Schedule processes (*note
+proc-sched::) which update the view in the course of their
+processing. By adding or removing these "updaters", one can control
+the grain at which changing data is displayed. For instance, in the
+netview the colors of the units change to reflect their current
+values whenever the view is updated. If the updater was a trial level
+process then the view would display new values for all the units
+after every trial.
+
+WinView Functions
+=================
+
+`AddUpdater(SchedProcess*  updater)'
+     Add the schedproc to the list of updaters for this view. (and
+     vice-versa).
+
+`RemoveUpdater(SchedProcess*  updater)'
+     Removes the schedproc to the list of updaters for this view. (and
+     vice-versa).
+
+`InitDisplay()'
+     Initializes and graphically rebuilds the view's display.
+
+`UpdateDisplay()'
+     Refreshes the winview's display to reflect changes in the base
+     object's values. This is the function that is called by the
+     updater processes.
+
+
+File: pdp-user,  Node: gui-object,  Next: gui-actions,  Prev: gui-windows,  Up: gui
+
+The "Object" Menu
+=================
+
+   The "Object" menu always appears as the left most menu in a
+WinBase's menubar.  The "Object" menu for each object is used to
+perform file based actions on the object itself. Many of these
+actions involve the use of a file requester dialog. *Note
+gui-file-requester::.  These actions on the object can also be called
+through css (e.g., the Print action can be called from css as
+`object.Print()').  The "Object" menu has the following menu actions:
+
+`Load'
+     Load a text object dump of an object of the same class as this
+     object on top of this object, replacing the values of fields of
+     this object with the values of the saved object's fields. The
+     saved object file is selected with the file requester.
+
+`Save'
+     Save a text object dump of this object in a file created with
+     the file requester, or with the object's most recently used
+     filename for saving.
+
+`SaveAs'
+     Save a text object dump of this object in a -new- file created
+     with the file requester.
+
+`Edit'
+     The Edit menu action brings up an Edit Dialog on the object.
+     *Note gui-edit::.
+
+`Close'
+     The Close menu action will attempt to close/delete the object.
+     If the object is referenced or pointed to by other objects, then
+     it will not actually be deleted, only the windows which display
+     it will be removed. The user must confirm the deletion if it is
+     possible to safely delete the object. NOTE THAT CLOSE IS NOT
+     ICONIFY!, it really does delete the object, not just close the
+     menu.
+
+`Copy From'
+     Copies from another object of the same or related type --
+     replace all of the current data in the object with those in
+     another.  In the menu, only the same or subtypes of this object
+     will be shown, but in the script, any type of related object can
+     be passed to this function.
+
+`Copy To'
+     Copies the data in this object to another object.  This can be
+     useful if you want to copy from a more basic type of object
+     (e.g., Environment) to a derived type (e.g., FreqEnv) - CopyFrom
+     won't show the more basic type of object to copy from, but
+     CopyTo will show the derived type.
+
+`DuplicateMe'
+     Makes another copy of this object - creates a new object and then
+     copies from this current object to that new object.  Note this is
+     DuplicateMe in the script code.
+
+`ChangeMyType'
+     Changes the type of this object to be another related type
+     (e.g., change to a FreqEnv from an Environment).  Will usually
+     do a good job of updating the various links to this object if
+     changed.  Not good for objects within a network, or generally
+     for Stat objects that are aggregated.  This is ChangeMyType in
+     the script code.
+
+`SelectForEdit'
+     Allows you to select a field (member) of this object to be
+     edited in a SelectEdit object, which consolidates parameters and
+     functions across multiple objects into a single edit dialog
+     (*note proj-seledit::).
+
+`SelectFunForEdit'
+     Allows you to select a function (method) of this object to be
+     accessible from a SelectEdit object, which consolidates
+     parameters and functions across multiple objects into a single
+     edit dialog (*note proj-seledit::).
+
+`Help'
+     Will automatically pull up a help browser for information
+     relevant to this object.  Depends on the browser actually
+     running on your system, as specified in the Settings on the root
+     object.
+
+`Print'
+     The Print menu action will save a snapshot of the entire
+     object's window to a file in Postscript format using a file
+     requester.  Note that this printout file uses structured
+     graphics so it will scale well if resized, etc.
+
+`Print Data'
+     The Print data menu action will save a snapshot of the window's
+     data, not including the menubars and window decoration, to a
+     file in Postscript format using a file requester.
+
+`Update Menus'
+     If objects are created or deleted, sometimes the menus of their
+     parent objects can become out of date. If this appears to be the
+     case then use the "update menus" menu action on the parent
+     object to fix the menus.  The "update menus" menu action
+     recursively traverses the menus of the object and its
+     subobjects, adding and deleting menu items appropriately.
+
+`Iconify'
+     This will iconify the window (shrink down to an iconic
+     representation, to get it out of your way).
+
+
+File: pdp-user,  Node: gui-actions,  Next: gui-subgroup,  Prev: gui-object,  Up: gui
+
+The "Actions" Menu
+==================
+
+   Some objects will have an "Actions" menu following their "Object"
+menu.  In the Action menu are functions which are apply specifically
+to the object and are not the common file based functions found on
+the Object menu. If you wish to perform a function directly on the
+object you are viewing in the window, the "Actions" menu is a good
+place to look.  For more specific information concerning an object's
+"Action" menu please refer to the section of this manual which
+pertains to the object itself.
+
+
+File: pdp-user,  Node: gui-subgroup,  Next: gui-edit,  Prev: gui-actions,  Up: gui
+
+The SubGroup Menu(s)
+====================
+
+   A subgroup menu appears in the menubar of a WinBase object for
+each of the group members of the object. The name of the menu
+corresponds to the name of the group member (e.g., The Layer object
+has a group of units and a group of projections. It would have two
+subgroup menus, one labeled `.units' and a second labeled
+`.projections'. The "."  before the name of the subgroup is used to
+indicate that the subgroups are sub-objects of the WinBase object. In
+the CSS script language one would access objects in these subgroups
+using the "." operator. (e.g., To access the first network in the
+project one would type `.projects.networks[0]'). In addition the
+subgroup menus appear in a non-italicized font to distinguish them
+from the "Object" and "Action" menus of the WinBase. The subgroup
+menu's have the following menu choices.  Occasionally subgroup menus
+may add additional menu choices as well (e.g., The Processes submenu
+of the Project has the menu choice Control Panel which opens a
+control panel dialog for one of the processes in the subgroup). Some
+of the group operations require the use of a file requester. *Note
+gui-file-requester::.
+
+`Edit'
+     The Edit action brings up a Group Edit Dialog for the group or
+     an Edit Dialog for an individual object (*Note gui-edit::).
+
+`New'
+     The New action allows the use to create new objects in the group
+     or in a subgroup of the group. The user can chose to create
+     objects of the base object type, objects of a subclass of the
+     base object type, or a subgroup object. A popup dialog appears
+     which enables the user to select the number of objects to
+     create, the type of objects, and where to place them. Sometimes
+     the popup dialog may have additional fields and toggles which
+     are particular to the item being created. If the auto_edit flag
+     in the global settings (*note gui-settings::) is turned on, an
+     edit dialog will be created for the newly created objects when
+     button-1 (left button) is pressed on the OK button of the popup
+     dialog. If button-2 (middle button) is pressed the edit dialog
+     will be created only if the auto_edit variable is off. When
+     button-3 (right button) is pressed an edit dialog will always be
+     created.
+
+`Open In'
+     The "Open in" action allows the user to open a previously-saved
+     object file and add the data into the group. *Note
+     obj-basics-files::.
+
+`Load Over'
+     The "Load Over" action allows the user to open a
+     previously-saved object file and overwrite the objects in the
+     group with the data in the file. *Note obj-basics-files::.
+
+`Save'
+     The Save action allows the user to save the group or a group
+     element as a PDP++ object file using the file requester or the
+     object's most recently used name for saving. *Note
+     obj-basics-files::.
+
+`Save As'
+     The Save As action allows the user to save the group or a group
+     element in a new PDP++ object file using the file requester.
+     *Note obj-basics-files::.
+
+`Remove'
+     The Remove action allows the user to remove the group or a group
+     element. The user is prompted with a confirmation dialog to
+     confirm the choice. However, If the chosen object is referenced
+     by other objects then it will not be deleted.
+
+`Duplicate'
+     The Duplicate action allows the user to add a duplicate of one
+     of the objects in the group to the group or its subgroups.
+
+`Move Within'
+     This allows the user to move objects to new positions within the
+     group (e.g., for rearranging the order of layers in the network,
+     which is important for the feedforward Bp algorithm).
+
+`View Window'
+     View Window brings the window associated with selected object to
+     the front, deiconifies it, or creates it if a window does not
+     exist.
+

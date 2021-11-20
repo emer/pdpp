@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_220.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_222.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1368" HREF="pdp-user_toc.html">15.4  Cs Proceses</A></H2>
+<P>
+<A NAME="IDX1369"></A>
+<A NAME="IDX1370"></A>
+<A NAME="IDX1371"></A>
+<A NAME="IDX1372"></A>
+<A NAME="IDX1373"></A>
+
+</P>
+<P>
+The core set of Cs processes consist of a <B>CsTrial</B> process that
+performs the two phases of contrastive Hebbian learning (CHL), where
+each phase of settling is controlled by a <B>CsSettle</B> process, which in
+turn iterates over a number of individual <B>CsCycle</B> processing steps,
+each of which updates the activation state of the network.  These
+processes fit nicely within the standard settling and cycle processes
+(see section <A HREF="pdp-user_153.html">12.4  Schedule Processes for Different Time-Grains</A>).
+
+</P>
+<P>
+In addition, the <B>CsSample</B> process can be used to sample over trials
+in order to obtain a better sampling of activation states for weight
+updating, which is usually only necessary when trying to match a
+probabalistic output distribution (see section <A HREF="pdp-user_227.html">15.7  The Probability Environment and Cs</A>).  It is created
+by default if using the <TT>`cs_prob_env.def'</TT> defaults file, but not
+otherwise. 
+
+</P>
+<P>
+The <B>CsTrial</B> process iterates over two loops of settle processing,
+one for each phase.  It has the following variables:
+<DL COMPACT>
+
+<DT><CODE>Counter phase_no</CODE>
+<DD>
+<A NAME="IDX1374"></A>
+The counter for this process, it goes from 1 to 2 for the two
+different phases.
+<DT><CODE>Phase phase</CODE>
+<DD>
+<A NAME="IDX1375"></A>
+The phase the process is in, which is just a more readable
+version of the counter:  <CODE>MINUS_PHASE</CODE> and <CODE>PLUS_PHASE</CODE>.
+<DT><CODE>StateInit trial_init</CODE>
+<DD>
+<A NAME="IDX1376"></A>
+Indicates what to do at the start of each trial process.
+Typically, one wants to <CODE>INIT_STATE</CODE>, but it is also possible to
+<CODE>DO_NOTHING</CODE> or <CODE>MODIFY_STATE</CODE>, which could be redefined by a
+unit type to decay the activation state, for example (by default it just
+does an init state).
+<DT><CODE>bool no_plus_stats</CODE>
+<DD>
+<A NAME="IDX1377"></A>
+This flag means that statistics will not be recorded in the plus phase.
+This is useful because squared error, for example, is only meaningful in
+the minus phase, since the correct answer is clamped in the plus phase.
+<DT><CODE>bool no_plus_test</CODE>
+<DD>
+<A NAME="IDX1378"></A>
+This flag means that the plus phase will not be run if the epoch process
+indicates that it is in <CODE>TEST</CODE> mode (i.e., no learning is taking
+place).
+</DL>
+
+<P>
+<A NAME="IDX1379"></A>
+<A NAME="IDX1380"></A>
+<A NAME="IDX1381"></A>
+The <B>CsSettle</B> process iterates over cycles of settling (activation
+updating).  Like the <CODE>trial_init</CODE> of the trial process, the
+<CODE>between_phases</CODE> field of the settle process determines how the
+network state will be initialized between phases.  Some people have
+claimed that learning works better if you do not <CODE>INIT_STATE</CODE>
+between phases (<CITE>Movellan, 1990</CITE>).  However, the default is set to
+initialize the state, so that settling starts from the same initial
+conditions for both phases.
+
+</P>
+<P>
+Also, the settle process allows the network to settle for some time
+before collecting statistics for learning.  This time, determined by the
+<CODE>start_stats</CODE> parameter, allows the network to get into a
+stochastic equilibrium before measuring the activation states.  If using
+a deterministic network, however, equilibrium is considered to simply be
+the final state of the network after settling.  Setting the
+<CODE>deterministic</CODE> flag will only update the weights based on the
+final activation state.
+
+</P>
+<P>
+The settle process will use the <CODE>time</CODE> field from a <B>TimeEvent</B>
+as a <EM>duration</EM> to settle on the event.  Note that this is a
+non-standard use of this time field (see section <A HREF="pdp-user_212.html">14.2.5  RBp Sequence Processes and TimeEvents</A>).
+
+</P>
+<P>
+<A NAME="IDX1382"></A>
+<A NAME="IDX1383"></A>
+The <B>CsCycle</B> process updates the activation state of the network.
+This can be done in one of two ways -- either all of the units are
+updated simultaneously (<CODE>SYNCHRONOUS</CODE> mode), or units are selected
+at random and updated one at a time, which is <CODE>ASYNCHRONOUS</CODE> mode.
+If the asynchronous mode is selected, one can perform multiple
+asynchronous updates per cycle.  The number of units updated is
+determined by the <CODE>n_updates</CODE> variable.  Note that the total number
+of updates performed is the product of <CODE>n_updates</CODE> and the number
+of cycles made during settling, so be sure to take that into account
+when setting the values of either of these parameters.
+
+</P>
+<P>
+A variation of the synchronous mode is the <CODE>SYNC_SENDER_BASED</CODE>
+mode, which must be selected if IACUnitSpec's are being used, and the
+<CODE>use_send_thresh</CODE> flag is set.  In this case, net input is computed
+in a sender-based fashion, meaning that the net input for each unit must
+first be initialized to zero, then accumulated.  In standard
+receiver-based net input computation, the net input can be reset at the
+point an individual unit's net input is computed, so it doesn't have to
+be done for the entire network first.  This is the different between
+SYNC_SENDER_BASED and SYNCHRONOUS.  Asynchronous updating is not
+supported for sender-based updating.  When the <B>CsTrial</B> process is
+<I>ReInit</I>'d or <I>NewInit</I>'d, it will automatically check for the
+correct pairing of the use_send_thresh and update_mode flags, and inform
+you if it needs to be changed.
+
+</P>
+<P>
+<A NAME="IDX1384"></A>
+The <B>CsSample</B> process has <CODE>sample</CODE> counter to keep track of the
+number of samples run.  Set the <CODE>max</CODE> of this counter to 1 if you
+are running a deterministic network, or are not doing learning on
+probability distributions.  This process iterates over the trial
+process, and only needs to be present when learning probabalistic output
+distributions.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_220.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_222.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - comdir-objs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_36.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_38.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX242" HREF="ta_css_toc.html">6.3.1  Object Directives</A></H3>
+
+<P>
+If you add an extra "#" to the beginning of the comment directive, it
+will automatically be inherited by any sub-classes of the given object.
+Otherwise, it only applies to the object on which it was given.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>#IGNORE</CODE>
+<DD>
+Do not register this object in the list of types.
+<DT><CODE>#NO_TOKENS</CODE>
+<DD>
+Do not keep a record of the tokens of this object type.  Types can keep
+pointers to all instances or tokens of themselves.  This can be
+expensive in terms of memory, but the interface uses "token menus" for
+arguements or methods which are pointers to objects of the given type.
+<DT><CODE>#NO_INSTANCE</CODE>
+<DD>
+Do not create a global instance (<CODE>TAI_xxx</CODE>) of this object.  This
+will prevent tokens of this object from being made.
+<DT><CODE>#INSTANCE</CODE>
+<DD>
+If default is not to create instances, then create one anyway for this
+object.
+<DT><CODE>#NO_MEMBERS</CODE>
+<DD>
+Do not store the members (including member functions) of this class.
+Only the type name will be registered.
+<DT><CODE>#NO_CSS</CODE>
+<DD>
+Do not create CSS stub functions for the member functions on this object.
+<DT><CODE>#INLINE</CODE>
+<DD>
+Causes this item to be edited in a single line in a dialog box (e.g. for
+geometry x,y,z) and affects saving/loading, etc.
+<DT><CODE>#EDIT_INLINE</CODE>
+<DD>
+Only causes this item to be edited in a single line in a dialog box, but
+in all other respects it is treated as a normal included class.  This is
+useful for certain complex objects such as arrays and lists that do not
+otherwise save/load well as INLINES.
+<DT><CODE>#BUTROWS_x</CODE>
+<DD>
+Set the number of button rows to be x, useful if default allocation of 
+number of rows of buttons for edit dialog is not correct
+<DT><CODE>#EXT_xxx</CODE>
+<DD>
+Sets the default extension for saving/loading this type to xxx.
+<DT><CODE>#COMPRESS</CODE>
+<DD>
+store dump file's of this object compressed.  Since the save files are
+text, they can be large, so it is a good idea to auto-compress dump
+files for large objects.
+<DT><CODE>#MEMB_IN_GPMENU</CODE>
+<DD>
+This indicates that there is a group object as a member of this one
+who's objects should appear in menus where this object appears.
+<DT><CODE>#VIRT_BASE</CODE>
+<DD>
+This is a "virtual" base class: don't show in token menus for this
+object, etc.
+<DT><CODE>#NO_UPDATE_AFTER</CODE>
+<DD>
+Don't call UpdateAfterEdit when loading this object (and other places it
+might automatically get called).  Since a list of objects which should
+be updated after loading is made, small or numerous objects should not
+be added to this list if not necessary.
+<DT><CODE>#IMMEDIATE_UPDATE</CODE>
+<DD>
+Perform an immediate UpdateAfterEdit on this object after loading (i.e.,
+it creates other objects..).  Normally, updating happens after all of
+the other objects have been loaded.
+<DT><CODE>#SCOPE_xxx</CODE>
+<DD>
+Type of object to use as a scope for this object.  The scope restricts
+token menus and other things to only those things that share a common
+parent token of the given scope type.
+<DT><CODE>#ARRAY_ALLOC</CODE>
+<DD>
+Specific to taList_impl derivatives: this list or group should have
+saved items created all together during loading (ie., like an array).
+If actually using array-based memory allocation, this is essential, but
+otherwise it can only speed things up a little bit.
+<DT><CODE>#LINK_SAVE</CODE>
+<DD>
+Save the actual contents of this object even when it appears as a link
+in a list.  Usually just the link pointer is saved, and the object is
+saved later in the group that actually owns it. This overrides this and
+saves the information in both places -- can be useful if info from the
+linked object is needed during loading.
+<DT><CODE>#NO_OK</CODE>
+<DD>
+Do not present an OK button on the edit dialog for this object.
+<DT><CODE>#NO_CANCEL</CODE>
+<DD>
+Do not present a CANCEL button on the edit dialog for this object.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_36.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_38.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

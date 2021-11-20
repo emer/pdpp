@@ -1,0 +1,49 @@
+// put this in a Script object, with the following s_args:
+
+int n_events_per_gp = s_args[0]; // number of events per group
+int env_no 	    = s_args[1]; // index of environment 
+String file_name    = s_args[2]; // file name to load
+
+void CopyColsToEvent(String_Array& col, Event* evt) {
+  int idx = 1;			// start at column 1 (0 has name)
+  int i;
+  for(i=0; i<evt->patterns.size; i++) {
+    Pattern* pat = evt->patterns[i];
+    int j;
+    for(j=0; j<pat->value.size; j++)
+      pat->value[j] = col[idx++];
+  }
+}
+
+void ReadEventGroup(istream& strm, Environment* env) {
+  Event_MGroup* gp = NULL;
+  int i;
+  for(i=0; i<n_events_per_gp; i++) {
+    String_Array& col = ReadLine(strm); // readline gives array of columns
+    if(strm.eof())  break;		
+    if(gp == NULL)			// wait till after eof to get new gp
+      gp = env->events.NewGp(1);
+    Event* evt = gp->NewEl(1);
+    evt->name = col[0];			// assuming 1st col has a name
+    if(i==0)
+      gp->name = col[0];		// name the group too
+    CopyColsToEvent(col, evt);
+  }
+}
+
+void ReadEvents() {
+  Environment* env = .environments[env_no];
+  env.events.Reset();		// get rid of existing events
+  fstream strm;
+  strm.open(file_name, ios::in);
+  if(strm.bad() || strm.eof()) {
+    cerr << "could not open file: " << file_name << "\n";
+    return;
+  }
+  while(!strm.eof())
+    ReadEventGroup(strm, env);
+  env.InitAllViews();
+  env.UpdateMenus();
+}
+
+ReadEvents();

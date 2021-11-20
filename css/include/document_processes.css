@@ -1,0 +1,58 @@
+
+class DocProc {
+  // documents process heirarchy structure
+public:
+  void ProcGpDoc(ostream& strm, Stat_Group* gp, String nm);
+  void ProcDoc(ostream& strm, SchedProcess* proc);
+  void ProjProcDoc(ostream& strm);
+  void ProjDocFile(String fname = "proc.doc");  // #BUTTON document to file
+};  
+
+void DocProc::ProcGpDoc(ostream& strm, Stat_Group* gp, String nm) {
+  strm << "\t::" << nm << "\n";
+  int i;
+  for(i=0; i<gp.leaves; i++) {
+    Process* st = gp.Leaf(i);
+    strm << "\t\t" << st->name;
+    if(!st->mod.flag)
+      strm << "\t MOD FLAG OFF";
+    else if(st->mod.m != 1)
+      strm << "\tmod: " << st->mod.m << "," << st->mod.off;
+    if(st.InheritsFrom(Stat)) {
+      if(*(st->time_agg.from) != 0)
+	strm << "\tagg of: " << st->time_agg->from->name;
+    }
+    strm << "\n";
+  }
+}
+
+void DocProc::ProcDoc(ostream& strm, SchedProcess* proc) {
+  strm << proc->name << "\n";
+  if(proc->loop_stats.leaves > 0)
+    ProcGpDoc(strm, proc->loop_stats, "loop_stats");
+  if(proc->final_stats.leaves > 0)
+    ProcGpDoc(strm, proc->final_stats, "final_stats");
+  if(proc->loop_procs.leaves > 0)
+    ProcGpDoc(strm, proc->loop_procs, "loop_procs");
+}
+
+void DocProc::ProjProcDoc(ostream& strm) {
+  Project* proj = .projects[0];
+  strm << "Process Docs for Project: " << proj.win_name << "\n";
+  int i;
+  for(i=0; i< proj.processes.leaves; i++) {
+    SchedProcess* proc = proj.processes.Leaf(i);
+    ProcDoc(strm, proc);
+  }
+}
+
+void DocProc::ProjDocFile(String fname) {
+  fstream strm;
+  strm.open(fname, ios::out);
+  ProjProcDoc(strm);
+  strm.close();
+  system("more " + fname);
+}
+
+DocProc doc_proc;
+EditObj(doc_proc);

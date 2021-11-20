@@ -1,0 +1,212 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-c++-intro</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_73.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_75.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.3.4  Features of C++ for C Programmers</A></H3>
+<P>
+<A NAME="IDX191"></A>
+<A NAME="IDX192"></A>
+<A NAME="IDX193"></A>
+<A NAME="IDX194"></A>
+<A NAME="IDX195"></A>
+<A NAME="IDX196"></A>
+<A NAME="IDX197"></A>
+<A NAME="IDX198"></A>
+<A NAME="IDX199"></A>
+<A NAME="IDX200"></A>
+
+</P>
+<P>
+Since more users are likely to be familiar with C than C++, this section
+provides a very brief introduction to the essentials of C++.
+
+</P>
+<P>
+The central feature of C++ is that it extends the <CODE>struct</CODE>
+construct of C into a full-fledged object oriented programming (OOP)
+language based around a <CODE>class</CODE>.  Thus, a class or object has data
+members, like a <CODE>struct</CODE> in C, but it also has functions associated
+with it.  These <EM>member functions</EM> or <EM>methods</EM> perform
+various functions associated with the data members, and together the
+whole thing ends up encapsulating a set of related tasks or operations
+together in a single entity.
+
+</P>
+<P>
+The object-oriented notion is very intuitive for neural-network entities
+like units:
+
+</P>
+<PRE>class Unit {    // this defines an object of type Unit
+public:         // public means that any other object can access the following
+
+  // these are the data members, they are stored on the object  
+  float         net_input;      // this gets computed by the weights, etc.
+  float         activation;     // this is computed by the function below
+  float         target;         // this is set by the environment before hand
+  float         error;          // this gets computed by the function below
+
+  // these are the member functions, they can easily access the data members
+  // associated with this object 
+  virtual void  Compute_Activation()
+  { activation = 1.0 / (1.0 + exp(net_input)); }
+  virtual void  Compute_Error()
+  { error = target - activation; error *= error; }
+};
+</PRE>
+
+<P>
+The member functions encapsulate some of the functionality of the unit
+by allowing the unit to update itself by calling its various member
+functions.  This is convenient because different types of units might
+have different <EM>definitions</EM> of these functions, but they all would
+have a <CODE>Compute_Activation()</CODE> function that would perform this same
+basic operation.  Thus, if you have an object which is an instance or
+token of the type <CODE>Unit</CODE>, you can set its data members and call its
+member functions as follows:
+
+</P>
+<PRE>Unit un;
+un.net_input = 2.5;
+un.target = 1.0;
+un.Compute_Activation();
+un.Compute_Error();
+</PRE>
+
+<P>
+Thus, you use the same basic notation to access data members as member
+functions (i.e., the <CODE>obj.mbr</CODE> syntax).  To illustrate why this
+encapsulation of functions with objects is useful, we can imagine
+defining a new object type that is just like a unit but has a different
+activation function.
+
+</P>
+<PRE>class TanhUnit : public Unit {          // we're going to inherit from a Unit
+public:
+  void          Compute_Activation()    { activation = tanh(net_input); }
+};
+</PRE>
+
+<P>
+This notation means that the new type, <CODE>TanhUnit</CODE>, is just like a
+<CODE>Unit</CODE>, except that it has a different version of the
+<CODE>Compute_Activation()</CODE> function.  This is an example of
+<EM>inheritance</EM>, which is central to C++ and OOP in general.  Thus,
+if we have something which we know to be a unit of some type (either a
+<CODE>Unit</CODE> or a <CODE>TanhUnit</CODE>, or maybe something else derived from a
+<CODE>Unit</CODE>), we can still call the <CODE>Compute_Activation()</CODE> function
+and expect it to do the right thing:
+
+</P>
+<PRE>Unit* un;
+un-&#62;Compute_Activation();
+</PRE>
+
+<P>
+This is an example of a <EM>virtual member function</EM>, because the
+actual function called depends on what actual type of unit you have.
+This is why the original definition of the <CODE>Compute_Activation()</CODE>
+function has the <CODE>virtual</CODE> keyword in front of it.  Virtual
+functions are an essential part of C++, as they make it possible to have
+many different definitions or "flavors" of a given operation.  Since
+these differences are all encapsulated within a standard set of virtual
+functions, other objects do not need to have special-case code to deal
+with these differences.  Thus, a very general purpose routine can be
+written which calls all of the <CODE>Compute_Activation()</CODE> functions on
+all of the units in a network, and this code will work regardless of
+what actual type of units are in the network, as long as they derive
+from the <EM>base type</EM> of <CODE>Unit</CODE>.
+
+</P>
+<P>
+While there are a number of other features of C++, the PDP++ software
+mainly makes use of the basics just described.  There are a couple of
+basic object types that are used in the software for doing file
+input/output, and for representing character-string values.
+
+</P>
+<P>
+The C++ way of doing file input/output is via the <EM>stream</EM> concept.
+There is an object that represents the file, called a stream object.
+There are different flavors of stream objects depending on whether you
+are doing input (<CODE>istream</CODE>), output (<CODE>ostream</CODE>) or both
+(<CODE>iostream</CODE>).  To actually open and close a file on a disk, there
+is a version of the <CODE>iostream</CODE> called an <CODE>fstream</CODE> that has
+functions allowing you to open and close files.  To send stuff to or
+read stuff from a file, you use something like the "pipe" or i/o
+redirection concept from the standard Unix shells.  The following
+example illustrates these concepts:
+
+</P>
+<PRE>fstream fstrm;     // fstrm is a file stream, which can do input or output
+
+// we are opening the file by calling a member function on the
+// fstream object. the enumerated type ios::out means 'output'
+// also available are ios::in, ios::app, etc.
+
+fstrm.open("file.name", ios::out);  
+
+// we "pipe" stuff to the fstrm with the &#60;&#60; operator, which can deal
+// with all different types of things (ints, floats, strings, etc.)
+
+fstrm &#60;&#60; "this is some text " &#60;&#60; 10 &#60;&#60; 3.1415 &#60;&#60; "\n";
+
+fstrm.close();     // again, the file is closed with a member fun
+</PRE>
+
+<P>
+The mode in which the file is opened is specified by an <EM>enumerated
+type</EM> or an <CODE>enum</CODE>.  This provides a way of giving a descriptive
+name to particular integer values, and it replaces the use of
+string-valued arguments like "r" and "w" that were used in the
+<CODE>open()</CODE> function of the standard C library.  The base class of all
+the stream types is something called <CODE>ios</CODE>, and the enum for the
+different modes a file can be opened in are defined in that type, which
+is why they are <EM>scoped</EM> to the <CODE>ios</CODE> class by the
+<CODE>ios::</CODE> syntax.  The definition of this enum in ios is as follows:
+
+</P>
+<PRE>  enum open_mode  { in=1, out=2, ate=4, app=010, trunc=020,
+                        nocreate=040, noreplace=0100 };
+</PRE>
+
+<P>
+which shows that each enum value defines a bit which can be combined
+with others to affect how the file is opened.
+
+</P>
+<P>
+The following example illustrates how file input works with streams.
+One simply uses the <CODE>&#62;&#62;</CODE> operator instead of <CODE>&#60;&#60;</CODE>.  Note that
+the fstream has to be opened in <CODE>ios::in</CODE> mode as well:
+
+</P>
+<PRE>fstream fstrm;     // fstrm is a file stream, input or output
+
+// we are opening the file by calling a member function on the
+// fstream object. the enumerated type ios::out means 'output'
+// also available are ios::in, ios::app, etc.
+
+fstrm.open("file.name", ios::in);
+
+// these variables will hold stuff that is sucked in from the stream
+String words[4];
+int number;
+float pi;
+// this assumes that the stream was written by the output example
+// given previously
+fstrm &#62;&#62; words[0] &#62;&#62; words[1] &#62;&#62; words[2] &#62;&#62; words[3] &#62;&#62; number &#62;&#62; pi;
+
+fstrm.close();     // again, the file is closed with a member fun
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_73.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_75.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

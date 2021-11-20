@@ -1,0 +1,60 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SGI - cfront (CC)
+
+# always debug, all the time
+DEBUG_FLAG = -g
+DEBUG_OPT_FLAG = 
+OPT_FLAG = -g
+
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DSGI -DNO_SIGNED -DNO_BUILTIN_BOOL -DCONST_48_ARGS
+
+# -DNO_SIGNED -DNO_BUILTIN_BOOL -DCONST_48_ARGS
+
+# use opt malloc (otherwise get mysterious bug)
+GENERIC_LIB = -lm -lC -lmalloc
+
+# use the CC includes
+IOS_INCLUDES = CC-3.1
+
+#include CC iostream stuff
+IDIRS_EXTRA = -I/usr/include/CC
+
+# need to use OCC because NCC complains about member offsets in _TA files
+# also, shared is default compilation mode, so these are the same..
+CXX_SHARED = OCC +a1 +e0
+CC_SHARED = gcc -fPIC
+CXX_NONSHARED = OCC +a1 +e0
+CC_NONSHARED = gcc 
+
+# doesn't need ranlib
+RANLIB = ls
+AR_CMD_SHARED = OCC +a1 -shared -o 
+LIB_EXT_SHARED = so
+
+# use gnu cccp instead cuz it works!
+cppC = /usr/local/bin/cccp -lang-c++ -nostdinc++
+
+# using shared libraries
+CC = $(CC_SHARED)
+CXX = $(CXX_SHARED)
+LIB_EXT = $(LIB_EXT_SHARED)
+AR_CMD = $(AR_CMD_SHARED)
+
+# vt file needed for e0/e1 stuff
+VT_INST_SRC = $(VT_INST_FILE).cc
+VT_INST_OBJ = $(VT_INST_FILE).o
+VT_INST_DEP = $(VT_INST_FILE).d
+
+# not using TI
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+# using old cfront for _TA.cc files
+MAKETA_FLAGS_CPU = -old_cfront
+
+
+

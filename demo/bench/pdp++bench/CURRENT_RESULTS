@@ -1,0 +1,76 @@
+PDP++ Benchmark Results
+Backpropagation Network using standard PDP++ objects
+
+Size:		500x500x500	100x100x100	10x10x10
+		secs	M con/	secs	M con/	secs	M con/	avg	Ratio		M con/	large/
+System			sec		sec		sec	M con	fm prev	Mhz	Mhz	sm
+Sparc_10/40	285.07	0.53	264.65	0.57	308.83	0.48	0.53		40	1.32	1.10
+HP735_100	130.09	1.15	139.13	1.08	127.50	1.17	1.13	2.15	100	1.13	0.98
+SGI4K_150	151.30	0.99	91.23	1.64	109.01	1.37	1.33	1.18	75	1.78	0.72
+K6_200	85.59	1.75	45.38	3.31	63.59	2.36	2.47	1.86	200	1.24	0.74
+K6_200@225	79.62	1.88	41.75	3.56	56.64	2.65	2.70	1.09	225	1.20	0.71
+PentPro_200	79.05	1.90	64.44	2.33	47.36	3.17	2.47	0.91	200	1.23	0.60
+PPro_200_KCC	80.31	1.87	62.65	2.39	45.55	3.29	2.52	1.02	200	1.26	0.57
+IBMSP_reg	65.01	2.31	43.10	3.48	88.35	1.70	2.50	0.99	150	1.66	1.36
+PII_300	42.09	3.56	39.37	3.81	38.21	3.92	3.76	1.51	300	1.25	0.91
+IBMSP_wide	58.13	2.58	38.46	3.90	78.23	1.92	2.80	0.74	175	1.60	1.34
+HP8K_180	66.93	2.24	36.07	4.16	65.43	2.29	2.90	1.03	180	1.61	0.98
+Alpha_600_2L2	56.94	2.63	43.49	3.45	49.25	3.05	3.04	1.05	600	0.51	0.86
+SGI_10K_180	51.30	2.92	29.41	5.10	38.49	3.90	3.97	1.37	180	2.21	0.75
+PII_450	33.28	4.51	29.34	5.11	26.69	5.62	5.08	1.28	450	1.13	0.80
+Xeon_450	28.87	5.20	27.40	5.47	24.02	6.24	5.64	1.11	450	1.25	0.83
+PIII_600	25.97	5.78	24.07	6.23	19.80	7.58	6.53	1.16	600	1.09	0.76
+     two jobs	35.00	4.28	32.00	4.65	20.00	7.48	5.47	0.84	600	0.91	0.57	0.74	large slowdown
+Pmobile_500	27.32	5.49	25.94	5.78	17.95	8.36	6.54	1.00	500	1.31	0.66
+SGI_10K_250	37.54	3.99	13.41	11.18	24.31	6.17	7.11	1.09	250	2.85	0.65
+PIII_733_Asus	23.59	6.36	21.46	6.99	12.11	12.39	8.58	1.31	733	1.17	0.51
+Pmoble_800	22.72	6.60	20.71	7.24	10.58	14.18	9.34	1.09	800	1.17	0.47
+     two jobs	22.82	6.42	21.00	7.13	10.51	14.26	9.27	0.99	800	1.16	0.45	0.97	large slowdown
+PIII_733	19.56	7.66	19.10	7.85	11.31	13.26	9.59	1.35	733	1.31	0.58
+     two jobs	27.50	5.45	25.75	5.82	11.31	13.26	8.18	0.95	733	1.12	0.41	0.71	large slowdown
+Athlon_900	23.28	6.44	16.94	8.85	10.44	14.37	9.89	1.15	900	1.10	0.45	1.23
+Alpha_750_g++	27.39	5.55	10.62	14.87	16.05	9.35	9.92	1.00	750	1.32	0.59
+PIII_933	17.96	8.35	18.12	8.28	8.96	16.74	11.12	1.12	933	1.19	0.50	1.16	1.27	vs PII733, mcon, mhz
+     two jobs	28.45	5.27	22.75	6.57	8.92	16.82	9.55	0.86	933	1.02	0.31	0.63	large slowdown
+Alpha_667_cxx	25.55	5.87	11.51	13.04	7.17	20.92	13.28	1.34	750	1.77	0.28
+Alpha_750_cxx	18.13	8.27	10.11	14.83	6.36	23.59	15.56	1.17	750	2.08	0.35	1.62	vs PIII 733, overall
+
+
+Pentium Systems:
+PentPro_200	79.05	1.90	64.44	2.33	47.36	3.17	2.47		200	1.23
+PII_300	42.09	3.56	39.37	3.81	38.21	3.92	3.76	1.53	300	1.25
+PII_450	33.28	4.51	29.34	5.11	26.69	5.62	5.08	1.35	450	1.13
+Xeon_450	28.87	5.20	27.40	5.47	24.02	6.24	5.64	1.11	450	1.25
+PIII_600	28.35	5.29	25.06	5.98	19.79	7.57	6.28	1.11	600	1.05
+Pmobile_500	27.32	5.49	25.94	5.78	17.95	8.36	6.54	1.04	500	1.31
+Pmoble_800	22.72	6.60	20.71	7.24	10.58	14.18	9.34	1.43	800	1.17
+PIII_733	20.47	7.33	19.76	7.59	12.25	12.25	9.06	1.38	733	1.24
+PIII_933	17.96	8.35	18.12	8.28	8.96	16.74	11.12	1.19	933	1.19
+
+System	Description							Compiler
+Sparc_10/40	Sparc 10/40, SunOs 4.1.3				g++ -O2
+HP735_100	735/100 Mhz, HPUX 9.01, newer C++/cc optimizer		CC +O2
+SGI4K_150	R4400, 75/150 Mhz, Irix 5.3				OCC +a1 -O2
+K6_200	AMD K6-200, Debian Linux (Bios Optimized)			g++ -O2
+K6_200@225	AMD K6-200 overclocked @225Mhz, Debian Linux		g++ -O2
+PentPro_200	PentiumPro 200Mhz, LINUX Red Hat 3.0.3			g++ -O2
+PPro_200_KCC	PentiumPro 200Mhz, LINUX Red Hat 3.0.3			KAI c++ compiler, +K3
+IBMSP_reg	SP2 regular node, AIX v 4.1.4				xlC -+ -O2 -qfloat=hsflt -qarch=pwr2
+PII_300	Pentium II 300Mhz, Linux Red Hat 4.2, dual proc			g++ -O2
+IBMSP_wide	SP2 fast (wide) node (sp1), AIX v 4.1.4			xlC -+ -O2 -qfloat=hsflt -qarch=pwr2
+HP8K_180	PA8000/180 Mhz, HPUX 10.20				CC +O2 
+Aplha_600_2L2	Alpha 21264 600Mhz, 2mb l2, 100mhz fsb, Linux Mdk 7	g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline
+SGI_10K_180	SGI Origin200 R10K 180mhz, IRIX 6.4			CC -Ofast -n32 -mips4
+PII_450	Pentium II 450Mhz, Linux RH 5.1					g++ -O2
+Xeon_450	Pentium II Xeon 450Mhz, Linux RH 5.1			g++ -O2
+PIII_600	Pentium III 600Mhz, 100FSB, Linux RH 6.0		g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline
+Pmobile_500	Mobile Pentium III 500Mhz, 100FSB, Linux RH 6.0 	g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline
+SGI_10K_250	SGI Origin2000 R10K 250mhz, IRIX 6.4			CC -Ofast -n32 -mips4
+PIII_733_Asus	PIII 773MHZ, Asus P2C-D,  Rambus PC600			g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline
+Pmobile_800	Mobile Pentium III 800Mhz, 100FSB, Linux RH 6.2 	g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline
+PIII_733	Pentium III, 733Mhz, RDRAM 800 840 chipset		g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline
+Athlon_900	Athlon 900MHz, Asus K7V, SDRAM				g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline
+Alpha_750_g++	Alpha 21264 750Mhz, 8mb l2, 100mhz fsb, Linux Mndrk 7	g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline
+Alpha_667_cxx	Alpha 21264 667Mhz, 4mb l2, cxx-beta compiler		cxx -O
+Alpha_750_cxx	Alpha 21264 750Mhz, 8mb l2, cxx-beta compiler		cxx -O
+PIII_933	Pentium III, 933Mhz, RDRAM 800 840 chipset		g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline

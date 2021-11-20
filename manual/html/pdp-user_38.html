@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-misc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_37.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_39.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.6  A Few Miscellaneous Things</A></H3>
+
+<P>
+Before you actually run the project, we'll mention a couple of final
+things you will want to do.
+
+</P>
+<P>
+You can watch the state of the network in the <B>NetView</B> while it
+learns and during testing.  The NetView is automatically updated by the
+Trial processes in both the training and testing process hierarchies.
+(You can have it updated by other processes by selecting <I>View:Object</I>
+/ <I>Add Updater</I> / <I>&#60;process&#62;</I> in the NetView, or by clicking on a
+process and a network in the project view, and hitting <I>Add Updater</I>).
+Both of these Trial processes will send the <B>NetView</B> an update
+signal, so you can see the values of whatever state variable you'd like
+to look at updated after each trial of training or testing.  You might
+select <CODE>act</CODE> as the variable to display in the NetView, toggle
+<CODE>Auto Range</CODE> off, and set the <CODE>max</CODE> and <CODE>min</CODE> on the
+color scale to 1 and -1.  That way the meanings of the color in the
+color scale stay fixed as the various patterns are presented.
+
+</P>
+<P>
+If you are recording the project using a script, you might want to turn
+off the scripting process at this point, since the network creation
+process is complete.  De-iconify the script and click <I>StopRec</I>.  You
+may <I>Edit</I> your script (which should pull up an editor and allow you
+to view the script file), to see what steps were taken, etc.
+
+</P>
+<P>
+Regardless of whether you recorded a script, you will want to save the
+state of the project as it is now, so that it can simply be re-loaded
+from a project file, just like the XOR example.  Select <I>Object</I> /
+<I>Save As</I> in the <I>Project</I> window, and specify a file name for
+saving (a ".proj.gz" will automatically be added to the end of the file
+name). 
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_37.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_39.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

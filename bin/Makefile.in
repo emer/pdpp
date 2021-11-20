@@ -1,0 +1,23 @@
+###########################################################
+# ta/css/pdp++ makefile: set up the bin file links
+# be sure to run make Makefiles in the top level directory
+# first, since this is just a stub makefile
+#
+
+BIN_DIRS = maketa/$(CPU)/maketa$(EXE_EXT) css/$(CPU)/css$(EXE_EXT) \
+	bp/$(CPU)/bp++$(EXE_EXT) cs/$(CPU)/cs++$(EXE_EXT) so/$(CPU)/so++$(EXE_EXT) \
+	bpso/$(CPU)/bpso++$(EXE_EXT) leabra/$(CPU)/leabra++$(EXE_EXT) \
+	lstm/$(CPU)/lstm++$(EXE_EXT) rns/$(CPU)/rns++$(EXE_EXT) \
+	oldlba/$(CPU)/oldlba++$(EXE_EXT) 
+
+default: bins
+
+bins:
+	-@$(MKDIR) $(CPU)
+	-@$(CD) $(CPU);\
+	$(RM) *;\
+	for i in $(BIN_DIRS);\
+	  do $(LN) $(TOP)/$$i .;\
+	done;\
+	$(LN) bp++$(EXE_EXT) rbp++$(EXE_EXT)
+

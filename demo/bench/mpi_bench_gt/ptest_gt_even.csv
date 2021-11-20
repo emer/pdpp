@@ -1,0 +1,15 @@
+procs, 1, 	units, 56, 	weights, 6272, 	cycles, 40000, 	con_trav, 2.5088e+08, 	secs, 3.21, 	Mcon/sec, 78.1558
+procs, 2, 	units, 56, 	weights, 6272, 	cycles, 40000, 	con_trav, 2.5088e+08, 	secs, 2.7, 	Mcon/sec, 92.9185
+procs, 4, 	units, 56, 	weights, 6272, 	cycles, 40000, 	con_trav, 2.5088e+08, 	secs, 2.4, 	Mcon/sec, 104.533
+procs, 1, 	units, 112, 	weights, 25088, 	cycles, 20000, 	con_trav, 5.0176e+08, 	secs, 3.26, 	Mcon/sec, 153.914
+procs, 2, 	units, 112, 	weights, 25088, 	cycles, 20000, 	con_trav, 5.0176e+08, 	secs, 2.29, 	Mcon/sec, 219.109
+procs, 4, 	units, 112, 	weights, 25088, 	cycles, 20000, 	con_trav, 5.0176e+08, 	secs, 1.84, 	Mcon/sec, 272.696
+procs, 1, 	units, 560, 	weights, 627200, 	cycles, 400, 	con_trav, 2.5088e+08, 	secs, 4.28, 	Mcon/sec, 58.6168
+procs, 2, 	units, 560, 	weights, 627200, 	cycles, 400, 	con_trav, 2.5088e+08, 	secs, 2.21, 	Mcon/sec, 113.52
+procs, 4, 	units, 560, 	weights, 627200, 	cycles, 400, 	con_trav, 2.5088e+08, 	secs, 1.13, 	Mcon/sec, 222.018
+procs, 1, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 100, 	con_trav, 2.5088e+08, 	secs, 4.3, 	Mcon/sec, 58.3442
+procs, 2, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 100, 	con_trav, 2.5088e+08, 	secs, 2.18, 	Mcon/sec, 115.083
+procs, 4, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 100, 	con_trav, 2.5088e+08, 	secs, 1.13, 	Mcon/sec, 222.018
+procs, 1, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 40, 	con_trav, 1.60563e+09, 	secs, 27.36, 	Mcon/sec, 58.6854
+procs, 2, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 40, 	con_trav, 1.60563e+09, 	secs, 13.85, 	Mcon/sec, 115.93
+procs, 4, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 40, 	con_trav, 1.60563e+09, 	secs, 6.94, 	Mcon/sec, 231.359

@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - css-spaces</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_17.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_19.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX10" HREF="ta_css_toc.html">5.4.1  Name and Storage Spaces in CSS</A></H3>
+
+<P>
+Like C and C++, CSS has several different places that it can put
+variables and functions.  Some of these amount to ways of organizing
+things that have a similar role in the same list, so that they can all
+be viewed together.  These are essentially transparent to the user, and
+are described in the context of the various commands that print out
+lists of various types of functions and variables.  The remaining
+distinctions have consequences for the programmer, and are described
+below.
+
+</P>
+<P>
+The initial program space in CSS is different than that of C or C++,
+since it can actually contain executable code, whereas the compiled
+languages restrict the basic top-level space to consist of definitions
+only.  Any definitions or variables declared in the top-level space are
+by default considered to be <CODE>static</CODE>, which means that they are
+visible only to other things within that program space.  Other program
+spaces (such as those in a <CODE>Script</CODE> object or a
+<CODE>ScriptProcess</CODE>, <CODE>ScriptEnv</CODE>, etc.) do not have access to
+these variables or functions.  However, the <CODE>extern</CODE> declaration
+will make a variable or function visible across any other program
+spaces.
+
+</P>
+<P>
+Within a function, all variables declared as arguments and local
+variables are known as "autos", as they are automatically-allocated.
+These are stored locally on a kind of stack within the same object that
+holds the code for the function, and a new set of them are allocated for
+each invocation of the function.  The exception is for variables
+declared <CODE>static</CODE>, which are also stored on the function object,
+but the same one is used for all invocations of the function.
+
+</P>
+<P>
+All new types that are declared (including enums and classes) are put in
+the global typespace, which is available to all program spaces.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_17.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_19.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

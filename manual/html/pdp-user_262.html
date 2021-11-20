@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - coding-names</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_261.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_263.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1733" HREF="pdp-user_toc.html">18.4.1  Naming Conventions</A></H3>
+
+<P>
+The basic tension in naming something is the length vs. descriptiveness
+tradeoff.  In general, we try to avoid abbreviations, but really long
+words like "environment" inevitably get shortened to "Env", etc.
+
+</P>
+<P>
+The bulk of the conventions we have established have to do with
+distinguishing between different categories of names: class type names,
+member function names, and member names being the major categories.  In
+addition, the way in which names composed of multiple words are formed
+is discussed.
+
+</P>
+
+<H2>18.5  Object Class Names</H2>
+
+<P>
+Class types are first-letter-capitalized with words separated by
+capitalization: e.g. <CODE>MyClass</CODE>.  There are certain exceptions, where
+an underbar '_' is used to attach a high-frequency suffix, usually from
+a template, to the name:
+
+</P>
+<P>
+Common Suffixes:
+<DL COMPACT>
+
+<DT><CODE>_List</CODE>
+<DD>
+taList derivative.
+<DT><CODE>_Group</CODE>
+<DD>
+taGroup derivative.
+<DT><CODE>_MGroup</CODE>
+<DD>
+MenuGroup derivative.
+<DT><CODE>_Array</CODE>
+<DD>
+taArray derivative.
+<DT><CODE>_SPtr</CODE>
+<DD>
+Smart Spec object pointer (PDP++).
+</DL>
+
+<P>
+Also if the class name contains multiple words, words which are actually
+acronyms ending with a capital letter are separated from the following
+word by an '_', e.g., (CE_Stat).
+
+</P>
+<P>
+Classes in lower-level libraries also have the name-space identifier
+prefixed to the name, which is lower case: e.g., <CODE>ta</CODE>, <CODE>taiv</CODE>,
+<CODE>css</CODE>.
+
+</P>
+
+<H2>18.6  Enums</H2>
+
+<P>
+<CODE>enum</CODE> type names follow the same naming convention as class types.
+<CODE>enum</CODE> members are all upper-case, words are separated by '_',
+e.g., <CODE>INIT_STATE</CODE>.
+
+</P>
+
+<H2>18.7  Member Names</H2>
+
+<P>
+Members are lower-case, words are separated by a '_', e.g., member_name.
+One exception is for names ending in spec or specs in which case there
+is no separation (e.g., viewspecs).
+
+</P>
+
+<H2>18.8  Method Names</H2>
+
+<P>
+Methods are first-letter-capitalized, words are separated by
+capitalization (e.g., <CODE>RunThis()</CODE>).  However, there some special
+prefixes and suffixes that are exceptions to this rule, because they are
+"high frequency" and denote a whole class of methods:
+
+</P>
+<P>
+Prefixes:
+<DL COMPACT>
+
+<DT><CODE>Dump_</CODE>
+<DD>
+Saving and loading functions.
+<DT><CODE>Compute_</CODE>
+<DD>
+Network computation functions (PDP++).
+<DT><CODE>Send_</CODE>
+<DD>
+Network communication functions (PDP++).
+<DT><CODE>C_</CODE>
+<DD>
+C code versions of process functions (PDP++).
+<DT><CODE>Init_</CODE>
+<DD>
+Special initialize function for processes (PDP++).
+</DL>
+
+<P>
+Suffixes:
+<DL COMPACT>
+
+<DT><CODE>_impl</CODE>
+<DD>
+Implementation (guts) of some other function which is the one that
+should be called by the user.
+<DT><CODE>_xxxx</CODE>
+<DD>
+Other _impl type functions that do specific aspects of the
+implementation (xxx is lower case).  Examples in PDP++ include _flag,
+_force.
+<DT><CODE>_</CODE>
+<DD>
+(just a trailing underbar) This is a short version of _impl, which is
+used extensively in InterViews, and sparingly in TA/PDP++.
+<DT><CODE>_post</CODE>
+<DD>
+A function which is to be called after another one of the same name (for
+two-step processes).
+<DT><CODE>_Copy</CODE>
+<DD>
+A function called after the Copy function (e.g., to clean up pointers).
+<DT><CODE>_gui</CODE>
+<DD>
+A special GUI version of function call.
+<DT><CODE>_mc</CODE>
+<DD>
+A special menu callback version of function call.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_261.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_263.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

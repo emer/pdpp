@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_218.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_220.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1334" HREF="pdp-user_toc.html">15.2  Cs Connection Specifications</A></H2>
+<P>
+<A NAME="IDX1335"></A>
+<A NAME="IDX1336"></A>
+<A NAME="IDX1337"></A>
+
+</P>
+<P>
+The Cs connection type contains a computed change in weight term
+<CODE>dwt</CODE>, a previous change in weight term <CODE>pdw</CODE>, and a change in
+weight term that is used in aggregating weight change statistics over
+time, <CODE>dwt_agg</CODE>.  The previous change in weight term enables
+momentum-based learning to be performed.
+
+</P>
+<P>
+The Cs connection specification type contains the following parameters:
+
+</P>
+<P>
+<A NAME="IDX1338"></A>
+<DL COMPACT>
+
+<DT><CODE>float lrate</CODE>
+<DD>
+<A NAME="IDX1339"></A>
+Controls the rate of learning.  It simply multiplies the CHL
+learning term.
+<DT><CODE>float momentum</CODE>
+<DD>
+<A NAME="IDX1340"></A>
+The momentum, which includes a weighted average (weighted by the
+<CODE>momentum</CODE> parameter) of prior weight changes in the current weight
+change term.
+<DT><CODE>float decay</CODE>
+<DD>
+<A NAME="IDX1341"></A>
+The rate of weight decay, if a weight decay function is being
+used.
+<DT><CODE>decay_fun</CODE>
+<DD>
+<A NAME="IDX1342"></A>
+There are two weight decay functions defined by default, but others can
+be added.  These two are <CODE>Cs_Simple_WtDecay</CODE>, and
+<CODE>Cs_WtElim_WtDecay</CODE>, which are just like their counterparts in the
+Bp algorithm, to which you are referred for more details, see
+section <A HREF="pdp-user_200.html">14.1.2  Bp Connection Specifications</A>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_218.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_220.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-over</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_217.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_219.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1334" HREF="pdp-user_toc.html">15.1  Overview of the Cs Implementation</A></H2>
+
+<P>
+The Cs implementation defines a type of connection and connection spec
+that is used by all flavors of Cs networks.  There is a basic CsUnit
+which is also common to all algorithms, but each different type of
+activation function defines its own version of the basic CsUnitSpec.
+Thus, to switch activation functions, one needs only to point one's
+units at a new unit spec type.
+
+</P>
+<P>
+The new schedule process objects consist of three essential levels of
+processing, starting at the trial level and moving down through settling
+to the cycle, which implements one activation update of the network.
+Thus, the <B>CsTrial</B> process loops over the plus and minus phases of
+settling in the <B>CsSettle</B> process, which in turn iterates over cycles
+of the <B>CsCycle</B> process, which updates the activations of the units
+in the network.  There is an optional level of processing which involves
+sampling over repeated settlings of the same pattern.  This repeated
+sampling is used for learning to obtain reliable statistical estimates
+of the probabilities of certain activation states, and is thus used when
+learning to match a propability distribution over the output layer
+(see section <A HREF="pdp-user_227.html">15.7  The Probability Environment and Cs</A>).  This <B>CsSample</B> process loops over samples
+of the <B>CsTrial</B> process.
+
+</P>
+<P>
+There are several specialized statistic objects that compute the global
+goodness or energy function of the network (<B>CsGoodStat</B>), and record
+its probability of being in one of a number of desired activation states
+(<B>CsDistStat</B>), and the extent to which the probabilities of these
+states match their desired probabilities (<B>CsTIGstat</B>,
+<B>CsTargStat</B>).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_217.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_219.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

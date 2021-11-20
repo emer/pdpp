@@ -1,0 +1,126 @@
+// navigation interactive environment
+
+// bool dbg = true;		// set to true for debugging info
+bool dbg = false;		// set to true for debugging info
+
+enum Directions {
+  LEFT,
+  RIGHT,
+  DOWN,
+  UP
+};
+
+enum SArgs {
+  RNDMP,
+  XPOS,
+  YPOS,
+};
+
+void MakeEvent() {
+  if(s_args.size != 3) {
+    s_args.EnforceSize(3);
+    s_args.labels[RNDMP] = "rndmp";	// probability of random action
+    s_args.UpdateAfterEdit();	// get the labels to be same size!
+    s_args.labels[XPOS] = "xpos";
+    s_args.labels[YPOS] = "ypos";
+    s_args[RNDMP] = ".25";
+    s_args[XPOS] = "0";
+    s_args[YPOS] = "0";
+  }
+  float rndmp = s_args[RNDMP];
+  int xpos = s_args[XPOS];
+  int ypos = s_args[YPOS];
+  bool reset_ev = false;
+  if(dbg)
+    cerr << "event_ctr: " << event_ctr << endl;
+  if(event_ctr == 0)
+    reset_ev = true;
+
+  EventSpec* es = event_specs[0];
+  int xsz = es->patterns[0].geom.x;
+  int ysz = es->patterns[0].geom.y;
+
+  // first get the output from the network last time = max_i of minus phase
+  Directions dir = (Directions).networks.layers.Output.acts_m.max_i;
+  if(dbg)
+    cerr << "Was: " << xpos << ", " << ypos << " going: " << dir << endl;
+
+  if(Random::ZeroOne() < rndmp) {
+    dir = (Directions)Random::IntZeroN(4);
+    if(dbg)
+      cerr << "Random!: " << dir << endl;
+  }
+
+  if(dir == LEFT) {
+    xpos--;
+    if(xpos < 0) xpos = xsz-1;
+  }
+  if(dir == RIGHT) {
+    xpos++;
+    if(xpos >= xsz) xpos = 0;
+  }
+  if(dir == DOWN) {
+    ypos--;
+    if(ypos < 0) ypos = ysz-1;
+  }
+  if(dir == UP) {
+    ypos++;
+    if(ypos >= ysz) ypos = 0;
+  }
+
+  if(reset_ev) {
+    if(dbg)
+      cerr << "Resetting" << endl;
+    events.Reset();
+    reset_ev = false;
+    xpos = Random::IntZeroN(xsz);
+    ypos = Random::IntZeroN(ysz);
+  }
+
+  int targ_xpos = 5;
+  int targ_ypos = 5;
+
+  int xdist = fabs(targ_xpos - xpos);
+  int ydist = fabs(targ_ypos - ypos);
+
+  if((xdist == 0) && (ydist == 0)) {
+    if(dbg)
+      cerr << "Found goal!" << endl;
+    xpos = Random::IntZeroN(xsz);
+    ypos = Random::IntZeroN(ysz);
+    reset_ev = true;
+    s_args[XPOS] = xpos;
+    s_args[YPOS] = ypos;
+    next_event = NULL;
+    return;
+  }
+
+  Directions nxtdir;
+
+  if(xdist > ydist) {
+    if((targ_xpos - xpos) < 0)
+      nxtdir = LEFT;
+    else
+      nxtdir = RIGHT;
+  }
+  else {
+    if((targ_ypos - ypos) < 0)
+      nxtdir = DOWN;
+    else
+      nxtdir = UP;
+  }
+
+  Event* ev = events.NewEl(1);
+  ev.patterns[0].value.WritePoint(es->patterns[0].geom, xpos, ypos);
+  ev.patterns[1].value[nxtdir] = 1.0;
+  String dnam = nxtdir;
+  ev.name = "x:" + xpos + ",y:" + ypos + ":" + dnam[0];
+  if(dbg)
+    cerr << "At:  " << xpos << ", " << ypos << " going: " << nxtdir << endl;
+
+  s_args[XPOS] = xpos;
+  s_args[YPOS] = ypos;
+  next_event = ev;
+}
+
+MakeEvent();

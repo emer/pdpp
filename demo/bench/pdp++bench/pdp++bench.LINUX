@@ -1,0 +1,86 @@
+#! /bin/csh -f
+
+# machine-specific defines
+set DEFINES="-DLINUX"
+
+set FLAGS=""
+
+# pdp++ coding options
+#set FLAGS="-DNO_DECAY -DNO_MOMENTUM_OPTS -DNO_WT_LIMITS"
+#set FLAGS="-DNO_DECAY"
+#set FLAGS="-DNO_MOMENTUM_OPTS"
+#set FLAGS="-DNO_WT_LIMITS"
+#set FLAGS="-DNO_TIME"
+#set FLAGS="-DSMALL_OBJS"
+
+#set FLAGS="-DSEND_BASED"
+#set FLAGS="-DSEND_NET"
+#set FLAGS="-DSEND_BASED -DSEND_NET"
+
+#set FLAGS="-DRANDOM_SPACE"
+#set FLAGS="-DNO_PRE_ALLOC"
+#set FLAGS="-DLOAD_STYLE"
+
+
+# compiler command
+# optimal compiler
+#set CC = "g++ -O2 -fno-exceptions"
+# -O is much faster for compiling, but barely slower in running
+# PIC is a wee bit slower for large case, but not bad for others..
+set CC = "g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline"
+#set CC = "g++-3.3 -fPIC -O2 -fno-exceptions -fno-rtti"
+#set CC = "g++ -fPIC -O -fno-exceptions -fno-rtti -Wall -Winline"
+
+#set CC = "g++ -fPIC -O2 -fno-exceptions -fno-rtti -march=pentium4 -mfpmath=sse"
+
+#set CC = "g++ -fPIC -O2 -fno-exceptions -fno-rtti -march=pentium4 -fprefetch-loop-arrays -ffast-math"
+
+#set CC = "g++ -fPIC -O2 -fno-exceptions -fno-rtti -ffast-math"
+
+# todo: try this stuff on gcc 3.x
+#set CC = "g++ -fPIC -O2 -mcpu=pentium4 -mfpmath=sse -fno-exceptions -fno-rtti -Wall -Winline"
+
+#set CC = "icc -O2 -ipo"
+# -xW is for P4 new instructions:
+#set CC = "icc -O2 -ipo -xW"
+# -xK is for SIMD (PIII) extras:
+#set CC = "icc -O2 -ipo -xK"
+
+# a little bit of improvement, but really not much at all!
+#set CC = "g++ -fPIC -O6 -malign-double -fno-exceptions -fno-rtti -Wall -Winline"
+# -mpentiumpro, -mpentium are both *slower* if anything..
+
+#set CC = "g++ -g"
+
+#set CC = "KCC +K2 -D__signed__=signed"
+
+#set CC = "g++ -O"
+#set CC = "g++ -O2"
+#set CC = "g++ -O3"
+#set CC = "g++ -O2 -ffast-math"
+#set CC = "g++ -O2 -fomit-frame-pointer"
+#set CC = "g++ -O2 -funroll-loops"
+#set CC = "g++ -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+$CC $FLAGS $DEFINES -c pdp++base.cc -o pdp++base.o
+$CC $FLAGS $DEFINES -c pdp++bench.cc -o pdp++bench.o
+$CC $FLAGS $DEFINES -o pdp++bench pdp++base.o pdp++bench.o -lm
+
+echo $CC $FLAGS
+./pdp++bench 500 100
+./pdp++bench 100 2500
+./pdp++bench 10	250000
+
+exit
+
+echo two jobs at once: 500x100
+./pdp++bench 500 100 &
+./pdp++bench 500 100 &
+wait
+echo two jobs at once: 100x2500
+./pdp++bench 100 2500 &
+./pdp++bench 100 2500 &
+wait
+echo two jobs at once: 10x250000
+./pdp++bench 10	250000 &
+./pdp++bench 10	250000 &

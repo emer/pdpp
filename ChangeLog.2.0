@@ -1,0 +1,1673 @@
+2000-08-12  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* Version 2.0 Released Today!!
+
+2000-08-09  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/sched_proc.cc: do UpdateAfterEdit on all processes after
+	doing a change type -- allows them to fix their pointers.
+ 
+2000-08-08  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.cc: display wasn't updating when color scale
+	scroll bars were adjusted.
+
+	* src/pdp/procs_extra.cc (GridSearchBatch): rewrote code for
+	decoding parameter path -- was using FindFromPath incorrectly to
+	search for non taBase items.
+
+	* src/ta/ta_base.cc (taBase::FindFromPath): fixed a bad assumption
+	that found object inherits from taBase -- now check!
+
+2000-07-30  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta_lib_min/: made a separate compile directory for the
+	lib_min version of the ta library (libtypea_min.a/so), so that
+	this can be made much less intrusively!  the special 'make links'
+	action will refresh the links of the files from src/ta -- the only
+	files unique to this dir are the _TA files.
+
+	* css/hard_of_css/hofcss_demo.css: added a demo program for
+	showing how to compile a standalone css script into an executable
+	program using c++. Basically the libtype_min and libhard_css
+	libraries are linked, and the css/hard_of_css.h include is
+	included.  See this directory for details.
+
+	* src/xcss: added a demo program for showing how to use ta/css
+	outside of the PDP++ context.  this program, xcss, can be used to
+	run psychological experiments under css control (where milisecond
+	precise timing is not required) -- it provides a ta/css friendly
+	interface to the InterViews canvas and events.
+
+2000-07-28  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/css/css_parse.y: fixed a few bug situations with the
+	argument count checking for script functions -- deals with
+	pointers and the builtin functions Load, Save, etc.
+
+2000-07-24  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* Updated 2.0b3 on the ftp site (announced a few days ealier, but
+	updated with latest changes), including .exe files for CYGWIN
+	install.
+
+	* src/ta/taiv_data.cc (taivGetFile): getting the directory from a
+	file name was kinda braindead, now it's fixed.
+
+	* src/pdp/pdpshell.cc: loading a project from another directory
+	will now change the default directory to that directory.
+
+2000-07-22  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdp_iv.cc: added a new "View Specs" mode to the project
+	view window, which toggles to viewing the spec objects instead of
+	the overall project objects.  hitting "View Project" will toggle
+	back to the normal display.  While in spec viewing mode, one can
+	create new children of specs, and show/set the application of a
+	spec in the network window just by clicking on the spec and
+	hitting the corresponding button.  children groups are shown, and
+	objects can be transfered into a child group by selecting the
+	group and the object to be transferred.
+
+	also, in project view mode, all groups are now shown, with members
+	of the group indented.  these groups can be iconified to simplify
+	display.
+ 
+	* src/pdp/netstru.cc (NetView::ShowUnitSpec): now will select the
+	layer using given unit spec if there is one, as this is the proper
+	level to set a unit spec for an entire layer.
+
+2000-07-20  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/enviro_iv.cc: fixed the same problem as in GridLog where
+	a literal draw and damage_me was being performed in
+	update_from_state.
+
+	* src/css/css_parse.y: fixed the do loop code in css -- you can
+	now use continue and break inside the do loop, whereas before this
+	did not work.
+
+2000-07-19  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/css/css_parse.y: css now detects when you call a function
+	with the wrong number of args.  This works for everything except
+	for builtin C member functions (class members), but these do not
+	have such catestrophic failure with bad args anyway.
+
+	* src/pdp/netstru.cc: removing a projection now calls RemoveCons()
+	on the entire network because all projections and connections are
+	potentially invalidated by this removal.
+
+	* src/ta_misc/datatable.cc: for non-visible lines, was not setting
+	the color at all, causing crash in CYGWIN -- now setting color to
+	black.
+
+	also, in process of debugging this, broke, then fixed GetHeaders
+	in pdplog.cc (latest 2.0b2 release was broken, is now fixed).
+
+	* src/ta_misc/datatable_iv.cc: fixed GridLog display updating,
+	update_from_state, which was doing both a literal draw and a
+	damage_me, which is both inefficient and just plain wrong, and was
+	causing a crash under CYGWIN.
+
+2000-07-18  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdplog_iv.cc: CYGWIN has the text log spacing too wide -
+	fixed.
+
+	* config/Makefile.defs (EXE_EXT): added define for executable
+	extension, needed under CYGWIN.
+
+2000-07-11  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+        * first CYGWIN release under 2.0b2
+	
+	* src/ta_misc/fontspec.h: font spec now compares the pattern to
+	the previous pattern to prevent lots of unneccessary font looking
+	up. also, will translate any helvetica font into Arial and
+	vice-versa for converting between CYGWIN and unix.  Also is much
+	kinder to CYGWIN fonts, which are not cannonical unlike the X
+	fonts.
+
+	* src/pdp/pdpshell.cc: preventing multiple updates of the project
+	window for Project::UpdateMenus (sub objs will try to do
+	InitDisplay).
+
+	* src/pdp/pdpshell.h (PDPRoot): added ConsoleLine menu option for
+	windows version (CYGWIN) -- allows entering of one line into
+	console.  this is needed because the console and the gui are not
+	on the same event loop.
+
+	NOTE: later removed this because I fixed the event loop in CYGWIN
+
+	* src/pdp/net_iv.cc: weird netview screen flashing bug fixed --
+	caused by Xform_gs not being virtual on Pline_G and so self con
+	was not computing correct xform and so getextent was not correct
+	leading to weird random effects!  this only occured with self
+	connections.
+
+2000-07-10  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta/taiv_data.h: now avoiding lots of push_style() calls by
+	just caching the relevant fonts.  should speed up menu and such
+	creation quite a bit!
+
+	* src/css/css_lex.cc (yylex): css stream processing commands now
+	properly ignore '\r' carriage returns (which MSDOS/WIN insists on
+	inserting).
+
+	* src/ta/typea.cc (taMisc): stream input processing commands now
+	properly ignore '\r' carriage returns (which MSDOS/WIN insists on
+	inserting).
+
+	* src/ta_misc/win_base.cc: changed the processing of iconified
+	windows --- iconified is no longer checked and operated on in
+	WinBase::UpdateAfterEdit, and instead is only checked and called
+	in winbMisc::OpenWindows, after all windows are initially opened.
+
+	Move, Place: Move used to be same as place -- changed to
+	compute a delta relative to current placement and call Place.
+	Place now ensures that placement of windows is greater than 0!
+	
+2000-07-08  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* config/Makefile.defs (X11_LIB): the definition of the X11
+	library is now a define so that it can be replaced in CYGWIN with
+	-lgdi32 -luser32
+	
+	* src/ta_misc/win_base.cc: excized dragzonesink as the outer-most
+	glyph for windows -- no need if not using dragpage which we're
+	not, and it isn't supported in cygwin.
+
+2000-07-03  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/procs_extra.cc: fix various crash conditions in
+	UnitActRFStat.
+
+2000-06-21  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.cc: right-mouse-button click on projections will
+	immediately bring up an edit dialog for that projection.
+
+	* src/ta_misc/datatable_iv.cc: all text display in blocks for
+	gridlogview, netview, and enviroview now displays "0.0" if there
+	is a e- exponent in the value, which otherwise produces
+	confusingly large initial digits when the text string is truncated.
+
+	* src/pdp/pdplog_iv.cc (GridLogView): added AllBlockTextOn/Off,
+	which turns on or off additional text display for items that are
+	viewed as colored blocks.
+
+	* src/pdp/pdp_iv.cc: added Duplicate Obj to project viewer for
+	networks, environments, and logs.
+
+	* src/css/machine.cc (cssProgSpace::ExitShell): set the Restart
+	flag upon exiting the shell, which will get rid of any running
+	scripts and should cause fewer crashes when doing recompile after
+	a script has stopped with a bug.
+
+	* interviews/src/lib/InterViews/field.c: added left & right arrow
+	and home, end key processing for edit fields.
+
+2000-06-20  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/enviro_iv.cc: increased maximum number of events within
+	the enviroview event scroll box area to 100,000 instead of 10,000.
+
+2000-06-16  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdp_iv.cc: added Transfer Obj menu in Project View --
+	can transfer a process or stat into a different process or stat
+	subgroup.  Selecting a schedule process brings up a dialog asking
+	which subgroup to transfer into on that sched proc.
+
+	* src/ta/ta_base.cc (taList_impl::ChangeType): will now
+	automatically change to a base type and then to a derived type if
+	called to change to another derived type of this base type.
+
+	* src/ta_misc/script_base.cc: all script_base derivatives now only
+	do SetScript("") if script_file.name is empty --- prevents losing
+	script files when objects are transferred.
+
+	* src/pdp/net_iv.cc: scoping is now fixed on monitor stat menu in
+	the netview.
+
+	* src/pdp/procs_extra.cc (GridSearchBatch): param_path can now
+	successfully point to array elements (e.g., s_args).
+
+2000-06-15  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* version 2.0b2 (2.0 beta, release 2) released, with SUN4 and
+	LINUX and SGI binaries.
+
+	* /src/pdp/ and others: fixed a number of compiler warnings from
+	the SUN4 (solaris) compiler.
+	
+	* src/ta/taiv_data.cc: need a special extra close() operation on
+	the file descriptor for compressed files on SOLARIS.  added this
+	as a general call because it doesn't seem to hurt and other
+	systems might have this problem too.
+
+2000-06-14  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.cc: AllocCon(0) now does nothing.  previously it
+	would open a dialog box asking for number of cons to create!
+
+2000-06-13  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdp_iv.cc: added New Agg button for selected stat object
+	in project view.
+
+	* src/pdp/stats.cc (MonitorStat): removing monitor stats will
+	automatically update the network menus for the monitor stats.
+
+	* src/pdp/netstru.cc (Network::ConnectUnits): fixed crash in
+	SelfConUnit - actually in Layer::CheckConnect, if
+	prjn->con_spec.spec was NULL.  also fixed ordering so this null
+	not encountered.
+
+2000-06-13  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/netstru.cc (Con_Group::Dump_Save_Value,
+	Dump_Load_Value): warn if units have a null path when saving (can
+	happen if units are removed from a layer and then build-all is
+	done w/out a subsequent connect all).  Also, loading now works if
+	connections were not created due to null unit paths.
+
+	also notify *sending* prjns that things have changed after a build-all
+	so this won't happen (ConnectAll will be highlighted)
+
+	also prevent single-unit updating for Layer::Build when switching from
+	z = 1 to z > 1 (subunitgroups).
+
+2000-06-02  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* version 2.0b released!
+
+2000-06-01  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* config/Makefile.std: added standard lower-case with underbars
+	versions of all the makefile commands (e.g., optLib -> opt_lib).
+
+	* src/pdp/enviro_iv.cc, datatable_iv.cc, datagraph.cc, net_iv.cc
+	(render_text): fixed the transform process in all cases of direct
+	text rendering -- using inverse instead of null xform, which works
+	with the printer (other one did not).
+
+2000-05-31  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru_extra.cc (TesselPrjnSpec): fixed MakeRectangle
+	to use ctr_x and ctr_y just as in MakeEllipse -- e.g.,
+	width/height = 3, ctr_x, _y = 0, gives send_off coords from -1 to
+	1 in both axes.
+
+	* src/bp/rbp.cc (RBpSequence): fixed sequence process to set
+	proper tick max using new safety features for detecting changed
+	enviro within a sequence.
+
+	* src/pdp/netstru.h (FixPrjnIndexes): added this function to fix
+	the other_idx indexes in con groups, which point to the
+	corresponding sending/receiving con group.  These were not set
+	previously (in old projects), but are now checked for and if not
+	set, nothing can be run.  So, you need to run this function on old
+	projects (avail in the Network actions menu).  
+
+	* src/iv_graphic/graphic_text.cc (NoScale_Text_G): made the
+	right-mouse-button edit trick work for the view labels, propagated
+	this change through all the other descendants of noscale text.
+
+	* src/ta_misc/datagraph.cc: Graph Labels were not editable or
+	deletable due to new grasp select behavior.  Added Select button
+	to graph log.
+
+2000-05-30  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta_misc/win_base.cc: Whenever window is resized, it now
+	automatically stores the new window size!  used to be you had to
+	specifically request that via script or get winpos, or by saving 
+	the project.  Now, windows will always remeber where they go!
+
+2000-05-27  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/sched_proc.cc: added ChangeNameSuffix to SchedProcess --
+	call this to change all those numbers to something more meaninful 
+	(e.g., Epoch_1 -> Epoch_Tst)
+
+2000-05-26  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta/typea.cc (taMisc::FindFileInclude): locates given file
+	name anywhere within the include_paths -- returns full path to
+	file or an empty string if not found.
+
+	* src/ta/typea.h, ta_base.h: added Help to all objects -- this
+	simply looks up an HTML (or whatever) document, and runs the
+	taMisc::help_cmd on it.  The help file is produced from the
+	taMisc::help_file_tmplt by replacing %t with the name of the type,
+	and parent types are searched until a match is found (or not).
+	Help files are searched for in the include_paths, which should
+	contain the appropriate default path (tmplt should have any
+	sub-paths off of these include paths, etg
+	manual/html/Help_%t.html). Once a valid file is located, the
+	taMisc::help_cmd is run with %s being the entire path to the help
+	file.  Defaults are to use netscape:
+
+	String	taMisc::help_file_tmplt = "manual/html/Help_%t.html";
+	String	taMisc::help_cmd = "netscape -remote openURL\\(file:%s\\)";
+
+	* src/pdp/pdp_iv.cc: added ProjectView to the Project window --
+	displays all the major objects in the project, and shows links
+	between them.  double-click to iconify or view an object, and you
+	can manipulate entire process object hierarchy -- create new
+	processes/stats, set aggregation type, change types of objects,
+	display aggregators, etc!
+
+	* src/ta/taiv_dialog.h: Added taivTypeDialog and taivEnumDialog as
+	two simple dialogs for grabbing a type or enum from the user.
+
+2000-05-24  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.cc (NetView): prjn_arrow_angle = .6 and
+	prjn_arrow_size = 8 are new defaults.
+
+	* src/pdp/process.cc: set type = SCRIPT if script_string has
+	stuff in it.
+
+2000-05-23  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta/taiv_data.cc: taivMenu::GetImage -- does not assign
+	current values to menu items that have actions (otherwise they
+	can't be selected -- was causing problem with over-max menu
+	selections)
+
+	* src/pdp/process.cc: closing a SchedProcess from Close menu (via
+	Close_Child) will cleanly remove it from the hierarchy (via either
+	super_proc->RemoveSubProc or sub_proc->RemoveSperProc).  The
+	default behavior of removing everything underneath still occurs for
+	using the Remove function on the group.
+	
+	* src/ta_misc/win_base.cc: closing an object using its
+	Close menu option now updates menus appropriately (via
+	Close_Child() in MenuGroup_impl).
+
+	* src/pdp/sched_proc.cc: added AddSuperProc, AddSubProc,
+	RemoveSuperProc, RemoveSubProc for SchedProcess, which will add or
+	remove processes into the hierarchy in a friendly way, preserving
+	the hierarchy and pointers and everything.  
+
+	ChangeMyType on SchedProcess (via ReplacePointersHook) now updates
+	all the relevant pointers, so that you can change a schedule
+	process type within a hierarchy and everything will pretty much
+	work after that..
+		
+	* src/pdp/netstru.cc: added CheckTypes() to all in netstru
+	hierarchy -- basically checks for valid specs in everything.  this
+	code was in the Process::CheckNetwork, but it should be
+	freestanding within the netstru so it can be called from
+	InitWtState, which it now is!
+
+	* src/ta_misc/win_base.cc: do window->repair() instead of
+	window->resize() for Print_impl on WinBase -- no more resizing of
+	window to originally loaded size after printing!!
+
+	* src/ta_string/ta_string.h: added converters to/from long and
+	String.
+
+	* src/iv_graphic/graphic.cc: added canvas and viewer pointers to
+	the graphic master, which allow it to use a single constant canvas
+	when objects are dragged off-screen, instead of having them
+	migrate to other windows, which leaves everything a big mess.
+
+2000-05-22  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdplog_iv.cc: hungrybox plus some fixes on
+	TextLogView::ShowMore and ShowLess prevent infinite loop hang on
+	textlogview resize.
+
+	* src/iv_misc/hungrybox.cc: removed potential infinite loop in
+	hungrybox reallocate -- a max of 4 iterations are now allowed.
+
+2000-05-22  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/pdpshell.cc (PDPRoot): added Browse function on root to
+	allow random browsing of objects in the heirarchy using the new
+	object chooser.  when an object is selected, it is edited.  this
+	can also be called from the script to allow the user to select
+	objects at random.
+
+2000-05-22  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta/taiv_data.cc: created taivObjChooser, for choosing
+	objects when over max menu, and for browsing through the object
+	heirarchy much like a file browser!  all places where max menu
+	can be encountered are now fixed to use this chooser instead.
+
+2000-05-20  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/sched_proc.h: all the init_, loop_, and final_* stuff is
+	now marked #DETAIL because there are menu-based ways of dealing
+	with this stuff (and the forthcoming project viewer).
+
+	* src/ta/taiv_dialog.cc: added a "Show" menu to edit dialogs,
+	which allows direct control over what is visible in the edit
+	dialog.  if this is changed, then the edit window is closed and a
+	new one is opened with the items displayed.  also added a new
+	level of display hiding: DETAIL, which can be used to hide fields
+	that are at a finer level of detail than most people would be
+	interested in.
+
+	* src/ta_misc/colorbar.cc: grey square in middle of pallette
+	on enviroview looked like zero, but wasn't.  changed number of
+	blocks to 15, so now middle is genuine zero!
+
+	* src/pdp/net_iv.cc: fixed HGT_FIELD and HGT_PEAKS display in the
+	netview.  they now accurately display a contiguous average-field
+	of values (height of each corner = average of neighboring values)
+	and the peaks accurately show the value of the unit as the height
+	of the peak.
+
+2000-05-18  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.cc: much improved projection arrow pointing
+	algorithm -- always pairs off reciprocal (bidirectional)
+	connections with each other, and puts the arrows on the closest
+	side to the other layer.  self projections are evenly distributed
+	across different sides.
+
+2000-05-16  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/process.h: added ReplaceEnvPtrs function which replaces
+	all environment pointers (used as hook when environment type is
+	changed).
+
+	* src/pdp/netstru.h: added ReplaceUnitSpec, ConSpec, PrjnSpec,
+	LayerSpec functions at relevant levels of the structure which
+	change any pointers to one spec to a new one.  These are then
+	called whenever a spec has ChangeMyType called on it, so that
+	the network automatically gets the new types.
+
+	* src/ta/ta_base.h: added DuplicateMe() function to taBase -- just
+	calls DuplicateEL() on itself from its owner if owner is a
+	taList_impl object (list or group).
+
+	- added ChangeMyType(TypeDef* new_type) which changes the type of
+	this object to the new type (which must either be a base or a
+	parent of this type) -- very useful for specs and environments
+	when you want to use a new type but have everything else be the
+	same. it automatically copies previous values into new object
+	type.  calls ChangeType on parent.
+
+	- taList_impl: added ChangeType(itm, new_type) which actually does
+	type changing operation, and eplaceType(old_type, new_type) which
+	uses ChangeType to replace any instance of a given type to the new
+	type.
+
+	* Makefile (re_all): this target will reliably redo everything
+	after major changes to headerfiles across several subdirs.
+
+2000-05-15  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.h: right-mouse-button click on layer name
+	immediately pulls up editor for name.
+
+	* src/pdp/netstru.h (Network): cut Network::pos field -- was never
+	being used.
+
+	* src/pdp/netstru.cc: all objects displayed in netview (Unit,
+	Layer, Projection) now will update the view as they are removed
+	(even by external means, not by selecting and removing in netview
+	itself).  to prevent update after removing each unit, set
+	unt.pos.z = -1 (and then update later).
+
+	* src/pdp/net_iv.cc: netview now always rescales to fit in display
+	when resized, or opened.
+
+	- scrollbar for network variables is now updated when variable
+	count changes.
+
+	- connection-based variables (e.g., r.wt, s.wt) are now located at
+	the *top* of the list of variables.  this works better for
+	situations where there are a relatively large number of variables
+	on the unit -- put the less important unit variables at the end,
+	and they will be at the bottom of the scrollbox of variables, but
+	it will be easy to switch back and forth between act and r.wt.
+
+2000-05-14  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.cc: netview now renders text directly instead of
+	making extra graphic objects -- much more efficient and simpler on
+	the code.  got rid of UnitBlock and UnitText -- Unit_G just
+	contains one or more UnitValue_G's.
+
+2000-05-13  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/enviro_iv.cc: now rendering value/label text in
+	enviroview directly, not creating objects for it -- much more
+	efficient.  also, fixed layout so event label text is never
+	overwritten between events (use a constant pixel-wise spacing).
+
+2000-05-12  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.h: Added GridViewWeights functions that send
+	entire matrix of weights to grid log view for viewing, with
+	optional constraints on the size of the grids (-1 = full size of
+	layer).  Functions are avail at all levels from Projection to
+	Layer to Network.
+
+	* src/pdp/enviro.h (Environment): Added DistMatrixGrid, sends
+	distance matrix directly to a grid log for immediate viewing.
+
+	also added EnvToGrid, sends on pattern from all events in
+	environment to grid for viewing (useful for when enviro has
+	intermediate results that you just want to view -- more
+	cleanly displayed in gridlog).
+
+	* src/pdp/netstru.h: Moved CopyWeights, WriteWeights, ReadWeights
+	to the Object menu instead of the Actions menu -- all basic I/O
+	should be in the Object menu.
+
+	* src/ta/typea.cc (taMisc): moved FormatValue from enviro to
+	taMisc so it is generally available.  formats output of a float
+	value according to specified width and precision restrictions.
+
+2000-05-11  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/net_iv.cc: in netview, nothing except the units are
+	pickable!  this should greatly minimize the confusion between
+	select and pick -- you just can't pick most things you'd want to
+	select!
+	
+	* src/pdp/enviro_iv.cc: in enviroview, the event, eventbox is not
+	graspable so it does not get selected during a move -- you go
+	straight to the patterns.  also, selectable is conditional on
+	right-mouse-button, so that if you click rmb, you get straight to
+	the text to edit!
+
+	* src/ta_misc/datatable_iv.cc,h: in gridlog -- the overall
+	dataline container is not selectable or graspable, so control goes
+	immediately to the relevant sub-objects.
+	
+	* src/iv_graphic/graphic.cc: added selectable(), pickable(), and
+	graspable() functions on the Graphic, which default return true,
+	but can be changed to make particular objects non *able.  
+
+
+2000-05-11  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta_misc/datatable_iv.h,.cc, /pdp/pdplog_iv.cc: massive
+	rewrite of gridlogview to Graphic-based system.  addresses
+	following problems with original:
+
+	gridlog: convert into an ivGraphic based display, with
+	support for moving things around interactively, configuring, etc.
+	make it much easier to use!  and might solve following problems.
+
+	in new gridlog, make sure grid data is rendered from *one
+	Graphic* object per array, not one per little square.  this
+	will make things *much* more efficient!!  same comment goes for
+	the enviroview.
+
+	gridlog can crash if you switch to/from text/block while
+	data is currently being displayed.  this is hard to
+	fix. workaround is to clear display first!
+
+	GridLog: crashes upon UpdateLayout for output of DistMatrix
+	GRID_LOG format (more generally anything with only one
+	subgroup of values).  also random crashes..
+
+	gridlogview: toggle to turn off grid headers.
+
+	- move all scaling control code to datatable_iv using new scale_on field
+
+	- parse GEOM settings in datatable to set geometry of grid log!
+
+	* src/pdp/net_iv*, enviro_iv*: why does the *Editor inherit from
+	an ivPatch?  it is now just a standalone base type and it is deleted
+	when done.
+	
+2000-05-09  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/netstru.h (Con_Group): Con group cannot be a
+	#ARRAY_ALLOC group because this is not the right thing to do for
+	sending connections, and you can't even find out if they are
+	linked or not because they don't have an owner field!!  So, took
+	this off -- was causing crashes upon reloading saved networks..
+
+2000-05-07  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/css/css_builtin.cc: added ws, flush, endl, ends, dec, hex,
+	oct, lock, and unlock stream functions -- just hacked it into the
+	the << and >> (lshift, rshift) code to look for a stream and a
+	bool with a particular name (shouldn't be outputting too many
+	bools so this shouldn't be too bad performance-wise).
+
+	* src/pdp/enviro.cc (Environment): changed ReadOldPDP and
+	WriteOldPDP to ReadText and WriteText, and completely rewrote so
+	that they now work!  You now have to specify the format upon
+	reading, so it can *expect* an event name instead of trying to
+	infer it.  The # endgroup comment is superfluous and has been
+	eliminated (it will just be ignored like any other comment), and
+	the write routine now properly writes out # startgroup comments to
+	preserve group structure.  the EventSpec itself must be passed to
+	the read routine.  Also, added a WriteBinary routine that writes a
+	binary file that can be read by ReadBinary.
+
+2000-05-05  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/enviro.cc, enviro_iv.cc: added lots of calls to
+	UpdateChildren when patternspecs are modified, and update calls in
+	the graphic interface so that child specs are completely updated.
+
+	also, added the EnforceSameStru call on the patterns so that when
+	a new patternspec is added or one is removed, the children are
+	updated (and all the types are enforced to be the same too).
+
+	* src/ta/ta_base.h: got rid of all the Array-support code in the
+	taList_impl class (status, etc) -- this turns not to be useful,
+	and should be put into a separate class, not piggybacked onto the
+	standard ptrlist one.
+
+	added EnforceSameStru(cp) -- ensures that this list has same structure
+	(size, types) as the list passed as an argument (cp).  does not copy though.
+
+	* src/pdp/sched_proc.cc: added calls to UnSetLayers (see below) in
+	epoch initialization.
+
+	(SettleProcess::InitLinks) settle process now looks for any
+	cycletosettle in the trialprocess and sets its settle pointer to
+	this process, which might have just been created, but couldn't
+	find the settle process because it didn't exist then (trial
+	process gets created first).
+
+	* src/pdp/enviro.cc (Enviroment::UnSetLayers): added this global
+	call to reset the patternspec layer pointers so they will
+	automatically be recomputed, in case things have changed, the next
+	time patterns are presented.
+
+2000-05-04  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdplog.h (GraphLogView): removed x_axis_mode (see
+	below).  this will cause an error in loading complaining about
+	the missing variable, but it should just be ignored.
+
+	* src/ta_misc/datagraph.cc: graph labels (while scanning values)
+	are now printed in black (contrasting color with the background).
+
+	also removed x_axis_mode from the graph -- other modes did not
+	work anyway.
+
+	fixed the bug where you couldn't have a graph axis pointing to
+	another axis that was later in the list -- this is ok now
+	(introduced 2 passes into the GraphEditor::GetAxis function)
+
+	* src/ta/ta_base_tmplt.h, ta_list_tmplt.h: added RevEl (reverse
+	element) to all array templates, and FillSeq(start, inc) to
+	int_Array, making it easy to initialize an array with a sequence
+	of values (defaults start at 0, inc by 1)
+
+	* src/ta/ta_list.cc (CopyVals): fixed CopyVals, which had an
+	errant EnforceSize call that shrunk the array -- now it is only
+	called if the current size is too small!
+
+2000-05-03  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/ta/ta_base.h
+	(taBase::UnSafeCopy,CastCopyTo,CopyTo,CopyFrom): added capability
+	to copy from objects that this inherits from, which is done by
+	casting ourselves down to that more basic class, and then doing
+	copy (this is what CastCopyTo does).  Also added a CopyTo function
+	which can be called on a more basic class to copy to a derived
+	class -- the base class doesn't show up in the CopyFrom menu,
+	which only lists derivatives of it.  However, in the script or
+	elsewhere, CopyFrom can be called with more basic classes and will
+	do the right thing.
+
+2000-05-03  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/sched_proc.cc (EpochProcess, SequenceProcess,
+	SequenceEpoch): do checking in GetCurEvent to ensure that current
+	environment still has same size -- if not, get new list of events.
+	makes things more robust if environment gets changed within an
+	epoch.
+
+	SequenceEpoch will now use events as cur_event_gp if there are no
+	subgroups -- this means that it will still work with a flat
+	environment, unlike before (where you *had* to have subgroups to
+	do sequence epoch).  However it still won't use top-level events
+	if you also have subgroups.
+
+	* src/pdp/netstru.cc (Unit::ConnectFrom): added code to set
+	other_idx if it was currently not being set (needed for when you
+	make custom connections between units -- otherwise you get a crash).
+
+	* src/iv_graphic/graphic.cc (effect): removed target->flush() call
+	that was causing text to dissappear when event objects were moved,
+	etc.
+
+	* src/iv_graphic/graphic_viewer.cc (GlyphViewer): major
+	improvement in the manipulation (moving, resizing, etc) of Graphic
+	objects (in NetView, EnviroView, etc): 1) the currently selected
+	object (if any) is the one that is manipulated.  2) if no
+	manipulation is done, then the next object in the selection
+	sequence (e.g., first layers, then unit-groups, then units for
+	network) is selected, and would be manipulated upon subsequent
+	mouse-down & move events.
+
+	* src/ta_misc/tdgeometry.h: Initialize functions for 3-d geometry
+	were not resetting 2-d geometry components.  This was causing the
+	annoying "memory" in the moving of objects in the views.
+
+2000-05-01  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/enviro.cc, pdpshell.cc (ClusterPlot): the clusterplot
+	function now takes a GraphLog* arg (NULL = make a new one) and
+	uses GraphData calls to generate a cluster plot in that graph log!
+	XGraph is no longer required!
+
+	* src/ta_misc/datatable.h (ClustNode::GraphData): new function
+	that sends cluster graph data directly to a DataTable (which is
+	initialized properly by this function), for the purposes of
+	displaying the clusterplot in the graphlog.
+
+	* src/ta_misc/datagraph.cc: graph can now plot strings!  it uses
+	the float_Data immediately before the String_Data to get the y
+	values, and the String_Data must have DISP_STRING as a
+	disp_option.  this is basically tailored for doing a cluster plot,
+	but could be used for other things (e.g., adding symbols to a line
+	or some thing like that).  blank strings are not printed.
+
+2000-04-30  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru_extra.cc: changed all appropriate ConnectFrom
+	calls to the Ck versions.
+
+	* src/pdp/netstru.h,.cc (Unit::ConnectFromCk, ConnectFromLinkCk):
+	created new versions of these connection functions that check
+	first if a connection already exists from the sending unit --
+	these versions should always be used if there is any possibility
+	of forming double connections.  returns NULL if connection already
+	exists.
+
+	* src/pdp/process.cc (CtrlPanelData::SetWinPos): added code to
+	ensure that process control panels are always visible on the
+	screen.
+
+	* src/pdp/stats.h (Stat): made loop_init flag visible so it can be
+	changed in the interface.
+
+	* src/pdp/pdpshell.h,.cc, src/ta/typea.h,.cc: changed version to
+	version_no to avoid conflicts with other definitions of this
+	variable type (on SUN and SGI systems, apparently).
+
+2000-04-29  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/sched_proc.cc (SchedProcess::NewInit, ReInit): moved
+	CheckAllTypes up in the sequence so any NULL problems are found
+	before things like reiniting the network weights happen..
+
+	* src/pdp/netstru.cc: added several NULL checks on specs during
+	ReConnect_Load, because the only way to get a null spec pointer is
+	to do it during loading -- this should identify these problems
+	w/out crashing.
+
+	* src/leabra/leabra.cc (LeabraSE_Stat): replaced LeabraAeSE_Stat
+	with LeabraSE_Stat (original still defined as subclass for
+	backwards compatibilty) -- just makes life a little simpler namewise.
+
+2000-04-28  Randall C. O'Reilly  <oreilly@neo.colorado.edu>
+
+	* src/pdp/enviro_iv.cc (Pattern_G): no value edit is made with
+	right-mouse-button, so that this doesn't happen accidentally when
+	trying to edit the layer's name.  middle mouse button now will
+	revert the value to the previous value, in case you change the
+	wrong thing.
+
+	* src/ta_misc/win_base.h (WinMgr): got rid of view:: submenu
+	(i.e., #IN_GPMENU) from all objects having views (nets, enviros,
+	etc).  This submenu was only ever causing confusion, and now it is
+	gone!!
+
+2000-04-27  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.cc (NetView): fixed the evil blank netview
+	screen -- problem was that the net xform was not correctly updated
+	if no InitDisplay is ever pressed in between loading and saving
+	the project.  added a GetNetXform() before Dump_Save_Value to
+	ensure that the most recent xform is obtained..
+
+2000-04-24  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.cc, .h, netstru.cc,.h (NetViewGraphic,_G): fixed
+	included graphics: transformations are now correctly saved and
+	loaded upon startup, they don't crash, and are removed correctly.
+	furthermore, they can be selectively removed by selecting an
+	individual graphic.
+
+2000-04-10  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/enviro_iv.cc: fixed event removal function to be *much*
+	faster -- was doing an InitDisplay (via UnDisplayEvent) after
+	every event removal!  Now only does that if the event is actually
+	being displayed.
+ 
+2000-02-18  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.cc (UnitSpec): unit specs do not set their bias
+	spec pointers *at all* when loading until the update-after-edit.
+	this eliminates dependencies in the load order of the specs!  if
+	not during loading, then specs are set right away, to presumably
+	the correct type.
+
+2000-02-17  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* Set current version to 2.0a (alpha) to preserve all the old code
+	that was trashed in rewriting the enviroview, and that will be
+	trashed in writing the new gridlogview.
+
+	* src/pdp/net_iv.cc: cleaned up the layout of the code for
+	NetEditor and eliminated the large number of redundant "update"
+	and "init" functions.
+
+	- default layer movement is now in the X,Z plane for THREE_D
+	layout nets!  use right mouse button to achieve X,Y movement
+
+	- auto-Init function for moving or reshaping layers!!  this is
+	borrowed from the new enviroview.
+
+2000-02-16  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/net_iv.h,cc: added a "display mode" menu on the right
+	side of the window, allowing you to select the display ("shape")
+	of unit value info.
+
+	* src/ta/taiv_data.cc: changed the script recording so that it
+	does not record script info for objects that do not have an owner.
+
+	* src/pdp/enviro.h,cc,enviro_iv.cc,h (EnviroView): major overhaul
+	of EnviroView: now implemented in the Graphic framework used for
+	the NetView.  There is an "Edit Events" and "Edit Specs" button
+	that switches between these two modes of editing.
+
+	- Specs can be fully edited within the window, including resizing
+	and moving.
+
+	- right mouse button pulls up an edit dialog for any text object.
+
+	- the little dark square in spec edit indicates the number of
+	values -- it can be moved to change this setting.
+
+	- both value text and labels can be selected as in the netview.
+
+	- the same display modes as before (color, area, linear).
+
+	- much more efficient, can view huge patterns (might want to turn
+	off the border for the elements, using no_border flag)
+
+	- fonts can be customized in the EnviroView edit.
+
+	- layout is automatically optimized for the display size -- no
+	need to set the pad size (projects will complain about these
+	missing parameters upon loading -- don't worry).
+
+	- Also added a SetToLayer function on PatternSpec and via the edit
+	spec window -- this sets the patternspec to fit the selected
+	layer.  This should generally be the first step in setting up a
+	new layer.
+
+	- This should fix some mysterious crashing associated with the
+	previous implementation, which was unwieldy and buggy..
+
+2000-01-12  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/procs_extra.cc (ClosestEventStat): got rid of net_agg in
+	stat val names (min) -- not relevant.
+
+2000-01-11  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru_extra.cc (TesselPrjnSpec): added warning
+	messages for conditions that don't work (recv_skip for linked
+	units/groups, !wrap & init_wts).
+
+2000-01-08  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdplog.h (PDPLog): added no_dlg options to all log file
+	commands to specify that no file dialog should be opened.
+
+	* src/ta_misc/ta_file.h (taFile): added no_dlg options to all
+	commands to specify that no file dialog should be opened.
+
+	* src/ta/taiv_data.h (taivGetFile): added no_dlg options to all
+	commands to specify that no file dialog should be opened.
+
+2000-01-02  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/leabra: added leabra algorithm as one of the basic
+	algorithms in the pdp++ directory.  see header file
+	(src/leabra/leabra.h) and upcoming textbook O'Reilly & Munakata,
+	2000, "Computational Explorations in Cognitive Neuroscience",
+	Cambridge, MA: MIT Press for details.
+
+2000-01-01  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/ta/taiv_dialog.cc (taivDialog): added no_ok_but for not
+	having an OK button on an edit dialog.  also parse NO_OK and
+	NO_CANCEL object options in css and compiled.
+
+	Fixed non-responsive dialog bug!!  Somehow the owner dialog was
+	losing the focus on the subservient DialogInputHandler, so now
+	we just always focus on it whenver we get a key input!
+
+	* src/pdp/process.cc (Process::ControlPanel): now takes optinal
+	args to locate the control panel.
+
+	* src/ta/taiv_data.h (taivMisc::FlushIVPending): added function to
+	flush all pending events, running multple RunIVPending and then
+	waiting for a second and then runing more.
+
+	* src/ta_misc/win_base.h (WinBase::ViewWindow): added function to
+	either de-iconify and raise an existing window, or open a new one
+	if none exists.  also takes args to locate/size the new window.
+
+1999-08-25  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta/maketa.cc,typea.cc: changed default tmp file directory to
+	/tmp instead of /usr/tmp -- debian linux doesn't apparently have
+	/usr/tmp, and /tmp is more standard.
+
+1999-06-08  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/spec.cc (BaseSpec::UpdateMember): specs now do
+	EnforceSize based on parent for lists and arrays -- this was not
+	happening before!
+
+1999-05-18  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/procs_extra.cc (MultiEnvProcess): fixed so that
+	UpdateAfterEdit always gets current environment, prevents getting
+	overwritten from some higher-level process (e.g., during stepping)!
+
+1999-04-07  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* config/Makefile.SUN4solaris: makefile configured for compiling
+	under SunOS 5.6 using their standard CC compiler.
+
+	* config/Makefile.std,.def: arguments for making dependencies made
+	into a modifyiable flag (DEP_FLAG).
+
+	* numerous fixes of cases where local vars clash with member
+	variables (found by solaris compiler).
+
+1999-02-08  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta_misc/datatable.cc (float_RArray::RenderLine): fixed line
+	drawing routine to draw more evenly stepped lines.
+
+	* src/css/css_iv.cc: updated for iv-pdp2: ivSession::undone ->
+	ivSession::unquit.
+
+	* src/ta_misc/win_base.cc: updated for iv-pdp2: DragZoneSink is
+	now ivDragZoneSink.
+
+1998-09-15  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/css/special_math.h: added gauss_inv(Real p): inverse of the
+	cumulative for p: z value for given p probability
+
+	* src/ta/typea.cc (taMisc::Error): added a beep whenever error message is 
+	displayed.
+
+	* src/ta/taiv_dialog.cc: check over_max on taivToken.
+
+	* src/ta/taiv_type.cc: check over_max on taivToken.
+
+	* src/pdp/net_iv.cc: check over_max on taivToken.
+
+	* src/ta_misc/datatable.h (float_RArray): added StdDev (standard
+	deviation) and SEM (standard error of the mean).  Also, corrected
+	Var to divide by n-1 (unbiased estimator of actual variance).
+
+	* src/ta/ta_group_iv.h,.cc
+	(gpivListEls,gpivGroupEls,gpivSubGroups): if number of items are
+	over max_menu, does not try to get the value.
+
+	* src/ta/taiv_data.h,.cc (taivToken): fixed so that if items on
+	list are over max_menu, it does not try to get the value (which is
+	erroneous).
+
+1998-08-19  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/pdpshell.cc (Main): Fixed double-loading of projects
+	from -p and .proj (as pointed out by Adam Thomas, thomas@cnbc.cmu.edu).
+
+1998-07-29  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/enviro.cc (EnviroView): changed the default for the
+	enviro view scale range to be -1 to 1, and auto_range to be false,
+	so that the environment colors match the network colors in most
+	cases.  just click the auto_range button back on to restore the
+	default behavior from before (much easier than setting this -1 to
+	1 range).
+
+1998-06-18  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* config/Makefile.defs (LDIRS_XX): added -L$(IV)/lib/$(CPU) to
+	link to the interviews libs if not otherwise located in /usr/local
+	or somewhere else on the lib path.
+
+1998-06-16  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta_misc/datatable.cc (ClustNode::Dist): fixed optimization
+	bug in clustering.  the problem came from doing a 'return
+	oth.Dist()', which was fixed by introducing a temporary: float dst
+	= oth.Dist(); return dst; Should be on the lookout for other
+	similar cases, but this was complicated by being a const function,
+	and simple attempts to replicate for a bug report did not work.
+
+1998-06-14  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/css/css_iv.cc: now calling the constructor and destructor
+	for arguments that are script class objects.
+
+1998-06-09  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* Makefile, config/Makefile.std: added chkcpu target which is called
+	by all others and checks that the $CPU variable is set, to prevent
+	anything nasty from happening.
+
+1998-06-06  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/*.h, *.cc (all files): Got rid of the #pragma
+	interface/mplementation stuff, as it is no longer necessary.  Also
+	had to rearrange some header calls to enable inlining on egcs
+	1.0.2-8 (linux redhat 5.1).
+
+	* config/Makefile.LINUXdebug, Makefile.LINUX: cppC should *not*
+	pass the LIBG++ include dir stuff directly, only as part of the
+	MAKETA_FLAGS.
+
+	* src/maketa/maketa.cc: added support for 'mutable' keyword for
+	maketa.  also fixed a few things in mta_lex.cc that were screwing
+	up when the cpp (new cpp w/ ecgc) gave junk after the file name in
+	# <line> <file> comments.
+
+Tue Jun  2 11:51:11 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* css/include/startup* : updated the startup scripts by making a
+ 	startup_fctns.css that defines several useful startup functions,
+ 	which are called by the standard startup.css script, which is much
+ 	simpler, easier to modify, and actually provides relevant startup
+ 	information when modified.
+
+	* src/pdp/pdplog.cc (PDPLog::UpdateAfterEdit): logs now update
+ 	their names to the standard of "1st updater proc_type name" if
+ 	empty or current name contains type name (indicating use of
+ 	standard scheme)
+
+Sun May 24 10:39:44 1998  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/cs/cs.cc (CsTIGstat): error condition when target
+ 	probability is 0 fixed (from kpfleger@cs.stanford.edu).
+
+Sat May 23 16:06:28 1998  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/css/css_builtin.cc: css args when passed by #!/usr/local/bin/css -i -f
+	kind of thing are munged together, so these are pre-parsed now before
+	parsing args..
+
+Fri May 22 15:35:01 1998  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/ta_misc/datatable.cc (float_RArray): Both Var and Covar
+ 	functions neglected to divide by N.  oops.  this is now fixed.
+
+	* src/cs/cs.cc (CsDistStat): sets loop_init to false now by default,
+ 	because it needs to act like an aggregator and not be inited every
+ 	time in the loop.  any existing projects should be updated because
+	this flag is saved and the default will be overridden by loading an
+	existing project that has loop_init set to true.
+
+Fri May 15 15:42:20 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/css/csshell.cc: css now includes ta_misc and iv_graphic as
+ 	libraries -- this gives access to Random, float_RArray, and other
+ 	useful classes defined in ta_misc.
+
+	* src/bp/rbp.h,cc (RBpUnit::InitExterns): this now keeps a record
+ 	of the previous values of external input vars in prv_ext_flag,
+ 	prv_targ, and prv_ext -- this was missing before causing bp to not
+ 	deal with injected error (targets) on the second-to-last time
+ 	step.  Thanks to David Noelle for discovering this bug.
+
+	* src/pdp/netstru.h (Unit::InitExterns): made this function virtual.
+
+Tue May  5 17:31:45 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/css/css_lex.cc (yylex): added back correct parsing of
+ 	floating point designator 'f' (e.g., 1.0f), after incorporating
+ 	patches posted by scp to improve parsing of numbers.  Also fixed
+	parsing of strings with multiple lines with each line ending with 
+	a backslash \.
+
+Wed May 13 12:56:11 1998  Chadley Kaye Dawson  <cd1f@CNBC.CMU.EDU>
+
+        * ta_misc/aggregate.h (SimpleMathSpec) ta_misc/aggregate.cc (SimpleMathSpec::Evalate)
+        added POWER operation (y^x)
+
+Fri Apr 17 12:41:20 1998  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+        * pdplog_iv.h/cc, pdplog.h,.cc, datatable.cc
+         
+         misc pagelog tweaks
+
+        * pdpshell.cc (PDPRoot::GetWindow),  win_base.cc (WinBase::GetWindow)
+
+        added DragZoneSink to support Drag and Drop operations
+
+
+Mon Apr 13 10:29:53 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/base.h, pdpshell.h,.cc, src/*/main.cc: Added
+ 	pre-compiled defaults files, which means that the executable alone
+ 	can just be copied to a new system and run successfully.  The
+ 	main.cc of an executable should include a string representation of
+ 	the standard defaults file (replace all " with \" and add \n\ at
+ 	end of every line), and then set pdpMisc::defaults_str to this
+ 	string in the main function.  see src/bp/main.cc for example.
+
+	* src/pdp/stats.cc (MonitorStat::SetObject, AddObject): added
+ 	simple covenience routines for script-based updating of what is
+ 	being monitored.
+
+	* src/cs/cs.cc (Compute_AsyncAct): fixed bug in way unit to be
+ 	updated was computed.
+
+	* src/ta_misc/random.h (Random::IntZeroN): added function that
+ 	returns an int in the range between zero and the arg passed (n),
+ 	exclusive of n [0,n).  Using ZeroOne to do this via mult by n
+ 	caused problems because of rounding.
+
+Fri Apr 10 17:18:40 1998  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+        * pdplog_iv.h/cc, pdplog.h,.cc:
+          Added fixes for pagelogview crashses and extended functonality
+          for pagelogview dragging
+
+Thu Mar 12 09:39:02 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/enviro.cc (Environment::DistMatrix): fixed output when
+ 	using non-hamming measures to do the right thing reliably in terms
+ 	of spacing and precision.  Also added a new format: GRID_LOG,
+ 	which outputs in a form suitable for loading into a grid log for
+ 	display.  HOWEVER: the grid log currently crashes when loading
+ 	these logs!
+	
+	* src/pdp/netstru.cc (NetView::SelectUnits): you can now select
+ 	units by things like the values on their bias.wt and r.wt or s.wt.
+  	For the connection-based (r.wt, s.wt) cases, you must have a unit
+ 	that you are 'View' ing, and it only uses the first such unit if
+ 	you have multiple.
+
+Mon Mar  2 15:53:25 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/netstru.cc (Projection::Copy_): now copying the
+ 	proj_points data so the copied net will have the same projection
+ 	layout.
+
+Mon Mar  2 14:54:11 1998  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+        * src/maketa/maketa.cc (main, mta_print_commandline_args):
+          Moved help code to mta_print_commandline_args()  and
+          added -[-] help  and -[-]? flags for command line argument help
+
+Wed Feb 25 11:07:35 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta_misc/datatable.cc (ClustNode): fixed the cluster plot
+ 	algorithm to use ClustLink links which encode the pairwise
+ 	distance in the link, making it possible to do a better cluster
+ 	plot which only groups together those items which are truly at the
+ 	same minimum distance.
+	
+	* css/include/printr_proj_to_file.css: source this css script to
+ 	get a 'printr' dump of all objects under .projects[0] to a file
+ 	called printr_proj.out.  This is useful for finding things in the
+ 	project, and checking for 'refn=0' cases where some object has not
+ 	been owned properly (which can cause mysterious crashes, as in the
+ 	case of the send_prjns fix listed below).
+
+	* src/ta/ta_list.h (taArray_impl::CopyVals): moved this precise
+ 	copy function down from float_RArray to the basic array type.
+  	allows specification of exactly which values to copy.
+
+	* Makefile: Fixed the top-level Makefile to use the new src/maketa
+ 	directory during make world.  Also made the default 'make' command
+	'all' instead of 'world'.
+
+	* src/maketa: Made a new directory containing links to the src/ta
+ 	files and its own special makefile which always sets the
+ 	NO_TA_BASE flag.  This avoids all the problems with making the
+ 	'maketa' executable in the same directory as the library in ta (as
+ 	suggested by Chad and Karl Pfleger).
+
+Tue Feb 24 17:43:54 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/pdp/stats.h (StatVal::InitLinks): was not Owning stopcrit member.
+
+	* src/ta_misc/aggregate.cc (Aggregate::InitLinks): was not Owning
+ 	count member.
+
+	* src/pdp/netstru.cc (Layer::InitLinks): was not Owning
+ 	send_prjns, which caused crash whenver they were traversed!
+
+Wed Feb 11 16:57:57 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta_misc/colorscale.cc: Added P_DarkLight_brite as a new
+ 	colorscale, which has a brighter set of grey tones (middle is .6
+ 	instead of .5), which is sometimes better for printing.
+
+Fri Jan 30 13:28:44 1998  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/ta_misc/datatable.cc (float_RArray::CopyVals): Added this
+ 	function which allows flexible copying of values from different
+ 	points along the array.  Should probably put this lower in the
+ 	basic Array type..
+	
+	* src/pdp/netstru.cc (ReadWeights, WriteWeights): added #Name and
+ 	#Epoch values to the Write/ReadWeights format, which saves and
+ 	re-loads the name of the network and its epoch counter.
+
+	(Copy): Fixed network copying --- it was significantly broken in
+ 	that it was not properly getting links for sending connections
+ 	(getting the actual objects instead).  It should all be fixed now
+ 	(note that it does a reconnect load -- also, it is probably much
+ 	faster to do a read and write of the weights, esp to a strstream,
+ 	if that is all you want to copy, since that does not require
+ 	redoing all the pointers!)
+
+Mon Jan 19 15:03:22 1998  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/sched_proc.cc: Fixed bug that came up using
+ 	ProcCounterStat where it wouldn't reset the counter on a
+ 	TrainProcess during Init due to mis-sequencing of the linking
+ 	between network->epoch and epoch.val.
+
+Tue Dec  9 14:57:24 1997  Randall C. O'Reilly  <oreilly@liquid.colorado.edu>
+
+	* src/cs/cs.cc (BoltzUnitSpec::Compute_Act_impl): uses act_range
+ 	min and max for two values instead of fixed 1 and 0.
+ 
+	* src/ta/typea.cc: fixed reading/writing of String values with
+ 	quotes.
+
+	* src/css/basic_types.cc: fixed writing of cssString values with
+ 	quotes.
+
+	* src/css/css_builtin.cc: fixed #ifdefs so for SOLARIS.
+
+	* src/ta/typea.cc: fixed #ifdefs so that maketa will compile.
+
+	* src/ta/mta_lex.cc (yylex): made maketa more robust to different
+ 	preprocessor directives.
+
+Fri Nov  7 13:35:17 1997  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/sched_proc.cc (SchedProcess): do ctrl_panel.Revert() for
+ 	Init() and at the end of processing, in addition to just in
+ 	UpdateState, so that the counters in the control panel make sense.
+
+	* src/pdp/process.h (Process): added #NO_SCRIPT to Run_gui,
+ 	Step_gui, and Stop since they don't work in the script.
+
+Wed Nov  5 11:28:37 1997  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/procs_extra.cc (ClosestEventStat): wasn't doing an
+ 	InitStat for the sm_nm statval.  Fixed.
+
+	Also, changed sm_nm to be more like an error value, so that it
+ 	produces a 1 if the names are different, and a 0 if they are the
+ 	same.
+
+Sat Nov  1 00:22:42 1997  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru.cc: traverse layers in opposite order during
+ 	Connect in order to enable symmetric top-down connections as a
+ 	function of bottom-up defined connectivity (without having to
+ 	switch the order of all the layers!)
+
+Wed Oct 29 21:37:12 1997  Randall C. O'Reilly  <oreilly@grey.colorado.edu>
+
+	* src/pdp/netstru_extra.cc (TesselPrjnSpec::Connect_RecvUnit): do
+ 	not pre-allocate connections for tesselprjnspec, because we can't
+ 	be guaranteed of getting the full # of connections..
+
+Fri Oct 24 10:57:48 1997  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/pdplog.cc (PDPLog): fixed UpdateAfterEdit to notify
+ 	updaters, so that loading a saved set of logs will link in 
+	with the appropriate processes.
+
+	* src/pdp/process.cc (Process): fixed UpdateAfterEdit to
+ 	recompile script only if it is not running (otherwise an endless
+ 	loop can occur if the script somehow triggers updating of itself).
+	
+Sun Oct 12 11:55:00 1997  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/css/basic_types.cc: changed UpdateAfterAssign to
+ 	UpdateAfterEdit for all cssEl, and added call to user def'd UAE
+ 	function for the token's UAE function.  This is not called by
+ 	default when one of the members is assigned directly in the script
+ 	(otherwise it would be rather slow!).
+
+	* src/css/css_iv.cc (cssivEditDialog): added UpdateAfterEdit calls
+ 	after editing each member in the dialog, and to the entire class
+ 	object being edited.  Thus, c_pointer objects now update their
+ 	class_parent's when they are edited in a dialog.  Additional stuff
+	can be done by the UAE function in the class too!
+ 
+Fri Oct 10 08:49:57 1997  Randall C. O'Reilly  <oreilly@shadow.colorado.edu>
+
+	* src/pdp/netstru_extra.cc (UniformRndPjrnSpec): re-introduced
+ 	this simple uniform random connectivity, with option for permuting
+ 	so as to have same number of connections per receiving unit.  a
+ 	uniform random number (0..1) is generated for each connection, and
+ 	it is made if this number is <= p_con.  a permuted option is also
+ 	available.
+
+	(PolarRndPrjnSpec): renamed the old RandomPrjnSpec to this more
+ 	appropriate name.  sorry for all the thrashing!
+
+	also: added same_seed option for both types of random projections,
+ 	so that the same connectivity pattern can be repeatedly produced,
+ 	which makes it possible to use 'SaveWts' instead of 'SaveNet',
+ 	since the same connectivity will be present.
+
+	* src/pdp/netstru.cc (NetView): added SelectVar function which
+ 	selects given variable (by name) to be displayed in the network
+ 	window. 2nd arg (opt) allows adding instead of changing var.  Also
+ 	added script code to produce this
+	
+	* src/ta_misc/win_base.cc (WinBase): added Raise() and Lower()
+	to raise and lower the window.
+
+Mon Sep  8 10:42:12 1997  Randall C. O'Reilly  <oreilly@tiger.cu.campus.mci.net>
+
+	* src/ta_misc/datagraph.cc (GraphLine): set the width for lines in
+ 	a graph to .007, which gives a reasonable width without being 0,
+ 	so that it won't dissappear on highres laser printers..  Then I
+ 	changed it back to zero, since .007 doesn't always work.  There is
+ 	some strange rescaling going on here which is a problem.
+
+Fri Sep  5 11:59:11 1997  Randall C. O'Reilly  <oreilly@tiger.cu.campus.mci.net>
+
+	* src/pdp/enviro.cc (EnviroView): Added long-overdue SelectEvents
+ 	and DeselectEvents functions, which allow you to specify a range
+ 	of event numbers to (un)display in the view.  (saves you having to
+ 	click on each one individually..)
+
+Fri Aug 29 12:01:06 1997  Randall C. O'Reilly  <oreilly@tiger.cu.campus.mci.net>
+
+	* src/pdp/procs_extra.cc (CopyToEnvStat): added this new stat,
+ 	which copies the current contents of a source stat to an
+ 	environment.  This is very useful for copying over monitor values
+ 	to an environment for later examination or analysis (cluster
+ 	plotting, etc.)
+
+	* src/pdp/enviro.cc (Environment): Added ClusterPlot function,
+ 	which uses ClustNode to generate a cluster plot of the patterns in
+ 	the environment.
+
+	Also fixed DistMatrix and CmpDistMatrix to output properly spaced
+ 	distance matricies.
+
+	* src/ta_misc/datatable.cc (ClustNode): Added code for generating
+ 	cluster plots based on distances between vectors.  To use, create
+ 	a ClustNode (root) and fill its children with ClustNodes that
+ 	point to float_RArray's (i.e., from Patterns in an environment),
+ 	and set the name.  These are the "leaves".  Then, call
+ 	root.Cluster() to cluster leaves according to following algorithm:
+ 	nearest neighbors are found for each cluster (leaf).  This
+ 	neighborhood includes all the closest neighbors of each pattern,
+ 	which can be asymmetric (not all neighbors are mutually close).
+  	The patterns with the smallest distances are grouped together, in
+ 	including all of the nearest neighbors of the patterns that had
+ 	the smallest distances.  This forms a new cluster.  The process is
+ 	repeated as before, where the distances between clusters are
+ 	computed as the average of the distances between all the elements
+ 	in the cluster (*not* the distance between the average of the
+ 	elements in the cluster, which is used by Stolcke's cluster
+ 	program).  To plot the resulting cluster, use the function
+ 	Graph(), which will produce a file suitable for plotting in graph
+ 	or xgraph.
+
+	NOTE: optimization bug in g++ 2.7.2.1 requires -O for LINUX, not
+	-O2 when compiling this file!
+
+Fri Aug 29 17:09:07 1997  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+	* scrollable.cc, htformsetter::SetFullAllocation
+	 changed it so that it only uses the natural span, if the
+	 natural span is is greater than the allocated one.
+	This is good for the page log, but bad for the group-edit.
+	needs tweaking.
+
+	* src/pdplog.cc src/pdplog_iv.cc, src/iv_misc 
+	 added pagelogview class and stuff, modeled  after textlogview for now.
+
+Wed Aug 27 23:24:48 1997  Randall C. O'Reilly  <oreilly@tiger.cu.campus.mci.net>
+
+	* src/pdp/enviro.cc (Environment): Modified WriteOldPDP to take
+ 	args of which pattern to save, and how to save the event name:
+ 	NAME_FIRST (default) NAME_LAST (with a " at end of pattern vector
+ 	-- for 'cluster' program), or NO_NAME.
+
+	Added ClusterPlot function which writes the environment patterns
+ 	to a file that is processed by the 'cluster' program of Andreas
+ 	Stolcke (will be available on our pdp++ ftp server, as well as
+ 	http://www.icsi.berkeley.edu/ftp/global/pub/ai/), and if the
+ 	graphic argument is true, by the program 'xgraph' (also avail on
+	our ftp server, and from Stolke).
+
+	* src/pdp/stats.cc (MonitorStat): crash when deleting unit being
+ 	monitored fixed (due to a null unit->owner).
+
+Fri Jul 18 16:40:07 1997  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+	* src/iv_graphic/graphic.h src/iv_graphic/graphic.cc
+	 Added some needed "Alter" functions here as well.
+
+Wed Jul 16 11:50:38 1997  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+	* src/pdp/net_iv.cc src/pdp/net_iv.h 
+	 Added "Alter Value" view mode. Lets you change the value of the
+ 	 1st selected member variable by grabbing the unit and moving up
+ 	 and down. Works nice with the new 3-d views modes.
+
+Tue Jul  8 11:08:29 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/ta/taiv_dialog.cc,.h: added Raise to taivDialog, and to
+ 	NoBlockDialog.
+
+	* src/css/css_iv.cc,.h (cssivSession): added RaiseObjEdits, which
+ 	brings all object edits to the front, so that they are visible.
+  	This is called after loading to ensure that control panels,
+ 	etc. are visible.
+
+	* src/pdp/procs_extra.cc,.h (UniquePatStat): Added this stat which
+ 	counts the number of unique patterns in the output of another
+ 	stat, using a data_env environment to store the results.  The
+ 	result of the stat is the number of unique patterns (within
+ 	tolerance uniq_tol).
+
+Wed Jun 25 13:21:31 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/pdp/sched_proc.h (SchedProcess): Added a "GoTo" button to
+ 	the process control buttons -- it sets the counter value to any
+ 	desired value, and initializes things so that this is what gets
+ 	run next.  very useful for arbitrarily skipping to a desired
+ 	sequence or event (see also Present Event on the event object).
+	
+	* src/bp/rbp.h: RBp was not updating weights for input units that
+ 	were soft clamped.  This is fixed.
+
+	* src/pdp/netstru.cc (NetView): Select and Pick now accept
+ 	Unit_Group as a valid arg.
+
+	* src/pdp/net_iv.cc: 'RmvLayer' in NetView now updates the layer
+ 	menus.
+	
+Sun Jun 22 11:55:00 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/css/css_iv.cc (cssivEditDialog): added back the descriptive
+ 	buttons on the labels for css class objects.
+
+	and added cssivPolyData and changed cssivClassType to use it for
+ 	classes with the #INLINE comment directive -- which is thus now
+ 	supported!
+	
+	* src/ta/ta_group_iv.cc (gpivFromGpArgType): wasn't gettng
+ 	non-pointer arg type for creating cssTA object representing arg in
+ 	arg dialog, which eventually resulted in a crash when
+ 	'RemoveUpdater' was called with the 'All' value when no elements
+ 	were present (otherwise it got the type from the elements, and all
+ 	was ok).
+
+	* src/pdp/procs_extra.cc,h (ComputeStat): added this stat which is
+ 	sort of like comparestat, but it does simple math computations on
+ 	one or two other stats, instead of computing the distance between
+ 	them.  the results are aggregated into one final value according
+ 	to net_agg.
+	
+	* src/ta_misc/datatable.h (float_RArray): added SimpleMathArg(),
+ 	which does simple math using another array as the 'arg' value for
+ 	SimpleMath (ie, the other value in a mult or div, etc.)  Also
+ 	overloading Set now, and keeping the range better updated..
+
+	* src/ta/ta_base_tmplt.h (taArray): added Set(i, itm) to array
+ 	objects -- use this to set array values in a way that can also
+ 	update other things (by overloading Set, as is now done in
+ 	float_RArray).
+
+	* src/pdp/procs_extra.cc,h (SaveWtsProc): this works just like
+ 	SaveNetsProc, but uses WriteWeights instead of Save.  see comment
+ 	below re efficiency.
+
+	* src/pdp/pdpshell.cc, netstru.h,.cc: added a usr1_save_fmt member
+ 	to Network with FULL_NET (as before) and now JUST_WEIGHTS, if you
+ 	just want to save the weight values from the network on a USR1
+ 	signal.  this is useful if you have a big network and only really
+ 	need the weights (file is smaller, loads *much* faster).
+
+Fri Jun 20 16:08:29 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/pdp/netstru.h: as result of misguided quest for improved
+ 	performance through sender-based weights, added necessary
+ 	'send_prjns' in the layer, which keeps track of the sending
+ 	projections from that layer.  This was retained since it is useful
+ 	to have around.
+
+	* src/ta/ta_base.cc (taList_impl): Now saving the size of all
+ 	lists & groups, so that during loading an Alloc is done to
+ 	allocate pointer memory in a clean and efficient way without all
+ 	the reallocing!
+	
+	* demo/bench/pdp++bench/pdp++bench.cc: discovered that the whole
+ 	discrepancy between pdp++bench and bp++ is due to an erroneous
+ 	connection routine in pdp++bench!!! ak!  what a disaster.  all new
+ 	benchmark results obtained with the fixed code, which are now in
+ 	much better agreement with the actual bp++ performance.
+
+Thu Jun 19 14:21:48 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/ta/ta_list.cc (taPtrList_impl): modified InitList_() and
+ 	Alloc so that el == NULL until something is allocated (and first
+ 	alloc is then a malloc, not a realloc!)  also replaced calloc with
+ 	malloc, should be faster.
+
+	* pdp++bench: Discovered that arrays do not decrease processing
+ 	speed significantly (certainly not worth their overhead and
+ 	rigidity).
+
+Wed Jun 18 15:27:00 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/ta/ta_base.h,.cc (taList_impl): added 'status' and
+ 	'ListStatus' to keep track of the consistency of types in the
+ 	taList: if all the SAME, then this is noted in the dump file, and
+ 	used during Loading to create all of the items in the list at one
+ 	time instead of piecemeal.  Further, certain types of objects can
+ 	now redefine NewArray_ to call NewArray_impl, which will allocate
+ 	all the objects in one contiguous array!  This saves on memory,
+ 	and enables faster processing by addressing the items as an array
+ 	instead of as separate objects.  The downside is that these arrays
+ 	cannot be added to or subtracted from -- the code will not crash,
+ 	but items that are deleted will not actually be freed until the
+ 	program is completely exited.  also, any advantages of the array
+ 	are lost as soon as anything is added or removed beyond the
+ 	initial New.  
+
+Thu Jun 12 12:15:41 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/ta/mta_lex.cc: removed all use of putback(c) function from
+ 	the lexer for maketa.  putback is flaky, but peek always
+ 	works. (was having particular problems on an SGI Irix 6.4)
+
+	* src/css/basic_types.h: bitwise operators are not legal for bool
+ 	types, removed from cssBool.
+
+Mon May 26 15:19:10 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* manual: updated the texi2html conversion program to revision
+ 	1.51, and added automatic -number ing of sections, chapters, etc.
+  	so that the html version has a closer match with the printed one.
+  	also moved the copyright info to an appendix, so that the 1st
+ 	chapter is the introduction!
+
+Thu May  1 16:40:23 1997  Chadley Kaye Dawson  <cd1f@eagle.cnbc.cmu.edu>
+
+	* net_iv.h,net_iv.cc,netstru.cc (Unit_Group::FindUnitFmCoord)
+	(Height_Field_Unit_G) added a new unit display type and fixed
+	Unit_Group::FindUnitFmCoord to return null if negative coords.
+
+Sun Apr 27 17:18:29 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/pdp/procs_extra.cc (UnitEventRFStat): this new stat records
+ 	in a data_env the unit activity for each unit in the layer for
+ 	each event in the epoch.  useful for mapping out selectivities of
+ 	various units.
+
+	* src/ta_misc/datatable.cc (float_RArray): added RenderLine and
+ 	RenderWideLine for rendering lines into an array.  This is useful
+ 	for generating Event patterns, for example.  also made
+ 	float_RArray functions virtual, which they strangely weren't.
+
+Thu Apr 24 18:14:51 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/pdp/netstru_extra.cc (TesselPrjnSpec): reset existing
+ 	connections for linked prjns if present before creating links
+ 	(if loaded into existing network).
+
+	* src/pdp/sched_proc.cc (SchedProcess): init, loop, and
+ 	final_procs which are actually SchedProcess'es should be treated
+ 	just like sub_proc's with respect to initialization.  Instead,
+ 	they were being treated like regular processes and stats, which
+ 	does not set their re_init flags properly, resulting in the
+ 	failure to run their own init_procs, etc!
+
+Wed Apr 23 15:38:46 1997  Randall O'Reilly  <oreilly@flies.mit.edu>
+
+	* src/css/css_builtin.cc: fixed post ++ and -- so that they still
+ 	work correctly when applied to reference variables (didn't before
+ 	since they duplicate themselves as references to same underlying
+ 	thing, which is what is returned already incremented!)
+
+	* src/css/basic_types.cc (cssPtr): fixed potential infinite loop
+ 	in printing class objects with recursive pointers -- now just
+ 	print class name and object name.
+
+	also fixed a bug in assigning from a void* that actually points to
+ 	a class object.
+
+	(cssRef): taking the address of a reference object now returns a
+ 	pointer to the object refered to, not the reference object.
+
+	* src/pdp/procs_extra.cc (ClosestEventStat): fixed potential
+ 	 segfault in when cur_event is NULL.
+
+	(GridSearchBatch): allow param_path to point to int, float, or
+ 	String, not just float.

@@ -1,0 +1,121 @@
+ 
+ 
+=======================================
+50 unit layers, 50 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    49.4 sys:    0.06 tot:    49.4 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      15, in tot time: 49.44
+--------------------------
+2 processes, all-local:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    45.5 sys:    5.99 tot:    52.7 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      14, in tot time: 52.68
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    40.1 sys:    4.68 tot:    58.5 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      13, in tot time: 58.46
+ 
+=======================================
+100 unit layers, 15 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    51.1 sys:    0.08 tot:    51.2 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      18, in tot time: 51.17
+--------------------------
+2 processes, all-local:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    45.7 sys:    2.59 tot:    48.6 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      19, in tot time: 48.56
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    35.5 sys:    2.61 tot:    43.6 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      21, in tot time: 43.63
+ 
+=======================================
+200 unit layers, 5 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    57.6 sys:    0.06 tot:    57.6 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      21, in tot time: 57.63
+--------------------------
+2 processes, all-local:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    46.8 sys:     0.9 tot:    47.9 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      25, in tot time: 47.92
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    34.8 sys:    2.01 tot:    38.8 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      31, in tot time: 38.83
+ 
+=======================================
+500 unit layers, 1 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    64.7 sys:    0.48 tot:    65.2 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      23, in tot time: 65.23
+--------------------------
+2 processes, all-local:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    48.2 sys:    0.39 tot:    48.9 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      31, in tot time: 48.89
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+Using standard pre-compiled defaults file
+
+Total time: usr:    35.2 sys:    0.81 tot:      36 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      42, in tot time: 36.02

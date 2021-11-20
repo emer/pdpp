@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - gui-colors</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_59.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_61.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX323" HREF="ta_css_toc.html">7.18  Color Scale Specifications</A></H2>
+<P>
+<A NAME="IDX324"></A>
+<A NAME="IDX325"></A>
+<A NAME="IDX326"></A>
+<A NAME="IDX327"></A>
+
+</P>
+<P>
+Color scales are used in PDP++ to display the values of variables
+graphically in various types of displays.  The choice of color scale
+depends on personal preferences as well as what type of display the user
+has available.  There are a number of different types of color scales
+that come with the software, and the user can create their own custom
+colorscales.
+
+</P>
+<P>
+A color scale is specified by creating a set of different color points.
+The actual scale is just the linear interpolation between each of these
+points, where the points are distributed evenly through the range of
+values covered by the scale.  Thus, if there were three such points in a
+color specification that goes from -1 to 1, the first point would
+represent the value -1, the middle one would represent 0, and the last
+one would represent 1.  Values in between would be represented by
+intermediate colors between these points.  The actual number of colors
+created in a given color scale is determined by the
+<CODE>color_scale_size</CODE> setting parameter for color displays, and
+<CODE>mono_scale_size</CODE> for monochrome displays (see section <A HREF="ta_css_57.html">7.17  Settings Affecting GUI Behavior</A>).
+
+</P>
+<P>
+The <B>PDPRoot</B> object contains a group of color specifications called
+<CODE>.colorspecs</CODE>, which is where the default color scales and any new
+ones the user creates are located.  The default element
+(see section <A HREF="ta_css_68.html">8.2  Groups</A>) of this group represents the default color scale to
+use when creating a new display that uses color scales. The defaults are
+as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>C_ColdHot</CODE>
+<DD>
+interpolates from violet-&#62;blue-&#62;grey&#62;-&#62;red-&#62;yellow
+<DT><CODE>C_BlueBlackRed</CODE>
+<DD>
+interpolates from blue-&#62;black-red
+<DT><CODE>C_BlueGreyRed</CODE>
+<DD>
+interpolates from blue-&#62;grey-&#62;red
+<DT><CODE>C_BlueWhiteRed</CODE>
+<DD>
+interpolates from blue-&#62;white-&#62;red
+<DT><CODE>C_BlueGreenRed</CODE>
+<DD>
+interpolates from blue-&#62;green-&#62;red
+<DT><CODE>C_Rainbow</CODE>
+<DD>
+interpolates from violet-&#62;blue-&#62;green-&#62;yellow-&#62;red
+<DT><CODE>C_ROYGBIV</CODE>
+<DD>
+interpolates from violet-&#62;indigo-&#62;blue-&#62;green-&#62;yellow-&#62;red
+<DT><CODE>C_DarkLight</CODE>
+<DD>
+interpolates from black-&#62;white
+<DT><CODE>C_LightDark</CODE>
+<DD>
+interpolates from white-&#62;black
+<DT><CODE>M_DarkLight</CODE>
+<DD>
+dithers from black-&#62;white
+<DT><CODE>M_LightDark</CODE>
+<DD>
+dithers from white-&#62;black
+<DT><CODE>M_LightDarkLight</CODE>
+<DD>
+dithers from white-&#62;black-&#62;white
+<DT><CODE>P_DarkLight</CODE>
+<DD>
+dithers from black-&#62;white with a white background for printing
+<DT><CODE>P_DarkLight_bright</CODE>
+<DD>
+dithers from black-&#62;white with a white background for printing, having a
+brighter overall tone than the basic one (a lighter zero value).
+<DT><CODE>P_LightDark</CODE>
+<DD>
+dithers from white-&#62;black with a white background for printing
+<DT><CODE>P_DarkLightDark</CODE>
+<DD>
+same as M_DarkLightDark with a white background for printing
+<DT><CODE>P_LightDarkLight</CODE>
+<DD>
+same as M_LightDarkLight with a white background for printing
+</DL>
+
+<P>
+The <B>ColorScaleSpec</B> is the object that specifies the color scale.  It
+contains a group of RGBA objects, each of which is used to specify a
+point on the colorscale range based on the Red, Green, and Blue values,
+plus a "transparency" parameter Alpha. The ColorScaleSpec object has one
+primary function.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>GenRanges (ColorGroup* cl, int nper)</CODE>
+<DD>
+<A NAME="IDX328"></A>
+This function creates a range of colors in the ColorGroup by linearly
+interpolating nper colors for each RGBA set point value in the
+ColorScaleSpec.
+</DL>
+
+<P>
+<A NAME="IDX329"></A>
+The <B>RGBA</B> object has the following fields:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>String name</CODE>
+<DD>
+<A NAME="IDX330"></A>
+The name of the color
+<DT><CODE>float r</CODE>
+<DD>
+<A NAME="IDX331"></A>
+Amount of red in the color (0.0 - 1.0)
+<DT><CODE>float g</CODE>
+<DD>
+<A NAME="IDX332"></A>
+Amount of green in the color (0.0 - 1.0)
+<DT><CODE>float b</CODE>
+<DD>
+<A NAME="IDX333"></A>
+Amount of blue in the color (0.0 - 1.0)
+<DT><CODE>float a</CODE>
+<DD>
+<A NAME="IDX334"></A>
+Alpha intensity value (ratio of foreground to background)
+This is used primarily for monochrome displays.
+</DL>
+
+<P>
+If the name field of an RGBA object is set, then it will try to lookup
+the name to find the r,g, and b values for that color.
+
+</P>
+<P>
+Thus, to create your own color scale specification, just create a new
+ColorScaleSpec object, and then create some number of RGBA objects in
+it.  Then, edit your views (e.g., the network view, @xref{net-view}), and
+set their <CODE>colorspec</CODE> to point to your new specification.  In order
+to see changes you make to your color spec, you need to switch the
+<CODE>colorspec</CODE> pointer to a different one and then back to yours after
+making the changes.
+
+</P>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_59.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_61.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

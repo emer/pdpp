@@ -1,0 +1,53 @@
+Unfortunately, with PDP++ version 1.2, the CsTIGStat doesn't work
+at all anytime any of the prob patterns in the environment have a 0
+probability. This is luckily a one-line bug fix. I've sent a bug report
+to the PDP++ administrators, so hopefully it will be fixed in the next
+version. In the meantime, you can easily fix your own copy by changing 1 line
+of the file PDPDIR/src/cs.cc according to the instructions below and then
+typing 'make' in the PDPDIR/src/cs directory.
+
+----- Short and sweet bug report: -----
+
+There is a minor bug in the computation of CsTIGStats.
+The bug is in line 1247 of cs.cc, of version 1.2 of PDP++.
+The line reads:
+      net_agg.ComputeAgg(&tig, exp_prob * logf(exp_prob / act_prob));
+
+It does not correctly handle the case where exp_prob == 0, reporting NaN in
+this case since the log of 0 is -infinity which then gets multiplied by 0.
+However, this function is defined to be 0 when exp_prob is 0, based on
+continuity arguments since the limit (as x goes to 0) of x log(x/y) is 0.
+(See any good Information Theory text, e.g., Cover and Thomas.)
+
+Here is a corrected version:
+      net_agg.ComputeAgg(&tig, exp_prob ? 
+                               exp_prob * logf(exp_prob / act_prob) :
+                               0);
+
+----- End of guts of bug report. -----
+
+[Note that the converse case where act_prob is 0 would be infinity, but
+should never come up since the network should start out with non-zero
+probs for all patterns and it is very unlikely the network will stop
+producing patterns that it is seeing during training.]
+
+Why is this case a problem: The TIG stat measures the relative entropy (also
+called Kullback Leibler distance) between the target and learned
+distributions. (Note, another minor bug is that the documentation calls this
+cross-entropy, which is not quite correct. Cross entropy is something very
+similar but not quite identical. The formula is just x log(y).) The case
+that is buggy is when one of the patterns in the target distribution is 0.
+You might ask, why would that ever be?  Can't you just mandate that the user
+has to only include in the environment patterns that might actually be
+presented? Not really. The CsDistStat only measure statistics for the
+patterns in the environment. And you might want to measure the probability
+distribution exhibited by a network over more patterns than just the target
+patterns. The way you do this is to include the other patterns of interest in
+the environment, but with 0 presentation probability. But this currently
+breaks the TIG stat (it becomes permanently NaN).
+
+
+----------------------------------------------------------------------------
+Karl Pfleger   kpfleger@cs.stanford.edu   http://www.stanford.edu/~kpfleger/
+----------------------------------------------------------------------------
+

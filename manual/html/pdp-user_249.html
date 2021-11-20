@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-typea</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_248.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_250.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1674" HREF="pdp-user_toc.html">18.2  The TypeAccess System</A></H2>
+
+<P>
+The TypeAccess system consists of a set of objects that can hold
+type information about class objects.  This type information includes
+the names and types of all the members and methods in a class, the
+parents of the class, etc.  This information can be used by classes to
+get information about themselves at run time.  In addition, the
+TypeAccess system provides a set of type-aware base classes and macros
+for defining derived versions of these that can be used to easily
+incorporate run-time type information into any C++ system.
+
+</P>
+<P>
+In addition to being type-aware, the base classes can use their own type
+information to save and load themselves automatically to and from ASCII
+format text files.  Further, there is an extensible graphical interface
+based on InterViews which can automatically build editing dialogs for
+filling in member values and calling member functions on arbitrary
+objects.  Finally, the type information can be used to provide a
+transparent script-level interface to the objects from the CSS script
+language.  This provides the benefits of compiled C++ for fast
+execution, and the ability to perform arbitrary interactive processing
+in an interpreter using the C++ language supported by CSS.
+
+</P>
+<P>
+Many features of the interface and script level interface, as well as
+various options that affect the way objects are saved and loaded, can be
+specified in comments that follow the declaration of classes, members,
+and methods.  These <I>comment directives</I> constitute a secondary
+programming language of sorts, and they greatly increase the flexibility
+of the interface.  They are documented in section <A HREF="pdp-user_255.html">18.3  Standard TypeAccess Comment Directives</A>.
+
+</P>
+<P>
+Thus, the PDP++ software gets much of its functionality from the
+TypeAccess system.  It provides all of the basic interface and
+file-level functionality so that the programmer only needs to worry
+about defining classes that perform specific tasks.  These classes can
+then be flexibly used and manipulated by the end user with the generic
+TypeAccess based interface.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_250.html">1            Scanning Type Information using <TT>`maketa'</TT></A>
+<LI><A HREF="pdp-user_251.html">2             Startup Arguments for <TT>`maketa'</TT></A>
+<LI><A HREF="pdp-user_252.html">3             Structure of TypeAccess Type Data</A>
+<LI><A HREF="pdp-user_253.html">4             The Type-Aware Base Class <B>taBase</B></A>
+<LI><A HREF="pdp-user_254.html">5             The Dump-file Format for Saving/Loading</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_248.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_250.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

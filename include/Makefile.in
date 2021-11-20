@@ -1,0 +1,18 @@
+###########################################################
+# ta/css/pdp++ makefile: set up the include file links
+# be sure to run make Makefiles in the top level directory
+# first, since this is just a stub makefile
+#
+
+INCLUDE_DIRS = ta_string iv_misc ta ta_lib_min css iv_graphic ta_misc pdp bp cs so leabra oldlba lstm rns
+
+default: includes
+
+includes:
+	-@ $(MKDIR) $(CPU)
+	-@ $(CD) $(CPU);\
+	$(RM) *;\
+	for i in $(INCLUDE_DIRS);\
+	  do $(LN) $(TOP)/$$i/$(CPU)/lib_include $$i;\
+	done;\
+	$(LN) $(TOP)/ta_string/$(CPU)/lib_include/ta_string.h ta_string.h

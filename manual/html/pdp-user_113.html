@@ -1,0 +1,260 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-net</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_112.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_114.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX553" HREF="pdp-user_toc.html">10.1  The Network Object</A></H2>
+
+<P>
+The network object is basically a container for all the things that go
+in it.  Thus, it has a group of layers, which then contain units,
+projections, etc.  In addition, each network also has an epoch counter
+and a variable controlling the default layout of the layers.  The epoch
+counter reflects the number of <EM>training</EM> epochs the network has
+seen (not testing). Finally, the network is instantiated in the user
+interface by one or more <B>NetView</B>s, which provide a window with menu
+actions, tools, etc. to operate on the network.
+
+</P>
+<P>
+Also see the following information about Networks:
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_114.html">1             Distributed Memory Computation in the Network</A>
+</UL>
+
+<DL COMPACT>
+
+<DT><CODE>Layer_MGroup layers</CODE>
+<DD>
+<A NAME="IDX554"></A>
+This is the group of layers that have been created in the network.  The
+layers then contain all of the remaining substructure of the network.
+<DT><CODE>int epoch</CODE>
+<DD>
+<A NAME="IDX555"></A>
+The epoch counter indicates how many epochs of training the network has
+been subjected to. This counter is incremented by the training processes
+which act upon it, see section <A HREF="pdp-user_156.html">12.4.3  Iterating over Trials: EpochProcess</A>.
+<DT><CODE>bool re_init</CODE>
+<DD>
+<A NAME="IDX556"></A>
+This flag is set by training schedule process to indicate whether the
+network should be reinitialized when the process is initialized
+section <A HREF="pdp-user_155.html">12.4.2  Iterating over Epochs: TrainProcess</A>.
+<DT><CODE>LayerLayout lay_layout</CODE>
+<DD>
+<A NAME="IDX557"></A>
+This variable can be set to either <CODE>TWO_D</CODE> or <CODE>THREE_D</CODE>. It
+controls the default positioning of the layers when they are created,
+as well as the skew of the units when they are displayed.  <CODE>TWO_D</CODE>
+networks are arranged in one big X-Y grid, while <CODE>THREE_D</CODE> networks
+simulate a three-dimensional space where successive layers are located
+at successively higher Z coordinates, and units within a layer are
+arranged in an X-Y plane.
+<DT><CODE>Usr1SaveFmt usr1_save_fmt</CODE>
+<DD>
+<A NAME="IDX558"></A>
+You can control how the network is saved when it receives the
+<CODE>USR1</CODE> signal (see section <A HREF="pdp-user_106.html">9.4  Signals to Control a PDP++ Process</A>) with this -- the full network
+or just the weights
+<DT><CODE>PThreadSpec pthread</CODE>
+<DD>
+<A NAME="IDX559"></A>
+<A NAME="IDX560"></A>
+<A NAME="IDX561"></A>
+<A NAME="IDX562"></A>
+This specifies parameters for parallel processing (SMP) of the network.
+Number of processors (threads) is specified by the <B>n_threads</B>
+parameter.  This works by compiling a list of layers for each thread to
+process, based on the number of connections and units in the layers
+(separate list for each).  The allocation algorithm tries to distribute
+the computation as evenly as possible.  This is relatively fine-grained
+parallelism, and due to the overhead involved in managing the threads,
+it only speeds up relatively large networks (i.e., &#62; 50 units per layer,
+&#62;= 4 layers).  Speedups can by upwards of 1.67 times as fast on dual
+pentium III systems.  You can also restrict parallelism to only
+connection-level computations by turning off <B>par_units</B> -- unit
+level speedup is typically quite quite small (but measurable..).
+
+</DL>
+
+<P>
+The network also has the following functions which can be activated by
+the corresponding menu selection in the <B>NetView</B> (<B>using the left
+hand menu</B>).
+
+</P>
+<P>
+In the <I>Object</I> menu:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>ReadOldPDPNet(File input_file, bool skip_dots)</CODE>
+<DD>
+<DT><CODE>Copy_Weights()</CODE>
+<DD>
+<A NAME="IDX563"></A>
+Copies the weights from another similarly-configured network.  By
+duplicating a network and then later copying weights back from it, one
+can restore weight values to known values while tinkering with various
+parameters affecting network learning.
+<DT><CODE>WriteWeights(File output_file)</CODE>
+<DD>
+<A NAME="IDX564"></A>
+Outputs bias and receiver weight values in a unit by unit format to a
+file (includes comments). NOTE: This is not the same format as the old
+pdp software.
+<DT><CODE>ReadWeights(File input_file)</CODE>
+<DD>
+<A NAME="IDX565"></A>
+Loads in the bias and receiver weight values from a file created with
+the WriteWeights function above.
+<A NAME="IDX566"></A>
+Reads in a "filename.net" type file format from the old pdp software.
+<VAR>skip_dots</VAR> indicates whether to skip over "." values in the
+"network:" weight matrix section or to create zero valued weights
+instead. This function will attempt to use and extend existing network
+structure if it exists and create new network structure if necessary.
+Currently (v1.2) it does not handle "Bias:" sections or "LINKED" weight
+constraints. 
+</DL>
+
+<P>
+In the <I>Actions</I> menu:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Build()</CODE>
+<DD>
+<A NAME="IDX567"></A>
+Create units in all the layers according to the size and shape of the
+layers.  If units already exist, it makes sure they are of the right
+type, and arranged within the geometry of the layer.  This is accessed
+through the <I>Build All</I> button of the <B>NetView</B> (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).
+<DT><CODE>Connect()</CODE>
+<DD>
+<A NAME="IDX568"></A>
+Create connections on all the units according to the projections on the
+layers.  The projections define a pattern of connectivity, and the
+connections actually flesh this pattern out by individually connecting
+unit to unit.  Note that any existing connections are removed before
+connecting. This is accessed through the <I>Connect All</I> button of the
+<B>NetView</B> (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).
+<DT><CODE>Check Types()</CODE>
+<DD>
+<A NAME="IDX569"></A>
+Checks to make sure all the objects and specs in the network are
+mutually compatible.
+<DT><CODE>Fix Prjn Indexes()</CODE>
+<DD>
+<A NAME="IDX570"></A>
+Fixes the other_idx indexes on the connection groups -- CheckTypes
+might tell you you need to run this if your network was not properly
+connected.
+<DT><CODE>RemoveCons()</CODE>
+<DD>
+<A NAME="IDX571"></A>
+Remove all the connections on the units in the network.  Like
+<CODE>RemoveUnits</CODE> this is useful for reducing the size of the network
+for saving.
+<DT><CODE>RemoveUnits()</CODE>
+<DD>
+<A NAME="IDX572"></A>
+Remove all the units from the network.  This can be useful for saving
+large networks, since all of the relevant structural information for
+rebuilding the network is typically present in the layers and
+projections.  Thus, one can save the "skeleton" and then simply press
+<I>Build All</I> and <I>Connect All</I> when the network is reloaded.
+<DT><CODE>InitState()</CODE>
+<DD>
+<A NAME="IDX573"></A>
+Initialize the state variables on the units.  This means activation-like
+variables, but not the weights.
+<DT><CODE>InitWtState()</CODE>
+<DD>
+<A NAME="IDX574"></A>
+Initialize the weight state information on the connections in accordance
+with their <B>ConSpecs</B>.  This also resets the epoch counter to zero.
+<DT><CODE>TransformWeights(PreProcessVals trans)</CODE>
+<DD>
+<A NAME="IDX575"></A>
+Applies given transformation to weights.  Possible transformations
+include basic arithmetic operators (e.g., scaling via multiplication),
+and absolute value, thresholding, etc.
+<DT><CODE>AddNoiseToWeights(Random noise_spec)</CODE>
+<DD>
+<A NAME="IDX576"></A>
+Adds noise to weights using given noise specification.  This can be
+useful for simulating damage to the network.
+<DT><CODE>PruneCons(PreProcessVals pre_proc, CountParam::Relation rel, float cmp_val)</CODE>
+<DD>
+<A NAME="IDX577"></A>
+Removes connections that (after a pre-processing transformation,
+e.g. absolute-value) meet the given relation in comparison to compare
+val (e.g., LESSTHANOREQUAL to some value).
+<DT><CODE>LesionCons(float p_lesion, bool permute)</CODE>
+<DD>
+<A NAME="IDX578"></A>
+Removes connections with probability p_lesion.  If permute is true, then
+a fixed number of weights will be lesioned, where this number is equal
+to the probablility times the number of weights.  Othewise, the actual
+number of weights lesioned will vary based on the probability.
+<DT><CODE>LesionUnits(float p_lesion, bool permute)</CODE>
+<DD>
+<A NAME="IDX579"></A>
+Removes units with probability p_lesion.  If permute is true, then a
+fixed number of units will be lesioned, where this number is equal to
+the probablility times the number of units (on a layer-by-layer basis).
+Othewise, the actual number of units lesioned will vary based on the
+probability.
+<DT><CODE>TwoD_Or_ThreeD(LayerLayout layout_type)</CODE>
+<DD>
+<A NAME="IDX580"></A>
+Reposition the units and layers in either a 2D or 3D configuration.
+<DT><CODE>GridViewWeights(GridLog* grid_log, Layer* recv_lay, Layer* send_lay, int un_x, un_y, wt_x, wt_y)</CODE>
+<DD>
+<A NAME="IDX581"></A>
+Plots the entire set of weights into the recv_lay from the send_lay in
+the grid log specified (NULL = make a new one).  The un_x, un_y
+parameters can specify a more limited range of receiving units (-1 means
+entire layer), and the wt_x, wt_y similarly specify a more limited range
+of sending units (weights).
+</DL>
+
+<P>
+These other functions of the network might be useful to those writing
+scripts or programming in PDP++:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>ConnectUnits(Unit* receiving_unit, Unit* sending_unit);</CODE>
+<DD>
+<A NAME="IDX582"></A>
+Creates a connection from the sending_unit to the receiving_unit. A
+custom projection between the units' layers is created if necessary
+</DL>
+
+<P>
+Finally there are a number of other functions that can be found in
+<TT>`src/pdp/netstru.h'</TT> which are useful for programming.  In general the
+Network has a function corresponding to one that is performed on a
+lower-level object like a unit, and this function on the network simply
+calls the corresponding one on all of its layers, which then call the
+one on all of their units, etc.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_112.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_114.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

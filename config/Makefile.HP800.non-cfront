@@ -1,0 +1,56 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# HP800 - cfront (CC)
+
+# use the CC includes
+IOS_INCLUDES = CC-3.1
+
+#include CC iostream stuff
+IDIRS_EXTRA = -I/usr/include/CC
+
+#include x libs
+LDIRS_EXTRA = -L/usr/lib/X11R5
+
+DEFINES = -DNO_SIGNED -DNO_BUILTIN_BOOL
+
+# using native mode compiling
+CXX_SHARED = CC +Z +e0 -D__ANSI_CPP__
+CC_SHARED = gcc -fPIC -U__GNUG__ -nostdinc -I/usr/include
+CXX_NONSHARED = CC +e0 -D__ANSI_CPP__
+CC_NONSHARED = gcc -U__GNUG__ -nostdinc -I/usr/include
+
+# doesn't need ranlib
+RANLIB = ls
+AR_CMD_SHARED = CC +Z -b -o
+LIB_EXT_SHARED = sl
+
+#cppC = /usr/lib/Cpp.ansi -I/usr/include/CC
+# use gnu cccp instead cuz it works! (and don't include standard stuff..)
+cppC = /usr/local/bin/cccp -lang-c++ -nostdinc++
+
+# using shared libraries
+CC = $(CC_SHARED)
+CXX = $(CXX_SHARED)
+# CC doesn't understand -M
+DEP_CXX = $(CC)
+LIB_EXT = $(LIB_EXT_SHARED)
+AR_CMD = $(AR_CMD_SHARED)
+
+# debug g1 only does debug info once!
+DEBUG_FLAG = -g1
+DEBUG_OPT_FLAG = 
+OPT_FLAG = +O2
+
+# vt file needed for e0/e1 stuff
+VT_INST_SRC = $(VT_INST_FILE).cc
+VT_INST_OBJ = $(VT_INST_FILE).o
+VT_INST_DEP = $(VT_INST_FILE).d
+
+# not using TI
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+# using old cfront for _TA.cc files
+MAKETA_FLAGS_CPU = -old_cfront
+

@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-close-event</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_173.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_175.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1048" HREF="pdp-user_toc.html">12.8.3  Finding The Event Closest to the Current Output Pattern</A></H3>
+<P>
+<A NAME="IDX1049"></A>
+<A NAME="IDX1050"></A>
+<A NAME="IDX1051"></A>
+
+</P>
+<P>
+In order to understand what kinds of errors a network is making, or in
+the case where a network can produce multiple outputs for a given input,
+it is useful to be able to compare the actual output the network came up
+with against all of the possible training events to find the one that
+matches the closest.  The <B>ClosestEventStat</B> does exactly that.
+
+</P>
+<P>
+<A NAME="IDX1052"></A>
+<A NAME="IDX1053"></A>
+<A NAME="IDX1054"></A>
+The closest event stat reports both the distance in the <CODE>dist</CODE>
+field, and the name of the event which was closest to the current output
+pattern in the <CODE>ev_nm</CODE> field. If the <CODE>ev_nm</CODE> matches that of
+the currently presented event (<CODE>cur_event</CODE> of the TrialProcess),
+then <CODE>sm_nm</CODE> is 1, else it is 0.  The average of this value gives a
+"percent correct" measure for forced-choice performance among the
+different items in the environment.  The distance can be computed in
+several different ways, as described below:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>CompareType cmp_type</CODE>
+<DD>
+<A NAME="IDX1055"></A>
+This is the type of distance function to use in making the comparison:
+<DL COMPACT>
+
+<DT><CODE>SUM_SQUARES</CODE>
+<DD>
+sum of squares distance: sum[(x-y)^2]
+<DT><CODE>EUCLIDIAN</CODE>
+<DD>
+euclidean distance: sqrt(sum[(x-y)^2])
+<DT><CODE>HAMMING_DIST</CODE>
+<DD>
+hamming distance: sum[abs(x-y)]
+<DT><CODE>COVAR</CODE>
+<DD>
+covariance: sum[(x-&#60;x&#62;)(y-&#60;y&#62;)]
+<DT><CODE>CORREL</CODE>
+<DD>
+correlation: sum[(x-&#60;x&#62;)(y-&#60;y&#62;)] / sqrt(sum[x^2 y^2])
+<DT><CODE>INNER_PROD</CODE>
+<DD>
+inner product: sum[x y]
+<DT><CODE>CROSS_ENTROPY</CODE>
+<DD>
+cross entropy: sum[x ln(x/y) + (1-x)ln((1-x)/(1-y))]
+</DL>
+<DT><CODE>float dist_tol</CODE>
+<DD>
+<A NAME="IDX1056"></A>
+This is a tolerance value for distance comparisons, where absolute
+differences below this amount result in a 0 distance component.
+<DT><CODE>bool norm</CODE>
+<DD>
+<A NAME="IDX1057"></A>
+If this flag is checked, and one of the distance comparisons is being
+performed, the values participating in the distance computation will be
+normalized to a zero-one range prior to computation.  If the
+<CODE>INNER_PROD</CODE> is being taken, this will result in a normalized
+inner-product measure (dividing by the magnitudes of the individual
+weight vectors).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_173.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_175.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

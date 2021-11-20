@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - how-proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_40.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_42.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX28" HREF="pdp-user_toc.html">5.1  Questions about Processes</A></H2>
+
+<DL COMPACT>
+
+<DT><B>How to I set a stopping criterion for training?</B>
+<DD>
+<A NAME="IDX29"></A>
+ 
+The stopping criterion is part of the statistic process that has the
+data on which the criterion is based.  Thus, if you want to stop
+training based on sum-squared-error, the <B>SE_Stat</B>
+(see section <A HREF="pdp-user_172.html">12.8.1  Summed-Error Statistics</A>) is where to go to set the criterion.  The
+criterion is always set in the statistic that is located in the
+<CODE>loop_stats</CODE> of the process you wish to stop.  So, if you wan to
+stop training, look in the <B>TrainProcess</B> (see section <A HREF="pdp-user_155.html">12.4.2  Iterating over Epochs: TrainProcess</A>)
+for the statistic.
+
+<A NAME="IDX30"></A>
+<A NAME="IDX31"></A>
+<A NAME="IDX32"></A>
+<DT><B>How do I record the activations of the units in my network?</B>
+<DD>
+This is accomplished by creating a <B>MonitorStat</B>, which gathers
+information from the network and makes it available for logging.  The
+easiest way to do this is through the <B>NetView</B> (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>),
+where you can select the objects to be monitored, the variable to
+monitor, and it will create an appropriate MonitorStat for you.  Or,
+you can use <CODE>Stats/RecordLayerValues</CODE> from the <B>Wizard</B>
+(see section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>). Note that the monitor stat is created in the
+schedule process that corresponds to the time-grain at which you want
+the information recorded.  It is the log of this process which will
+show the values you are recording.  For more info, see
+section <A HREF="pdp-user_173.html">12.8.2  Monitoring Network State Variables</A>.
+
+<A NAME="IDX33"></A>
+<A NAME="IDX34"></A>
+<A NAME="IDX35"></A>
+<A NAME="IDX36"></A>
+<A NAME="IDX37"></A>
+<A NAME="IDX38"></A>
+<DT><B>How do I analyze the representations in my network (e.g., cluster plots, PCA, MDS)?</B>
+<DD>
+There are two basic strategies.  Both start by recording data from the
+appropriate layer in the network (e.g., the hidden layer), using a
+<B>MonitorStat</B> as described above.  The simplest, but less automated,
+technique is just create a log of the recorded data (e.g., if
+recording at the Trial process level, create a log of the trial
+process -- any kind of log will do, but a <B>GridLog</B> might be the
+most appropriate), and then use the <CODE>Analyze</CODE> menu on the log to
+analyze the data (see section <A HREF="pdp-user_185.html">13.3.1  The LogView Class</A>).  When using this
+technique, you need to remember to clear the log at the appropriate
+time so it contains just the data you want to analyze.
+
+A more automated technique involves copying the monitored information
+into an environment using a <B>CopyToEnvStat</B> -- the environment
+serves as a kind of data buffer for the network activations, and
+contains the necessary analysis routines.  Once the data is copied
+into the environment, you can just use the <CODE>Analyze</CODE> menu, or
+better yet, create a <B>DispDataEnvProc</B> that automatically displays
+the results of an analysis of a data environment.  This latter
+technique is employed by the <B>Wizard</B> <CODE>Stats/Analyze Net Layer</CODE>
+function, which automates all of the above steps, and is highly
+recommended.  Pieces of these steps are also found in related wizard
+functions such as <CODE>Auto Analyze Data Env</CODE> and <CODE>Save Values
+in Data Env</CODE>.  See section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>.
+
+Regardless of the technique, the set of available analyses, which
+include cluster plots, Principal Components Analysis (PCA), and
+Multidimensional Scaling (MDS) are described in the <B>Environment</B>
+<CODE>Analyze</CODE> menu (see section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>).
+
+<A NAME="IDX39"></A>
+<A NAME="IDX40"></A>
+<A NAME="IDX41"></A>
+<DT><B>How can I get receptive field plots from my network?</B>
+<DD>
+The <B>UnitActRFStat</B> (see section <A HREF="pdp-user_176.html">12.8.5  Activity-based Receptive Fields</A>) and
+<B>DispNetWeightsProc</B> (see section <A HREF="pdp-user_166.html">12.6.5  Miscellaneous other Process Types</A>) processes both
+support the display of receptive fields.  The former uses a
+reverse-correlation technique that works for any set of layers,
+regardless of connectivity, while the latter only plots directly
+connected sets of weights.  These are supported by the <B>Wizard</B>
+<CODE>Act Based Receptive Field</CODE> and <CODE>Display Net Weights</CODE>
+functions (see section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>).
+
+<A NAME="IDX42"></A>
+<A NAME="IDX43"></A>
+<A NAME="IDX44"></A>
+<A NAME="IDX45"></A>
+<DT><B>How do I record a reaction time measure (cycles) from my network?</B>
+<DD>
+Experience in a variety of cases has shown that human reaction times
+can be best modeled by recording the number of processing cycles it
+takes for a response/output layer unit to exceed some kind of activity
+threshold.  This can be measured with the <B>ActThreshRTStat</B>
+section <A HREF="pdp-user_177.html">12.8.6  Reaction-time Based on Crossing an Activation Threshold</A> (see also the <B>Wizard</B> <CODE>Stop On Act Thresh</CODE>
+function, section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>).  One can also use the <B>CyclesToSettle</B>
+statistic (see section <A HREF="pdp-user_179.html">12.8.8  Miscellaneous Other Stat Types</A>) to record however many cycles were
+used during a <B>Settle</B> process, but be careful because the settle
+process is typically stopped by a statistic that records the change in
+activation over time (in <TT>`cs++'</TT> this is <B>CsMaxDa</B>; in
+<TT>`leabra++'</TT> it is <B>LeabraMaxDa</B>), to ensure that the activation
+changes have gone below some threshold.  This kind of change-based
+reaction time measure is typically not such a good measure of human
+reaction time.
+
+<A NAME="IDX46"></A>
+<DT><B>How do I run my network in the background for training?</B>
+<DD>
+Often networks take a while to learn, and it is nice to be able to run
+them in the background for a day or two. To do this, get the network all
+setup to train, save it, and then use the following type of command:
+<PRE>unix &#62; pdp++ -nogui -f startup.css &#60;myproj&#62; &#60;extra args&#62; &#38;
+</PRE>
+
+where <TT>`pdp++'</TT> refers to the PDP++ executable you are using (bp++,
+cs++, etc), and <CODE>-nogui</CODE> tells it to not open up the graphical user
+interface, and <CODE>-f startup.css</CODE> is a script file that will automate
+the process of loading the project and running it.  For more information
+on different startup arguments for PDP++, see section <A HREF="pdp-user_105.html">9.3  Startup Arguments to PDP++</A>.  Also,
+check out the comments at the top of <TT>`startup.css'</TT> (located in the
+<TT>`css/include'</TT> directory) to see what kinds of assumptions it makes
+about your project.  Also see section <A HREF="pdp-user_110.html">9.6  Project Scripts</A> for more useful scripts
+that you can use.  See section <A HREF="pdp-user_106.html">9.4  Signals to Control a PDP++ Process</A> for information on how to
+control the process once it is running in the background.
+
+<A NAME="IDX47"></A>
+<DT><B>How do I automatically save my networks after training?</B>
+<DD>
+This can be accomplished by creating a <B>SaveNetsProc</B> or
+<B>SaveWtsProc</B> in the <CODE>final_procs</CODE> group of an appropriate Batch
+or Train process.  This process names the network with the name field
+of the network object plus the current epoch and, if present, batch
+counters.  You can set the mod value of this process to save the
+networks at different intervals.  An example project using this is
+<TT>`demo/bp/gridsearch_xor.proj.gz'</TT>.
+
+There is a CSS script version of this process called
+<TT>`save_networks.css'</TT> in the <TT>`css/include'</TT> directory, as well as
+a modified version that saves networks that get below some criterion
+(which is presumably higher than the stopping criterion), called
+<TT>`save_good_nets.css'</TT>.  These scripts are meant to be attached to
+<B>ScriptProcess</B> objects created in the <CODE>loop_procs</CODE> group of an
+appropriate Batch or Train process.  They basically just issue a save
+command on the network, but they also give the network a name based on
+the current epoch and/or batch counters.  See these scripts for more
+detailed documentation.
+
+<A NAME="IDX48"></A>
+<DT><B>How do I change one of the processes in my schedule process hierarchy?</B>
+<DD>
+All objects can be changed to a different type using the Change Type menu
+option (ChangeMyType function in CSS).  In the project view, just select
+the object you want to change, and hit the Change Type button, and it
+will change the type, and reset all the relevant pointers so your
+process hierarchy should remain intact.
+
+<DT><B>How do I remove a higher-level process object without losing the lower-level ones?</B>
+<DD>
+If you remove a process object by using the <I>.processes/</I> <I>Remove</I>
+option, it will automatically remove all the processes below the one
+removed.  However, if you do <I>Object/Close</I> on the object itself, it
+will just remove itself and close-up the gap between the remaining
+processes (in terms of stat aggregation, etc).  The <I>Rmv Obj(s)</I>
+button on the project view also does this kind of remove.  Finally, you
+can use the <I>Structure/RemoveSuperProc</I> and <I>RemoveSubProc</I> menu
+options on a process object itself to remove its parent or sub process.
+
+<DT><B>Why can't I change the environment or network pointer in my process?</B>
+<DD>
+The <CODE>environment</CODE> and <CODE>network</CODE> pointers are automatically
+inherited from the parent process in the hierarchy (this is true for
+stats and other process objects hanging off of a given process as well).
+This means that you can only change these at the top-level process in a
+given hierarchy.  On the other hand, it means that when you want to
+change these pointers, you only have to change them in one place and
+they are automatically propagated to all processes (see section <A HREF="pdp-user_149.html">12.1  The Basic Features of all Processes</A>).
+
+<A NAME="IDX49"></A>
+<DT><B>Where do I create a given statistic process?</B>
+<DD>
+Each statistic process "knows" where to create itself in the standard
+schedule process hierarchy.  This default location will be the one shown
+when you use the <I>NewStat</I> menu option in the <I>.processes</I> menu on
+the project.  Use this to create your statistic.  In general, most
+statistics should be created in a relatively low-level process, such as
+the <B>TrialProcess</B>, since most stats deal with data that changes
+event-by-event.  Remember that you create the stat at the lowest level
+so that it can compute the raw information, and these low-level values
+can be aggregated up the processing hierarchy if higher-level
+information is desired, see section <A HREF="pdp-user_171.html">12.8  Different Types of Statistics</A>.
+
+<A NAME="IDX50"></A>
+<A NAME="IDX51"></A>
+<DT><B>Why can't I change the name of my statistic?</B>
+<DD>
+First, the name of the statistic object is not the same as the label
+that is associated with that object in the log (though they are
+related), so changing one will not change the other.  The Stat object
+names are automatically set to reflect the aggregation and layer
+settings of the stat, see section <A HREF="pdp-user_171.html">12.8  Different Types of Statistics</A>.  This is true as long as the
+name contains the type name of the stat (e.g., SE_Stat), so if you want
+to give a stat a custom name, make sure it doesn't include the type
+name.
+
+To change the label associated with the stat as it <EM>appears in the
+log</EM>, you need to edit the <B>StatVal</B> object(s) that contains the value of
+the statistic.  This object contains a <CODE>name</CODE> field, which is what
+determines the label used by the log.  However, as it appears on most
+stats (e.g., SE_Stat), the <CODE>name</CODE> field is hidden, so you have to
+use the CSS script to set it.  Typing:
+
+<PRE>css&#62; .processes[1].loop_stats[0].se.Edit();
+</PRE>
+
+will pull up an editor for the epoch level SE_Stat StatVal (which is the
+member <CODE>se</CODE> of an SE_Stat) in the <TT>`demo/bp/xor.proj.gz'</TT> demo,
+and allow you to edit the name.  Alternatively you can use
+<I>PDP++Root/Object/Browe</I> and click your way through the process
+hierarchy until you get to the variable you want to change, and then hit
+<I>Select</I> to edit it.  You will have to do a <CODE>GetHeaders</CODE> on the
+log to see this new name.  Other stats like ScriptStat have a list of
+StatVals, which, when edited, allow you to edit the names directly.
+
+An easier alternative is to simply change the <CODE>display_name</CODE> of the
+<B>ViewSpec</B> in the relevant log.
+
+<A NAME="IDX52"></A>
+<DT><B>How do I get the epoch counter into my testing process?</B>
+<DD>
+The epoch counter, which is on the <B>TrainProcess</B> is not directly
+available to a testing process, which typically is created at the epoch
+level.  Thus, you need to add a <B>EpochCounterStat</B> to the final stats
+of the process where you want to see the epoch counter.  This gets the
+counter off of the network itself.  To get other counters from the
+training process hierarchy (i.e., the batch counter), use the
+<B>ProcCounterStat</B>.  For more info, see section <A HREF="pdp-user_179.html">12.8.8  Miscellaneous Other Stat Types</A>.
+
+<A NAME="IDX53"></A>
+<DT><B>How do I determine which event is closest to the output my network actually produced?</B>
+<DD>
+The <B>ClosestEventStat</B> does exactly this, see
+section <A HREF="pdp-user_174.html">12.8.3  Finding The Event Closest to the Current Output Pattern</A>. 
+
+<A NAME="IDX54"></A>
+<DT><B>How do I create a cross-validation setup?</B>
+<DD>
+Cross-validation is accomplished by periodically testing during
+training.  Thus, you simply need to create a testing process
+hierarchy, (at the Epoch level), and link your testing epoch process
+into the <CODE>loop_procs</CODE> of the training process.  This can be done
+with the <B>Wizard</B> <CODE>Processes/Cross Validation</CODE> function
+(see section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A>).  You should set the modulo factor (in the
+<CODE>mod</CODE> field of the process) of your testing epoch process to
+reflect the frequency with which you want to perform testing.  See
+<TT>`demo/bp_misc/bp_xval.proj.gz'</TT> for a demonstration of a
+cross-validation training setup.
+
+<DT><B>How do I set the stopping criteria for training based on testing error (e.g., for cross-validation)?</B>
+<DD>
+Add an aggregator stat of the testing epoch stat in the
+<CODE>final_stats</CODE> of your training epoch process (i.e., make an
+<B>SE_Stat</B> there, set its <CODE>time_agg.from</CODE> to point to your test
+epoch <B>SE_Stat</B>, use the <CODE>LAST</CODE> operator).  You will want to
+create aggregates of this stat (which is itself an aggregator) using
+<CODE>LAST</CODE>, and set the stopping criterion in the aggregator of this
+stat in the loop_stats of the train process.  This is all accomplished
+by the <B>Wizard</B> <CODE>Processes/Cross Validation</CODE> function.  The
+project <TT>`demo/bp_misc/bp_dig_xval.proj.gz'</TT> contains an example of
+this.
+
+<DT><B>How do I graph both training and testing error (e.g., for cross-validation)?</B>
+<DD>
+If you follow the steps for the previous item, a graph log at the level
+of the training epoch process will show both the training and testing
+error.  Again, see the demo project.
+
+<A NAME="IDX55"></A>
+<DT><B>How do I make a hybrid network of two different types of</B>
+<DD>
+algorithms?  Since all schedule process types assume that a given
+network has all of the appropriate types of objects (i.e., <B>BpUnit</B>'s,
+<B>BpCon</B>'s, etc for backprop), you have to create two separate
+networks, and then link them together with a <B>BridgeProcess</B>, see
+section <A HREF="pdp-user_165.html">12.6.4  Linking Networks Together with a Bridge</A>.
+
+<A NAME="IDX56"></A>
+<A NAME="IDX57"></A>
+<A NAME="IDX58"></A>
+<A NAME="IDX59"></A>
+<A NAME="IDX60"></A>
+<DT><B>How do I setup distributed memory processing across events?</B>
+<DD>
+The EpochProcess supports distributed memory processing of events
+(using the MPI protocol), where each processor operates on a different
+set of events, sharing its results with the other processors to
+achieve processing of the entire epoch.  This implies batch-mode
+weight updates.  This is very efficient, and can produce nearly-linear
+speedups in the number of additional processors used.  See
+section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A> for details.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_40.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_42.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

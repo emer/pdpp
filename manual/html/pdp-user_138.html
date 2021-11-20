@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-event-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_137.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_139.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX799" HREF="pdp-user_toc.html">11.2.1  Implementational Details of Events and Patterns</A></H3>
+
+<P>
+Note that layer pointer in a pattern spec depends on which network the
+environment is being applied to.  Thus, there is some checking that
+takes place when an event is being applied to the network to make sure
+that the layer pointers are up-to-date.  Along these same lines, any
+time the events or patterns are edited, the layer pointers are reset,
+with the idea being that they might have changed where the patterns are
+being applied to.
+
+</P>
+<P>
+The basic set of functions can be found in the <TT>`src/pdp/enviro.h'</TT>
+file.  They are fairly straightforward.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_137.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_139.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

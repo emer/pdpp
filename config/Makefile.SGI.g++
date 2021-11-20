@@ -1,0 +1,13 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# SGI - g++
+
+# this is pretty sparse because Makefile.defs is set up for g++
+
+GENERIC_LIB = -lm -lmalloc
+
+DEFINES = -DCONST_48_ARGS
+
+# doesn't need ranlib
+RANLIB = ls
+

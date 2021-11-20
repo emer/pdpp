@@ -1,0 +1,15 @@
+procs, 1, 	units, 50, 	weights, 5000, 	cycles, 40000, 	con_trav, 2e+08, 	secs, 2.96, 	Mcon/sec, 67.5676
+procs, 2, 	units, 50, 	weights, 5000, 	cycles, 40000, 	con_trav, 2e+08, 	secs, 2.54, 	Mcon/sec, 78.7402
+procs, 4, 	units, 50, 	weights, 5000, 	cycles, 40000, 	con_trav, 2e+08, 	secs, 2.3, 	Mcon/sec, 86.9565
+procs, 1, 	units, 100, 	weights, 20000, 	cycles, 10000, 	con_trav, 2e+08, 	secs, 1.41, 	Mcon/sec, 141.844
+procs, 2, 	units, 100, 	weights, 20000, 	cycles, 10000, 	con_trav, 2e+08, 	secs, 1.04, 	Mcon/sec, 192.308
+procs, 4, 	units, 100, 	weights, 20000, 	cycles, 10000, 	con_trav, 2e+08, 	secs, 0.85, 	Mcon/sec, 235.294
+procs, 1, 	units, 500, 	weights, 500000, 	cycles, 400, 	con_trav, 2e+08, 	secs, 3.43, 	Mcon/sec, 58.309
+procs, 2, 	units, 500, 	weights, 500000, 	cycles, 400, 	con_trav, 2e+08, 	secs, 1.78, 	Mcon/sec, 112.36
+procs, 4, 	units, 500, 	weights, 500000, 	cycles, 400, 	con_trav, 2e+08, 	secs, 0.84, 	Mcon/sec, 238.095
+procs, 1, 	units, 1000, 	weights, 2e+06, 	cycles, 100, 	con_trav, 2e+08, 	secs, 3.46, 	Mcon/sec, 57.8035
+procs, 2, 	units, 1000, 	weights, 2e+06, 	cycles, 100, 	con_trav, 2e+08, 	secs, 1.72, 	Mcon/sec, 116.279
+procs, 4, 	units, 1000, 	weights, 2e+06, 	cycles, 100, 	con_trav, 2e+08, 	secs, 0.9, 	Mcon/sec, 222.222
+procs, 1, 	units, 5000, 	weights, 5e+07, 	cycles, 40, 	con_trav, 2e+09, 	secs, 34.28, 	Mcon/sec, 58.3431
+procs, 2, 	units, 5000, 	weights, 5e+07, 	cycles, 40, 	con_trav, 2e+09, 	secs, 17.06, 	Mcon/sec, 117.233
+procs, 4, 	units, 5000, 	weights, 5e+07, 	cycles, 40, 	con_trav, 2e+09, 	secs, 8.65, 	Mcon/sec, 231.214

@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - prog-typea-files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_30.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_32.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX183" HREF="ta_css_toc.html">6.2.1  Scanning Type Information using <TT>`maketa'</TT></A></H3>
+
+<P>
+Type information for TypeAccess is scanned from the header files using a
+program called <TT>`maketa'</TT>, which looks for <CODE>class</CODE> and
+<CODE>typedef</CODE> definitions, and records what it finds.  It operates on
+all the header files in a given directory at the same time, and it
+produces three output files: <TT>`xxx_TA_type.h'</TT>, <TT>`xxx_TA_inst.h'</TT>,
+and <TT>`xxx_TA.cc'</TT>, where xxx is given by a "project name" argument.
+The first file contains a list of <CODE>extern</CODE> declarations of
+instances of the <B>TypeDef</B> type, which is the basic object that
+records information about types.  Each type that was defined with a
+<CODE>class</CODE> or <CODE>typedef</CODE>, or ones that are modifications of basic
+types, such as reference or pointer types, are given their own
+<B>TypeDef</B> object, which is named with the name of the type with a
+leading <CODE>TA_</CODE> prefix. Thus, a class named <I>MyClass</I> would have
+corresponding <B>TypeDef</B> object named <I>TA_MyClass</I>, which can be used
+directly in programs to obtain type information about the <I>MyClass</I>
+object. a Pointers have a <CODE>_ptr</CODE> suffix, and references have a
+<CODE>_ref</CODE> suffix.  Template instances are represented by replacing the
+angle brackets with underbars.  The <TT>`xxx_TA_type.h'</TT> file must be
+included in any header files which reference their own type information.
+
+</P>
+<P>
+The <TT>`xxx_TA_inst.h'</TT> file contains declarations of "instance"
+objects, which are pointers to a token of each of the classes for which
+type information is available.  These instances are named <CODE>TAI_</CODE>
+with the rest the same as the corresponding <CODE>TA_</CODE> name.  The
+<CODE>-instances</CODE> argument to <TT>`maketa'</TT> determines if instances are
+made, and this can be overridden with the <CODE>#NO_INSTANCE</CODE> and
+<CODE>#INSTANCE</CODE> comment directives (see section <A HREF="ta_css_36.html">6.3  Standard TypeAccess Comment Directives</A>).  The
+<B>TypeDef</B> object can use an instance object of one of the type-aware
+base classes to make a new token of that object given only the name of
+the type to be created.  This gives the system the power to create and
+delete objects at will, which is necessary for the file saving and
+loading system to work.
+
+</P>
+<P>
+Finally, the <TT>`xxx_TA.cc'</TT> file contains the actual definitions of
+all the type information.  It must be compiled and linked in with the
+project, and its <CODE>ta_Init_xxx</CODE> function must be called at the start
+of the execution of the program before any type information is used.
+
+</P>
+<P>
+Note that while <TT>`maketa'</TT> does process complexities like
+<CODE>template</CODE> and multiply inherited classes properly, it does not
+deal with multiple versions of the same function which differ only in
+argument type in the same way that C++ does.  Instead, the scanner just
+keeps the last version of a given method defined on the class.  This
+makes the type information compatible with the limitations of CSS
+in this respect, since it does not know how to use argument types to
+select the proper function to be called (see section <A HREF="ta_css_13.html">5.3.1  Differences Between CSS and C++</A>).  This
+limitation greatly simplifies the way that functions are called by CSS.
+It is recommended that you create methods which have some hint as to
+what kinds of arguments they expect, in order to get around this
+limitation.  The <B>taList</B> and <B>taGroup</B> classes, for example,
+contain both overloaded and specific versions of the <CODE>Find</CODE>
+function, so the C++ programmer can call <CODE>Find</CODE> with any of a
+number of different argument types, while the CSS programmer can use
+the <CODE>FindName</CODE> or <CODE>FindType</CODE> versions of the function.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_30.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_32.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

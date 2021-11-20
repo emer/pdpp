@@ -1,0 +1,26 @@
+
+void Save_Wts(String nm) {
+  fstream strm;
+  strm.open(nm, ios::out);
+
+  strm << .layers[1].units[0].recv.gp[0].Cn(0).wt << "\n";
+  strm << .layers[1].units[0].recv.gp[0].Cn(1).wt << "\n";
+
+  strm << .layers[1].units[1].recv.gp[0].Cn(0).wt << "\n";
+  strm << .layers[1].units[1].recv.gp[0].Cn(1).wt << "\n";
+
+  strm << .layers[2].units[0].recv.gp[0].Cn(0).wt << "\n";
+  strm << .layers[2].units[0].recv.gp[0].Cn(1).wt << "\n";
+
+  strm << .layers[0].units[0].bias.wt << "\n";
+  strm << .layers[0].units[1].bias.wt << "\n";
+
+  strm << .layers[1].units[0].bias.wt << "\n";
+  strm << .layers[1].units[1].bias.wt << "\n";
+
+  strm << .layers[2].units[0].bias.wt << "\n";
+
+  strm.close();
+}
+
+Save_Wts("wts_from_bp++_xor.wts");

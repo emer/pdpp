@@ -1,0 +1,42 @@
+#!/bin/csh -f 
+
+# runs the pneural benchmark, which requires petsc & mpi
+
+# replace this with full path to mpirun if needed
+set mpirn = mpirun
+
+echo "---------------------------" >& bench.out
+echo "SMALL Network (1000 units):" >>& bench.out
+echo "8 processes:"  >>& bench.out
+$mpirn -np 8 pneural -n 1000 -t 80  >>& bench.out
+echo "4 processes:" >>& bench.out
+$mpirn -np 4 pneural -n 1000 -t 80 >>& bench.out
+echo "2 processes:" >>& bench.out
+$mpirn -np 2 pneural -n 1000 -t 80 >>& bench.out
+echo "1 processes:" >>& bench.out
+$mpirn -np 1 pneural -n 1000 -t 80 >>& bench.out
+
+echo " " >>& bench.out
+echo "---------------------------" >>& bench.out
+echo "MEDIUM Network (2000 units):" >>& bench.out
+echo "8 processes:" >>& bench.out
+$mpirn -np 8 pneural -n 2000 -t 20 >>& bench.out
+echo "4 processes:" >>& bench.out
+$mpirn -np 4 pneural -n 2000 -t 20 >>& bench.out
+echo "2 processes:" >>& bench.out
+$mpirn -np 2 pneural -n 2000 -t 20 >>& bench.out
+echo "1 processes:" >>& bench.out
+$mpirn -np 1 pneural -n 2000 -t 20 >>& bench.out
+
+echo "" >>& bench.out
+echo "---------------------------" >>& bench.out
+echo "LARGE Network (4000 units):" >>& bench.out
+echo "8 processes:" >>& bench.out
+$mpirn -np 8 pneural -n 4000 -t 5 >>& bench.out
+echo "4 processes:" >>& bench.out
+$mpirn -np 4 pneural -n 4000 -t 5 >>& bench.out
+echo "2 processes:" >>& bench.out
+$mpirn -np 2 pneural -n 4000 -t 5 >>& bench.out
+echo "1 processes:" >>& bench.out
+$mpirn -np 1 pneural -n 4000 -t 5 >>& bench.out
+

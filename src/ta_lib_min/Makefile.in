@@ -1,0 +1,75 @@
+# typea lib_min makefile for g++
+
+# this is the minimal version of ta library, not including any interface stuff
+# see comments on links and lm_force_ta for very important notes on compiling
+
+##################################
+# these are the things to set
+#
+
+PROJNAME = ta_lib_min
+PROJDIR	 = ta_lib_min
+
+LIB = libtypea_min.$(LIB_EXT)
+
+FLAGS = -DNO_IV
+MAKETA_FLAGS = -hx
+
+NIV_TAHEADS = $(VPATH)/streambuf-$(IOS_INCLUDES).h \
+	$(VPATH)/iostream-$(IOS_INCLUDES).h $(VPATH)/fstream-$(IOS_INCLUDES).h \
+	$(VPATH)/strstream-$(IOS_INCLUDES).h \
+	$(PDPDIR)/include/$(CPU)/ta_string/ta_string.h $(VPATH)/ta_stdef.h \
+	$(VPATH)/ta_list.h $(VPATH)/ta_list_tmplt.h \
+	$(VPATH)/typea.h $(VPATH)/ta_base.h $(VPATH)/ta_base_tmplt.h \
+	$(VPATH)/ta_group.h $(VPATH)/ta_group_tmplt.h \
+	$(VPATH)/ta_dump.h $(VPATH)/tdefaults.h
+TAHEADS = $(NIV_TAHEADS)
+
+FMTA_HEADS = ta_stdef.h ta_list.h ta_list_tmplt.h typea.h typea_constr.h \
+	ta_base.h ta_base_tmplt.h ta_group.h ta_group_tmplt.h \
+	ta_dump.h tdefaults.h
+HEADS = $(FMTA_HEADS) $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+FMTA_SRCS = ta_list.cc typea.cc typea_constr.cc ta_base.cc ta_group.cc \
+	ta_dump.cc tdefaults.cc
+SRCS = 	$(FMTA_SRCS) $(PROJNAME)_TA.cc
+
+OBJS =  ta_list.o typea.o typea_constr.o ta_base.o ta_group.o \
+	ta_dump.o tdefaults.o $(PROJNAME)_TA.o
+
+DEPS = 	ta_list.d typea.d typea_constr.d ta_base.d ta_group.d \
+	ta_dump.d tdefaults.d $(PROJNAME)_TA.d
+
+default:  optLib
+#default:	dbgLib
+#default:	dbgBin
+
+# call this to remake the links from ta
+links:	ios_includes force_ta
+	- $(RM) $(FMTA_SRCS) $(FMTA_HEADS) ta_lib_min_ti.cc
+	for i in $(FMTA_SRCS);\
+	  do $(LN) ../ta/$$i .;\
+	done
+	for i in $(FMTA_HEADS);\
+	  do $(LN) ../ta/$$i .;\
+	done
+	$(LN) ../ta/ta_ti.cc ta_lib_min_ti.cc
+
+ios_includes:
+	- $(RM) *stream*-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/streambuf.h streambuf-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/iostream.h iostream-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/fstream.h fstream-$(IOS_INCLUDES).h
+	- $(LN) ios-$(IOS_INCLUDES)/strstream.h strstream-$(IOS_INCLUDES).h
+
+# make a directory called ta exist here just for the maketa -- 
+# it contains an empty ta_TA_type.h -- if you don't do this, then
+# the real ta_TA_type.h will prevent maketa from getting anything!
+# you have to call this force ta to get anything to work!
+lm_force_ta:	chkcpu 
+	- $(LN) ta_inc ta
+	@if [ ! -f NoMakeTA ];\
+	then ( if [ -d $(CPU) ]; then ( $(CD) $(CPU); $(MAKE)  force_ta_impl )\
+	else $(MAKE)  force_ta_impl; fi); fi
+	- $(RM) ta
+

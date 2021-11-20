@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-bp-weight</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_17.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_19.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.1.3  Weight Error Derivative Phase</A></H3>
+
+<P>
+In this phase, we calculate quantities called <I>dE/dw_ij</I> and
+<I>dE/db_i</I> for all of the weights and all of the biases in the network.
+These quantities again represent the negative derivative of the Error
+with respect to the weights and the biases.  The formulae are:
+
+</P>
+<IMG SRC="pdp-user_18.html_sub_1.gif" ALIGN="MIDDLE" ALT="dE/dw_ij = dE/dnet_i * a_j 
+"><P>
+and
+<P>
+<IMG SRC="pdp-user_18.html_sub_2.gif" ALIGN="MIDDLE" ALT="dE/db_i = dE/dnet_i
+">
+</P>
+
+<P>
+After these error derivatives are calculated, there are two options.
+They may be summed over an entire epoch of training, or they may be used
+to change the weights immediately.  In the latter case, the variable
+<I>dE/dw_ij</I> accumulates the value of this derivative over all of the patterns
+processed within the epoch, and similarly for <I>dE/db_i</I>.
+
+</P>
+<P>
+When the weight change is made, there are two further values 
+calculated.  First, the exact magnitude of the change to be made is
+calculated:
+
+</P>
+<IMG SRC="pdp-user_18.html_sub_3.gif" ALIGN="MIDDLE" ALT=" deltaW_ij = lrate * dE/dw_ij + momentum * deltaW_ij
+">
+<P>
+This expression introduces a learning rate parameter, which scales the
+size of the effect of the weight error derivative, and a momentum
+parameter, which scales the extent to which previous weight changes
+carry through to the current weight change.  Note that in the expression
+for <I>deltaW_ij</I> the value of <I>deltaW_ij</I> from the previous time step
+appears on the right hand side.  An analogous expression is used to
+calculate the <I>deltaBias_i</I>.  Finally, the weight change is actually
+applied:
+
+</P>
+<IMG SRC="pdp-user_18.html_sub_4.gif" ALIGN="MIDDLE" ALT="w_ij += deltaW_ij
+">
+<P>
+Once again, an analogous expression governs the updating of <I>bias_i</I>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_17.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_19.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

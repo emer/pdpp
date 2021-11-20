@@ -1,0 +1,54 @@
+demo/css:
+
+	get_trn_epcs.cc		Example css code that can be either run
+				directly in css, or compiled using C++.
+				This code processes a log file and summarizes
+				the number of epochs taken to learn.
+
+	Makefile.in		A copy of config/Makefile.hard_of_css that
+				is used to create the actual Makefile for
+				C++ compiling.
+
+	xor.gridsearch.epc.log	A training log from the xor.gridsearch
+				example, which is used as input to
+				get_trn_epcs.
+
+	xor.gridsearch.trn	This is the output of get_trn_epcs on
+				xor.gridsearch.epc.log.
+				
+	dtsem.c			This is a helper application that is
+				quite useful.  It simply computes means
+				and SEM's (standard error of means, or 
+				standard deviation with the 'o' flag).
+				get_trn_epcs calls dtsem as the final
+				stage of processing to compute the
+				mean number of training epochs.
+				Originally written by Jay McClelland,
+				and modified by Randy O'Reilly. 
+
+
+The steps necessary to compile get_trn_epcs are given in the CSS
+section of the manual, in the section 'Compiling CSS files as C++ Hard
+Code'.
+
+The program is run in the following way:
+
+% get_trn_epcs[.cc] .5 xor.gridsearch.epc.log
+
+where the [.cc] means that this is optional -- if you type
+
+% get_trn_epcs.cc .5 xor.gridsearch.epc.log
+
+you will run css on the source code (via the execution comment at the
+top of the file, which must be edited in order to point at the correct
+location of the css executable).  This is equivalent to typing:
+
+% css -f get_trn_epcs.cc .5 xor.gridsearch.epc.log
+
+However, if you type:
+
+% get_trn_epcs .5 xor.gridsearch.epc.log
+
+you will run the C++ compiled version of the program.  You can run
+these under the 'time' command and see how slow CSS is relative to
+C++ hard code!

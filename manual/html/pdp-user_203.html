@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-vari</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_202.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_204.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1239" HREF="pdp-user_toc.html">14.1.5  Variations Available in Bp</A></H3>
+
+<P>
+There are several different <B>BpUnitSpec</B> and <B>BpConSpec</B> types
+available that perform variations on the generic backpropagation
+algorithm.
+
+</P>
+<P>
+<A NAME="IDX1240"></A>
+<B>LinearBpUnitSpec</B> implements a linear activation function
+
+</P>
+<P>
+<A NAME="IDX1241"></A>
+<A NAME="IDX1242"></A>
+<B>ThreshLinBpUnitSpec</B> implements a threshold linear activation
+function with the threshold set by the parameter <CODE>threshold</CODE>.
+Activation is zero when net is below threshold, net-threshold above
+that.
+
+</P>
+<P>
+<A NAME="IDX1243"></A>
+<A NAME="IDX1244"></A>
+<B>NoisyBpUnitSpec</B> adds noise to the activations of units.  The noise
+is specified by the <CODE>noise</CODE> member.
+
+</P>
+<P>
+<A NAME="IDX1245"></A>
+<B>StochasticBpUnitSpec</B> computes a binary activation, with the
+probability of being active a sigmoidal function of the net input (e.g.,
+like a Boltzmann Machine unit).
+
+</P>
+<P>
+<A NAME="IDX1246"></A>
+<A NAME="IDX1247"></A>
+<B>RBFBpUnitSpec</B> computes activation as a Gaussian function of the
+distance between the weights and the activations.  The variance of the
+Gaussian is spherical (the same for all weights), and is given by the
+parameter <CODE>var</CODE>.
+
+</P>
+<P>
+<A NAME="IDX1248"></A>
+<A NAME="IDX1249"></A>
+<A NAME="IDX1250"></A>
+<B>BumpBpUnitSpec</B> computes activation as a Gaussian function of the
+standard dot-product net input (not the distance, as in the RBF).  The
+mean of the effectively uni-dimensional Gaussian is specified by the
+<CODE>mean</CODE> parameter, with a standard deviation of <CODE>std_dev</CODE>.
+
+</P>
+<P>
+<A NAME="IDX1251"></A>
+<B>ExpBpUnitSpec</B> computes activation as an exponential function of the
+net input (e^net).  This is useful for implementing SoftMax units, among
+other things.
+
+</P>
+<P>
+<A NAME="IDX1252"></A>
+<B>SoftMaxBpUnitSpec</B> takes one-to-one input from a corresponding
+exponential unit, and another input from a LinearBpUnitSpec unit that
+computes the sum over all the exponential units, and computes the
+division between these two.  This results in a SoftMax unit.  Note that
+the LinearBpUnitSpec must have fixed weights all of value 1, and that
+the SoftMaxUnit's must have the one-to-one projection from exp units
+first, followed by the projection from the sum units.  See
+<TT>`demo/bp_misc/bp_softmax.proj.gz'</TT> for a demonstration of how to
+configure a SoftMax network.
+
+</P>
+<P>
+<A NAME="IDX1253"></A>
+<B>HebbBpConSpec</B> computes very simple Hebbian learning instead of
+backpropagation.  It is useful for making comparisons between delta-rule
+and Hebbian leanring.  The rule is simply <CODE>dwt = ru-&#62;act *
+su-&#62;act</CODE>, where <CODE>ru-&#62;act</CODE> is the target value if present.
+
+</P>
+<P>
+<A NAME="IDX1254"></A>
+<A NAME="IDX1255"></A>
+<B>ErrScaleBpConSpec</B> scales the error sent back to the sending units by
+the factor <CODE>err_scale</CODE>.  This can be used in cases where there are
+multiple output layers, some of which are not supposed to influence
+learning in the hidden layer, for example.
+
+</P>
+<P>
+<A NAME="IDX1256"></A>
+<A NAME="IDX1257"></A>
+<A NAME="IDX1258"></A>
+<A NAME="IDX1259"></A>
+<B>DeltaBarDeltaBpConSpec</B> implements the delta-bar-delta learning rate
+adaptation scheme <CITE>Jacobs, 1988</CITE>.  It should only be used in batch
+mode weight updating.  The connection type must be
+<B>DeltaBarDeltaBpCon</B>, which contains a connection-wise learning rate
+parameter.  This learning rate is additively incremented by
+<CODE>lrate_incr</CODE> when the sign of the current and previous weight
+changes are in agreement, and decrements it multiplicatively by
+<CODE>lrate_decr</CODE> when they are not.  The demo project
+<TT>`demo/bp_misc/bp_ft_dbd.proj.gz'</TT> provides an example of how to set
+up delta-bar-delta learning.  The defaults file <TT>`bp_dbd.def'</TT>
+provides a set of defaults that make delta-bar-delta connections by
+default.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_202.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_204.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,121 @@
+
+----------------------------------
+-- RM'ed Chunck 1
+----------------------------------
+
+#else
+    if(li.i > 0) {
+	BpCon_Group* cgp = new BpCon_Group;
+	un->recv.gp.Add_(cgp);
+	cgp->prjn = (Projection*)lay->projections.FastEl(0);
+	cgp->spec = &cs;
+#if !defined(SEND_BASED) || !defined(NO_PRE_ALLOC)
+	cgp->Alloc(n_units);
+#endif
+
+#ifndef SEND_BASED
+	int j;
+	for(j=0; j<n_units; j++) {
+#ifdef RANDOM_SPACE
+	  if(drand48() < .05)
+	    new char[500];
+#endif
+	  cgp->Add_(new BpCon);
+	}
+#endif
+      }
+
+      if(li.i != 2) {
+	BpCon_Group* cgp = new BpCon_Group;
+	un->send.gp.Add_(cgp);
+	Layer* rl = (Layer*)net.layers.el[l+1];
+	cgp->prjn = (Projection*)rl->projections.FastEl(0);
+	cgp->spec = &cs;
+#if defined(SEND_BASED) || !defined(NO_PRE_ALLOC)
+	cgp->Alloc(n_units);
+#endif
+#ifdef SEND_BASED
+	int j;
+	for(j=0; j<n_units; j++)
+#ifdef RANDOM_SPACE
+	  if(drand48() < .05)
+	    new char[500];
+#endif
+	  cgp->Add_(new BpCon);
+#endif
+      }
+    }
+
+
+----------------------------------
+-- RM'ed Chunck 2
+----------------------------------
+#ifdef SEND_BASED
+	int j;
+	for(j=0; j<n_units; j++) {
+#ifdef RANDOM_SPACE
+	  if(drand48() < .05)
+	    new char[500];
+#endif
+	  cgp->Add_(new BpCon);
+	}
+#endif
+
+----------------------------------
+-- RM'ed Chunck 3
+----------------------------------
+
+#ifdef LOAD_STYLE
+    FOR_ITR_EL(Unit, ru, prjn->layer->units., ru_itr) {
+      FOR_ITR_EL(Unit, su, prjn->from->units., su_itr) {
+	Con_Group* recv_gp = (Con_Group*)ru->recv.gp[0];
+	Con_Group* send_gp = (Con_Group*)su->send.gp[0];
+	recv_gp->units.Add_(su);
+      }
+    }
+    FOR_ITR_EL(Unit, su, prjn->from->units., su_itr) {
+      FOR_ITR_EL(Unit, ru, prjn->layer->units., ru_itr) {
+	Con_Group* recv_gp = (Con_Group*)ru->recv.gp[0];
+	Con_Group* send_gp = (Con_Group*)su->send.gp[0];
+	send_gp->units.Add_(ru);
+	Connection* con = recv_gp->Cn(recv_gp->units.Find(su));
+	send_gp->Add_(con);
+      }
+    }
+#else
+
+
+----------------------------------
+-- RM'ed Chunck 4
+----------------------------------
+
+#else
+#ifdef LOAD_STYLE
+    FOR_ITR_EL(Unit, su, prjn->from->units., su_itr) {
+      FOR_ITR_EL(Unit, ru, prjn->layer->units., ru_itr) {
+	Con_Group* recv_gp = (Con_Group*)ru->recv.gp[0];
+	Con_Group* send_gp = (Con_Group*)su->send.gp[0];
+	send_gp->units.Add_(ru);
+      }
+    }
+    FOR_ITR_EL(Unit, ru, prjn->layer->units., ru_itr) {
+      FOR_ITR_EL(Unit, su, prjn->from->units., su_itr) {
+	Con_Group* recv_gp = (Con_Group*)ru->recv.gp[0];
+	Con_Group* send_gp = (Con_Group*)su->send.gp[0];
+	recv_gp->units.Add_(su);
+	Connection* con = send_gp->Cn(send_gp->units.Find(ru));
+	recv_gp->Add_(con);
+      }
+    }
+#else
+    FOR_ITR_EL(Unit, su, prjn->from->units., su_itr) {
+      FOR_ITR_EL(Unit, ru, prjn->layer->units., ru_itr) {
+	Con_Group* recv_gp = (Con_Group*)ru->recv.gp[0];
+	Con_Group* send_gp = (Con_Group*)su->send.gp[0];
+	send_gp->units.Add_(ru);
+	recv_gp->units.Add_(su);
+	Connection* con = send_gp->Cn(send_gp->units.size-1);
+	recv_gp->Add_(con);
+      }
+    }
+#endif

@@ -1,0 +1,90 @@
+
+// startup and run a project, use like this:
+// pdp++ -nogui -f startup.css <myproj> [ctr_max...]
+// argv[2] is <myproj>, which is the name of your project
+// (with or without the .proj.gz), and optionally extra args
+// as defined in the script below set counter maxima (like epoch.max, etc)
+
+// stores key parameters in the fam_env script s_args
+// s_args[0] = # of slots to flip
+// s_args[1] = total # of slots
+
+
+// include standard functions (usually in /usr/local/pdp++/css/include)
+#include "startup_fctns.css"
+#include "slot_to_net.combo.css"
+
+void Startup() {
+  if(!Start_ArgCheck(3, "[repi_batch] [env_batch]"))
+    return;
+
+  String fnm;
+  int i,j,k, l, m;
+  int lrate;
+  float tmp, cort_lrate, hip_lrate;
+
+  //  RndSeed::NewSeed();
+
+  String stub_nm = Start_GetStub();
+  Start_LoadProj(stub_nm);
+
+  for(i=2;i>=2;i--) {
+
+    tmp = i;
+    .processes.gp[0][4].init_procs[0].s_args[0] = tmp * .01;
+    lrate = i;
+
+    for(j=1;j<=1;j++) {
+
+      for(k=1;k<=1;k++) {
+
+	for(l=1;l<=1;l++) {
+
+	  for(m=1;m<=1;m++) {
+
+	    .scripts[5].Compile();
+	    .scripts[5].Run();
+
+	    fnm = "lrate" + lrate + ".tst.log";
+	    Start_LogFile("Epoch_1_TextLog", stub_nm, fnm);
+
+	    Process_MGroup* gp = .processes.gp.Train;
+
+	    Start_CtrMax(gp, "EnvBatch_0.batch", 4);
+
+	    Network* net = .networks.DefaultEl();
+
+	    net.RemoveCons();
+	    net.RemoveUnits();
+
+	    if(net.layers[0].units.leaves == 0) {
+	      cout << "Building Network...";
+	      net.Build();
+	      net.Connect();
+	      net.InitWtState();
+	      cout << "Done\n";
+
+	      //	      cout << "my lesion is" << lesion_float << "\n\n\n";
+
+	      //	      net.layers.DG.LesionUnits(lesion_float, true);  //DG lesion
+	      //	      net.layers.CA3.LesionUnits(lesion_float, true);  //CA3 lesion
+	      //	      net.layers.CA1.LesionUnits(lesion_float, true);  //CA1 lesion
+	    }
+
+	    SlotToNet();
+
+	    gp[0].time_used.rec = true;
+	    gp[0].ReInit();
+	    gp[0].Run();
+	    cerr << "\nTotal time: " << gp[0].time_used.GetString() << endl;
+
+	    .networks.DefaultEl().RemoveCons();
+	    .networks.DefaultEl().RemoveUnits();
+	  }
+	}
+      }
+    }
+  }
+}
+
+Startup();

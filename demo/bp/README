@@ -1,0 +1,41 @@
+demo/bp:
+
+	xor.proj.gz			This is the XOR example used in the
+					tutorial in the manual.
+
+	xor.handbook.proj.gz		This is a version of the XOR example
+					that more closely replicates the version
+					in the 1987 PDP "explorations" handbook.
+
+	424.*				These are completed examples of the 424
+					encoder problem from the 2nd part of the
+					tutorial.  Use them to compare to your own!
+
+	gridsearch_xor.proj.gz		This is a project that uses the GridSearch
+					batch process, and also saves networks
+					automatically.
+
+	load,save_opdp_wts.css		These are script code examples that
+					load and save weights from xor in the
+					form used by the old pdp software
+
+	xor.wts				These are the default weights from the
+					old pdp version of xor.  load them in
+					with load_opdp_wts.css
+
+	xor.init.net.gz			This is a network saved with the xor.wts
+					already loaded in.
+
+	xor_set_params.css		This is script code used in the xor
+					project to give easy access to parameters
+					and it performs some basic functions.
+					It shows how to do graphical editing of
+					CSS class objects.
+
+	xor.pat, xor.orig.pat		These are "pattern" files, which contain
+					the XOR environment in old PDP format.
+					They can be read in using 'ReadOldPDP' in
+					the Environment.
+
+	xor.env.gz			This is the XOR environment saved in the
+					PDP++ native format.

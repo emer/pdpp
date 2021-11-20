@@ -1,0 +1,142 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-misc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_244.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_246.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1647" HREF="pdp-user_toc.html">17.8  Leabra Misc Special Classes</A></H2>
+
+<P>
+<A NAME="IDX1648"></A>
+<A NAME="IDX1649"></A>
+Leabra has a number of special derived classes for doing special
+things beyond the standard learning mechanisms.  These are not well
+documented here -- interested users should refer to the source code.
+The <B>LeabraWiz</B> wizard object has some specialized functions for
+creating some of these classes, and can also setup unit-based
+inhibition in the network.
+
+</P>
+<P>
+<A NAME="IDX1650"></A>
+<A NAME="IDX1651"></A>
+<A NAME="IDX1652"></A>
+<A NAME="IDX1653"></A>
+The <B>LebraACLayerSpec</B> implements an Adaptive Critic for performing
+Temporal Differences reinforcement learning.  This implementation is
+not particularly good relative to the new improved
+<B>RewPredLayerSpec</B>, but it is simpler and is widely used.
+
+</P>
+<P>
+<A NAME="IDX1654"></A>
+<A NAME="IDX1655"></A>
+The <B>LeabraContextLayerSpec</B> implements a Simple Recurrent Network
+context layer, and can be constructed automatically using the
+<B>LeabraWiz</B>.  The fancier <B>LeabraGatedCtxLayerSpec</B> takes gating
+control signals from an AC (adpative critic) unit uses them to
+control the rate of context updating.  The <B>LeabraACMaintLayerSpec</B>
+is another version of this idea, which uses intrinsic maintenance
+currents (i.e., hysteresis currents) to maintain information in the
+context layer over time, as modulated by the AC signal.  See
+<CITE>Rougier &#38; O'Reilly, 2002</CITE> for further documentation on this
+mechanism.
+
+</P>
+<P>
+<A NAME="IDX1656"></A>
+The <B>PhaseOrderEventSpec</B> allows for an event to control its own set
+of phases that it will use.
+
+</P>
+<P>
+<A NAME="IDX1657"></A>
+<A NAME="IDX1658"></A>
+<A NAME="IDX1659"></A>
+The <B>LeabraTimeConSpec</B>, <B>LeabraTimeUnit</B>, and
+<B>LeabraTimeUnitSpec</B> implement learning across two adjacent events.
+The units store prior trial minus and plus phase activations
+(<CODE>p_act_m</CODE> and <CODE>p_act_p</CODE>) and use these for learning.
+
+</P>
+<P>
+<A NAME="IDX1660"></A>
+The <B>LeabraNegBiasSpec</B> makes the bias weight only learn based on
+negative error derivatives (i.e., the bias weight can only go
+negative).  The <CODE>decay</CODE> parameter allows this negative bias to
+recover back towards zero.  This is useful for implementing a simple
+form of search, where things that produce errors are made less likely
+to be activated in the near future.
+
+</P>
+<P>
+<A NAME="IDX1661"></A>
+The <B>LeabraTabledConSpec</B> allows for learning to be driven by a
+lookup table, e.g., for exploring biologically-derived learning rules
+that do not have a simple analytic form.
+
+</P>
+<P>
+<A NAME="IDX1662"></A>
+The <B>ScalarValLayerSpec</B> implements a layer that represents a single
+scalar value usign a coarse-coded representation, where each unit has
+a designated target value, and it "votes" for this value in
+proportion to its activation strength.  The overall coded value is the
+weighted average of these target values times the unit activations.
+The first unit in the layer contains a convenient readout of the
+represented scalar value, and is otherwise prevented from
+participating in normal network updating.  Clamping a value to this
+first unit causes the rest of the units to be clamped into
+Gaussian-shaped bump representing that value.
+
+</P>
+<P>
+<A NAME="IDX1663"></A>
+The <B>MarkerConSpec</B> is useful for marking special connections that
+operate according to non-standard functions.  It turns off learning
+and does not contribute to normal netinput computations.
+
+</P>
+<P>
+<A NAME="IDX1664"></A>
+<A NAME="IDX1665"></A>
+The <B>TdModUnit</B> and <B>TdModUnitSpec</B> add a temporal-differences
+modulation value to the unit variables.  They also include the
+time-based variables found in the Time classes.  These are used in the
+PFC/BG learning classes.
+
+</P>
+<P>
+<A NAME="IDX1666"></A>
+The <B>RewPredLayerSpec</B> is an improved version of the AC unit, which
+is based on the ScalarValLayerSpec, so it produces a coarse-coded
+representation of reward expectation.  It also deals with
+non-absorbing rewards much better.
+
+</P>
+<P>
+<A NAME="IDX1667"></A>
+<A NAME="IDX1668"></A>
+<A NAME="IDX1669"></A>
+<A NAME="IDX1670"></A>
+<A NAME="IDX1671"></A>
+<A NAME="IDX1672"></A>
+
+</P>
+<P>
+The following specs implement an experimental version of
+dynamically-gated working memory based on the biology of the
+prefrontal cortex (PFC) and basal ganglia (BG).  See the
+<CODE>HelpConfig</CODE> button for more specific information.
+<B>PatchLayerSpec</B>, <B>MatrixLayerSpec</B>, <B>MatrixUnitSpec</B>,
+<B>ImRewLayerSpec</B>, <B>SNcLayerSpec</B>, <B>PFCLayerSpec</B>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_244.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_246.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

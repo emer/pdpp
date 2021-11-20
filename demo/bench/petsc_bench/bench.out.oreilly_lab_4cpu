@@ -1,0 +1,44 @@
+---------------------------
+SMALL Network (1000 units):
+8 processes:
+units: 1000, act: 0.25, cycs: 100, trls: 80, Mcon: 80000, MconK: 5000................
+	sec: 39, Mcon/s: 2051.28, MconK/s: 128.205
+4 processes:
+units: 1000, act: 0.25, cycs: 100, trls: 80, Mcon: 80000, MconK: 5000................
+	sec: 46, Mcon/s: 1739.13, MconK/s: 108.696
+2 processes:
+units: 1000, act: 0.25, cycs: 100, trls: 80, Mcon: 80000, MconK: 5000................
+	sec: 53, Mcon/s: 1509.43, MconK/s: 94.3396
+1 processes:
+units: 1000, act: 0.25, cycs: 100, trls: 80, Mcon: 80000, MconK: 5000................
+	sec: 54, Mcon/s: 1481.48, MconK/s: 92.5926
+ 
+---------------------------
+MEDIUM Network (2000 units):
+8 processes:
+units: 2000, act: 0.25, cycs: 100, trls: 20, Mcon: 80000, MconK: 5000....
+	sec: 23, Mcon/s: 3478.26, MconK/s: 217.391
+4 processes:
+units: 2000, act: 0.25, cycs: 100, trls: 20, Mcon: 80000, MconK: 5000....
+	sec: 31, Mcon/s: 2580.65, MconK/s: 161.29
+2 processes:
+units: 2000, act: 0.25, cycs: 100, trls: 20, Mcon: 80000, MconK: 5000....
+	sec: 39, Mcon/s: 2051.28, MconK/s: 128.205
+1 processes:
+units: 2000, act: 0.25, cycs: 100, trls: 20, Mcon: 80000, MconK: 5000....
+	sec: 44, Mcon/s: 1818.18, MconK/s: 113.636
+
+---------------------------
+LARGE Network (4000 units):
+8 processes:
+units: 4000, act: 0.25, cycs: 100, trls: 5, Mcon: 80000, MconK: 5000.
+	sec: 22, Mcon/s: 3636.36, MconK/s: 227.273
+4 processes:
+units: 4000, act: 0.25, cycs: 100, trls: 5, Mcon: 80000, MconK: 5000.
+	sec: 29, Mcon/s: 2758.62, MconK/s: 172.414
+2 processes:
+units: 4000, act: 0.25, cycs: 100, trls: 5, Mcon: 80000, MconK: 5000.
+	sec: 43, Mcon/s: 1860.47, MconK/s: 116.279
+1 processes:
+units: 4000, act: 0.25, cycs: 100, trls: 5, Mcon: 80000, MconK: 5000.
+	sec: 63, Mcon/s: 1269.84, MconK/s: 79.3651

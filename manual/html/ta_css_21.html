@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - css-shell</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_20.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_22.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX20" HREF="ta_css_toc.html">5.4.4  The CSS Command Shell</A></H3>
+<P>
+<A NAME="IDX21"></A>
+<A NAME="IDX22"></A>
+
+</P>
+<P>
+The primary interface to CSS is via the command shell, which provides a
+prompt and allows the user to enter commands, etc.  This shell has some
+useful features, including <EM>editing</EM>, <EM>history</EM>, and
+<EM>completion</EM>, all of which are provided by the GNU readline
+library.
+
+</P>
+<P>
+The current line can be edited using a subset of the emacs editing
+commands, including Ctrl-f, Ctrl-b, Ctrl-a, Ctrl-e, etc.
+
+</P>
+<P>
+A running history of everything that has been entered is kept, and can
+be accessed by using the Ctrl-p and Ctrl-n commands (previous and next,
+respectively).  This makes it easy to repeat previous commands,
+especially when combined with the editing facility.
+
+</P>
+<P>
+Completion occurs when the TAB key is pressed after some
+partially-entered expression, causing the shell to suggest a completion
+to the expression based on the part that has already been entered.  If
+there is more than one possible completion, then the shell will beep,
+and pressing TAB a second time will produce a list of all of the
+possible completions.  Completion is based on all of the keywords
+currently defined (including types, commands, functions, user-defined
+variables and functions, etc), except in the following two cases: If the
+expression starts with a ".", it is interpreted as a path, and the next
+segment of the path to either an object or a member function of an
+object is suggested by the shell.  If the expression contains a scoping
+operator "::", then the completion will interpret whatever is in front
+of the scoping operator as a type name, and will suggest the possible
+members, subtypes, etc. of that type as completions.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_20.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_22.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

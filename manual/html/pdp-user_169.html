@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stat-crit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_168.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_170.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1025" HREF="pdp-user_toc.html">12.7.2  Using Statistics to Control Process Execution</A></H3>
+<P>
+<A NAME="IDX1026"></A>
+<A NAME="IDX1027"></A>
+<A NAME="IDX1028"></A>
+
+</P>
+<P>
+Often, one wants to stop training a network once it has reached some
+criterion of performance.  This can be done by setting the criterion
+values associated with a statistic value.  All statistic values are
+represented by a <B>StatVal</B> object, which has fields for representing
+the stopping criterion.  The criterion is represented with a relational
+operator (less than, equal to, etc.) and a comparison value.  The fields
+are as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>float value</CODE>
+<DD>
+<A NAME="IDX1029"></A>
+This holds the current computed or aggregated value of the statistic.
+<DT><CODE>bool flag</CODE>
+<DD>
+<A NAME="IDX1030"></A>
+This flag indicates if a stopping criterion is active for this
+statistic.  If it is not checked, the remaining fields are ignored.
+<DT><CODE>Relation rel</CODE>
+<DD>
+<A NAME="IDX1031"></A>
+This is the relational operator to compare <CODE>value</CODE> and <CODE>val</CODE>.
+<DT><CODE>float val</CODE>
+<DD>
+<A NAME="IDX1032"></A>
+This is the comparison value to compare <CODE>value</CODE> with.
+<DT><CODE>int cnt</CODE>
+<DD>
+<A NAME="IDX1033"></A>
+This indicates how many times the relation must be met in order to pass
+criterion.  This can be useful to make sure a network has reliable
+performance under criterion by requiring it to pass muster 2 or 3 times
+in a row, for example.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_168.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_170.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

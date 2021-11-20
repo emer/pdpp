@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-css</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_179.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_181.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1084" HREF="pdp-user_toc.html">12.9  Processes and CSS Scripts</A></H2>
+
+<P>
+Any kind of process can be configured to use a CSS script instead of its
+original hard-coded functions.  One simply sets the process type to
+<CODE>SCRIPT</CODE> and opens a script file in the <CODE>script_file</CODE> member
+of the process.
+
+</P>
+<P>
+When the process is run, it checks to see if it should run the script
+instead.  Note that if you are replacing a schedule process with a
+script, you have to replace the entire C_Code function.  This code can
+be used verbatim in CSS, and an example is given in
+<TT>`css/include/script_proc.css'</TT>.
+
+</P>
+<P>
+Note that the script is given transparent access to all of the members
+and member functions defined on the script object it is attached to.
+This allows one to mix existing hard-coded functions with script
+versions by simply calling the existing ones in some places, and calling
+new script-defined ones in other places.
+
+</P>
+<P>
+Where possible, it is generally preferable to use a <B>ScriptStat</B> or
+<B>ScriptProcess</B> instead of replacing an entire existing process with a
+script.  This will tend to be simpler and a more modular solution.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_179.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_181.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

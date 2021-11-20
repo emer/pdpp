@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-view-actions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_129.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_131.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX753" HREF="pdp-user_toc.html">10.7.1  The Action Region</A></H3>
+
+<IMG SRC="pics/xor.netview.action.gif" ALIGN="MIDDLE" ALT="The NetView Actions Regions">
+<P>
+<B> Figure: </B> The NetView Actions Region
+<P>
+
+<P>
+The Actions region in the upper left contains a set of buttons which
+perform actions on the view. At the very top of the region is a toggle
+switch which provides convenient switching on and off of the display.
+When the display is switched off, the View and Scale regions will not be
+updated by the processes in the view's updater list, regardless of changes
+to the state of the network. (see section <A HREF="pdp-user_50.html">6.1.3  Window Views</A>).
+
+</P>
+<P>
+To the right of the Display toggle is the Coordinate Box. The Coordinate
+Box displays the current location (X,Y,Z) of objects when they are moved
+and the size of objects when they are reshaped. At other times, the
+box remains empty.
+
+</P>
+<P>
+Below the display toggle and Coordinate Box are Mode Buttons: Select,
+View, Move, ReShape, Zoom, and Rotate.  These buttons are mutually
+exclusive, so only one may be pressed at a given time. Selecting one of
+these buttons enables a different mode of interaction with the View
+Region, and are described further in that section of the manual.
+(see section <A HREF="pdp-user_132.html">10.7.3  The View Region</A>)
+
+</P>
+<P>
+Below the Mode Buttons are the Major Action Buttons: <I>Build All</I>,
+<I>Connect All</I>, <I>Update</I>, and <I>Init</I>. Each of these buttons
+performs an action when the button is released.  Sometimes one or more
+of these buttons will be hi-lighted, suggesting that the button's action
+should probably be performed due to the current state of the network.
+
+</P>
+<P>
+The <I>Build All</I> button creates units in all of the networks layers in
+accordance with the <CODE>n_units</CODE> field of the Layer and the Layer's
+geometry. The <I>Connect All</I> button creates connections on all the
+units in accordance with projections and projection specs of the
+network's layers (see section <A HREF="pdp-user_113.html">10.1  The Network Object</A>).
+
+</P>
+<P>
+The <I>Update</I> button refreshes the View to reflect the current state
+of the network. In most cases the network will have communicated its
+changes to the NetView, however if the NetView appears to be out of
+sync, the "Update" button will update it accordingly. The <I>Init</I>
+button resets the view so that the network is scaled to fit in the
+window.  Zoom operations on the network objects as well as Move and
+Zoom operations on the view region itself are undone when the "Init"
+button is pressed, <I>unless you run Actions/FreezeNetZoom</I> -- this
+freezes the current zooming/move status of the netview until a
+subsequent <I>AutoNetZoom</I> is run. To reinitialize the projection
+points or the positions of the Layers' names select the corresponding
+function from the Actions menu of the NetView.  (see section <A HREF="pdp-user_52.html">6.4  The "Actions" Menu</A>).
+
+</P>
+<P>
+Below the Major Action Buttons are the <I>Minor Action Buttons</I>. The
+names of these buttons change to reflect the possible actions to be
+performed on the objects currently selected in the View Region. In most
+cases the lower two buttons will provide <I>Remove</I> and <I>Edit</I> actions
+for the selected objects. The upper two buttons typically provide
+actions used for creating new network objects and connecting them.  For
+more information on how to use these buttons to build networks, see
+section <A HREF="pdp-user_134.html">10.8  Building Networks Using the Viewer</A>.
+
+</P>
+<P>
+At the bottom of the Action region is the <I>Monitor Values</I> menu. This
+menu provides a set of actions used for monitoring the values displayed
+in the NetView. To monitor values the user needs to create a
+<B>MonitorStat</B> statistic which handles the sampling and logging of the
+monitored values. To create the MonitorStat, the user first selects the
+network objects in the View Region to be monitored. Then after a member
+of the "Member Region" is selected, the user may select <I>New</I> from the
+<I>Monitor Values</I> menu. A dialog is then presented which asks the user
+for the process grain at which the values are to be monitored. The
+process grain is used to determine when the values are sampled from the
+network. In addition the process determines which Logs the sampled
+values are stored in. The dialog also asks the user for the network
+aggregation operator and whether or not aggregate statistics should be
+created in higher level processes. For simple monitoring, the default
+values of <CODE>COPY</CODE> and "NO" respectively will suffice. For more
+complicated monitoring the behavior of these variables is further
+explained in the statistics section of this manual
+(see section <A HREF="pdp-user_173.html">12.8.2  Monitoring Network State Variables</A>).
+
+</P>
+<P>
+The <I>Monitor Values</I> menu also provides selections which allow the
+user to <I>Edit</I>, <I>Remove</I>, or change the objects or variables of
+previously created MonitorStats. To change the network objects which a
+MonitorStat is monitoring, simply select the objects in the "View
+Region" and choose <I>Set Objects</I> from the menu. To change the variable
+which is being monitored simply select the desired variable from the
+"Member Region" of the NetView and choose <I>Set Variable</I> from the
+menu.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_129.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_131.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

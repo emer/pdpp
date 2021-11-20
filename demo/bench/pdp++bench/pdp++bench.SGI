@@ -1,0 +1,52 @@
+#! /bin/csh -f
+
+# machine-specific defines
+#set DEFINES="-DSGI -DNO_BUILTIN_BOOL -DCONST_48_ARGS"
+#set DEFINES="-DSGI -DCONST_48_ARGS"
+set DEFINES="-DSGI"
+
+set FLAGS=""
+
+# pdp++ coding options
+#set FLAGS="-DNO_DECAY -DNO_MOMENTUM_OPTS -DNO_WT_LIMITS"
+#set FLAGS="-DNO_DECAY"
+#set FLAGS="-DNO_MOMENTUM_OPTS"
+#set FLAGS="-DNO_WT_LIMITS"
+
+#set FLAGS="-DSEND_BASED"
+#set FLAGS="-DSEND_NET"
+#set FLAGS="-DSEND_BASED -DSEND_NET"
+
+#set FLAGS="-DRANDOM_SPACE"
+#set FLAGS="-DNO_PRE_ALLOC"
+#set FLAGS="-DLOAD_STYLE"
+
+# compiler command
+# optimal compiler
+set CC="CC -Ofast -n32 -mips4"
+
+#set CC="OCC +a1 -O2"
+#set CC="DCC -O2"
+#set CC="NCC -O2"
+
+#set CC="OCC +a1 -O3"
+#set CC="OCC +a1 -O2 -mips2"
+#set CC="OCC +a1 -O2 -kpicopt"
+
+#set CC="CC -Ofast -n32 -mips4"
+
+#set CC = "g++ -O2"
+#set CC = "g++ -O3"
+#set CC = "g++ -O2 -ffast-math"
+#set CC = "g++ -O2 -fomit-frame-pointer"
+#set CC = "g++ -O2 -funroll-loops"
+#set CC = "g++ -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+$CC $FLAGS $DEFINES -c pdp++base.cc -o pdp++base.o
+$CC $FLAGS $DEFINES -c pdp++bench.cc -o pdp++bench.o
+$CC $FLAGS $DEFINES -o pdp++bench pdp++base.o pdp++bench.o -lm
+
+echo $CC $FLAGS
+./pdp++bench 500 100
+./pdp++bench 100 2500
+./pdp++bench 10	250000

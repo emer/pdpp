@@ -1,0 +1,42 @@
+SGI 8 IA-64 Itanium 2 1.5Ghz procs
+
+g++ -O2 -fno-exceptions -fno-rtti -o ptest_mpi ptest_mpi.cc -lmpi -lm
+procs, 1,       units, 100,     weights, 20000,         cycles, 100000,         con_trav, 2e+09,        secs, 30.502,   mpisecs, 29.7869,       Mcon/sec, 65.5695
+
+# yow, that is terrible!
+
+/opt/intel_cc_80/bin/icc -O3 -fno-exceptions -fno-rtti -o ptest_mpi ptest_mpi.cc -lmpi -lm
+procs, 1,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 14.893,   mpisecs, 14.5436,       Mcon/sec, 134.291
+procs, 2,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 8.907,    mpisecs, 8.69867,       Mcon/sec, 224.542
+procs, 4,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 6.636,    mpisecs, 6.47993,       Mcon/sec, 301.386
+procs, 8,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 6.642,    mpisecs, 6.48652,       Mcon/sec, 301.114
+
+/opt/intel_cc_80/bin/icc -O2 -fno-exceptions -fno-rtti -o ptest_mpi ptest_mpi.cc -lmpi -lm
+procs, 1,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 13.148,   mpisecs, 12.8407,       Mcon/sec, 152.114
+procs, 2,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 7.963,    mpisecs, 7.77653,       Mcon/sec, 251.162
+procs, 4,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 5.866,    mpisecs, 5.72816,       Mcon/sec, 340.948
+procs, 8,       units, 100,     weights, 20000, cycles, 100000,         con_trav, 2e+09,        secs, 7.33,     mpisecs, 7.15824,       Mcon/sec, 272.851
+
+procs, 1,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 14.551,   mpisecs, 14.2102,       Mcon/sec, 137.448
+procs, 2,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 12.648,   mpisecs, 12.3517,       Mcon/sec, 158.128
+procs, 4,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 13.89,    mpisecs, 13.5649,       Mcon/sec, 143.988
+procs, 8,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 13.62,    mpisecs, 13.3005,       Mcon/sec, 146.843
+
+// no writing a log file:
+procs, 1,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 13.037,   mpisecs, 12.7317,       Mcon/sec, 153.41
+procs, 2,       units, 50,      weights, 5000,  cycles, 400000,         con_trav, 2e+09,        secs, 12.109,   mpisecs, 11.8244,       Mcon/sec, 165.166
+
+procs, 1,       units, 500,     weights, 500000,cycles, 4000,   con_trav, 2e+09,        secs, 47.485,   mpisecs, 46.3721,       Mcon/sec, 42.1186
+procs, 2,       units, 500,     weights, 500000,cycles, 4000,   con_trav, 2e+09,        secs, 22.859,   mpisecs, 22.3239,       Mcon/sec, 87.4929
+procs, 4,       units, 500,     weights, 500000,cycles, 4000,   con_trav, 2e+09,        secs, 4.456,    mpisecs, 4.35189,       Mcon/sec, 448.833
+procs, 8,       units, 500,     weights, 500000,cycles, 4000,   con_trav, 2e+09,        secs, 1.939,    mpisecs, 1.89372,       Mcon/sec, 1031.46
+
+procs, 1,       units, 1000,    weights, 2e+06, cycles, 1000,   con_trav, 2e+09,        secs, 47.835,   mpisecs, 46.7139,       Mcon/sec, 41.8104
+procs, 2,       units, 1000,    weights, 2e+06, cycles, 1000,   con_trav, 2e+09,        secs, 24.582,   mpisecs, 24.0054,       Mcon/sec, 81.3603
+procs, 4,       units, 1000,    weights, 2e+06, cycles, 1000,   con_trav, 2e+09,        secs, 12.452,   mpisecs, 12.1598,       Mcon/sec, 160.617
+procs, 8,       units, 1000,    weights, 2e+06, cycles, 1000,   con_trav, 2e+09,        secs, 3.784,    mpisecs, 3.69449,       Mcon/sec, 528.541
+
+procs, 1,       units, 5000,    weights, 5e+07, cycles, 40,     con_trav, 2e+09,        secs, 67.086,   mpisecs, 65.5139,       Mcon/sec, 29.8125
+procs, 2,       units, 5000,    weights, 5e+07, cycles, 40,     con_trav, 2e+09,        secs, 34.016,   mpisecs, 33.2194,       Mcon/sec, 58.7959
+procs, 4,       units, 5000,    weights, 5e+07, cycles, 40,     con_trav, 2e+09,        secs, 17.126,   mpisecs, 16.725,        Mcon/sec, 116.782
+procs, 8,       units, 5000,    weights, 5e+07, cycles, 40,     con_trav, 2e+09,        secs, 8.715,    mpisecs, 8.51036,       Mcon/sec, 229.489

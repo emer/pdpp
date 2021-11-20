@@ -1,0 +1,182 @@
+// script to control the "four corners" example in so
+
+class FourCorners {
+  // control panel for the 'four corners' problem
+public:
+  c_float*	act_range_min;	// activation value range minimum
+  c_float*	act_range_max;	// activation value range max
+  c_float*	scl_gaussian_var; // variance of the gaussian for soft_cl
+  c_float*	softmax_gain;	  // gain of the softmax function
+  c_float*	wt_limits_min;	// weight range minimum
+  c_float*	wt_limits_max;	// weight range maximum
+  c_float*	wt_init_mean;	// mean weight initialization value
+  c_float*	wt_init_var;	// variance of wt initialization
+  c_float*	lrate;		// learning rate
+  String	cur_act_fun;	// current activation function
+  String	cur_learn_fun;	// current learning function
+  String	cur_env_range;	// current environment activation range
+
+  void	TrainAndTest();
+  // #BUTTON train the network using current settings, then test it
+  void	BatchRun();
+  // #BUTTON train and test repeatedly
+  void	UpdateSpecs();
+  // #BUTTON press this to update the sub-specs from changes in parameters
+
+  void	Cl();
+  // #MENU_ON_Standards standard cl in act and con, it is sensitive to init wt_limits mean
+  void	SoftCl();
+  // soft cl in act and con, this should be pretty robust
+
+  void	ClAct();
+  // #MENU_ON_Activation sets the cl activation
+  void	SoftClAct();
+  // sets the soft cl activation
+  void 	SoftMaxAct();
+  // uses a soft-max of the activation-weight dot-product
+  void 	LinearAct();
+  // activation is just the net-input
+
+  void	ClCon();
+  // #MENU_ON_Learning sets cl con spec
+  void	SoftClCon();	
+  // sets softcl con spec
+  void	HebbCon();
+  // sets hebb con spec (hint: use [-1,1] environment)
+  void	ZshCon();
+  // sets zsh con spec
+  void	MaxInCon();
+  // sets maxin con spec
+
+  void	ToZeroOne();
+  // #MENU_ON_EnvRange sets activation range of enviro to [0,1]
+  void	ToNegOnePlusOne();
+  // sets activation range of enviro to [-1,1]
+
+  FourCorners();
+};
+
+
+FourCorners::FourCorners() {
+  act_range_max = .specs.SoUnitSpec.act_range.max;
+  act_range_min = .specs.SoUnitSpec.act_range.min;
+  scl_gaussian_var = .specs.SoUnitSpec.children.SoftClUnitSpec.var;
+  softmax_gain = .specs.SoLayerSpec.children.SoftMaxLayerSpec.softmax_gain;
+  wt_limits_max = .specs.SoConSpec.wt_limits.max;
+  wt_limits_min = .specs.SoConSpec.wt_limits.min;
+  wt_init_mean = .specs.SoConSpec.rnd.mean;
+  wt_init_var = .specs.SoConSpec.rnd.var;
+  lrate = .specs.SoConSpec.lrate;
+  cur_act_fun = "?";
+  cur_learn_fun = "?";
+  cur_env_range = "?";
+  SoftCl();			// this is the default startup..
+  ToZeroOne();
+}
+
+
+void FourCorners::TrainAndTest() {
+  .processes.TrainProcess.NewInit();
+  .processes.TrainProcess.Run();
+  .processes.TestEpoch_1.ReInit();
+  .logs[0].Clear();
+  .processes.TestEpoch_1.Run();
+}
+
+void FourCorners::BatchRun() {
+  .processes.BatchProcess.NewInit();
+  .processes.BatchProcess.Run();
+}
+
+void FourCorners::UpdateSpecs() {
+  int i;
+  for(i=0; i<.specs.size; i++) 
+    .specs[i].UpdateAfterEdit();
+}
+
+void FourCorners::Cl() {
+  ClAct();	ClCon();
+}
+void FourCorners::SoftCl() {
+  SoftClAct();	SoftClCon();
+}
+
+void FourCorners::ClAct() {
+  int i;
+  for(i=0; i<.layers.size;i++) {
+    .layers[i].SetLayerSpec(.specs.SoLayerSpec.children.ClLayerSpec);
+    .layers[i].SetUnitSpec(.specs.SoUnitSpec);
+  }
+  cur_act_fun = "Cl";
+}
+void FourCorners::SoftClAct() {
+  int i;
+  for(i=0; i<.layers.size;i++) {
+    .layers[i].SetLayerSpec(.specs.SoLayerSpec.children.SoftClLayerSpec);
+    .layers[i].SetUnitSpec(.specs.SoUnitSpec.children.SoftClUnitSpec);
+  }
+  cur_act_fun = "SoftCl";
+}
+void FourCorners::SoftMaxAct() {
+  int i;
+  for(i=0; i<.layers.size;i++) {
+    .layers[i].SetLayerSpec(.specs.SoLayerSpec.children.SoftMaxLayerSpec);
+    .layers[i].SetUnitSpec(.specs.SoUnitSpec);
+  }
+  cur_act_fun = "SoftMax";
+}
+void FourCorners::LinearAct() {
+  int i;
+  for(i=0; i<.layers.size;i++) {
+    .layers[i].SetLayerSpec(.specs.SoLayerSpec);
+    .layers[i].SetUnitSpec(.specs.SoUnitSpec);
+  }
+  cur_act_fun = "Linear";
+}
+void FourCorners::ClCon() {
+  .layers[1].projections[0].SetConSpec(.specs.SoConSpec.children.ClConSpec);
+  cur_learn_fun = "Cl";
+}
+void FourCorners::SoftClCon() {
+  .layers[1].projections[0].SetConSpec(.specs.SoConSpec.children.SoftClConSpec);
+  cur_learn_fun = "SoftCl";
+}
+void FourCorners::HebbCon() {
+  .layers[1].projections[0].SetConSpec(.specs.SoConSpec.children.HebbConSpec);
+  cur_learn_fun = "Hebb";
+}
+void FourCorners::ZshCon() {
+  .layers[1].projections[0].SetConSpec(.specs.SoConSpec.children.ZshConSpec);
+  cur_learn_fun = "Zsh";
+}
+void FourCorners::MaxInCon() {
+  .layers[1].projections[0].SetConSpec(.specs.SoConSpec.children.MaxInConSpec);
+  cur_learn_fun = "MaxIn";
+}
+
+void FourCorners::ToZeroOne() {
+  Environment* env = .environments[0];
+  SimpleMathSpec trans = new SimpleMathSpec;
+  trans = "{type=THRESH: arg=.5: lw=0: hi=1: }";
+  int i;
+  for(i=0; i<env->event_specs[0].patterns.size; i++) 
+    env->TransformPats(i, trans);
+  delete trans;
+  cur_env_range = "[0,1]";
+}
+
+void FourCorners::ToNegOnePlusOne() {
+  Environment* env = .environments[0];
+  SimpleMathSpec trans = new SimpleMathSpec;
+  trans = "{type=THRESH: arg=.5: lw=-1: hi=1: }";
+  int i;
+  for(i=0; i<env->event_specs[0].patterns.size; i++) 
+    env->TransformPats(i, trans);
+  delete trans;
+  cur_env_range = "[-1,1]";
+}
+
+FourCorners four_corners;
+EditObj(four_corners);
+
+

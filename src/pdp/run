@@ -1,0 +1,3 @@
+#!/bin/csh
+echo Running $CPU/pdpshell on $HOST
+$CPU/pdpshell $*

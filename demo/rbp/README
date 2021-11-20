@@ -1,0 +1,44 @@
+demo/rbp:
+
+	rbp_xor.proj.gz		recurrent bp version of xor
+	apbp_xor.proj.gz	almeida-pineda version of xor
+
+This shows how to set up recurrent versions of the xor problem.
+While xor does not require a recurrent network, it can be solved by
+one.  The trajectory of the output unit during settling can be
+observed in the testing process.  Also, you can play with the dt
+parameter in the unitspec to change how smoothly the units settle.
+
+The rbp++ program (which is just an alias of bp++), contains a very
+general set of recurrent algorithms implemented with the same basic
+code.
+
+The rbp_xor example uses the more general recurrent backprop code,
+which uses sequences of stimuli over time to define a trajectory that
+the network activations are to follow.  The sequence process in this
+case uses time events in the environment to determine what is
+presented when, and the trial is called for the processing of a single
+slice of time.   In the xor example, there are two events per each
+event sequence, one in which only the input units are active, and the
+second where both the input units and the target units are being
+presented.  Thus, the network has the opportunity to settle for two
+unit2 of time before it has to get the answer right.  This is reflected
+in the error graph of the testing process, which shows a spike at time
+= 1.
+
+The apbp_xor example uses the almeida-pineda algorithm, which settles
+into a fixed-point (attractor).  It works by iteratively updating the
+activations until the difference between the old and new activations
+go below some threshold, and then iteratively backpropagating the error
+until its update differential also goes below threshold.  Thus, this
+model uses a trial which represents a single event, and within the
+trial there is a settle and within that a cycle proces.  The trial has
+two phases, activation update and backpropagation, each of which
+involve settling over cycles.  The settle process has a stat that
+determines when the difference in either activation or error updating
+has gone below threshold, and this is where the threshold is set.
+
+
+
+
+

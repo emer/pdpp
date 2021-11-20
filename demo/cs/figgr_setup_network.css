@@ -1,0 +1,26 @@
+// this setup uses the first script arg (s_args[0]) to tell what weights to load..
+// so change that in the script object and not in the script..
+String wts_file = s_args[0];
+
+cerr << "Setting up network...";
+.projects[0].networks[0].Build();
+.projects[0].networks[0].Connect();
+.projects[0].networks[0].InitWtState();
+.projects[0].networks[0].layers[4].Load(wts_file);
+// name the units..
+if(.layers.Obj_LR.units.size == 2) {
+  .layers.Obj_LR.units[0].name = "L";
+  .layers.Obj_LR.units[1].name = "R";
+}
+else {
+  .layers.Obj_LR.units[0].name = "L";
+  .layers.Obj_LR.units[1].name = "r";
+  .layers.Obj_LR.units[2].name = "l";
+  .layers.Obj_LR.units[3].name = "R";
+}
+.projects[0].processes[4].loop_stats[1].UpdateAfterEdit();
+.projects[0].processes[4].loop_stats[2].UpdateAfterEdit();
+// .logs[0].GetHeaders();
+// .logs[1].GetHeaders();
+.logs[1].views[0].SetXAxis("cycle");
+cerr << "Done\n";

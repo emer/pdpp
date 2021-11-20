@@ -1,0 +1,34 @@
+// save networks where the sse is below criterion
+// put this in the loop_stats of the training process, in a ScriptStat
+
+float crit = s_args[0];		// criterion is the first argument to the stat
+
+void S_Code() {
+  Process_MGroup* procs = GetOwner(Process_MGroup);
+  if(procs == NULL)    return;
+
+  TrainProcess* tproc = (TrainProcess*)procs->FindLeafType(TrainProcess);
+  if(tproc == NULL) {
+    taMisc::Error("No Training Process in script save_good_nets.css");
+    return;
+  }
+
+  SE_Stat* se = tproc->loop_stats.SE_Stat;
+  if(se == NULL) {
+    taMisc::Error("No SE_Stat in script save_good_nets.css");
+    return;
+  }
+  if(se.se.val > crit)
+    return;			// not below threshold
+
+  String batval = "0";
+  BatchProcess* bproc = (BatchProcess*)procs->FindLeafType(BatchProcess);
+  if(bproc != NULL)
+    batval = taMisc::LeadingZeros(bproc->batch.val, 2);
+
+  String netnm = network->name + "." + batval +
+    "." + taMisc::LeadingZeros(network->epoch,3) + ".net.gz";
+  network->Save(netnm);
+}
+
+S_Code();

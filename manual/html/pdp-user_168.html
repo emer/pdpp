@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stat-agg</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_167.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_169.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1012" HREF="pdp-user_toc.html">12.7.1  Aggregation Operators and other Parameters</A></H3>
+
+<P>
+For both the <CODE>time_agg</CODE> and the <CODE>net_agg</CODE> members of a stat,
+the following aggregation operators are defined:
+
+</P>
+<P>
+<A NAME="IDX1013"></A>
+<DL COMPACT>
+
+<DT><CODE>LAST</CODE>
+<DD>
+<A NAME="IDX1014"></A>
+This simply copies the last value seen.  This is useful for aggregators
+that appear in the train and batch levels of processing, which typically
+just reflect the results of the most recent epoch of processing.  In the
+network-level aggregation, this would give the value of the last unit,
+which is not terribly useful.
+<DT><CODE>SUM</CODE>
+<DD>
+<A NAME="IDX1015"></A>
+This sums over all values.
+<DT><CODE>PROD</CODE>
+<DD>
+<A NAME="IDX1016"></A>
+This gives a product over all values.  When this operator is used, the
+result variable will be initialized to 1.
+<DT><CODE>MIN</CODE>
+<DD>
+<A NAME="IDX1017"></A>
+This gives the minimum value of all seen.  Note that when this is the
+aggregation operator, the result variable will be initialized to a very
+large number.
+<DT><CODE>MAX</CODE>
+<DD>
+<A NAME="IDX1018"></A>
+This gives the maximum value of all seen.  Note that when this is the
+aggregation operator, the result variable will be initialized to a very
+small number.
+<DT><CODE>AVG</CODE>
+<DD>
+<A NAME="IDX1019"></A>
+This gives the average of all values seen.  Since aggregation happens
+on-line, we use the on-line version of averaging, so the result is
+always the average of what has been seen so far.
+<DT><CODE>COPY</CODE>
+<DD>
+<A NAME="IDX1020"></A>
+<A NAME="IDX1021"></A>
+This results in the collection of individual values, which are kept in
+the <CODE>copy_vals</CODE> group of the stat.  Thus, it does not form a single
+summary number of all the values, instead it simply copies them
+verbatim.  This is useful for <B>MonitorStat</B> objects, which copy state
+variables from the network.  It can be used to view per-event values at
+the end of the epoch by doing a <CODE>time_agg</CODE> with the <CODE>COPY</CODE>
+operator.
+<DT><CODE>COUNT</CODE>
+<DD>
+<A NAME="IDX1022"></A>
+This counts up the the number of times the values meet the comparison
+expression given in the <CODE>count</CODE> field of the agg member.  The count
+expression has relational operators and a comparison value, so one could
+for example count the number of times an error value was below some
+threshold.
+</DL>
+
+<P>
+In addition to the aggregation operator, the <CODE>time_agg</CODE> member has
+a pointer to the stat that this stat is aggregating <CODE>from</CODE>.  If
+this is <CODE>NULL</CODE>, then the stat is computing original information
+instead of aggregating.
+
+</P>
+<P>
+<A NAME="IDX1023"></A>
+<A NAME="IDX1024"></A>
+It is possible to control when the stat is computed, and if the data is
+logged, independently.  The <CODE>mod</CODE> member of a stat determines when
+and if it is computed (and when its criterion is checked, when it is
+logged, etc).  For stats located in the <CODE>loop_stats</CODE> group, this
+mod operator works on the process whose loop_stats the stat is in.  For
+stats located in the <CODE>final_stats</CODE> group, the mod operator works on
+the next higher up process in the hierarchy (i.e., a stat in the
+final_stats of a TrialProcess would use the trial counter from the
+parent EpochProcess).  The <CODE>log_stat</CODE> flag provides a way of
+turning on or off the logging of a statistic.  If the flag is not
+checked, a stat is not logged, but it is run and its criterion is
+checked (as per the mod settings).  Thus, one can keep lower-level stats
+which might be just collecting data for aggregation from generating too
+much log data.
+
+</P>
+<P>
+<A NAME="IDX1025"></A>
+Finally, the computation of the stat over the objects in the network can
+be restricted to a given layer by setting the <CODE>layer</CODE> pointer.  The
+layer name will also appear in the stat log output and in the name field
+of the stat itself.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_167.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_169.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

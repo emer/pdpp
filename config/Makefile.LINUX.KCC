@@ -1,0 +1,51 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - KCC (ELF)
+####################################################
+
+# this version does everything static, and optimized!  
+# the extra speed is worth the extra cost in binary size, at least
+# on my current system..
+
+# this isn't quite working yet..
+DEFINES = -D__signed__=signed -DLINUX
+
+# define this to be where the libg++ (stream classes) headers
+# are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux -I/usr/local/kai/KCC_BASE/include
+
+MACH_FLAGS = 
+MACH_TA_CCFLAGS = 
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = KCC-3.2
+
+#lets try with the new gcc cpp
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+#cppC = /usr/local/bin/cccp -D__i386__
+cppC = cpp -D__i386__  $(LIBG++_INCLUDE_DIR)
+
+IDIRS_EXTRA = -I/usr/local/kai/KCC_BASE/include
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+CXX_SHARED = KCC -fPIC
+CC_SHARED = gcc -fPIC -U__GNUG__ -nostdinc -I/usr/include
+CXX_NONSHARED = KCC
+CC_NONSHARED = gcc -U__GNUG__ -nostdinc -I/usr/include
+
+DEBUG_FLAG = -g
+DEBUG_OPT_FLAG = 
+OPT_FLAG = +K2
+
+# no libg++ for binaries 
+#BIN_CXX = $(CC)
+
+# *NOT* using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

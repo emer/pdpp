@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - css-types</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_21.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_23.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX22" HREF="ta_css_toc.html">5.4.5  Basic Types in CSS</A></H3>
+<P>
+<A NAME="IDX23"></A>
+
+</P>
+<P>
+There are six basic "primitive" types in CSS: <CODE>Int</CODE>, <CODE>Real</CODE>,
+<CODE>char</CODE>, <CODE>String</CODE>, <CODE>bool</CODE>, and <CODE>enum</CODE>.  An <CODE>Int</CODE>
+is essentially an <CODE>int</CODE>, a <CODE>Real</CODE> is essentially a
+<CODE>double</CODE>, and a <CODE>String</CODE> is a C++, dynamically-allocating
+string object.  A <CODE>char</CODE> is just an int object that will convert
+into its equivalen ASCII character instead of its numerical value when
+converted into a String.  A <CODE>bool</CODE> has two values: <CODE>true</CODE> and
+<CODE>false</CODE>.  An <CODE>enum</CODE> has defined enumeration values, and will
+convert a string representation of one of those values into the
+corresponding symbolic/numeric value.
+
+</P>
+<P>
+All of the other flavors of <CODE>int</CODE> in C, including <CODE>short</CODE>,
+<CODE>long</CODE>, <CODE>unsigned</CODE>, etc, are all just defined to be the same
+as an <CODE>Int</CODE>.  Similarly, a <CODE>float</CODE> and <CODE>double</CODE> are
+defined to be the same as a <CODE>Real</CODE>.  The <CODE>String</CODE> object is
+the same as the one that comes with the GNU libg++ library (slightly
+modified), which provides all of the common string manipulation
+functions as member functions of the <CODE>String</CODE> object, and handles
+the allocation of memory for the string dynamically, etc.
+
+</P>
+<P>
+In addition to the primitive types, there are reference, pointer, and
+array types.  Also, there are both script-defined and TypeAccess-derived
+hard-coded <CODE>class</CODE> objects.  Finally, there are types that point to
+hard-coded members of class objects, which correspond to all of the
+basic C types, and, unlike the basic script types, are sensitive to the
+actual size of a <CODE>short</CODE> vs a <CODE>long</CODE>, etc.
+
+</P>
+<P>
+Finally there is a special <CODE>SubShell</CODE> type, which allows one to
+have multiple compile spaces (cssProgSpace's) within css.  Thus, one
+could <CODE>load</CODE> one program into the current shell, and use a SubShell
+to load another one without getting rid of the first.  The two shells
+can communicate via <CODE>extern</CODE> objects, and they share the same type
+space.  Typical usage is:
+
+</P>
+<PRE>css&#62; extern SubShell sub_shell;
+css&#62; chsh sub_shell
+</PRE>
+
+<P>
+The first line defines the object (<CODE>extern</CODE> is recommended else it
+will be removed when the parent shell is recompiled), and the second
+switches to it.  To exit from the sub shell, just use <CODE>exit</CODE> or
+<KBD>ctrl-D</KBD> (and have faith that when you answer 'y' you will be
+returned to the parent shell).
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_21.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_23.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

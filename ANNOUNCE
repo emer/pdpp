@@ -1,0 +1,120 @@
+	     ANNOUNCING: The PDP++ Software, version 2.2
+
+Authors: Randall C. O'Reilly, Chadley K. Dawson, and James L. McClelland
+
+The PDP++ software is a neural-network simulation system written
+in C++.  It represents the next generation of the PDP software
+released with the McClelland and Rumelhart "Explorations in Parallel
+Distributed Processing Handbook", MIT Press, 1987.  It is easy enough
+for novice users, but very powerful and flexible for research use.
+
+The current version is 2.2, released January, 2002, which contains
+some important new features, in addition to the usual bugfixes.
+
+The software can be obtained by anonymous ftp from:
+Anonymous FTP Site: 	ftp://grey.colorado.edu/pub/oreilly/pdp++ *or*
+			ftp://cnbc.cmu.edu/pub/pdp++/		  *or*
+			unix.hensa.ac.uk/mirrors/pdp++/
+
+For more information, see our web page:
+  WWW Page:   http://www.cnbc.cmu.edu/PDP++/PDP++.html
+
+There is a 250 page (printed) manual and an HTML version available 
+on-line at the above address.
+
+The new features in 2.2 include:
+---------------------------------
+  o Fixed serious bugs with layer lesion flag, memory leak, OSX rnd #'s, rbp real_time
+  o Auto-loading configuration files savable through gui
+  o Improved colorscale resolution
+  o Non-default value highlighting in edit dialogs
+  o Auto-scrolling windows during manipulation of nets, etc
+  o Many bug fixes and minor improvements
+
+See the file 'NEWS' for a more detailed summary of changes since
+previous release.
+
+Software Features:
+==================
+
+  o Full Graphical User Interface (GUI) based on the InterViews
+    toolkit.  Allows user-selected "look and feel".
+
+  o Network Viewer shows network architecture and processing in real-
+    time, allows network to be constructed with simple point-and-click
+    actions.
+
+  o Training and testing data can be graphed on-line and network state
+    can be displayed over time numerically or using a wide range of
+    color or size-based graphical representations.
+
+  o Environment Viewer shows training patterns using color or 
+    size-based graphical representations; interactive configuration.
+
+  o Flexible object-oriented design allows mix-and-match simulation
+    construction and easy extension by deriving new object types from
+    existing ones.
+
+  o Built-in 'CSS' scripting language uses C++ syntax, allows full
+    access to simulation object data and functions.  Transition
+    between script code and compiled code is simplified since both are
+    C++. Script has command-line completion, source-level debugger,
+    and provides standard C/C++ library functions and objects.
+
+  o Scripts can control processing, generate training and testing
+    patterns, automate routine tasks, etc.
+
+  o Scripts can be generated from GUI actions, and the user can create 
+    GUI interfaces from script objects to extend and customize the
+    simulation environment.
+
+
+Supported Algorithms:
+=====================
+
+  o Feedforward and recurrent error backpropagation.  Recurrent BP
+    includes continuous, real-time models, and Almeida-Pineda.
+
+  o Constraint satisfaction algorithms and associated learning
+    algorithms including Boltzmann Machine, Hopfield models,
+    mean-field networks (DBM), Interactive Activation and
+    Competition (IAC), and continuous stochastic networks.
+
+  o Self-organizing learning including Competitive Learning, Soft
+    Competitive Learning, simple Hebbian, and Self-organizing Maps
+    ("Kohonen Nets").
+
+  o Leabra algorithm that combines error-driven and Hebbian learning
+    with k-Winners-Take-All inhibitory competition.  Over 40
+    research-grade simulations available for this algorithm in
+    association with new book: "Computational Explorations in
+    Cognitive Neuroscience: Understanding the Mind by Simulating the
+    Brain", O'Reilly & Munakata, 2000, MIT Press.
+
+The Fine Print:
+===============
+
+PDP++ is copyrighted and cannot be sold for profit by anyone other
+than the copyright holders.  However, the full source code is freely
+available, and the user is granted full permission to modify, copy,
+distribute and use it.  See our web page for details.
+
+The software runs on Unix workstations under XWindows, and under MS
+Windows (9X, NT, 2000).  It requires a minimum of 16 Meg of RAM, and
+32 Meg is preferable. It has been developed and tested on Linux, Linux
+PPC, Solaris, Irix, and HP-UX.  Binaries are available for these
+machines. Other machine types will require compiling from the source.
+
+The GUI in PDP++ is based on the InterViews toolkit, which we have
+improved and maintained together with Michael Hines (developer of
+NEURON).  We distribute pre-compiled libraries for the supported
+architectures, along with source code.
+
+The basic GUI and script technology in PDP++ is based on a
+type-scanning system called TypeAccess which interfaces with the CSS
+script language to provide a virtually automatic interface mechanism.
+While these were developed for PDP++, they can easily be used for
+any kind of application, and CSS is available as a stand-alone
+executable for use like Perl or TCL.
+
+For more information on the details of the software, see our web page.

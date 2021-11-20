@@ -1,0 +1,37 @@
+
+This describes some of the "guts" of the CSS script language.
+
+The main objects in css are cssEl's, which is the base type for any kind
+of program element, like variables, functions, etc.
+
+A cssProg is a "program", which is equivalent to a chunk of C-code
+within a single set of curly braces (including anything that might
+itself lie within further curly braces within it).
+
+A cssProgSpace is an entire program space, equivalent to a
+"translational unit" in compiler parlence.  It contains a number of
+cssProg's, as well as spaces for holding variables, etc.
+
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  css-guts-methods
+@subsection Member functions in css
+
+Member functions are implemented as a cssEl called cssMbrScriptFun,
+which is derived from cssScriptFun.  It contains a cssProg to hold the
+code for the function, and a pointer to the class type that it belongs
+to.
+
+When a member function is called, the last argument on the stack is the
+"this" object, which is stored in a pointer which is the first auto in
+the cssProg associated with the member function.  References to class
+members within a member function are dereferenced through the this
+pointer using their offset within the member space on that class.
+
+Although it is not presently possible to define functions "inline" in
+the definition of the class, this will be possible in the future, but
+only by saving the text from the definition, and re-parsing it later.
+The mechanism for doing this has yet to be perfected.
+
+

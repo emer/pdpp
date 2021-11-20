@@ -1,0 +1,39 @@
+// uncomment following if running mostly from css -- runs directly
+//#!/usr/local/bin/css -f
+
+// This includes the necessary header file defining all that is needed
+// for compiling, only if not actually in css
+#ifndef __CSS__
+#include <css/hard_of_css.h>
+#endif
+
+// you *MUST* define this as the main function, it is what hard_of_css calls!
+void s_main(int ac, String* av) {
+  if(ac < 3) {
+    cerr << "need two args!\n";
+    return;
+  }
+
+  // now for just some silly code that does nothing in particular
+  String first_arg = av[1];
+  String second_arg = av[2];
+
+  cout << "args: " << first_arg << " " << second_arg << "\n";
+
+  String_Array* scol = new String_Array;
+
+  int i;
+  for(i=0;i<5;i++)
+    scol->Add(first_arg);
+  for(i=0;i<5;i++)
+    scol->Add(second_arg);
+  scol->Permute();
+  for(i=0;i<scol->size;i++)
+    cout << scol->El(i) << " ";
+  cout << "\n";
+  delete scol;
+}
+
+#ifdef __CSS__
+s_main(argc, argv);
+#endif

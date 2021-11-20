@@ -1,0 +1,23 @@
+This directory contains the manual for pdp++ and TA/CSS
+
+The pdp-user files are the PDP++ user's manual.  A manual focusing 
+more on the programming aspect of PDP++ (pdp-prog) may someday be
+written.
+
+The ta_css files are mostly just a subset of the PDP++ user's manual,
+selected for those parts of relevance to the underlying TA/CSS
+technology.
+
+The pdp-user[-#] and ta_css[-#] files are in "info" format for
+use in emacs or with the xinfo program.
+
+The pdp-user.ps.gz and ta_css.ps.gz files are in PostScript format for
+printing or viewing with a previewer.
+
+The html directory contains html format files.
+
+The *.texi files are the "source" files for the manual, in texinfo
+format.
+
+The Makefile has actions for creating various format files from the
+texinfo sources.

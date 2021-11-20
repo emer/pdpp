@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-monitoring</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_28.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_30.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.9  Monitoring Network Variables</A></H3>
+
+<P>
+It is often useful to monitor the values of network variables, such as
+the activation of the output units, in your log files.  For example, you
+may wish to watch how the network gradually differentiates its output in
+response to the four input patterns.  We can do this by creating what is
+called a <B>MonitorStat</B> statistic.  
+
+</P>
+<P>
+Conceptually, a monitor statistic is a special type of statistic that
+simply monitors values already computed by the processes that are
+applied to the network.  For example, activations are calculated by the
+<B>TrialProcess</B> during training.  To record these activations in a log
+we need to monitor them and that's what a Monitor Statistic will do.
+Think of it as an electrode for recording data at specified times inside
+your network.
+
+</P>
+<P>
+To create a Monitor statistic, first select the units and the variable
+you want to monitor in the <B>NetView</B>.  To monitor with activation of
+the output unit, for example, we would make sure <CODE>act</CODE> is selected
+as the variable, and then we would select the output unit.  In this case
+we can select either the unit or the whole layer, it won't make any
+difference.  To select the layer, make sure the <I>Select</I> button is
+highlighted in the NetView and then click over the output layer itself.
+The layer's border will be highlighted.  Now Select <I>Monitor Values</I> /
+<I>New</I> (located in the middle-left region of the netview), and a pop-up
+will appear with some necessary information displayed.
+
+</P>
+<P>
+The popup indicates that you are creating a type of Statistic called a
+<B>MonitorStat</B>, and it indicates which process will contain this
+Statistic.  In this case, the <CODE>In Process</CODE> button will indicate
+that the statistic will be placed at the end of the "TrainTrial"
+process, which is what we want (we already have something monitoring
+activations in the "TestTrial" process).  The <CODE>For Variable</CODE> should
+be <CODE>act</CODE>.  The <CODE>Using Operator</CODE> in this case is <CODE>COPY</CODE>,
+which is also what we want -- we just want to copy the values of all the
+selected units into the statistic.  The last aspect of this is
+conceptually the most challenging.  What we need to do is to specify
+that we want to <CODE>Create Aggregates</CODE> of this variable at higher
+levels.  In this case, what we really want to do is just copy the
+activation from all 4 patterns to the Epoch level, so we can display the
+activations of the output unit for the different events in our Graph.
+So click the <I>CreateAggregates</I> toggle, then click <I>Ok</I>. Another
+popup will then appear, asking you what form of aggregation you want.
+In this case you must select <I>COPY</I>, to indicate that we are copying
+each event's output unit activation into the epoch graph, not averaging
+or summing or anything like that.  Do this, click <I>Ok</I>, and you are
+done.
+
+</P>
+<P>
+Before you restart the simulation, you'll need to reinitialize the
+weights.  We do this in the Train Control Panel.  You reinitialize with
+the same starting weights by clicking <I>Re Init</I>, or you can initialize
+with new starting weights by clicking <I>New Init</I>.  Either way, the
+network is reinitialized and the epoch counter is set to 0.  Click <I>Re
+Init</I> this time so we can see trace the learning process over the very
+same trajectory as before.  To run the simulation again we can simply
+press <I>Run</I> or <I>Step</I> in the "Train" process control panel.  You'll
+see the new results graphed on the same graph along with the earlier sum
+of sum-squared-error results.
+
+</P>
+<P>
+The graph may seem a little confusing at first.  Overlaying the
+<CODE>sum_sum_se</CODE> results will be four new lines, which will seem to be
+oscillating rather extremely.  Buttons identifying these new lines will
+be shown on the left of the View.  Note that the color of the graph line
+associated with a variable that is displayed is shown to the left of the
+Button, and the color of the axis that is associated with the variable
+is displayed on the right.  All four new lines are associated with a new
+Y-axis, which you can see covers a rather narrow range of values (about
+.46 to .54).  This axis is tied to the entire group of activations that
+are being monitored, and it is auto-scaled to the largest and smallest
+value in the display.
+
+</P>
+<P>
+You may want to fix the scale to something reasonable like 0-1.  To do
+this, click with the <EM>right</EM> mouse button -- the <I>Edit</I> button
+-- on the lead (top) element of the set of new elements (it may be
+labeled <CODE>output.act</CODE> or <CODE>cpy_output.act_0</CODE>.  A popup will
+appear.  You want to set <CODE>min mode</CODE> and <CODE>max mode</CODE> to
+<CODE>FIXED</CODE> so click where it says <CODE>AUTO GROUP</CODE> and select
+<CODE>FIXED</CODE>, then enter 1.0 in the max field next to <CODE>range</CODE>.  To
+make this take effect, click <I>Update View</I>, then click <I>Ok</I>.  The
+new Y axis will now span the 0-1 range, and the oscillations will appear
+more moderate on this scale.  This axis adjustment can be done while the
+simulation is running.
+
+</P>
+<P>
+In any case, you'll see that after thirty epochs or so the oscillations
+level off.  The simulation appears to be flatlined until about epoch
+120, when the activations of the output unit begin to differentiate the
+four input patterns. (The outputs to patterns 1 and 2, which are the 01
+and 10 patterns, are nearly identical and the latter lies on top of the
+former much of the time).  In any case, you should see that the network
+tends to produce the strongest output for the '11' pattern (pattern 3)
+until about epoch 210, well after it has completely nailed the '00'
+case.  After epoch 210 the performance changes rapidly for the 10, 01,
+and 11 patterns (patterns 1, 2, and 3) until about epoch 270 or so,
+where they begin to level off at their correct values.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_28.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_30.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

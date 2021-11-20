@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-special-fork</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_163.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_165.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX974" HREF="pdp-user_toc.html">12.6.3  Processing Multiple Networks/Environments</A></H3>
+<P>
+<A NAME="IDX975"></A>
+<A NAME="IDX976"></A>
+<A NAME="IDX977"></A>
+<A NAME="IDX978"></A>
+
+</P>
+<P>
+There are times when it is useful to be able to compare two different
+networks as they simultaneously learn the same task, or compare the
+learning of the same network on different environments.  This can be
+accomplished by performing multiple streams of processing at the same
+time.
+
+</P>
+<P>
+The <B>SyncEpochProc</B> runs two different sub-processes through the same
+set of events from a common environment.  Thus, it can be used to train
+two different networks, even networks that use different algorithms, at
+the same time.  It essentially just adds a set of pointers to a
+<CODE>second_network</CODE> and a <CODE>second_proc_type</CODE> and
+<CODE>second_proc</CODE>, which identify the second branch of the processes to
+run, and which network to run them on.
+
+</P>
+<P>
+The <B>ForkProcess</B> can be used more generically to split processing at
+any level of the hierarchy.  Like the sync epoch process, it adds
+pointers to the second fork of processing, including a
+<CODE>second_environment</CODE>.
+
+</P>
+<P>
+<B>IMPORTANT NOTE:</B> You need to specifically add small script processes
+to the processes below a fork process that perform initialization and
+other operations on the second network -- the standard processes will
+only perform these operations on the first network!
+
+</P>
+<P>
+One use of multiple processing streams is to combine two different
+algorithms to form a hybrid network.  This can be done by synchronously
+running both networks, each with their own algorithm-specific training
+process, and linking them together with a <B>BridgeProcess</B>, which is
+described in the next section.
+
+</P>
+<P>
+The <B>MultiEnvProcess</B> can be used to iterate over multiple
+environments within one processing stream.  This can be useful for
+testing a number of different possible environments.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_163.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_165.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,172 @@
+class WtMat {
+  //  plots weights for multiple units in a grid log
+public:
+  enum DataManip {
+    NO_MANIP,
+    NORMALIZE,
+    CLIP_MAX
+  };
+
+  PDPLog*	grid_log;
+  Layer*	recv_lay;	// receiving layer to get weights from
+  Layer*	send_lay;	// sending layer
+  int		un_x;		// geometry of units (-1 = from recv layer))
+  int		un_y;
+  int		wt_x;		// geometry of weights (-1 = from send layer))
+  int		wt_y;
+  int		mat_spc;	// spacing between weight matricies
+  DataManip	data_manip;	// how to manipulate the data upon copying
+  float		clip_max;	// max abs value to clip data at
+
+  void 	InitLog();		// #BUTTON initialize target graph
+  void	GetWeights();		// #BUTTON copy over the weights
+  void	SaveLog();		// #BUTTON save current log data to file
+
+  int GetCoord(int param, int lay_val);	// #HIDDEN
+
+  WtMat();
+};
+
+WtMat::WtMat() {
+  grid_log = .logs."WtMat";
+  recv_lay = .networks.layers[1];
+  send_lay = .networks.layers[0];
+  un_x = -1;
+  un_y = -1;
+  wt_x = -1;
+  wt_y = -1;
+  mat_spc = 1;
+  data_manip = NO_MANIP;
+  clip_max = .5;
+}
+
+int WtMat::GetCoord(int param, int lay_val) {
+  if(param < 0)
+    return lay_val;
+  return param;
+}
+
+void WtMat::SaveLog() {
+  grid_log.SetSaveFile();
+  grid_log.BufferToFile();
+  grid_log.CloseFile();
+}
+
+void WtMat::InitLog() {
+  grid_log.Clear();
+  DataTable* md = grid_log.data;
+  md.RemoveAll();
+  
+  // this holds the row index
+  {
+    DataArray_impl* da = md.NewEl(1);
+    da.name = "row";
+  }
+
+  int rx = GetCoord(un_x, recv_lay.act_geom.x);
+  int ry = GetCoord(un_y, recv_lay.act_geom.y);
+  int wtx = GetCoord(wt_x, send_lay.act_geom.x);
+  int wty = GetCoord(wt_y, send_lay.act_geom.y);
+  int totn = wtx * wty;
+
+  // these are the columns
+  int i;
+  for(i=0; i<rx; i++) {
+    DataTable* dt = md.NewGp(1);
+    dt.name = i;
+    dt.EnforceSize(totn);
+    dt[0].name = "<" + totn + ">c0";
+    int j;
+    for(j=1; j<totn; j++)
+      dt[j].name = "c" + j;
+  }
+
+  md.ResetData();
+
+  DT_GridViewSpec* vspc = *(grid_log.views[0].viewspec);
+  vspc.RemoveAll();
+  vspc.BuildFromDataTable();
+
+  int xpos = vspc.gp[0].pos.x;
+  for(i=0; i<rx; i++) {
+    DT_GridViewSpec* da = vspc.gp[i];
+    da.geom.x = wtx; 
+    da.geom.y = wty;
+    da.pos.x = xpos;
+    da.pos.y = 0;
+    da.UpdateLayout();
+    da.name = i;
+    xpos += wtx + mat_spc;
+  }
+  vspc[0].display_style = "TEXT";
+  vspc.UpdateLayout();
+  grid_log.InitAllViews();
+}
+
+void WtMat::GetWeights() {
+  grid_log.Clear();
+  DataTable* md = grid_log.data;
+
+  int rx = GetCoord(un_x, recv_lay.act_geom.x);
+  int ry = GetCoord(un_y, recv_lay.act_geom.y);
+  int wtx = GetCoord(wt_x, send_lay.act_geom.x);
+  int wty = GetCoord(wt_y, send_lay.act_geom.y);
+  int totn = wtx * wty;
+
+  int i;
+  for(i=0;i<ry;i++) {
+    md.AddBlankRow();		// add the rows
+    md[0].ar[i] = ry - i -1;	// label in reverse order
+  }
+
+  float_RArray* ary = new float_RArray;
+  Aggregate* agg = new Aggregate;
+  SimpleMathSpec mxc = new SimpleMathSpec;
+  mxc.opr = SimpleMathSpec::GTLTEQ;
+  mxc.lw = -clip_max;
+  mxc.hi = clip_max;
+  agg.op = Aggregate::LAST;
+
+  int uni = 0;
+  int ux, uy;
+  for(uy=0;uy<ry; uy++) {
+    if(uni >= recv_lay.units.leaves)
+      break;
+    for(ux=0; ux<rx; ux++, uni++) {
+      if(uni >= recv_lay.units.leaves)
+	break;
+      Unit* un = recv_lay.units.Leaf(uni);
+      Con_Group* cg = un.recv.FindFrom(send_lay);
+      if(cg == NULL) {
+	taMisc::Error("Projection from layer",send_lay->name,"not found!");
+	break;
+      }
+      ary.Reset();
+      cg->ConValuesToArray(ary, "wt");
+      if(data_manip == NORMALIZE)
+	ary->NormAbsMax(1.0);	// renormalizing data..
+      else if(data_manip == CLIP_MAX)
+	ary->SimpleMath(mxc);
+      DataTable* dt = md->gp[ux];
+      dt->AggArrayToRow(ary, ry-uy-1, agg);
+    }
+  }
+  delete ary;
+  delete agg;
+  delete mxc;
+  
+  grid_log.data_range.max = ry-1;
+  grid_log.InitAllViews();
+  grid_log.views[0].View_FR();
+}
+
+
+WtMat wt_mat;
+if(s_args.size >= 4) {
+  wt_mat.un_x = s_args[0];
+  wt_mat.un_y = s_args[1];
+  wt_mat.wt_x = s_args[2];
+  wt_mat.wt_y = s_args[3];
+}
+EditObj(wt_mat);
+

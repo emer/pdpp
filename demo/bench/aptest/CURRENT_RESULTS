@@ -1,0 +1,235 @@
+Results of the aptest (atest.c, ptest.c), O'Reilly version as of 6/29/96
+
+* indicates results from older versions of aptest which might have had
+  important floating point out-of-bounds problems, etc.
+
+		Single Node Performance
+		Sorted by Medium Score
+
+-----------------------------------------------------------------------
+Array test:  Dot product of activations * weights stored in arrays
+-----------------------------------------------------------------------
+			MFLOPS (rounded 2 sig. dig.)
+CPU		 	lg	 md	sm	CC FLAGS
+-----------------------------------------------------------------------
+Sun Sparc 20/41Mhz  	 10	 12	 11	cc -O4 -fsingle
+Pentium 120Mhz*   	 15	 17	 16	-O3
+Cray T3D*	 	 16	 18	 18	-O3
+Alpha 3000/400*	 	 16	 18	 22	-O3 -float -float_const
+Sparc Ultra 167Mhz	 17	 19	 19	CenterLine/bin/cc -O4 -fsingle
+SGI R4400, 75/150Mhz 	 16	 24	 23	cc -O3 -float
+HP735, 100Mhz    	 24	 52	 23      cc +O2 -Aa
+Alpha 21164/500 linux	 39	 68	 67	gcc -O2
+SP2 reg node (ours)	 67	 71	 41	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+Pentium Pro 200Mhz	 29	 80	 71	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+SP2 fast node (ours)     77	 83	 47	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+Sparc Ultra 170Mhz*	 61	 98	 64	-xO4
+Pentium II 300Mhz	 34	100	105	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops  
+SGI R8k 90Mhz*	 	 54	101	 32	
+HP PA8000 180Mhz	 56	135	 93	cc +O2 -Aa
+SGI Origin200  180Mhz	109	140	137     cc -Ofast -n32  -mips4
+SGI Origin2000 196Mhz	123	153	147     cc -Ofast -n32  -mips4
+Alpha 21164/500Mhz	118	176	160	cc -std1 -fast
+Cray C90*		420	190	 40	-O3
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+Pointer test: Dot product of acts * wts stored in structs with pointers
+-----------------------------------------------------------------------
+			MFLOPS (rounded 2 sig. dig.)
+CPU		 	lg	 md	sm	CC FLAGS
+-----------------------------------------------------------------------
+Sun Sparc 20/41Mhz  	  1.4	  6	 7	cc -O2 -fsingle
+Cray T3D*	  	  3.8	  8.8	 core	-O3
+Alpha 3000/400*	  	  2.8	 10	 12	-O3 -float -float_const
+SGI R4400, 75/150Mhz  	  3.2	 11	 13	cc -O3 -float
+Pentium 120Mhz*	  	  4.0  	 14	 17	-O3
+Sparc Ultra 167Mhz	  4.2	 15	 18	CenterLine/bin/cc -O4 -fsingle
+HP735, 100Mhz     	  5.3    23	 20      cc +O2 -Aa
+SGI R8k 90Mhz*	  	  7.1	 25	 24
+Sparc Ultra 170Mhz*	  5.0	 25	 36	-xO4 
+Alpha 21164/500 linux	  9.3	 31	 57	gcc -O2
+SGI Origin200  180Mhz	 20	 35	 36     cc -Ofast -n32  -mips4
+Alpha 21164/500Mhz       11	 38	 55	cc -std1 -fast
+SGI Origin2000 196Mhz	 23	 40	 41     cc -Ofast -n32  -mips4
+SP2 reg node (ours)      15	 42	 20	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+SP2 fast node (ours)     18	 48	 23	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+Pentium Pro 200Mhz       11	 50	 31	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+HP PA8000, 180Mhz	  4.5	 53	 44	cc +02 -Aa
+Pentium II 300Mhz	 13	 53	 47	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+Cray C90*		190	110	 17	-O3
+-----------------------------------------------------------------------
+
+======================
+COMPILER FLAG DETAILS
+======================
+
+HP800 compiler flags
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+24	52	23	cc +O2 -Aa
+18	32	16	cc +O2
+14	20	18	cc +O3 -Aa +Olibcalls
+14	20	18	cc +O3 -Aa
+11	16	14	cc +O3
+13	17	15	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+12	15	14	gcc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+ 5	23	20	cc +O2 -Aa
+ 5	16	14	cc +O2
+ 5	23	20	cc +O3 -Aa +Olibcalls
+ 5	24	20	cc +O3 -Aa
+ 5	16	14	cc +O3
+ 4	13	12	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+ 5	13	12	gcc -O2
+
+IBMaix compiler flags
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+SP2 thin2 (cornell):
+80	 96	50	xlc -O3 -qunroll -qfloat=hsflt -qarch=pwr2 -bnso -bI:/lib/syscalls.exp
+SP2 fast node (ours):
+77	 83	47	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+77	 82	52	xlc -O3 -qstrict -qfloat=hsflt 
+76	 79	46	xlc -O3 -qunroll -qarch=pwr2 -qfloat=hsflt
+76	 79	46	xlc -O3 -qstrict -qunroll -qarch=pwr2 -qfloat=hsflt
+42	 41	32	xlc -O3 -qstrict -qarch=pwr2
+49	 51	43	xlc -O2 -qarch=pwr2 -qfloat=hsflt
+
+33	 33	26	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+19	 19	16	gcc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+SP2 thin2 (cornell)
+ 8.5	 40	21	xlc -O3 -qunroll -qfloat=hsflt -qarch=pwr2 -bnso -bI:/lib/syscalls.exp
+SP2 fast node (ours)
+18	 48	23	xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt
+20	 48	21	xlc -O3 -qstrict -qfloat=hsflt
+18	 47	23	xlc -O3 -qunroll -qarch=pwr2 -qfloat=hsflt
+18	 47	23	xlc -O3 -qstrict -qunroll -qarch=pwr2 -qfloat=hsflt
+18	 36	19	xlc -O3 -qstrict -qarch=pwr2
+18	 43	23	xlc -O2 -qarch=pwr2 -qfloat=hsflt
+
+12	 17	13	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+12	 17	13	gcc -O2
+
+
+LINUX compiler flags (pentium pro 200mhz)
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+29	80	71	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+27	53	42	gcc -O3
+27	53	42	gcc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+ 11	50	31	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+ 11	50	31	gcc -O3
+ 11	50	31	gcc -O2
+
+
+SGI compiler flags (R4400, 75/150mhz)
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+16	24	23	cc -O3 -float
+16	23	23	cc -O2 -float
+12	15	16	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+11	14	14	gcc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+ 3	11	13	cc -O3 -float
+ 3	11	13	cc -O2 -float
+ 3	10	12	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+ 3	10	12	gcc -O2
+
+SUN4 compiler flags (sparc 20, 41Mhz)
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+10	12	11	cc -O4 -fsingle
+7	8	8	cc -O2 -fsingle
+8	9	8	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+7	8	8	gcc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+ 1 	5	6	cc -O4 -fsingle
+ 1	6	7	cc -O2 -fsingle
+ 1	6	7	gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops
+ 2	6	7	gcc -O2
+
+
+SOLARIS compiler flags (Ultra Sparc, 167Mhz)
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+17	19	19	CenterLine/bin/cc -O4 -fsingle
+17	19	19	CenterLine/bin/cc -O2
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+4	15	18	CenterLine/bin/cc -O4 -fsingle
+4 	15	18	CenterLine/bin/cc -O2
+
+Alpha compiler flags (Alpha 21164/500Mhz)
+==========================================================
+Array test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+118	176     160	DEC machine, cc -std1 -fast
+ 46	156	139	SWT machine, cc -std1 -fast
+
+Pointer test:
+---------------------------------
+MFLOPS (rounded 2 sig. dig.)
+lg	 md	sm	CC FLAGS
+---------------------------------
+11	 38	55	DEC machine, cc -std1 -fast
+ 8	 36	49	SWT machine, cc -std1 -fast

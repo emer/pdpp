@@ -1,0 +1,193 @@
+ 
+ 
+=======================================
+50 unit layers, 50 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    8.65 sys:       0 tot:    8.66 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      87, in tot time: 8.66
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:      21 sys:    0.84 tot:    21.9 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      34, in tot time: 21.91
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+ 
+=======================================
+100 unit layers, 15 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    14.9 sys:       0 tot:    14.9 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      60, in tot time: 14.94
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    18.6 sys:    0.01 tot:    18.6 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      48, in tot time: 18.64
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+3 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:      20 sys:    0.03 tot:      20 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      45, in tot time: 20.03
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+4 processes:
+--------------------------
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    19.2 sys:    0.02 tot:    19.2 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      47, in tot time: 19.19
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+ 
+=======================================
+200 unit layers, 5 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    17.7 sys:       0 tot:    17.7 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      68, in tot time: 17.69
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    17.2 sys:       0 tot:    17.2 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      70, in tot time: 17.17
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+3 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    16.5 sys:       0 tot:    16.5 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      73, in tot time: 16.55
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+4 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    16.8 sys:       0 tot:    16.8 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      71, in tot time: 16.83
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+8 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 8 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    16.3 sys:    0.02 tot:    16.3 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      74, in tot time: 16.29
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+ 
+=======================================
+500 unit layers, 1 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    42.7 sys:       0 tot:    42.7 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      35, in tot time: 42.73
+--------------------------
+2 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    17.9 sys:       0 tot:    17.9 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      84, in tot time: 17.88
+--------------------------
+3 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    16.4 sys:       0 tot:    16.3 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      92, in tot time: 16.34
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+4 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    14.5 sys:    0.02 tot:    14.5 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:   1e+02, in tot time: 14.5
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+--------------------------
+8 processes:
+--------------------------
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+DMEM Running on 8 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    11.9 sys:       0 tot:    11.9 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec: 1.3e+02, in tot time: 11.95
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority
+/usr/X11R6/bin/xauth:  error in locking authority file /home/oreilly/.Xauthority

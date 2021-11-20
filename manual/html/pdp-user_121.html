@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-tessel</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_120.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_122.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX620" HREF="pdp-user_toc.html">10.3.3.2  Tesselated (Repeated) Patterns of Connectivity</A></H4>
+<P>
+<A NAME="IDX621"></A>
+
+</P>
+<P>
+The <B>TesselPrjnSpec</B> connects two layers using tesselations (repeated
+patterns) of connectivity.  These patterns are defined in terms of a
+"receptive field" which is a two-dimensional pattern of connectivity
+into a given receiving unit.  This pattern is defined in terms of
+two-dimensional X,Y offsets of the sending units relative to the
+position of a given receiving unit.  Thus, there is an assumed
+correspondence between the layout of the receiving and sending units.
+
+</P>
+<P>
+Which receiving units get this receptive field is determined by
+offset and skip parameters which allow one to have different receptive
+fields for the even and odd units, for example.
+
+</P>
+<P>
+The center of each receiving unit's receptive field over the sending
+layer is either in direct correspondence with the coordinates of the
+receiving unit within its layer, or there can be a scaling of the
+coordinates based on the relative sizes of the two layers, so that the
+receiving units evenly cover the sending layer.  Also, contiguous
+receivers can share the same effective receptive field center by using
+the <CODE>recv_group</CODE> parameters.
+
+</P>
+<P>
+In addition, since the <B>TesselPrjnSpec</B> creates repeated versions of
+the same connectivity pattern, it is a natural place to implement weight
+sharing. There is a choice on the spec, <CODE>link_type</CODE>, that
+can establish shared weights among all units in the same
+<CODE>recv_group</CODE> (<CODE>GP_LINK</CODE>), or each unit has the the same
+weights (<CODE>UN_LINK</CODE>).
+
+</P>
+<P>
+Finally, there are a number of functions which automatically generate
+receptive fields according to simple geometric shapes, or create
+receptive fields from patterns of selected units in the <B>NetView</B>
+(see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).  Further, the weight values for these connections
+can be initialized to specified values (use the <CODE>init_wts</CODE> and set
+the <CODE>wt_val</CODE> values), and distance-based values can be computed
+automatically using functions.  These are described below.
+
+</P>
+<P>
+The spec has the following parameters:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>TwoDCoord recv_off</CODE>
+<DD>
+<A NAME="IDX622"></A>
+The offset (XY) in the layer for the start of the receiving units.
+Units before this offset do not get connections.
+<DT><CODE>TwoDCoord recv_n</CODE>
+<DD>
+<A NAME="IDX623"></A>
+The number of receiving units in each dimension (XY).  The default
+values of -1 means use all the receiving units (after the offset).
+<DT><CODE>TwoDCoord recv_skip</CODE>
+<DD>
+<A NAME="IDX624"></A>
+The number of receiving units to skip in each dimension (XY).  Thus, one
+could have one spec controlling the even units and another for the odd
+units in a given layer.  NOTE: this is ignored when <CODE>GP_LINK</CODE> is
+used, for technical reasons.
+<DT><CODE>TwoDCoord recv_group</CODE>
+<DD>
+<A NAME="IDX625"></A>
+The number of receiving units to group together with the same receptive
+field center in each dimension (XY).  Thus, one can have groups of units
+with identical receptive fields.
+<DT><CODE>bool wrap</CODE>
+<DD>
+<A NAME="IDX626"></A>
+Indicates whether or not to wrap coordinates at the edges of the sending
+layer (otherwise it clips at the layer edges).
+<DT><CODE>bool link_type</CODE>
+<DD>
+<A NAME="IDX627"></A>
+Indicates whether and how to link together receiving weights:
+<DL COMPACT>
+
+<DT><CODE>NO_LINK</CODE>
+<DD>
+Each unit has its own weights, as is normally the case.
+<DT><CODE>GP_LINK</CODE>
+<DD>
+Shares weights among an entire <CODE>recv_group</CODE> of units, where the 1st
+unit in each group has the same weights, etc.
+<DT><CODE>UN_LINK</CODE>
+<DD>
+The same weights are shared between all units (each unit has the same
+weights).  Also see <CODE>link_src</CODE>.
+</DL>
+<DT><CODE>TwoDCoord link_src</CODE>
+<DD>
+<A NAME="IDX628"></A>
+The index of the receiving unit that should serve as the
+"source" unit for unit linked weights.  If sending coordinates are not
+being wrapped, then the first unit in the receiving layer will likely
+not have the full complement of connections, since some of them will
+have been clipped, so this allows a unit that has the full complement of
+connections to be indicated as the source, which has to have all the
+possible connections.
+<DT><CODE>FloatTwoDCoord send_scale</CODE>
+<DD>
+<A NAME="IDX629"></A>
+Scales the coordinates of the receiving unit in order to determine
+the coordinates of the center of the receptive field in the sending
+layer.  Thus, if in a given dimension (X or Y) there are only four units
+in the receiving layer and 8 units in the sending layer, one might want
+to use a scale of 2 in that dimension so the receivers will cover the
+whole sending layer.
+<DT><CODE>TwoDCoord send_border</CODE>
+<DD>
+<A NAME="IDX630"></A>
+A border (offset) that is added to the receiving unit's coordinates
+(after scaling, see above) in order to determine the coordinates of the
+center of the receptive field in the sending layer.
+<DT><CODE>TessEl_List send_offs</CODE>
+<DD>
+<A NAME="IDX631"></A>
+A list of offsets of the sending units.  These offsets are
+relative to the center of the receiving unit's receptive field in the
+sending layer, computed as described above.  Each offset is a member of
+the class TessEl which has the members:
+<A NAME="IDX632"></A>
+<DL COMPACT>
+
+<DT><CODE>TwoDCoord send_off</CODE>
+<DD>
+<A NAME="IDX633"></A>
+The offset from the center of the receptive field.
+<DT><CODE>float wt_val</CODE>
+<DD>
+<A NAME="IDX634"></A>
+The value to assign to the weight of the connection.  These weight
+values are given to the weight upon creation of the connection, but if
+the <B>ConSpec</B> performs its own initialization of the weights, they
+will be lost.  Also, if learning is taking place, the only way to
+reinstate these values is to reconnect the network.
+</DL>
+</DL>
+
+<P>
+The functions that make particular receptive fields are as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>MakeEllipse(int half_width, int half_height, int ctr_x, int ctr_y)</CODE>
+<DD>
+<A NAME="IDX635"></A>
+Constructs an elliptical receptive field from the given parameters.  The
+ctr_x and y specify the center of the receptive field.  For example,
+half_width = half_height = 2, ctr_x = ctr_y = 0, gives a circle from -2
+to 2 in x and y.
+<DT><CODE>MakeRectangle(int width, int height, int ctr_x, int ctr_y)</CODE>
+<DD>
+<A NAME="IDX636"></A>
+Constructs a rectangular receptive field from the given parameters.
+ctr_x and _y are as in MakeEllipse (e.g., specifying a width, height of
+5 and ctr_x, _y of 0 gives x and y coordinates from -2 to 2.
+<DT><CODE>MakeFromNetView(NetView* view)</CODE>
+<DD>
+<A NAME="IDX637"></A>
+Uses the currently selected units in the <B>NetView</B> to create a
+receptive field.  First select a receiving unit, which establishes the
+center of the receptive field (this should be in the receiving layer).
+Then, in the sending layer, select the receptive field pattern.  All
+units must be selected (use multiple-select) before this function is
+called.
+<DT><CODE>WeightsFromDist(float scale)</CODE>
+<DD>
+<A NAME="IDX638"></A>
+Initializes the <CODE>wt_val</CODE> value of each element of the receptive
+field according to its distance in offset coordinates, scaled by the
+given scale parameter.  Note that <CODE>init_wts</CODE> must be set for these
+weights to be used in initializing the weights.
+<DT><CODE>WeightsFromGausDist(float scale, float sigma)</CODE>
+<DD>
+<A NAME="IDX639"></A>
+Like the above, but it uses a Gaussian function of the distance, with a
+standard deviation equal to the given sigma parameter.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_120.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_122.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

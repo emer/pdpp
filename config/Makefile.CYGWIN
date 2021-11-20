@@ -1,0 +1,65 @@
+# machine-dependent stuff and overrides of std defs
+# CYGWIN - g++
+####################################################
+
+# how to compile under cygwin:
+
+# 1. install cygwin environment -- recent cygwin has everything you need if
+#    you get gcc and gdb and XFree86 stuff
+
+# 2. make sure readline lib is installed.  to link properly, copy
+#    cp /usr/lib/libreadline.a to /usr/local/lib -- this will make sure it uses
+#    the static lib instead of the dll in /usr/lib (using this dll also
+#    causes a segfault when using gdb -- they both use the same dll and this
+#    does not work under windows)
+
+# 3. compile interviews: you can just use the ./configure program
+#    now with Hines' iv-15.tar.gz.
+#    When you configure, you MUST SPECIFY: --without-x:
+#    ./configure --without-x --prefix=/usr/local
+#    this will use the windows-native interface instead of X (you can
+#    build it to run under X under cygwin, but this would be less
+#    efficient probably).  Then do make; make install
+#    You probably want to copy the libIVhines.a file from /usr/local/i686/lib
+#    to /usr/local/lib
+
+# 5. compile pdp++ (make world)
+
+EXE_EXT = .exe
+
+# define linux so get everything that linux gets too!
+DEFINES = -DLINUX -D__i386__ -DWIN32
+
+IDIRS_EXTRA = -I/usr/include/g++-3 -I/usr/X11R6/include
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/g++-3/
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+# this flag instructs g++ to include standard libraries for a gui-based windows
+# application
+X11_LIB = -lz -ljpeg -lgdi32 -luser32
+
+IOS_INCLUDES = g++-3.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /usr/bin/cpp -D__i386__
+
+# only within-program dependencies: avoid bug in overflow on no of included files
+DEP_FLAG = -MM
+
+# NOT - doesn't link properly for debugging purposes!
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+# no libg++ for binaries 
+#BIN_CXX = $(CC)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar
+

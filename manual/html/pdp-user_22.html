@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tex-using-starting</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_21.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_23.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.2  Starting up PDP++</A></H3>
+
+<P>
+The XOR demo project that we will be using is located in a directory
+where the PDP++ software was installed.  You should go to that directory
+(typically <TT>`/usr/local/pdp++'</TT>) and then change to the
+<TT>`demo/bp'</TT> directory, which is where the project files are.
+
+</P>
+<P>
+To start using the back propagation package within the PDP++ system, you
+simply type <KBD>bp++</KBD> to your unix command interface.  After a short
+time, the <CODE>bp++&#62;</CODE> prompt will appear in your command interface
+window, and a small menubar window will appear somewhere on the screen.
+This is the <CODE>PDP++:Root</CODE> window, and it contains three menus.  The
+first is called <I>Object</I>, the second is called <I>.projects</I>, and the
+third is called <I>.colorspecs</I>.  The first menu's name alerts you to
+the fact that this window is associated with an object, whose name
+appears as the label on the window.  The other menu names refer to the
+children of Root, which consist of projects and colorspecs.  You can
+think of the '.' in front of the names as indicating that the projects
+and colorspecs are children of the current object.
+
+</P>
+<P>
+You are going to open a pre-defined <B>Project</B> and then run it.  To
+open the project, select <I>.projects</I> / <I>Open In</I> / <I>Root</I>.  A
+file-selector window will appear.  It gives a list of directories
+accessible from your current directory and files in the current
+directory that might contain a project.  You can either type the name of
+the project file in the <CODE>enter filename</CODE> box, or double click on an
+item in the the list to select it.  We want the project file
+"xor.proj.gz". This file is saved in a compressed format, which is why
+it has the ".gz" extension.  Double click on it, and the project will be
+loaded in (the simulator automatically uncompresses files stored in the
+".gz" compression format).
+
+</P>
+<P>
+After a little time for initialization, the Root menu will move to the
+right, and you should see two new windows on your screen: A <B>Project</B>
+window and a window called a <B>NetView</B>.  Several other windows will be
+iconified, we will turn our attention to them in a moment.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_21.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_23.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

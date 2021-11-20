@@ -1,0 +1,145 @@
+ 
+ 
+=======================================
+50 unit layers, 50 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    9.91 sys:       0 tot:    9.91 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      76, in tot time: 9.91
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    19.6 sys:    0.02 tot:    19.6 n: 1
+Net size: 50 (cons: 12500), M Conns procd: 750, Mcon_per_sec:      38, in tot time: 19.59
+ 
+=======================================
+100 unit layers, 15 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    15.7 sys:       0 tot:    15.7 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      57, in tot time: 15.68
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    20.8 sys:    0.01 tot:    20.8 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      43, in tot time: 20.81
+--------------------------
+3 processes:
+--------------------------
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    18.1 sys:    0.02 tot:    18.1 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      50, in tot time: 18.14
+--------------------------
+4 processes:
+--------------------------
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    21.5 sys:    0.05 tot:    21.6 n: 1
+Net size: 100 (cons: 50000), M Conns procd: 900, Mcon_per_sec:      42, in tot time: 21.57
+ 
+=======================================
+200 unit layers, 5 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    18.8 sys:       0 tot:    18.8 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      64, in tot time: 18.78
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    24.3 sys:       0 tot:    24.3 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      49, in tot time: 24.27
+--------------------------
+3 processes:
+--------------------------
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    18.8 sys:    0.01 tot:    18.8 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      64, in tot time: 18.8
+--------------------------
+4 processes:
+--------------------------
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    23.5 sys:    0.04 tot:    23.6 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      51, in tot time: 23.59
+--------------------------
+8 processes:
+--------------------------
+DMEM Running on 8 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    20.8 sys:    0.02 tot:    20.8 n: 1
+Net size: 200 (cons: 200000), M Conns procd: 1200, Mcon_per_sec:      58, in tot time: 20.77
+ 
+=======================================
+500 unit layers, 1 epochs
+=======================================
+--------------------------
+1 process:
+--------------------------
+DMEM Running on 1 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    48.6 sys:       0 tot:    48.6 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      31, in tot time: 48.58
+--------------------------
+2 processes:
+--------------------------
+DMEM Running on 2 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    28.2 sys:       0 tot:    28.2 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      53, in tot time: 28.21
+--------------------------
+3 processes:
+--------------------------
+DMEM Running on 3 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    18.9 sys:       0 tot:    18.9 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      79, in tot time: 18.93
+--------------------------
+4 processes:
+--------------------------
+DMEM Running on 4 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    20.5 sys:       0 tot:    20.5 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      73, in tot time: 20.46
+--------------------------
+8 processes:
+--------------------------
+DMEM Running on 8 processors.
+Using standard pre-compiled defaults file
+
+Total time: usr:    17.5 sys:       0 tot:    17.5 n: 1
+Net size: 500 (cons: 1.25e+06), M Conns procd: 1500, Mcon_per_sec:      86, in tot time: 17.46

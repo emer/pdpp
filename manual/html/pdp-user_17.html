@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-bp-backprop</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_16.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_18.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.1.2  BackPropagation Phase</A></H3>
+
+<P>
+In this phase, a measure of the error or mismatch between the target and
+the actual output is computed, and the negative of the derivative of the
+error with respect to the activation and with respect to the net input
+to each unit is computed, starting at the output layer and passing
+successively back through successively lower numbers of layers.  By
+default the error measure used is the summed square error:
+
+</P>
+<IMG SRC="pdp-user_17.html_sub_1.gif" ALIGN="MIDDLE" ALT="	ss = SUM_i (t_i - a_i)^2
+">
+<P>
+where the index i runs over all of the output units.  The derivative
+of this with respect to the activation of each output unit is easily
+computed.  We actually use the negative of this derivative, which we
+call <I>dE/da_i</I>.  For output units, this quantity is
+
+</P>
+<IMG SRC="pdp-user_17.html_sub_2.gif" ALIGN="MIDDLE" ALT="dE/da_i = (t_i - a_i)
+">
+<P>
+We then compute a quantity proportional to the negative derivative of
+the error measure with respect to the net input to each unit, which is
+
+</P>
+<IMG SRC="pdp-user_17.html_sub_3.gif" ALIGN="MIDDLE" ALT="dE/dnet_i = dE/da_i f'(net_i)
+">
+<P>
+where <I>f'(net_i)</I> is the slope of the activation function given the net
+input to the unit.
+
+</P>
+<P>
+This quantity is then propagated back to successively lower numbered
+layers, using the formulas
+
+</P>
+<IMG SRC="pdp-user_17.html_sub_4.gif" ALIGN="MIDDLE" ALT="dE/da_j = SUM_i w_ij dE/dnet_i
+"><P>
+and
+<P>
+<IMG SRC="pdp-user_17.html_sub_5.gif" ALIGN="MIDDLE" ALT="dE/dnet_j = dE/da_j f'(net_j)
+">
+</P>
+
+<P>
+Here subscript <I>i</I> indexes units that receive connections from unit <I>j</I>;
+we can see these formulas as providing for the backward propagation of
+error derivative information via the same connections that carry
+activation forward during the activation phase.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_16.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_18.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,343 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - inst-prog</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_3.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_5.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A HREF="pdp-user_toc.html">2.7  Installing the Programmers Version</A></H2>
+
+<P>
+Read over the instructions for installing the end-user's version first.
+This assumes that you have unloaded the <TT>`pdp++_version_src.tar.gz'</TT>
+file in something like <TT>`/usr/local/pdp++'</TT>.
+
+</P>
+<P>
+IMPORTANT: Whenever you are compiling, you need to have the
+environmental variable <CODE>CPU</CODE> set to reflect your machine type (see
+above).  Other machine types can be found in the interviews
+<TT>`config/InterViews/arch.def'</TT> directory.  These are (in addition to
+the above): <CODE>VAX, MIPSEL, SUN3, SUNi386, SUN, HP300, HP200, HP500,
+HP, ATT, APOLLO, SONY68, SONYmips, SONY, PEGASUS, M4330, MACII, CRAY,
+STELLAR, IBMi386, IBMrt, IBMr2, LUNA68, LUNA88, MIPSEB, MOTOROLA, X386,
+DGUX, CONVEX, stratus, ALPHA</CODE>.
+
+</P>
+<P>
+The C++ compiler types that are supported are modern gnu g++/egcs
+compilers (anything released after 1999 seems to work), and proprietary
+system compilers, which we refer to as  <TT>`CC'</TT> compilers.
+
+</P>
+<P>
+There are a couple of other libraries that the PDP++ software depends
+on.  These need to be made before PDP++ itself can be compiled.  Please
+ensure that all of the following are installed properly:
+
+</P>
+<P>
+1) The <TT>`readline'</TT> library, which will have already been installed
+if <TT>`gdb'</TT> or perhaps other gnu programs have been installed on your
+system (or if you are using Linux).  Look for
+<TT>`/usr/lib/libreadline.so'</TT> or <TT>`/usr/local/lib/libreadline.so'</TT>.
+If it isn't there, then download a version of it from one of the gnu ftp
+server sites (e.g., <TT>`gnudist.gnu.org'</TT>), and compile and install the
+library.
+
+</P>
+<P>
+2) If using g++, and not on a Linux-based system, you need to make the
+the <TT>`libstdc++'</TT> library in the libg++ distribution.  <B>NOTE:</B>
+PDP++ now requires the <CODE>sstream</CODE> header file, which defines the
+<CODE>stringstream</CODE> class, which is a much improved replacement for
+the <CODE>strstream</CODE> class.  <B>For g++ version 2.9x, this header file
+might be missing or broken (e.g., under RedHat 7.3, it is present but
+broken!).</B>  A good version of this file is present in
+<CODE>PDPDIR/include/new_sstream_for_gcc_2.9x.h</CODE>, and should be installed
+in the appropriate location (e.g., for RH 7.3, do the following as root:
+<CODE>cp include/new_sstream_for_gcc_2.9x.h /usr/include/g++-3/sstream</CODE>.
+
+</P>
+<P>
+<I>I haven't done this install in a while so the following is likely
+out of date:</I>. It seems that in the latest distribution of libg++ both
+of these are installed in <TT>`/usr/local/lib'</TT> automatically, but if
+they are not there, <TT>`libiostream.so'</TT> is made in the <TT>`libio'</TT>
+directory in the libg++ distribution (do a <CODE>make install</CODE> to get
+the properly installed or copy it yourself), and <TT>`libstdc++.so'</TT>
+is made in the <TT>`libstdc++.so'</TT> directory.  CC/cfront users should
+have their iostream code linked in automatically via the standard C++
+library that comes with the compiler.
+
+</P>
+<P>
+3) Install the InterViews library, which provides the graphics toolkit
+used by PDP++.  We have collaborated with Michael Hines, developer of
+the Neuron simulation system, in developing an improved version of the
+InterViews library -- <B>You must install the Hines version of
+InterViews!</B>.  The source code for this version is:
+
+</P>
+<PRE>iv-15.tar.tz
+</PRE>
+
+<P>
+available on our ftp servers, and the latest version should be
+available from Michael Hines' ftp site at:
+<TT>`ftp://www.neuron.yale.edu/neuron/unix/'</TT>.  Some miscellaneous
+information about interviews can be found in the
+<TT>`PDPDIR/lib/interviews'</TT> directory.
+
+</P>
+<P>
+An alternative to compiling interviews yourself is to download
+pre-compiled interviews libraries from us.  These are available for
+the dominant form of compiler (CC or g++) for the platforms on which
+the binary distribution is available (see list above in section <A HREF="pdp-user_2.html">2  Installation Guide</A>)
+and are provided as <TT>`pdp++_version_ivlib_CPU_CC.tar.gz'</TT> for the
+CC compiler and <TT>`..._g++.tar.gz'</TT> for g++.  The include files,
+which are necessary to use the libraries to compile PDP++, are in
+<TT>`pdp++_version_ivinc.tar.gz'</TT>.  These create a directory called
+<TT>`interviews'</TT> when extracted, which means this should be done in
+the <TT>`/usr/local'</TT> directory so that the interviews directory is
+<TT>`/usr/local/interviews'</TT>.  Alternatively, these can be installed
+elsewhere and the <CODE>IDIRS_EXTRA</CODE> and <CODE>LDIRS_EXTRA</CODE> makefile
+variables set to point to this directory (see below).  We install ours
+in <TT>`/usr/local/lib'</TT> -- follow the directions in the End Users's
+install version described above to do this.
+
+</P>
+<P>
+4) Once you have the above libraries installed, the next step is to
+configure the makefiles for the type of compiler and system you have.
+These makefiles are located in <TT>`PDPDIR/config'</TT>.  The actual
+makefiles in a given directory (e.g., <TT>`src/bp/Makefile'</TT> and
+<TT>`src/bp/CPU/Makefile'</TT>) are made by combining several makefile
+components.  <TT>`config/Makefile.std'</TT> has the standard rules for
+making various things, <TT>`config/Makefile.defs'</TT> has the standard
+definitions for everything, and then <TT>`config/Makefile.CPU'</TT>
+overrides any of these definitions that need to be set differently for a
+different CPU type (i.e., "local" definitions).  There are several
+sub-steps to this process as labeled with letters below:
+
+</P>
+<P>
+a) If you have installed the software in a location other than
+<TT>`/usr/local/pdp++'</TT>: You need to change the definition of
+<CODE>PDPDIR</CODE> in <B>both</B> the top-level Makefile
+(<TT>`PDPDIR/Makefile'</TT>) and in the definitions makefile
+<TT>`PDPDIR/config/Makefile.defs'</TT>.
+
+</P>
+<P>
+There are makefiles in <TT>`PDPDIR/config'</TT> for the supported CPU types
+listed above, and the two different supported compilers (g++, CC). The
+makefiles are named <TT>`Makefile.CPU.cmplr'</TT>, where cmplr is either
+<TT>`g++'</TT> or <TT>`CC'</TT>. The actual makefile used during compiling for a
+given machine is the one called <TT>`Makefile.CPU'</TT>, where CPU is the
+type of system you are compiling on (e.g., LINUX, SUN4, HP800, SGI,
+etc.).  If you are compiling on a machine for which a standard makefile
+does not exist, copy one from a supported machine for the same type of
+compiler.  Also, see the notes below about porting to a new type of
+machine.
+
+</P>
+<P>
+b) Copy the appropriate <TT>`Makefile.CPU.cmplr'</TT> makefile (where cmplr
+is either g++ or CC depending on which compiler you are using), to
+<TT>`Makefile.CPU'</TT> (again, CPU is your machine type, not 'CPU'). For
+some architectures there is just one <TT>`Makefile.CPU'</TT> since only
+one type of compilier is currently supported. In this case you can
+just leave it as is.
+
+</P>
+<P>
+c) You should put any specific "local" definitions or modifications to
+the makefiles in the <TT>`config/Makefile.CPU'</TT>.  This will be included
+last in the actual makefiles, and any definitions appearing here will
+override the standard definitions.  To see the various definitions that
+might affect compiling, look at <TT>`Makefile.defs'</TT>, which contains all
+the "standard" definitions, along with descriptive comments.  The
+following are items that you will typically have to pay attention to:
+
+</P>
+<P>
+i) <CODE>IOS_INCLUDES</CODE> and <CODE>IOS_LIB</CODE>: In order to be able to access
+via the CSS script language the functions associated with the standard
+C++ iostream classes, the type-scanning program <TT>`maketa'</TT> needs to
+process the iostream header files: <TT>`streambuf.h'</TT>,
+<TT>`iostream.h'</TT>, <TT>`fstream.h'</TT>, and <TT>`strstream.h'</TT>.  These
+files are scanned in the <TT>`src/ta'</TT> directory, as part of the
+building of the type access library <TT>`libtypea.a'</TT>.  These header
+files are different depending on the compiler being used.  For CC
+compilers, the <CODE>IOS_INCLUDES</CODE> variable should be set to
+<CODE>CC-3.1</CODE>.
+
+</P>
+<P>
+These header files are typically located in <TT>`/usr/include/CC'</TT>,
+which is where the <CODE>CC-3.1</CODE> versions of these files in
+<TT>`src/ta'</TT> point to via symbolic links.  Thus, if your headers are
+located elsewhere, you will need to change these symbolic links, or
+just copy the header files directly into the <TT>`ios-CC-3.1'</TT>
+subdirectory in <TT>`src/ta'</TT>.  For g++ users, <CODE>IOS_INCLUDES</CODE>
+variable should be set to <CODE>g++-2.8.1</CODE> (for g++ 2.9x) or
+<CODE>g++-3.1</CODE> (for g++ 3.x).  As of version 3.0, these g++ iostream
+headers are never actually included in the compile process itself, and
+are only scanned via the maketa program.  Therefore, they have been
+dramatically edited to expose only the relevant interface components.
+As such g++-3.1 should work for all subsequent releases of g++
+(hopefully!).
+
+</P>
+<P>
+Note that you can use the <CODE>make force_ta</CODE> action to force a re-scan
+of the header files.  A <CODE>make opt_lib</CODE> is then neccessary to compile
+this type information into the library.  Finally, the <CODE>IOS_LIB</CODE>
+variable should be blank by default for both g++ and C++ users (for
+newer g++), but for older g++ configurations it was necessary to set it
+to <CODE>-liostream</CODE>.
+
+</P>
+<P>
+ii) <CODE>IDIRS_EXTRA</CODE> and <CODE>LDIRS_EXTRA</CODE> can be used to specify
+locations for other include and library files, respectively (for
+example, the cfront compiler may need to be told to look in
+-I/usr/include/CC for include files).  Use these if you have installed
+any libraries (e.g., InterViews) in a non-standard location.
+
+</P>
+<P>
+iii) <CODE>MAKETA_FLAGS</CODE> should be set to <CODE>-hx -css -instances</CODE>
+by default, but it is also often necessary to include the include path
+for the iostream and other C++ library files.  For example, the LINUX
+makefile has the following: <CODE>LIBG++_INCLUDE_DIR =
+-I/usr/include/linux -I/usr/include/g++-3</CODE>, and then
+<CODE>MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)</CODE>.
+
+</P>
+<P>
+iv) <CODE>cppC</CODE>: this is the c-pre-processor, needed for the
+<TT>`maketa'</TT> program to process header files.  Although the system
+default preprocessor, usually installed in <TT>`/usr/lib/cpp'</TT>, should
+work, <TT>`maketa'</TT> was developed around the gnu cpp program, and so
+if you run into difficulties using the system cpp, install the gnu one
+(included as part of the gcc compiler).  Note that <CODE>make install</CODE>
+of gcc/g++ does not apparently install this program by default, so you
+have to manually copy it from either your gcc compile directory or
+<TT>`/usr/lib/gcc-lib/&#60;machine&#62;/cpp'</TT>.  You often need to include a
+define for the system architecture (e.g., <CODE>-D__i386__</CODE> for Linux
+on intel chips, or <CODE>-Dsparc</CODE> for suns) in the cppC command.
+
+</P>
+<P>
+v) <CODE>VT_xxx</CODE> and <CODE>TI_xxx</CODE>: these specify the virtual-table
+instantiation and template-instantiation (respectively) files, which
+are needed by different compilers.  CC typically requires the VT_xxx
+files along with the +e[01] flags to only make one copy of virtual
+tables, while g++ requires the TI_xxx files to only make one copy of
+the templates.  The TI_xxx files are included by default, so you will
+need to define them to be empty to override this default: <CODE>TI_INST_SRC = </CODE>,
+<CODE>TI_INST_OBJ = </CODE>, <CODE>TI_INST_DEP = </CODE>.
+
+</P>
+<P>
+vi) Porting to a non-supported machine: There are a small set of
+system-dependent definitions contained in <TT>`src/ta/ta_stdef.h'</TT>,
+which are triggered by defines set up in the makefiles.
+<CODE>NO_BUILTIN_BOOL</CODE> should be defined if the c++ compiler does not
+have a bulitin <CODE>bool</CODE> type, which is the case with most
+cfront-based CC compilers, but not g++.  <CODE>CONST_48_ARGS</CODE> determines
+if the <CODE>seed48</CODE> and <CODE>lcong48</CODE> functions take const arguments
+or not.  In addition, different platforms may require different defines
+than those that are flagged in <TT>`ta_stdef.h'</TT>.  In this case, you
+will have to edit <TT>`ta_stdef.h'</TT> directly.  Please send any such
+additions, and the corresponding <TT>`config/Makefile.CPU'</TT> along with
+any notes to us (<TT>`pdpadmin@crab.psy.cmu.edu'</TT>) so we can put them on
+our web page for others to use, and incorporate them into subsequent
+releases.
+
+</P>
+<P>
+vii) For some more information about the makefiles, see section <A HREF="pdp-user_248.html">18.1  Makefiles and Directory Organization</A>.
+
+</P>
+<P>
+5) The standard makefiles use gnu's <TT>`bison'</TT> instead of <TT>`yacc'</TT>
+for making parsers.  If you don't touch any of the .y files in the
+distribution, you won't need either.  If you plan on messing around with
+the guts of the maketa type scanner or CSS, then you will probably want
+to install the latest version of <TT>`bison'</TT>.
+
+</P>
+<P>
+6) The dependency information, which is essential if you are going to be
+editing the main body of PDP++ code, but not necessary for a one-pass
+make of the system, is not made by the default <CODE>make world</CODE> action.
+If you want to make this dependency information, do it with a <CODE>make
+depend</CODE> after a successful <CODE>make world</CODE>.  Also, note that the
+automatic dependencies are made by calling <TT>`gcc'</TT> in the standard
+configuration.  If your local C compiler supports the <CODE>-M</CODE> flag for
+generating dependency information, then this can be used instead.  Just
+change the definition for <CODE>CC</CODE> in your <TT>`Makefile.CPU'</TT>.  If you
+don't have gcc and your local C compiler doesn't support this, you can
+edit the end of the <TT>`Makefile.std'</TT> and change it to use the
+<TT>`makedepend'</TT> program, which we have not found to work as well, but
+it is an option.
+
+</P>
+<P>
+7) On some systems, the standard <TT>`make'</TT> program is broken and will
+not work with our complex makfile system.  This is true of the SUN4
+system and IBMaix, and may be true of others.  In this case, you will
+have to install the GNU make program, and use it to compile the
+software.  If you get inexplicable errors about not being able to make
+certain things (seems to be the .d dependency files in particular that
+cause a problem), then try using GNU make (again, available at
+<TT>`gnudist.gnu.org'</TT> or mirrors).
+
+</P>
+<P>
+8) If your CPU supports shared libraries (most do now), you will need to
+insure that the <CODE>LD_LIBRARY_PATH</CODE> environment variable includes the
+path <CODE>PDPDIR/lib/CPU</CODE> nad <CODE>PDPDIR/interviews/LIB/CPU</CODE> where
+PDPDIR is the location of the pdp++ distribution, and CPU is your system
+type as described above.  <B>This is important even during the compile
+process, because the maketa program will need to access shared libs</B>.
+
+</P>
+<P>
+After setting appropriate definitions, go back up to the PDPDIR and just
+do a:
+<PRE>make world
+</PRE>
+
+<P>
+this should compile everything.  This will make makefiles in each
+directory based on your CPU type, and then compile the various libraries
+and then the executables.
+
+</P>
+<P>
+Most likely, the make will at least proceed past all the basic directory
+initialization stuff that is part of <SAMP>`make world'</SAMP>.  Thus, if the
+compile stops after making the makefiles and after making the
+<TT>`maketa'</TT> program, you can fix the problem and re-start it by doing
+<SAMP>`make all'</SAMP> instead of <SAMP>`make world'</SAMP>.
+
+</P>
+<P>
+If you run into difficulties during the compile process, the programming
+guide might contain some useful information for debugging what is going
+wrong: section <A HREF="pdp-user_247.html">18  Programming in PDP++</A>.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_3.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_5.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

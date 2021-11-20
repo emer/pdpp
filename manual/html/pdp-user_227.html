@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-prob-env</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_226.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_228.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1399" HREF="pdp-user_toc.html">15.7  The Probability Environment and Cs</A></H2>
+<P>
+<A NAME="IDX1400"></A>
+<A NAME="IDX1401"></A>
+<A NAME="IDX1402"></A>
+<A NAME="IDX1403"></A>
+<A NAME="IDX1404"></A>
+
+</P>
+<P>
+An environment can be specified where each event has multiple possible
+target patterns, each of which has an associated probability of
+occurring.  Thus, when an event is presented to the network, one out of a
+set of possible target patterns is chosen according to their relative
+probabilities.  These probabilistic distributions of target states can
+actually be learned in a stochastic constraint satisfaction network.
+
+</P>
+<P>
+<A NAME="IDX1405"></A>
+Probabilities can be associated with different patterns by creating
+<B>ProbPattern</B> objects instead of the usual <B>Pattern</B> ones.  The prob
+pattern has a <CODE>prob</CODE> field, which contains its probability of
+occurrence.
+
+</P>
+<P>
+However, in order for these probabilities to be used in the presentation
+of patterns, one needs to use a <B>ProbEventSpec</B>, which has special
+code that chooses which pattern to present based on its probability.
+Not all patterns in an event need to be probabilistic.  Indeed, the
+usual setup is to have a deterministic input pattern, and then a set of
+possible outputs that follow from this one input.  The determiniation of
+which patterns are probabilistic and which are deterministic is made by
+putting all of the mutually-exclusive probabilistic alternative patterns
+in a <B>ProbPatternSpec_Group</B>. 
+
+</P>
+<P>
+Thus, one needs to make a sub-group in the <CODE>patterns</CODE> group on the
+<B>ProbEventSpec</B>, and this sub-group has to be of type
+<B>ProbPatternSpec_Group</B>.  Then, regular <B>PatternSpec</B> objects, one
+for each alternative target pattern, should be created in the sub group.
+Make sure to set the <CODE>pattern_type</CODE> field of these pattern specs to
+be <B>ProbPattern</B>, so that the patterns which are created in the event
+will have probabilities associated with them.
+
+</P>
+<P>
+When events are actually created from a prob event spec, one needs to
+edit the patterns within the sub-group and assign each of them
+probabilities that sum to 1 for all the patterns in the group.  Thus,
+the network will be certain of choosing one of them to present.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_226.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_228.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

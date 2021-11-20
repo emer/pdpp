@@ -1,0 +1,134 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_227.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_229.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1405" HREF="pdp-user_toc.html">15.8  Cs Implementational Details</A></H2>
+
+<P>
+Note that the weight change operation in Cs is viewed as the process of
+collecting statistics about the coproducts of activations across the
+weights.  Thus, there is a new function at the level of the
+<B>CsConSpec</B> called <CODE>Aggregate_dWt</CODE>, which increments the
+<CODE>dwt_agg</CODE> value of the connection by the phase (+1.0 for plus
+phase, -1.0 for the minus phase) times the coproduct of the activations.
+This function is called repeatedly if learning is taking place after the
+<CODE>start_stats</CODE> number of cycles has taken place. 
+
+</P>
+<P>
+The standard <CODE>Compute_dWt</CODE> function is then called at the end of
+the sample process, and it divides the aggregated weight change value by
+a count of the number of times it was aggregated, so that the result is
+an expected value measure.
+
+</P>
+<P>
+Also, note that the type of momentum used in Cs corresponds to the
+<CODE>BEFORE_LRATE</CODE> option of backpropagation (see section <A HREF="pdp-user_200.html">14.1.2  Bp Connection Specifications</A>).
+
+</P>
+<P>
+The following is a chart describing the flow of processing in the Cs
+algorithm, starting with the epoch process, since higher levels do not
+interact with the details of particular algorithms:
+
+</P>
+<PRE>EpochProcess: {
+  Init: {                              // at start of epoch
+    environment-&#62;InitEvents();          // init events (if dynamic)
+    event_list.Add() 0 to environment-&#62;EventCount(); // get list of events
+    if(order == PERMUTE) event_list.Permute();       // permute if necessary
+    GetCurEvent();                      // get pointer to current event
+  }
+  Loop (sample): {                      // loop over samples
+    CsSample: {                         // sample process (one event)
+      Init: {                          // at start of sample
+        cur_event = epoch_proc-&#62;cur_event; // get cur event from epoch
+      }
+      Loop (sample): {                 // loop over samples of event
+        CsTrial: {                    // phase process (one phase)
+          Init: {                      // at start of phase
+            phase = MINUS_PHASE;        // start in minus phase
+            if(phase_init == INIT_STATE)  network-&#62;InitState();
+            cur_event = epoch_proc-&#62;cur_event;  // get cur event from epoch
+            cur_event-&#62;ApplyPatterns(network);  // apply patterns to network
+          }
+          Loop (phase_no [0 to 1]): {  // loop over phases 
+            CsSettle: {                // settle process (one settle)
+              Init: {                  // at start of settle
+                if(CsPhase::phase == PLUS_PHASE) {
+                  network-&#62;InitState(); // init state (including ext input)
+                  cur_event-&#62;ApplyPatterns(network);  // re-apply patterns
+                  Targ_To_Ext();        // turn targets into external inputs
+                }
+              }
+              Loop (cycle): {          // loop over act update cycles
+                CsCycle: {             // cycle process (one cycle)
+                  Loop (once): {       // only process this once per cycle
+                    Compute_SyncAct() or Compute_AsyncAct(); // see below
+                    if(!deterministic and cycle &#62; start_stats)
+                      Aggregate_dWt();  // aggregate wt changes
+                  }
+                }
+              }
+              Final: {                 // at end of phase
+                if(deterministic) Aggregate_dWt();  // do at end
+                PostSettle();           // copy act to act_p or act_m
+              }
+            }
+            phase = PLUS_PHASE;         // change to plus phase after minus
+          }
+        }
+      }
+      Final: {                         // at end of sample (done with event)
+        network-&#62;Compute_dWt();         // compute wt changes based on aggs
+      }
+    }
+    if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+      network-&#62;UpdateWeights();         // update weights after sample if necc
+    GetCurEvent();                      // get next event to present
+  }
+  Final:                                // at end of epoch 
+    if(wt_update == BATCH)  network-&#62;UpdateWeights();
+}
+</PRE>
+
+<P>
+The activation computing functions are broken down as follows:
+
+</P>
+<PRE>Compute_SyncAct(): {           // compute synchronous activations
+  network-&#62;InitDelta();         // initialize net-input terms
+  network-&#62;Compute_Net();       // aggregate net inputs
+
+  network-&#62;layers: {           // loop over layers
+    units-&#62;Compute_Act(CsSettle::cycle); // compute act from net
+  }                            // (cycle used for annealing, sharpening)
+}
+</PRE>
+
+<PRE>Compute_AsyncAct(): {          // compute asynchronous activations
+  for(i=0...n_updates) {       // do this n_updates times per cycle
+    rnd_num = Random between 0 and CsSettle::n_units;  // pick a random unit
+    network-&#62;layers: {         // loop over layers
+      if(layer contains rnd_num unit) { // find layer containing unit
+        unit = layer-&#62;unit[rnd_num];    // get unit from layer
+        unit-&#62;InitDelta();              // initialize net input terms
+        unit-&#62;Compute_Net();            // aggregate net inputs
+        unit-&#62;Compute_Act(CsSettle::cycle);  // compute act from net
+      }                        // (cycle used for annealing, sharpening)
+    }
+  }
+}
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_227.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_229.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

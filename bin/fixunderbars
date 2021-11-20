@@ -1,0 +1,17 @@
+#!/bin/csh
+# script to change various names with underbars to those without..
+
+foreach i ($*)
+	echo $i
+	set ext=$i:e
+	if($ext == "gz") then
+		set fl=$i:r
+		gunzip $fl
+		sed -f "/usr/local/pdp++/bin/fixunderbars.sed" $fl >tmp.xxx
+		mv tmp.xxx $fl
+		gzip $fl
+	else
+		sed -f "/usr/local/pdp++/bin/fixunderbars.sed" $i >tmp.xxx
+		mv tmp.xxx $i
+	endif
+end

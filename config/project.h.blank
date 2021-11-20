@@ -1,0 +1,45 @@
+// -*- C++ -*-
+// XXX.h 
+
+#ifndef XXX_h
+#ifdef __GNUG__
+#pragma interface
+#endif
+#define XXX_h
+
+#include "XXX_TA_type.h"
+// this gives you access to the types defined here..
+#include <pdp/netstru.h>
+// probably need to include other headers from wherever you will be 
+// deriving classes from..
+
+// the following is example code that derives a new unitspec from the
+// UnitSpec type.  this just provides a template for you to follow---
+// in practice, you will likely be deriving from the types in a 
+// given algorithm (e.g. Bp)
+
+class MyUnitSpec : public UnitSpec {
+  // this is an example of a new unit spec type
+public:
+  float		new_parameter;	// this is a new parameter that i will use
+
+  void		Compute_Act(Unit* u)
+  { u->act = new_parameter * u->net; }
+  // activation is linear times the new parameter (for example)
+
+  // every new class _requires_ an Initialize and Destroy
+  // function, even if they are blank and do nothing..
+  void 	Initialize()	{ new_parameter = 1.0f; }
+  void 	Destroy()	{ };
+
+  // these functions automatically enable this class to be duplicated
+  // if we didn't have any new members defined, they would not be needed
+  SIMPLE_COPY(MyUnitSpec);
+  COPY_FUNS(MyUnitSpec, UnitSpec);
+
+  // this macro defines a number of standard functions, and is _required_
+  // for all new classes
+  TA_BASEFUNS(MyUnitSpec);
+};
+
+#endif // XXX_h

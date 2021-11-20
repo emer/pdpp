@@ -1,0 +1,142 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_215.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_217.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1327" HREF="pdp-user_toc.html">14.2.9  RBp Implementation Details</A></H3>
+
+<P>
+An attempt was made to make the implementation of RBp very flexible,
+modular, and robust.  Thus, units keep track of their own sense of time
+and record their own history of activations.  This is done with a
+<B>CircBuffer</B> object, which is derived from an <B>Array</B> type
+(see section <A HREF="pdp-user_96.html">8.3  Arrays</A>).  Values in this buffer can wrap-around, and can be
+shifted without performing any memory copying.  Thus, the unit
+activation records can be quickly shifted after performing a
+backpropagation enough to make room for new states to be recorded.  The
+trial process will shift the buffers just enough so that they will be
+full again the next time a backpropagation will occur (i.e., they are
+shifted by the <CODE>bp_gap</CODE> value converted into tick units).
+
+</P>
+<P>
+However, the buffers are robust in the sense that if the bp_gap
+parameter is changed during processing, they will simply add new states
+and dynamically increase the size of the buffer if it is already full.
+Indeed, when a unit first starts processing, the buffer is automatically
+added to by the same mechanism--it is always full until some number of
+values have been shifted off the end.
+
+</P>
+<P>
+The units only record their activation values in the buffers.  Thus,
+there is a <CODE>StoreState</CODE> function which takes a snapshot of the
+current activation state.  It is called at the end of the
+<CODE>Compute_Act</CODE> function.  During backpropagation, the
+<CODE>StepBack</CODE> function is called, which will take one step back in
+time.  The activation state recorded in the <CODE>prv_</CODE> version of the
+unit variables are copied into the current variables, and the new
+previous values are loaded from the buffers at the given tick.
+
+</P>
+<P>
+The backpropagation loop looks as follows:
+
+</P>
+<PRE>PerformBP(): {
+  InitForBP();                  // clear current and prev error vals
+  int buf_sz = GetUnitBufSize(); // get unit buffer size (states in units)
+  for(i=buf_sz-2; i&#62;=0; i--) { // loop backwards through unit states
+    Compute_dEdA_dEdNet();      // backpropagate based on current state
+    Compute_dWt();              // compute weight changes from error
+    if(i &#62; 0)                   // if not all the way back yet
+      StepBack(i-1);		// step back to previous time
+  }
+  RestoreState(buf_sz-1);	// restore activations to end values
+  if(real_time)
+    ShiftBuffers();		// don't shift unless real time
+}
+</PRE>
+
+<P>
+Thus, error derivatives are computed on the current and <CODE>prv_</CODE>
+activation state variables, and then these are shifted backwards one
+step, and this continues for the entire length of stored activation
+values.  The above routine is called by the trial process whenever the
+buffer size of the units is equal to or greater than the bp time window.
+
+</P>
+<P>
+During backpropagation, the <CODE>prv_dEdA</CODE> and <CODE>prv_dEdNet</CODE> values
+are kept, and are used to time-average the computations of these values,
+much in the same way the activations or net inputs are time averaged
+during the activation computation phase.
+
+</P>
+<P>
+The following is a chart describing the flow of processing in the RBp
+algorithm, starting with the epoch process, since higher levels do not
+interact with the details of particular algorithms, and assuming
+sequences are being used:
+
+</P>
+<PRE>SequenceEpoch: {
+  Init: {                              // at start of epoch
+    environment-&#62;InitEvents();          // init events (if dynamic)
+    event_list.Add() 0 to environment-&#62;GroupCount(); // get list of groups
+    if(order == PERMUTE) event_list.Permute(); // permute list if necessary
+    GetCurEvent();                      // get pointer to current group
+  }
+  Loop (trial): {                      // loop over trials
+    SequenceProcess: {                 // sequence process (one sequence)
+      Init: {                          // at start of sequence
+        tick.max = cur_event_gp-&#62;EventCount(); // set max no of ticks
+        event_list.Add() 0 to tick.max; // get list of events from group
+        if(order == PERMUTE) event_list.Permute(); // permute if necessary
+        GetCurEvent();                  // get pointer to current event
+        InitNetState() {               // initialize net state at start
+          if(sequence_init == INIT_STATE) network-&#62;InitState();
+        }
+      }
+      Loop (tick): {                   // loop over ticks (sequence events)
+        RBpTrial: {                    // trial process (one event)
+          Init: {                      // at start of trial
+            cur_event = epoch_proc-&#62;cur_event; // get event from sequence
+          }
+          Loop (once): {               // process this once per trial
+            network-&#62;InitExterns();     // init external input to units
+            cur_event-&#62;ApplyPatterns(network); // apply patterns from event 
+            if(unit buffer size == 0) { // units were just reset, time starting
+              time = 0;                 // reset time
+              StoreState();             // store initial state at t = 0
+            }
+            Compute_Act(): {           // compute acts (synchronous)
+              network-&#62;Compute_Net();   // first get net inputs
+              network-&#62;Compute_Act();   // then update acts based on nets
+            }
+            if(unit buffer size &#62; time_win_ticks) // if act state buffers full
+              PerformBP();              // backpropagate through states
+            time += dt;                 // time has advanced..
+          }
+        }
+        if(wt_update == ON_LINE) network-&#62;UpdateWeights(); // after trial
+      }
+    }
+    if(wt_update == SMALL_BATCH)        // end of sequence
+      network-&#62;UpdateWeights();         // update weights after sequence
+    GetCurEvent();                      // get next event group
+  }
+  Final:                                // at end of epoch
+    if(wt_update == BATCH)  network-&#62;UpdateWeights(); // batch mode updt
+}
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_215.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_217.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

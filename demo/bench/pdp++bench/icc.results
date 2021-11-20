@@ -1,0 +1,183 @@
+g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+17.55   8.54701
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+16.73   8.96593
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+8.77    17.1038
+
+two jobs at once: 500x100
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+25.29   5.9312
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+25.4    5.90551
+
+two jobs at once: 100x2500
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+22.82   6.57318
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+22.91   6.54736
+
+two jobs at once: 10x250000
+secs:   Mcon/sec:
+8.78    17.0843
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+8.81    17.0261
+
+==================================
+icc -O2 -ipo -xK
+
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+16.36   9.1687
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+15.58   9.62773
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+7.92    18.9394
+
+two jobs at once: 500x100
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+25.01   5.9976
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+25.05   5.98802
+
+two jobs at once: 100x2500
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+21.82   6.87443
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+21.9    6.84932
+
+two jobs at once: 10x250000
+weights: 200     pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+7.93    18.9155
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+7.99    18.7735
+
+==================================
+REALITY:
+==================================
+
+g++ -fPIC -O2 -fno-exceptions -fno-rtti -Wall -Winline
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.4     27.7778
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+6.66    22.5225
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.27    28.463
+
+two jobs at once: 500x100
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+9.87    15.1976
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.07   14.8957
+
+two jobs at once: 100x2500
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.9    13.7615
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+11.1    13.5135
+
+two jobs at once: 10x250000
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.25    28.5714
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.3     28.3019
+
+===============================
+
+icc -O2 -ipo -xW
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.33    28.1426
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+6.63    22.6244
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+4.46    33.6323
+
+two jobs at once: 500x100
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.3    14.5631
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.66   14.0713
+
+two jobs at once: 100x2500
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.92   13.7363
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.93   13.7237
+
+two jobs at once: 10x250000
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+4.45    33.7079
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+4.42    33.9367
+
+==================================
+
+icc -O2 -ipo
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.45    27.5229
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+6.54    22.9358
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.06    29.6443
+
+two jobs at once: 500x100
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.9    13.7615
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.99   13.6488
+
+two jobs at once: 100x2500
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.8    13.8889
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+10.83   13.8504
+
+two jobs at once: 10x250000
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.07    29.5858
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+5.09    29.4695

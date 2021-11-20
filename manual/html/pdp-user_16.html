@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-bp-act</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_15.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_17.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.1.1  Activation Phase</A></H3>
+
+<P>
+In this phase, the activations of the input units are set to the values
+given in the input pattern, and activation is propagated forward through
+the network to set the activations of units at successively
+higher-numbered layers, ending with the output layer.  The idea is that
+the connection weights determine the outcome of this process, and the
+purpose of this pass is to determine how closely this outcome matches
+the target.  During this pass, we calculate two quantities for each
+unit: First the net input it receives from the units that project to it,
+and second the activation, based on the net input.  The net input is
+simply the sum, over all of the incoming connections to the unit, of the
+weight of the connection times the activation of the sending unit, plus
+a bias term:
+
+</P>
+<IMG SRC="pdp-user_16.html_sub_1.gif" ALIGN="MIDDLE" ALT="net_i = SUM_i a_j w_ij + b_i 
+">
+<P>
+This sum may run over all of the units in all of the lower-numbered
+layers, but the connectivity may be restricted by design.  the term
+w_ij signifies the weight to unit i from unit j, and the term b_i
+signifies the bias associated with unit i.  The activation is simply a
+monotonically increasing sigmoidal function of the net input.  The
+simulator uses the logistic function:
+
+</P>
+<IMG SRC="pdp-user_16.html_sub_2.gif" ALIGN="MIDDLE" ALT="a_i = (1 / (1 + e^(-net_i)))
+">
+<P>
+The activation ranges from 0 to 1 as the net input ranges from minus
+infinity to infinity.  As an option other ranges can be used, in
+which case the function becomes
+
+</P>
+<IMG SRC="pdp-user_16.html_sub_3.gif" ALIGN="MIDDLE" ALT="a_i = min + ((max - min) * (1/(1+ exp(-net_i))));
+">
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_15.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_17.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

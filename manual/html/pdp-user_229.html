@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - so</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_228.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_230.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX1405" HREF="pdp-user_toc.html">16  Self-organizing Learning</A></H1>
+
+<P>
+<A NAME="IDX1406"></A>
+<A NAME="IDX1407"></A>
+<A NAME="IDX1408"></A>
+<A NAME="IDX1409"></A>
+<A NAME="IDX1410"></A>
+<A NAME="IDX1411"></A>
+
+</P>
+<P>
+The defining property of self-organizing learning is that it operates
+without requiring an explicit training signal from the environment.
+This can be contrasted with error backpropagation, which requires target
+patterns to compare against the output states in order to generate an
+error signal.  Thus, many people regard self-organizing learning as more
+biologically or psychologically plausible, since it is often difficult
+to imagine where the explicit training signals necessary for
+error-driven learning come from.  Further, there is some evidence that
+neurons actually use something like a Hebbian learning rule, which is
+commonly used in self-organizing learning algorithms.
+
+</P>
+<P>
+There are many different flavors of self-organizing learning.  Indeed,
+one of the main differences between self-organizing algorithms and
+error-driven learning is that they need to make more assumptions about
+what good representations should be like, since they do not have
+explicit error signals telling them what to do.  Thus, different
+self-organizing learning algorithms make different assumptions about the
+environment and how best to represent it. 
+
+</P>
+<P>
+One assumption that is common to many self-organizing learning
+algorithms is that events in the environment can be <EM>clustered</EM>
+together according to their "similarity."  Thus, learning amounts to
+trying to find the right cluster in which to represent a given event.
+this is often done by enforcing a competition between a set of units,
+each of which represents a different cluster.  The <EM>competitive
+learning</EM> algorithm (CL) of <CITE>Rumelhart and Zipser, 1985</CITE> is a
+classic example of this form of learning, where the single unit which is
+most activated by the current input is chosen as the "winner" and
+therefore gets to adapt its weights in response to this input pattern.
+
+</P>
+<P>
+The PDP++ implementation of self-organizing learning, called <EM>So</EM>,
+includes competitive learning and several variations of it, including
+"soft" competitive learning <CITE>Nowlan, 1990</CITE>, which replaces the
+"hard" competition of standard competitive learning with a more graded
+activation function.  Also included are a couple of different types of
+modified Hebbian learning rules that can be used with either hard or
+soft activation functions.
+
+</P>
+<P>
+An additional assumption that can be made about the environment is that
+there is some kind of <EM>topology</EM> or ordered relationship among the
+different clusters.  This notion is captured in the
+<EM>self-organizing map</EM> (SOM) algorithm of <CITE>Kohonen, 1989; 1990;
+1995</CITE>.  This algorithm adds to the basic idea of competition among the
+units that represent a cluster the additional assumption that units
+which are nearby in 2-D space should represent clusters that are somehow
+related.  This spatial-relatedness constraint is imposed by allowing
+nearby units to learn a little bit when one of their neighbors wins the
+competition.  This algorithm is also implemented in the So package.
+
+</P>
+<P>
+The directory <TT>`demo/so'</TT> contains two projects which demonstrate the
+use of both the competitive-learning style algorithms, and the
+self-organizing maps.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_230.html">1                     Overview of the So Implementation</A>
+<LI><A HREF="pdp-user_231.html">2                      So Connection Specifications</A>
+<LI><A HREF="pdp-user_232.html">3                     So Unit and Layer Specifications</A>
+<LI><A HREF="pdp-user_233.html">4                     The So Trial Process</A>
+<LI><A HREF="pdp-user_234.html">5                     So Implementational Details</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_228.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_230.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

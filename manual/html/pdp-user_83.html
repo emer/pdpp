@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-settings</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_82.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_84.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX363" HREF="pdp-user_toc.html">7.4.8  Parameters affecting CSS Behavior</A></H3>
+
+<P>
+All of the settings that control the behavior of CSS are contained in
+the global object called <CODE>cssSettings</CODE>.  This is actually just a
+reference to the <CODE>taMisc</CODE> class, which is part of the TypeAccess
+system.  The members of this class that can be set by the user are
+listed below (see also see section <A HREF="pdp-user_58.html">6.17  Settings Affecting GUI Behavior</A>): 
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>int display_width</CODE>
+<DD>
+<A NAME="IDX364"></A>
+Width of the shell display in characters.
+<DT><CODE>int sep_tabs</CODE>
+<DD>
+<A NAME="IDX365"></A>
+Number of tabs to separate items by in listings.
+<DT><CODE>int search_depth</CODE>
+<DD>
+<A NAME="IDX366"></A>
+The recursive depth at which css stops searching for an object's path.
+<DT><CODE>TypeInfo type_info</CODE>
+<DD>
+<A NAME="IDX367"></A>
+The amount of information about a class type that is reported when
+the "type" command is used in CSS.
+<P>
+Type_info has one of the following values:
+<P>
+
+<IL>
+<LI>
+
+<CODE>MEMB_OFFSETS</CODE>       shows the byte offset of members
+<LI>
+
+<CODE>All_INFO</CODE>          shows all type info except memb_offsets
+<LI>
+
+<CODE>NO_OPTIONS</CODE>        shows all info except type options
+<LI>
+
+<CODE>NO_LISTS</CODE>          shows all info but lists
+<LI>
+
+<CODE>NO_OPTIONS_LISTS</CODE>  shows all info but options and lists
+</IL>
+
+<P>
+The default is <CODE>NO_OPTIONS_LISTS</CODE>
+<P>
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_82.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_84.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

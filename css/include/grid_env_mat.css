@@ -1,0 +1,145 @@
+class EnvMat {
+  //  plots multiple events from an environment in a grid log
+public:
+  PDPLog*	grid_log;
+  Environment*	env;		// the environment to copy from
+  int		pat_no;		// the pattern number to get
+  int		ev_x;		// geometry of events
+  int		ev_y;
+  int		pt_x;		// geometry of patterns (-1 = from pattern)
+  int		pt_y;
+  int		mat_spc;	// spacing between weight matricies
+
+  void 	InitLog();		// #BUTTON initialize target graph
+  void	GetEvents();		// #BUTTON copy over the events
+  void	SaveLog();		// #BUTTON save current log data to file
+
+  int GetCoord(int param, int lay_val);	// #HIDDEN
+
+  EnvMat();
+};
+
+EnvMat::EnvMat() {
+  grid_log = .logs."EnvMat";
+  env = .environments.DefaultEl();
+  pat_no = 0;
+  ev_x = 5;
+  ev_y = 5;
+  pt_x = -1;
+  pt_y = -1;
+  mat_spc = 1;
+}
+
+int EnvMat::GetCoord(int param, int lay_val) {
+  if(param < 0)
+    return lay_val;
+  return param;
+}
+
+void EnvMat::SaveLog() {
+  grid_log.SetSaveFile();
+  grid_log.BufferToFile();
+  grid_log.CloseFile();
+}
+
+void EnvMat::InitLog() {
+  grid_log.Clear();
+  DataTable* md = grid_log.data;
+  md.RemoveAll();
+  
+  // this holds the row index
+  {
+    DataArray_impl* da = md.NewEl(1);
+    da.name = "row";
+  }
+
+  PatternSpec* ps = env->event_specs[0].patterns[pat_no];
+  int ptx = GetCoord(pt_x, ps.geom.x);
+  int pty = GetCoord(pt_y, ps.geom.y);
+  int totn = ptx * pty;
+
+  // these are the columns
+  int i;
+  for(i=0; i<ev_x; i++) {
+    DataTable* dt = md.NewGp(1);
+    dt.name = i;
+    dt.EnforceSize(totn);
+    dt[0].name = "<" + totn + ">c0";
+    int j;
+    for(j=1; j<totn; j++)
+      dt[j].name = "c" + j;
+  }
+
+  md.ResetData();
+
+  DT_GridViewSpec* vspc = *(grid_log.views[0].viewspec);
+  vspc.RemoveAll();
+  vspc.BuildFromDataTable();
+
+  int xpos = vspc.gp[0].pos.x;
+  for(i=0; i<ev_x; i++) {
+    DT_GridViewSpec* da = vspc.gp[i];
+    da.geom.x = ptx; 
+    da.geom.y = pty;
+    da.pos.x = xpos;
+    da.pos.y = 0;
+    da.UpdateLayout();
+    da.name = i;
+    xpos += ptx + mat_spc;
+  }
+  vspc[0].display_style = "TEXT";
+  vspc.UpdateLayout();
+  grid_log.InitAllViews();
+}
+
+void EnvMat::GetEvents() {
+  grid_log.Clear();
+  DataTable* md = grid_log.data;
+
+  PatternSpec* ps = env->event_specs[0].patterns[pat_no];
+  int ptx = GetCoord(pt_x, ps.geom.x);
+  int pty = GetCoord(pt_y, ps.geom.y);
+  int totn = ptx * pty;
+
+  int i;
+  for(i=0;i<ev_y;i++) {
+    md.AddBlankRow();		// add the rows
+    md[0].ar[i] = ev_y - i -1;	// label in reverse order
+  }
+
+  Aggregate* agg = new Aggregate;
+  agg.op = Aggregate::LAST;
+
+  int uni = 0;
+  int ux, uy;
+  for(uy=0;uy<ev_y; uy++) {
+    if(uni >= env.events.leaves)
+      break;
+    for(ux=0; ux<ev_x; ux++, uni++) {
+      if(uni >= env.events.leaves)
+	break;
+      Pattern* pat = env.events.Leaf(uni).patterns[pat_no];
+      DataTable* dt = md->gp[ux];
+      dt->AggArrayToRow(pat.value, ev_y-uy-1, agg);
+    }
+  }
+  delete agg;
+  
+  grid_log.data_range.max = ev_y-1;
+  grid_log.InitAllViews();
+  grid_log.views[0].View_FR();
+}
+
+
+EnvMat env_mat;
+if(s_args.size >= 4) {
+  env_mat.ev_x = s_args[0];
+  env_mat.ev_y = s_args[1];
+  env_mat.pt_x = s_args[2];
+  env_mat.pt_y = s_args[3];
+}
+if(s_args.size >= 5) {
+  env_mat.env = .environments[s_args[4]];
+}
+EditObj(env_mat);
+

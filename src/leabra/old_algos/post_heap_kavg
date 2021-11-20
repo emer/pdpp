@@ -1,0 +1,12 @@
+Leabra: 	weights: 20000 	pats: 500 	con_trav: 6.2e+08
+secs:	Mcon/sec:
+51.15	12.1212
+51
+Leabra 400: 	weights: 320000 	pats: 20 	con_trav: 3.968e+08
+secs:	Mcon/sec:
+31.78	12.4858
+31
+Leabra 500: 	weights: 500000 	pats: 10 	con_trav: 3.1e+08
+secs:	Mcon/sec:
+26.68	11.6192
+26

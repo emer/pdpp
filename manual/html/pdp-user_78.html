@@ -1,0 +1,81 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-startup</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_77.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_79.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX201" HREF="pdp-user_toc.html">7.4.3  CSS Startup options</A></H3>
+<P>
+<A NAME="IDX202"></A>
+
+</P>
+<P>
+The following startup arguments are interpreted by CSS:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>[-f|-file] &#60;file&#62;</CODE>
+<DD>
+<A NAME="IDX203"></A>
+Compile and execute the given file upon startup. The default is to then
+exit after execution, but this can be overridden by the <CODE>-i</CODE> flag.
+<DT><CODE>[-e|-exec] &#60;code&#62;</CODE>
+<DD>
+<A NAME="IDX204"></A>
+Compile and execute the given code upon startup.  The code is passed as a
+single string argument, and should contain CSS code separated by
+semicolons.  The default is to then
+exit after execution, but this can be overridden by the <CODE>-i</CODE> flag.
+<DT><CODE>[-i|-interactive]</CODE>
+<DD>
+<A NAME="IDX205"></A>
+If using <CODE>-f</CODE> or <CODE>-e</CODE>, CSS will go into interactive (prompt)
+mode after startup execution.
+<DT><CODE>-v[&#60;number&#62;]</CODE>
+<DD>
+<A NAME="IDX206"></A>
+Run CSS with the initial debug level set to given number (default 1)
+<DT><CODE>[-b|-bp] &#60;line&#62;</CODE>
+<DD>
+<A NAME="IDX207"></A>
+Set an initial breakpoint at the given line of code (only if using
+<CODE>-f</CODE>).
+<DT><CODE>[-gui]</CODE>
+<DD>
+<A NAME="IDX208"></A>
+Enable the graphical-user-interface to CSS class objects.  This is not
+activated by default, since most uses of CSS don't involve the gui.
+</DL>
+
+<P>
+Any other arguments can be accessed by user script programs by the global
+variables <CODE>argv</CODE> (an array of strings) and <CODE>argc</CODE> (an int).
+
+</P>
+<P>
+Note that it is possible to make a self-executing css program by putting
+the following on the very first line of the file:
+<PRE>#!/usr/local/pdp++/bin/SUN4/css -f 
+</PRE>
+
+<P>
+<A NAME="IDX209"></A>
+<A NAME="IDX210"></A>
+In addition to these arguments, CSS looks for a file named
+<TT>`.cssinitrc'</TT> in the user's home directory, which contains CSS code
+that is run when CSS is started.  This is useful for setting various
+command <CODE>alias</CODE>es, and defining commonly-used <CODE>extern</CODE>
+functions.  An example <TT>`.cssinitrc'</TT> file is located in
+<TT>`config/std.cssinitrc'</TT>.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_77.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_79.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,276 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - prog-make</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_28.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_30.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX181" HREF="ta_css_toc.html">6.1  Makefiles and Directory Organization</A></H2>
+
+<P>
+The PDP++ code should be installed in <TT>`/usr/local/pdp++'</TT>, or some
+such similar place.  This path will be referred to from here on out as
+PDPDIR.  This directory contains a set of sub-directories,
+like <TT>`demo'</TT> and <TT>`manual'</TT>, etc. which contain different pieces
+of the distribution.  See section <A HREF="ta_css_5.html">4.7  Installing the Programmers Version</A> for instructions on how to
+install and compile the source distribution of the PDP++ software.  In
+order compile your own additions to the software, you must install and
+compile the source code distribution!
+
+</P>
+<P>
+The critical directories from a programmer's perspective are the
+<TT>`src'</TT>, which contains the source code, <TT>`config'</TT>, which
+contains the Makefile configuration stuff, <TT>`include'</TT> which has
+links to the header files, and <TT>`lib'</TT> which has links to the various
+libraries.
+
+</P>
+<P>
+Each sub-directory within the <TT>`src'</TT> directory contains code
+relevant to some sub-component of the PDP++ software.  These directories
+are as follows:
+<DL COMPACT>
+
+<DT><TT>`ta_string'</TT>
+<DD>
+The basic String class used throughout the software.  It is a
+slightly modified version of the GNU String class that is distributed
+with the libg++ distribution (version 2.6.2).
+<DT><TT>`iv_misc'</TT>
+<DD>
+Contains a number of extra pieces of code that supplement the
+InterViews GUI toolkit.
+<DT><TT>`ta'</TT>
+<DD>
+Contains the TypeAccess system, which gives classes the ability to
+know all about themselves and other classes at run time.  The use of
+this software is what makes the largely automatic interface used in
+PDP++ possible.  It is described further in section <A HREF="ta_css_30.html">6.2  The TypeAccess System</A>.  This
+directory also contains a lot of basic objects, like <B>Array</B>
+(section <A HREF="ta_css_73.html">8.3  Arrays</A>), <B>List</B> and <B>Group</B> (section <A HREF="ta_css_68.html">8.2  Groups</A>) objects.
+<DT><TT>`css'</TT>
+<DD>
+Contains the code for the CSS script language (see section <A HREF="ta_css_6.html">5  Guide to the Script Language (CSS)</A>).
+<DT><TT>`iv_graphic'</TT>
+<DD>
+Contains a set of objects which implement a graphical object
+manipulation environment that is used in the network viewer
+(@xref{net-view}) and the graph log (@xref{log-views-graph}).
+<DT><TT>`ta_misc'</TT>
+<DD>
+Contains a smorgasbord of various objects that might have
+general applicability, and are not specifically PDP objects.
+<DT><TT>`pdp'</TT>
+<DD>
+Where all of the specific pdp code is.
+<DT><TT>`bp'</TT>
+<DD>
+Implements bp and rbp.
+<DT><TT>`cs'</TT>
+<DD>
+Implements cs.
+<DT><TT>`so'</TT>
+<DD>
+Implements so.
+<DT><TT>`bpso'</TT>
+<DD>
+Implements the combined bp and so executable (just links the libraries).
+<DT><TT>`leabra'</TT>
+<DD>
+Implements the leabra algorithm.
+</DL>
+
+<P>
+Each directory has a set of include files which can be accessed as
+&#60;xxx/yyy.h&#62;, where xxx is one of the directory names given above.  In
+addition, each directory has its own library, which is just
+<TT>`libxxx.a'</TT>, where xxx is the name of the directory (without any
+underbars).  The bp, cs and so directories have a library name of
+libpdp_xx.a, to indicate that they are part of the pdp software.
+
+</P>
+<P>
+All of the compilation results (e.g. object files) go in a subdirectory
+named after the CPU type being used.  The user must set the CPU
+environmental variable appropriately, as per the definitions used in the
+InterViews system.  The ones that everything has been tested and
+compiled on are listed in the installation guide (see section <A HREF="ta_css_3.html">4  Installation Guide</A>), and the
+INSTALL file.
+
+</P>
+<P>
+Other possibilities are listed in section <A HREF="ta_css_5.html">4.7  Installing the Programmers Version</A>.  This should be the
+same as when the system was first installed.
+
+</P>
+<P>
+The include files and library are made in two stages.  The first stage
+involves compiling the object files into the CPU subdirectory.  Then, if
+everything goes ok, the library is made, which is then copied into a
+further subdirectory of the CPU subdirectory called <TT>`lib_include'</TT>.
+Also, all of the header files are compared with those already in the
+<TT>`lib_include'</TT> subdirectory (if any), and those ones that are
+different are copied over.  It is these header files in
+<TT>`lib_include'</TT> that the <TT>`PDPDIR/include'</TT> directory makes links
+to, and thus these are the ones that are included by other programs.
+This setup allows one to test out a set of code by making an executable
+in a given directory and getting things working before installing the
+new header files and library for the rest of the system to use.
+
+</P>
+<P>
+In order to add functionality to the software, one needs to create a new
+directory, and then include various files from the above directories,
+and link in their respective libraries.  This directory can be located
+in the same master directory as the main distribution, or it can be
+located in your own home directory somewhere.  This latter option is the
+preferred one.
+
+</P>
+<P>
+We have developed a shell file that does all of the things necessary to
+create your own directory.  The first step is to make a master directory
+off of your home directory, typically called <TT>`pdp++'</TT>.
+
+</P>
+<P>
+Then, run the <TT>`PDPDIR/bin/mknewpdp'</TT> command from this new
+<TT>`home/pdp++'</TT> directory with an argument which is the name of the
+directory/executable that you want to make.  This will give you
+step-by-step instructions.  In the end, you will end up with a directory
+that contains some sample code in the form of a .h and .cc file with the
+same name as the directory.
+
+</P>
+<P>
+The script will have installed a <TT>`Makefile'</TT> in your directory which
+is the same as the one's found in the main PDP++ directories.  These
+makefiles are constructed by concatenating together a bunch of pieces
+of makefiles, some of which contain standard make actions, and others
+which contain specific defaults for particular machines.  All of the
+pieces are found in the <TT>`PDPDIR/config'</TT> directory.
+
+</P>
+<P>
+The makefiles named <TT>`Makefile.CPU.[CC|g++]'</TT> are the
+machine-specific files that you should edit to make sure they have all
+the right settings for your system.  This should have been done already
+during the installation of the PDP++ source code distribution, see
+section <A HREF="ta_css_5.html">4.7  Installing the Programmers Version</A> for details.  
+
+</P>
+<P>
+To these pieces is added the specific list of files that need to be made
+in your directory. This is specified in the <TT>`Makefile.in'</TT> file.
+This is the only makefile you should edit. It can be used to override
+any of the settings in the standard makefiles, simply by redefining
+definitions or actions.  If you add files to your directory, follow the
+example for the one already in your default <TT>`Makefile.in'</TT> that was
+installed with the <TT>`mknewpdp'</TT> command.
+
+</P>
+<P>
+Note that there are a couple of compiler-specific "extra" files in the
+directory.  These have the name of the directory plus a <TT>`_vt.cc'</TT> or
+<TT>`_it.cc'</TT> suffix.  The <TT>`_vt'</TT> file is for virtual table
+instantiation, which is controlled in cfront with the +e0/+e1 arguments.
+It simply includes most of the header files in the software.  We have
+found that by compiling everything except the <TT>`_vt'</TT> file with +e0
+that the executables are much smaller.  This is even true in cfront
+versions where they had "fixed" this problem.  You can try doing the
+other way by leaving out the +e args and not using the <TT>`_vt'</TT> file
+(see the definitions in <TT>`PDPDIR/config/Makefile.defs'</TT> for how to do
+this: change your <TT>`Makefile.CPU'</TT> file and recompile the entire
+distribution first..).
+
+</P>
+<P>
+The <TT>`_ti.cc'</TT> is the template instantiation file needed by gnu g++
+version 2.6.3 (reportedly, it won't be needed in 2.7).  It contains
+explicit instantiations of all of the templates used in each library.
+For user directories, this probably isn't needed, but its there if you
+do declare any templates and encounter link problems with g++.  Also,
+the <TT>`Makefile.CPU.g++'</TT> show how this file gets included in the
+making of a given project.
+
+</P>
+<P>
+<B>New for 2.0:</B> All of the makefile actions, as shown below, are now
+available using a consistent syntax structure: all lower case, with
+underbars separating different words.  This makes it much easier to
+remember what command to type.  The old eclectic combinations of upper
+and lower case words, etc are still available if you already know them.
+
+</P>
+<P>
+The commonly-used actions that are defined in the makefile are as
+follows:
+<A NAME="IDX182"></A>
+<A NAME="IDX183"></A>
+<DL COMPACT>
+
+<DT><SAMP>`make bin, make opt_bin, make dbg_bin'</SAMP>
+<DD>
+Makes the binary from the files in this directory. Bin makes the default
+form specified in the make file, while opt and dbg make optimized and
+debug versions, respectively.
+<DT><SAMP>`make re_bin, make opt_re_bin, make dbg_re_bin'</SAMP>
+<DD>
+Same as above, except it first removes the executable before making.
+This is useful if a library has changed but no header files from that
+library were changed.
+<DT><SAMP>`make lib, make opt_lib, make dbg_lib'</SAMP>
+<DD>
+Like the above, except it makes a library containing the relevant .o
+files.
+<DT><SAMP>`make new_makefile'</SAMP>
+<DD>
+This makes a new version of the <TT>`Makefile'</TT> file in the current
+directory.  This concatenates all of the different parts that together
+make up a single <TT>`Makefile'</TT>.  However, it does not make a
+<CODE>CPU</CODE> directory, which is necessary to actually compile (see
+<CODE>cpu_dir</CODE> next).
+<DT><SAMP>`make cpu_dir, make local_cpu_dir'</SAMP>
+<DD>
+This makes and configures a directory with the same name as the
+<CODE>CPU</CODE> environmental variable (reflecting the CPU type of the
+machine) suitable for compiling the object files into.  If
+<CODE>local_cpu_dir</CODE> is made first, then this directory is actually a
+symbolic link to a directory created on a disk local to the current
+machine, so that compilation will be faster than if the directory where
+the source is located is a networked (slow) directory (i.e., NFS).  The
+<CODE>cpu_dir</CODE> action copies the current <TT>`Makefile'</TT> into the
+directory, and configures the directory for compiling.  Note that these
+actions remove any existing dependency information, so that a
+<CODE>depend</CODE> action should be made following either of them.
+<DT><SAMP>`make depend'</SAMP>
+<DD>
+This automatically adds dependency information for the files in this
+directory onto the <TT>`CPU/Makefile'</TT> file.  This allows the make
+command to know when to compile these files after something they depend
+on has been touched (edited).
+<DT><SAMP>`make makefiles, make make_depend, make new_make_depend'</SAMP>
+<DD>
+These actions simply combine some of the above steps together into one
+action.  <CODE>makefiles</CODE> does a <CODE>new_makefile</CODE> and then a
+<CODE>cpu_dir</CODE>, <CODE>make_depend</CODE> does a <CODE>cpu_dir</CODE> and then a
+<CODE>depend</CODE>, and <CODE>new_make_depend</CODE> does all three of the necessary
+steps: <CODE>new_makefiles</CODE>, <CODE>cpu_dir</CODE>, and <CODE>depend</CODE>.  The only
+reason you should not use the latter all the time is if your <CODE>make</CODE>
+program has trouble using a new <TT>`Makefile'</TT> (i.e., as created by the
+<CODE>make new_makefiles</CODE> action) for calling the subsequent actions.  In
+this case, you have to first do a <CODE>make new_makefiles</CODE> and then you
+can do a <CODE>make make_depend</CODE>.
+<DT><SAMP>`make force_ta'</SAMP>
+<DD>
+Forces a call to the TypeAccess scanning program <TT>`maketa'</TT>.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_28.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_30.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,17 @@
+#!/bin/csh
+# script to change viewlabel into NetViewLabel (assuming this is more common)
+
+foreach i ($*)
+	echo $i
+	set ext=$i:e
+	if($ext == "gz") then
+		set fl=$i:r
+		gunzip $fl
+		sed -e "s/ViewLabel/NetViewLabel/g" $fl >tmp.xxx
+		mv tmp.xxx $fl
+		gzip $fl
+	else
+		sed -e "s/ViewLabel/NetViewLabel/g" $i >tmp.xxx
+		mv tmp.xxx $i
+	endif
+end

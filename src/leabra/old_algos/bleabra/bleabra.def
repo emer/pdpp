@@ -1,0 +1,170 @@
+// ta_Dump File v1.0
+TypeDefault_MGroup .projects[0].defaults { 
+ TypeDefault .projects[0].defaults[0] { 
+  NameValue @.active_membs[0] { };
+  NameValue @.active_membs[1] { };
+  NameValue @.active_membs[2] { };
+  NameValue @.active_membs[3] { };
+ };
+ TypeDefault .projects[0].defaults[1] { 
+  NameValue @.active_membs[0] { };
+  NameValue @.active_membs[1] { };
+ };
+ TypeDefault .projects[0].defaults[2] { 
+  NameValue @.active_membs[0] { };
+ };
+ TypeDefault .projects[0].defaults[3] { 
+  NameValue @.active_membs[0] { };
+  NameValue @.active_membs[1] { };
+  NameValue @.active_membs[2] { };
+  NameValue @.active_membs[3] { };
+ };
+ TypeDefault .projects[0].defaults[4] { 
+  NameValue @.active_membs[0] { };
+ };
+ TypeDefault .projects[0].defaults[5] { 
+  NameValue @.active_membs[0] { };
+ };
+ TypeDefault .projects[0].defaults[6] { 
+  NameValue @.active_membs[0] { };
+  NameValue @.active_membs[1] { };
+  NameValue @.active_membs[2] { };
+  NameValue @.active_membs[3] { };
+ };
+};
+TypeDefault_MGroup .projects[0].defaults {
+ el_typ = TypeDefault;
+ el_def = 0;
+ name = "";
+};
+TypeDefault .projects[0].defaults[0] {
+ name = "Projection";
+ default_type = Projection;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "spec";
+  value = "{type=FullPrjnSpec: spec=NULL: }";
+ };
+ NameValue @.active_membs[1] {
+  name = "con_type";
+  value = "LeabraCon";
+ };
+ NameValue @.active_membs[2] {
+  name = "con_gp_type";
+  value = "LeabraCon_Group";
+ };
+ NameValue @.active_membs[3] {
+  name = "con_spec";
+  value = "{type=LeabraConSpec: spec=NULL: }";
+ };
+};
+TypeDefault .projects[0].defaults[1] {
+ name = "LeabraLayer";
+ default_type = LeabraLayer;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "units";
+  value = "Size: 0 (LeabraUnit)";
+ };
+ NameValue @.active_membs[1] {
+  name = "unit_spec";
+  value = "{type=LeabraUnitSpec: spec=NULL: }";
+ };
+};
+TypeDefault .projects[0].defaults[2] {
+ name = "Network";
+ default_type = Network;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "layers";
+  value = "LeabraLayer";
+ };
+};
+TypeDefault .projects[0].defaults[3] {
+ name = "EpochProcess";
+ default_type = EpochProcess;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "sub_proc_type";
+  value = "LeabraTrial";
+ };
+ NameValue @.active_membs[1] {
+  name = "order";
+  value = "PERMUTED";
+ };
+ NameValue @.active_membs[2] {
+  name = "wt_update";
+  value = "ON_LINE";
+ };
+ NameValue @.active_membs[3] {
+  name = "between_events";
+  value = "INIT_STATE";
+ };
+};
+TypeDefault .projects[0].defaults[4] {
+ name = "SequenceProcess";
+ default_type = SequenceProcess;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "sub_proc_type";
+  value = "LeabraTrial";
+ };
+};
+TypeDefault .projects[0].defaults[5] {
+ name = "SE_Stat";
+ default_type = SE_Stat;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "tolerance";
+  value = "0.5";
+ };
+};
+TypeDefault .projects[0].defaults[6] {
+ name = "SyncEpochProc";
+ default_type = SyncEpochProc;
+ active_membs  taBase_Group  {
+  el_typ = NameValue;
+  el_def = 0;
+  name = "";
+ };
+ NameValue @.active_membs[0] {
+  name = "sub_proc_type";
+  value = "LeabraTrial";
+ };
+ NameValue @.active_membs[1] {
+  name = "order";
+  value = "PERMUTED";
+ };
+ NameValue @.active_membs[2] {
+  name = "wt_update";
+  value = "ON_LINE";
+ };
+ NameValue @.active_membs[3] {
+  name = "second_proc_type";
+  value = "LeabraTrial";
+ };
+};

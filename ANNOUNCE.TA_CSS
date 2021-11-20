@@ -1,0 +1,173 @@
+	   ANNOUNCING: TypeAccess and C-Super-Script (CSS)
+
+			     Version: 1.1
+
+	  Authors: Randall C. O'Reilly and Chadley K. Dawson
+
+
+TypeAccess (TA) is a RTTI (run-time type information) system for C++.
+It scans header files for 'typedef' and 'class' definitions and
+produces a compilable file that will allow classes to access their own
+type information.
+
+CSS is a C/C++ interpreter with a built-in command interface for
+controlling the execution and debugging of programs.  It can be used
+as a stand-alone C/C++ interpreter for tasks where Perl, TCL, or
+compiled C/C++ would otherwise be used, and as a script interface to a
+specific C or C++ application.  Its primary advantages over existing
+languages are the use of a standard language syntax (C/C++), and its
+ability to automatically interface with hard-coded C++ objects via
+TypeAccess.
+
+TA/CSS was developed for a neural network simulation system called
+PDP++.  It can be obtained either with the entire PDP++ software
+distribution (which gives you lots of example code..) or as a subset
+that just has TA and CSS related files.
+
+The software can be obtained by anonymous ftp from:
+  Anonymous FTP Site: 	hydra.psy.cmu.edu/pub/pdp++/  *or*
+			unix.hensa.ac.uk/mirrors/pdp++/
+
+For more information, see our web page:
+  WWW Page:   http://www.cs.cmu.edu/Web/Groups/CNBC/PDP++/PDP++-ta_css.html
+
+=================================
+Features Added in Release 1.1:
+=================================
+
+  o Cleaned up compilation and execution control structures in CSS, fixing
+    bugs associated with execution errors, single stepping, debugging, etc.
+
+  o Classes now much more robust, can have array members, arrays of
+    classes work.
+
+  o 'new' can create arrays.
+
+  o 'const' types can now be declared, and used anywhere a literal value can.
+
+=================================
+Features Added in Release 1.01:
+=================================
+
+  o Added awk-like functionality through the new 'ReadLine' command,
+    which reads one line of a data file and returns an array of string
+    columns, which can then be processed, etc.
+
+  o Fixed several bugs.
+
+Features of TA/CSS:
+===================
+
+TA/CSS implements what might be called a unified WYCIWYG (What You
+Code Is What You Get) model of programming.  Basically, you get a
+graphical and script-level interface to whatever objects you have
+coded in C++ "for free".  All the functions, variables, etc are
+accessible and can be dynamically and interactively called by the
+user, who can also code new classes and functions in the script
+language to build off of a core of hard-coded functionality.
+
+What makes TypeAccess different from other RTTI systems is that it has
+an extensive "automatic" interface system build around it.  This
+interface includes a GUI "edit dialog" system based on the InterViews
+toolkit that allows the user to view and modify class members, and
+call class methods via buttons and pull-down menus.  The properties of
+this interface aassume a reasonable set defaults, and can be further
+enhanced and customized by "comment directives" that can be placed by
+the programmer in the source-code comments next to class, member, and
+method definitions/declarations.  These directives are parsed by the
+TypeAccess system and recorded along with the type information.  They
+are also available for application-specific uses.
+
+TypeAccess interfaces with CSS to allow "automatic" access to
+hard-coded classes via a script interface.  Since CSS is C/C++, code
+can initially be developed in the interpreter and then compiled into
+the application once debugged and tested with little or no
+modification.
+
+Essentially, TA and CSS together provide a flexible GUI and script
+interface to C++ objects.  This makes it possible for the programmer
+to develop a set of C++ classes that just perform application-specific
+functions, without having to worry about the interface much at all.
+The user of such an application has the advantage of being able to
+access all of the functionality of the hard-coded objects, and to
+extend this functionality by writing their own script code in CSS.
+
+TA/CSS provides a "type-aware" base class type, and a number of
+container classes (Arrays, Lists, Groups) that use the type
+information from TypeAccess to perform various specialized interface
+and other functions.  By using such classes, one can also take
+advantage of automatic "dump" file saving and loading functions.
+Thus, complex structures of C++ objects can be saved to an ASCII file
+and loaded back in later.  This takes care of yet another bothersome
+programming task.
+
+CSS "compiles" source code into a machine code of C++ objects, which
+then know how to run themselves.  The range of functions that any
+object can perform is defined in a 'cssEl' base class, and derived
+types implement functions for specific data and function types.  This
+object-oriented machine implementation straightforward, and offers
+reasonable performance since different data types are implemented
+directly (e.g., everything is not a string like in TCL).  The code for
+CSS compiles into a 800K library on a sparc station.
+
+Comparison to Other Languages:
+==============================
+
+Java
+----
+CSS has some of the robustness and simplicity advantages
+of Java, including protection from the dangers of pointers, a
+simplified range of types, and reasonable automatic type casting.
+Also, it shares the familiarity factor with C++, and goes further by
+preserving the full range of C style programming for those who are
+more comfortable with it.  However, it does not have many of the
+advanced features like multithreading, security, and networking.
+Nevertheless, it is completely free and comes with all the source
+code, and is probably much simpler to integrate into an existing
+application, especially due to its ability to access existing
+hard-coded types (WYCIWYG), and the availability of the source code.
+
+TCL
+---
+The primary advantage of CSS over TCL is the familiarity of the
+language syntax, and it probably offers a performance advantage as
+well.  The Tk widget set is much more flexible than the one included
+with TA/CSS, which does not allow one to design the interface in an
+ad-hoc fashion (since it is designed specifically to free the
+programmer from having to spend time designing the interface).
+However, it would be relatively straightforward to type-scan a
+graphical toolkit written in C++ and thereby provide that kind of
+flexibility.
+
+
+The Fine Print:
+===============
+
+The software runs on Unix workstations under XWindows.  It has been
+developed and tested on Sun Sparc's under SunOs 4.1.x, HP 7xx under
+HP-UX 9.x, SGI Irix 5.3, AIX 4.1.4, and Linux (ELF Kernel 1.2.13+)
+Statically linked binaries are available for these machines. Other
+machine types will require compiling from the source.  Cfront 3.x and
+g++ 2.7.x are supported C++ compilers, although we have also
+successfully compiled TA/CSS with system specific compilers including
+NCC on the SGI and xlC under AIX.
+
+The GUI in TA/CSS is based on the InterViews toolkit, version 3.2a.
+However, we had to patch it to get it to work.    We distribute
+pre-compiled libraries containing these patches for the above
+architectures.  For architectures other than those above, you will
+have to apply our patches to InterViews before compiling.
+
+CSS does not support all of C++ (does anything?).  It does have most
+of the basic stuff, but does not do operator overloading, function
+call resolution based on argument types, templates, or exception
+handling, to name the main ones.  It is intended to be used as an
+ad-hoc "script" language, not as a major application development
+platform.
+
+The source code (and manual, etc) for just TA/CSS is 6.6 Meg.
+Compiling this will add around 10 or so Meg.  The entire PDP++
+distribution, including the manual and demos, is 16 Meg.  The full
+PDP++ system (without shared libraries) compiles to 115 Meg before
+cleaning the object files, etc.
+

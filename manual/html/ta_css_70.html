@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-group-variables</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_69.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_71.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX363" HREF="ta_css_toc.html">8.2.2  Group Variables</A></H3>
+
+<P>
+The Group class has the following variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>String  name</CODE>
+<DD>
+<A NAME="IDX364"></A>
+The (optional) name of the group
+<DT><CODE>int size</CODE>
+<DD>
+<A NAME="IDX365"></A>
+Number of elements in the group.
+<DT><CODE>TypeDef*  el_typ</CODE>
+<DD>
+<A NAME="IDX366"></A>
+The "minimum" type of an element in the Group. When objects are created,
+transferred, or linked in the group, only objects of this type, or
+objects of a type which inherits from this type are considered for
+inclusion. 
+<DT><CODE>int el_def</CODE>
+<DD>
+<A NAME="IDX367"></A>
+The index of the default element of the group. This element is returned
+when the <CODE>Default_El()</CODE> function is called on the group.
+<DT><CODE>int leaves</CODE>
+<DD>
+<A NAME="IDX368"></A>
+The number of leaves of the Group. This is the total sum of all the
+elements in this group plus all the elements of its subgroups, their
+subgroups and so on.
+<DT><CODE>Group gp</CODE>
+<DD>
+<A NAME="IDX369"></A>
+This is the group of subgroups.
+<DT><CODE>Geometry  pos</CODE>
+<DD>
+<A NAME="IDX370"></A>
+The Group's position. In some cases, the group is represented
+graphically and the position provides a relative offset for the elements
+of the group
+<DT><CODE>Geometry geom</CODE>
+<DD>
+<A NAME="IDX371"></A>
+The Group's geometry. Although the group is accessed linearly,
+it can be represented graphically in more than one dimension. The
+geometry specifies the layout of the group's elements.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_69.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_71.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

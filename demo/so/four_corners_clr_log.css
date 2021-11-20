@@ -1,0 +1,4 @@
+// just clears the testing log so that stats will be collected ok
+// during batch run
+
+.logs[0].data.ResetData();		// just get rid of data, not display..

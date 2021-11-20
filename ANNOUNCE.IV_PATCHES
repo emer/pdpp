@@ -1,0 +1,36 @@
+	       ANNOUNCING: PDP++ Patches to InterViews
+
+
+InterViews for version 2.0 of PDP++: iv-pdp-r2.0
+
+The version of interviews used for pdp++ is based on revisions that
+Michael Hines (author of NEURON) and we (and others) have made to the
+original interviews code.  The most recent changes from Hines include
+auto-configuring for Unix platforms, meaning that compiling is as
+simple as ./configure and make.  For the CYGWIN version (MS Windows),
+an old-style Makefile is required (and provided) in the
+src/lib/IV/CYGWIN directory.  Just type 'make' in that directory, and
+then copy the resulting libIV.a into /usr/local/lib.
+
+The Hines/NEURON version of InterViews and our own are compatible,
+except for the CYGWIN version -- Hines as not yet incorporated our
+latest changes which are needed for PDP++ on this platform.
+
+The complete source code for our version of interviews is available in
+the following tar on our ftp servers:
+
+iv-pdp-r2.0.tar.gz
+
+Pre-built interviews libraries are also available for supported
+machine types on the ftp server.  Included with these libraries are
+the "installed" header files.
+
+These are files:
+
+pdp++_VERS_ivinc.tar.gz (header files)
+pdp++_VERS_ivlib_CPU.tar.gz (libraries for CPU type)
+
+where VERS is the version number (currently 2.0)
+
+NOTE: If you are upgrading an earlier version to 2.0, you MUST upgrade
+the interviews library (and header files, if you are compiling).

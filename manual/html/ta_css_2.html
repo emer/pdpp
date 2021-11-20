@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - intro</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_3.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A HREF="ta_css_toc.html">3  Introduction to TypeAccess/CSS</A></H1>
+
+<P>
+TypeAccess (TA) and CSS were developed in order to automate the
+interface to a neural-network simulation package called PDP++.  This
+manual is simply a subset of the PDP++ software manual, and it has a
+number of references to PDP++ specific objects and issues.  Just ignore
+these.
+
+</P>
+<P>
+The TA/CSS system was designed to provide an automatic interface to C++
+objects.  The members and functions on the objects define what the user
+can do, and the GUI (graphical user interface) and script-level
+interface simply provides a way of accessing the members and methods of
+these objects.  Also, a generic, automatic way of saving and loading
+objects and structures of objects to disk is provided.
+
+</P>
+<P>
+The TypeAccess system makes this possible by automatically parsing the
+header files in an application directory and creating a record of the
+critical type information needed to make the GUI and script interfaces
+to these objects.  This type information is also available for the
+programmer, as with all RTTI (run-time type information) systems.
+
+</P>
+<P>
+Unlike most RTTI systems, TA also records the comments from the source
+code, which provides the prompts and "comment directives" for the
+automatic interface.  The comment directives control how the member or
+function is presented to the user, making the interface quite versatile.
+
+</P>
+<P>
+CSS is an interpreted script language that uses the C/C++ syntax.  It
+implements most of C and much of the basics of C++.  See
+section <A HREF="ta_css_13.html">5.3.1  Differences Between CSS and C++</A> and section <A HREF="ta_css_14.html">5.3.2  Differences Between CSS and ANSI C</A> for details on the
+discrepancies.  It has a built-in command system for controlling
+the execution and debugging of programs.
+
+</P>
+<P>
+CSS is implemented in C++ as a set of objects that basically know how to
+"run" themselves, convert themselves into other types, etc.  TypeAccess
+can generate a set of "stub" functions for class member functions which
+take CSS object arguments, and return a CSS object.  These stub
+functions provide the basis for the CSS interface to hard-coded
+classes, and for GUI buttons and pull-down menus which call member
+functions.
+
+</P>
+<P>
+The same kind of automatic GUI is also available for classes defined in
+CSS.  Thus, it is possible to create entire applications with automatic
+GUI interfaces without compiling a line of code.  This same code can
+then be compiled with C++ when the application is stable enough to
+warrant compiling.
+
+</P>
+<P>
+CSS can also be used as a stand-alone program like Perl or TCL.  This
+provides the ability to write shell-like scripts in C/C++ instead of
+learning a complicated new language (use the complicated language you
+already know..).  The basic version of CSS has the GNU libg++ String
+object as a basic type, as well as standard stream-based I/O, and all of
+the usual functions from <TT>`unistd.h'</TT> and <TT>`math.h'</TT>, plus some
+additional special math functions.  It would be fairly simple to parse a
+good C++ matrix library under TA/CSS (this is on the 'todo' list), or
+some classes that provide faster I/O primitives for doing specific
+file-processing tasks, network protocols, etc.
+
+</P>
+<P>
+The distribution includes a number of low-level objects which provide
+transparent access to the TA type information, and basic container
+functions like List, Group, and Array, as well as a host of other object
+types that were used to implement the PDP++ software.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_3.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

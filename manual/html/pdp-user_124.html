@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-misc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_123.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_125.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX655" HREF="pdp-user_toc.html">10.3.3.5  Miscellaneous other Projection Types</A></H4>
+
+<P>
+<A NAME="IDX656"></A>
+<A NAME="IDX657"></A>
+<A NAME="IDX658"></A>
+<A NAME="IDX659"></A>
+The <B>OneToOnePrjnSpec</B> simply connects units in a one-to-one fashion.
+This is typically for the entire set of units, but can be controlled by
+setting the <CODE>n_conns</CODE>, <CODE>recv_start</CODE> and <CODE>send_start</CODE>
+parameters, which specify the total number of connections to make and
+starting offsets.
+
+</P>
+<P>
+<A NAME="IDX660"></A>
+The <B>SymmetricPrjnSpec</B> makes receiving connections to units in the
+sending layer that are already receiving connections from units in the
+receiving layer.  Thus, it makes symmetric connectivity where another
+projection spec has defined the pattern from the other set of units.
+Note that the other projection spec must be associated with a layer that
+comes before the one this spec is on, otherwise it will not have any
+connections to copy from.
+
+</P>
+<P>
+<A NAME="IDX661"></A>
+The <B>ScriptPrjnSpec</B> uses a CSS script to create the connections.  It
+contains an <CODE>s_args</CODE> array of Strings which are passed to script as
+arguments (see section <A HREF="pdp-user_64.html">7  Guide to the Script Language (CSS)</A>).  Any arbitrary form of connectivity can be
+described by writing the appropriate script.  Several useful functions
+on the unit are available for making connections, including
+<CODE>ConnectFrom</CODE>, which takes the sending unit and the projection as
+arguments, and returns the connection and the two connection groups
+associated with it.
+
+</P>
+<P>
+<A NAME="IDX662"></A>
+The <B>CustomPrjnSpec</B> is used when the connectivity
+between units is hand assembled. Thus it does not specify a connectivity
+function, and therefore performs no actions when the Build command is
+called on a Network.
+
+</P>
+<P>
+<A NAME="IDX663"></A>
+<A NAME="IDX664"></A>
+The <B>LinkPrjnSpec</B> does not create any connections itself.  Instead,
+it turns existing connections into linked connections.  The connections
+to be linked are specified by the layer name and unit index for both the
+sending and receiving units.  The connection function then finds the
+connection that connects these two units, and links it in with the other
+ones.  The first connection specified is the "owner" of the connection,
+and its weight values are the ones that are used.  The <CODE>links</CODE>
+member is the list of connections to be linked together.  This type of
+projection spec, since it does not create any projections itself, is
+typically assigned to a "dummy" self projection on one of the affected
+layers.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_123.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_125.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

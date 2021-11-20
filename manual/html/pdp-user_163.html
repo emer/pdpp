@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-special-inter</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_162.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_164.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX970" HREF="pdp-user_toc.html">12.6.2  Processes for Interactive Environments</A></H3>
+<P>
+<A NAME="IDX971"></A>
+<A NAME="IDX972"></A>
+<A NAME="IDX973"></A>
+<A NAME="IDX974"></A>
+
+</P>
+<P>
+The <B>InteractiveEpoch</B> is a special epoch process for dealing with
+interactive environments (<B>InteractiveScriptEnv</B>, section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>),
+where events are created on the fly at the start of each new trial,
+instead of being created entirely at the beginning of the epoch (as
+with a <B>ScriptEnv</B>, section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>), or just being static, as with most
+environments.
+
+</P>
+<P>
+This process calls <CODE>InitEvents()</CODE> on the <CODE>environment</CODE> at
+the start of the epoch, which resets the <CODE>event_ctr</CODE> on the
+environment to 0.  It then calls <CODE>GetNextEvent()</CODE> on the
+environment at the start of each new trial.  In standard environments,
+this just gets the event at index event_ctr, and increments the
+counter.  If event_ctr is larger than the number of events, a NULL is
+returned indicating the end of the epoch.  In the InterativeScriptEnv,
+GetNextEvent() calls the associated script, which can then create the
+next event and return it to the epoch process (via the next_event
+field in the environment).
+
+</P>
+<P>
+See <TT>`demo/leabra/nav.proj.gz'</TT> for an example demonstrating the
+use of InteractiveEpoch and InteractiveScriptEnv.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_162.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_164.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

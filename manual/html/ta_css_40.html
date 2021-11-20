@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - comdir-funs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_39.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_41.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX242" HREF="ta_css_toc.html">6.3.4  Top-Level Function Directives</A></H3>
+
+<P>
+In addition to class objects and typedef's, it is possible to scan
+information about certain top-level functions.  These functions must be
+preceded by a <CODE>#REG_FUN</CODE> comment, and the comments that apply to
+the function must precede the trailing <CODE>;</CODE> that ends the function
+declaration.
+
+</P>
+<PRE>// #REG_FUN
+void Cs_Simple_WtDecay(CsConSpec* spec, CsCon* cn, Unit* ru, Unit* su) 
+// #LIST_CsConSpec_WtDecay Simple weight decay (subtract decay*wt)
+     ;				// term here so scanner picks up comment
+</PRE>
+
+<P>
+These functions get registered as <CODE>static</CODE> functions of a mythical
+object with a <B>TypeDef</B> of <CODE>TA_taRegFun</CODE>.  The purpose of
+registering functions in this way is to make them available for members
+of classes that are pointers to functions.  These registered functions
+are shown in a menu in the edit dialog if the <CODE>#LIST_xxx</CODE> directive
+matches on the registered function and the pointer to a function.
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_39.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_41.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

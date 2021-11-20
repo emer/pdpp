@@ -1,0 +1,26 @@
+XCOMM
+XCOMM generic InterViews demo
+XCOMM
+
+AOUT = ivtest
+suffixes .c .cc .o
+
+#ifdef InObjectCodeDir
+
+Use_libInterViews()
+ComplexProgramTarget(ivtest)
+
+MakeObjectFromSrc(main)
+MakeObjectFromSrc(figure)
+MakeObjectFromSrc(globals)
+MakeObjectFromSrc(glypheditor)
+MakeObjectFromSrc(glyphviewer)
+MakeObjectFromSrc(idraw)
+MakeObjectFromSrc(morpher)
+MakeObjectFromSrc(unit)
+
+#else
+
+MakeInObjectCodeDir()
+
+#endif

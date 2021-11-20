@@ -1,0 +1,248 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-tut-access</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_68.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_70.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.2.3  Accessing Hard-Coded Objects in CSS</A></H3>
+
+<P>
+In general, hard-coded objects (and their members and member functions)
+are treated just as they would be in C or C++.  Objects that have been
+created (i.e., Networks, Units, etc) can be referred to by their
+<EM>path</EM> names, which start with the <EM>root</EM> object (PDPRoot).
+While you could type <CODE>root.projects[0]</CODE>, for example, to refer to
+the first project, it is easier to use the abbreviation of a preceding
+period to stand for <CODE>root</CODE>, resulting in: <CODE>.projects[0]</CODE>.
+
+</P>
+<P>
+The following examples were performed on the XOR example project in
+Bp++. In order to examine the project in CSS, one could simply use the
+<CODE>print</CODE> command on the path of this object:
+
+</P>
+<PRE>bp++&#62; print .projects[0]
+.projects[0] Proj (refn=1) {
+  ta_Base*        owner           = .projects;
+  String          name            = Proj;
+  WinBase*        win_owner       = root;
+  WinGeometry     win_pos         = {lft=4: bot=74: wd=535: ht=24: };
+  WinGeometry     root_win_pos    = {lft=9: bot=79: wd=161: ht=23: };
+  TypeDefault_MGroup   defaults           =  Size: 5 (TypeDefault);
+  BaseSpec_MGroup   specs         =  Size: 3 (BaseSpec);
+  Network_MGroup   networks       =  Size: 1 (Network);
+  Environment_MGroup   environments       =  Size: 1 (Environment);
+  Process_MGroup   processes      =  Size: 5 (SchedProcess);
+  PDPLog_MGroup   logs            =  Size: 2 (TextLog);
+  Script_MGroup   scripts         =  Size: 1 (Script);
+}
+</PRE>
+
+<P>
+The first network within this project would then be referred to as
+<CODE>.projects[0].networks[0]</CODE>:
+
+</P>
+<PRE>bp++&#62; print .projects[0].networks[0]
+.projects[0].networks[0] XOR (refn=15) {
+  ta_Base*        owner           = .projects[0].networks;
+  String          name            = XOR;
+  WinBase*        win_owner       = .projects[0];
+  WinGeometry     win_pos         = {lft=4: bot=3: wd=536: ht=390: };
+  WinView_MGroup   views          =  Size: 1 (NetView);
+  Layer_MGroup    layers          =  Size: 3 (Layer);
+  Project*        proj            = .projects[0];
+  TDGeometry      pos             = {x=0: y=0: z=0: };
+  TDGeometry      max_size        = {x=2: y=2: z=3: };
+  int             epoch           = 0;
+  Network::Layer_Layout   lay_layout      = THREE_D;
+}
+</PRE>
+
+<P>
+You can also use a shortcut by just typing <CODE>.networks[0]</CODE>, which
+finds the first member with the name <CODE>networks</CODE> in a search
+starting at the root object and scanning down the <EM>first branch</EM> of
+the tree of objects (i.e., looking in the first element of every group
+along the way).
+
+</P>
+<P>
+Scoped types such as <CODE>Network::Layer_Layout</CODE> which appear in the
+above class are referred to just as they would be in C++:
+
+</P>
+<PRE>bp++&#62; .networks[0].lay_layout = Network::TWO_D;
+</PRE>
+
+<P>
+As you can see, setting the values of hard-coded object variables simply
+amounts to typing in the appropriate C/C++ statement.
+
+</P>
+<P>
+Type information (obtained via the TypeAccess system) about hard-coded
+objects can be obtained with the <CODE>type</CODE> command:
+
+</P>
+<PRE>bp++&#62; type Network
+class Network : PDPWinMgr : WinMgr : WinBase : ta_NBase : ta_Base {
+// The Network 
+
+  // sub-types
+  enum Layer_Layout {   // Visual mode of layer position/view
+    TWO_D            = 0;       // all z = 0, no skew
+    THREE_D          = 1;       // z = layer index, default skew
+  }
+
+  // members
+  ta_Base*        owner;          //   pointer to owner
+  String          name;           //   name of the object
+  .
+  .
+  TDGeometry      max_size;       //   max size in each dim
+  int             epoch;          //   epoch counter
+  Network::Layer_Layout   lay_layout;     // Visual mode of layer 
+
+  // functions
+  void            UnSafeCopy(ta_Base* na);
+  ta_Base*        GetOwner(TypeDef* tp);
+  .
+  .
+  .
+  void            InitWtState();        // Initialize the weights
+  .
+  .
+  void            Compute_dWt();        // update weights for whole net
+  void            Copy_Weights(const Network* src);  
+  void            Enforce_Layout(Network::Layer_Layout layout_type);
+}
+</PRE>
+
+<P>
+This shows the inheritance of this object, any sub-types that are
+defined within it, and all of its members and functions (including those
+it inherits from other classes).
+
+</P>
+<P>
+In addition, there is Tab-completion for path names and types in the CSS
+prompt-level script interface.  Thus, as you are typing a path, if you
+hit the Tab key, it will try to complete the path.  If there are
+multiple completions, hitting Tab twice will display them.
+
+</P>
+<P>
+In order to call member functions of hard-coded classes, simply give the
+path to the object, followed by the member function, with any arguments
+that it might require (or none).
+
+</P>
+<PRE>bp++&#62; .networks[0].InitWtState();
+bp++&#62; 
+</PRE>
+
+<P>
+It is possible to create pointers to hard-coded objects.  Simply declare
+a pointer variable with the appropriate type, and assign it to the given
+object by referring to its path:
+
+</P>
+<PRE>bp++&#62; Unit* un;
+bp++&#62; un = .networks[0].layers[1].units[0];
+bp++&#62; print un
+.projects[0].networks[0].layers[1].units[0] hid_1 (refn=6) {
+  ta_Base*        owner           = .projects[0].networks[0].layers[1].units;
+  String          name            = hid_1;
+  UnitSpec_SPtr   spec            = {type=BpUnitSpec: spec=.specs[0]: };
+  TDGeometry      pos             = {x=0: y=0: z=0: };
+  Unit::ExtType   ext_flag        = NO_EXTERNAL;
+  float           targ            = 0;
+  float           ext             = 0;
+  float           act             = 0;
+  float           net             = 0;
+  Con_Group       recv            =  Size: 0.1.2 (BpCon);
+  Con_Group       send            =  Size: 0.1.1 (BpCon);
+  BpCon           bias            = BpCon;
+  float           err             = 0;
+  float           dEdA            = 0;
+  float           dEdNet          = 0;
+}
+</PRE>
+
+<P>
+There are two ways to create new hard-coded objects.  The preferred way
+is to call one of the <CODE>New</CODE> functions on the group-like objects
+(<CODE>List</CODE> or <CODE>Group</CODE>, see section <A HREF="pdp-user_91.html">8.2  Groups</A>), which will create
+the object and add it to the group, so that it can be referred to by its
+path as just described.
+
+</P>
+<PRE>bp++&#62; .layers[1].units.List();
+
+Elements of List:  (2)
+hid_1   hid_2 
+bp++&#62; .layers[1].units.New(1);
+bp++&#62; .layers[1].units.List();
+
+Elements of List:  (3)
+hid_1   hid_2    
+bp++&#62; .layers[1].units[2].name = "new_guy";
+bp++&#62; .layers[1].units.List();
+
+Elements of List:  (3)
+hid_1   hid_2   new_guy 
+</PRE>
+
+<P>
+Finally, it is possible to create new instances of hard-coded object
+types through the C++ <CODE>new</CODE> operator, which is especially useful in
+order to take advantage of some of the handy built-in types like arrays
+(see section <A HREF="pdp-user_96.html">8.3  Arrays</A>):
+
+</P>
+<PRE>bp++&#62; float_RArray* ar = new float_RArray;
+bp++&#62; print ar
+[0];
+
+bp++&#62; ar.Add(.25);
+bp++&#62; ar.Add(.55);
+bp++&#62; ar.Add(.11);
+bp++&#62; print ar
+[3] 0.25 0.55 0.11;
+
+bp++&#62; print ar.Mean();
+(Real)  = 0.303333
+bp++&#62; print ar.Var();
+(Real)  = 0.101067
+bp++&#62; ar.Sort();
+bp++&#62; print ar
+[3] 0.11 0.25 0.55;
+</PRE>
+
+<P>
+Remember to <CODE>delete</CODE> those objects which you have created in this
+fashion:
+
+</P>
+<PRE>bp++&#62; delete ar;
+bp++&#62; print ar
+(float_RArray) ar = 0
+</PRE>
+
+<P>
+(the <CODE>ar = 0</CODE> means that it is a null pointer).  Be sure <EM>not</EM>
+to use the <CODE>delete</CODE> operator on those objects which were created
+with the group's <CODE>New</CODE> function, which should be <CODE>Remove</CODE>d
+from the group, not deleted directly (see section <A HREF="pdp-user_91.html">8.2  Groups</A>).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_68.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_70.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,276 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-view-events</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_140.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_142.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX800" HREF="pdp-user_toc.html">11.5  Edit Events in the EnviroView</A></H2>
+
+<IMG SRC="pics/xor.enviroview.gif" ALIGN="MIDDLE" ALT="The Environment Viewer -- Events">
+<P>
+<B> Figure: </B> The Environment Viewer -- Events
+<P>
+
+<P>
+Non-obvious actions you can perform on objects in the EnviroView
+<DL COMPACT>
+
+<DT><B>Single-click with left-mouse-button (LMB) on Event Button</B>
+<DD>
+Will select event for display in the view area to the right.
+<DT><B>Single-click with right-mouse-button (RMB) on Event Button</B>
+<DD>
+Will bring up the edit dialog for the Event.
+<DT><B>Shift-LMB or middle-mouse-button (MMB) on Event Button</B>
+<DD>
+Extends the selection to include multiple events, and can remove an
+event from the display if performed on an already-selected event.
+<DT><B>Click on alreadly selected Event Group Button</B>
+<DD>
+Will select all the events within the group, and deselect the group
+button.
+<DT><B>LMB on a pattern element of displayed event</B>
+<DD>
+Will set the value of that pattern element according to highlighted
+drawing color (in color palette at bottom of display).
+<DT><B>MMB on a pattern element of displayed event</B>
+<DD>
+Will set the value of that pattern element to 0.
+<DT><B>RMB on a label on the displayed event</B>
+<DD>
+Will allow you to edit the value (e.g., change the event name, or its
+frequency if that is what is displayed).
+<DT><B>Turning off the Disp checkbox at top prevents display of events</B>
+<DD>
+This can be useful for manipulating large numbers of events using the 
+event buttons -- just turn off the Disp and then you can select all the
+events for setting specs or changing types, etc.
+</DL>
+
+<P>
+All of the events in the Environment are listed sequentially from top to
+bottom in a scrollable vertical list on the left side of the EnviroView.
+The index number of the event is shown on the left-hand side of the
+label, and the first four characters of the sub-group name if the event
+is in a sub-group.  Sub-groups have their own button that preceeds the
+events that are within them, and are indicated by the <CODE>&#62;&#62;</CODE> symbol
+on the left of the button.  Selecting these group buttons twice (double
+clicking) will select all the events within them.
+
+</P>
+<P>
+The following action buttons appear in the upper left of the EnviroView:
+<DL COMPACT>
+
+<DT><CODE>New Evt/Gp</CODE>
+<DD>
+<A NAME="IDX801"></A>
+This button provides a convenient method for creating events or
+sub-groups in the Environment. Pressing the New Evt/Gp button creates a
+"New" dialog which prompts the user for the number and type of events or
+groups to create. Each new event is modeled after the default (usually
+the first) EventSpec in the Environment. If there are no EventSpecs, a
+default EventSpec consisting of an input pattern for the <CODE>FIRST</CODE>
+layer and a target output pattern for the <CODE>LAST</CODE> layer is created
+for the new events.  If there are currently no events, the button will
+appear hi-lighted indicating that it is the suggested course of action.
+If there is one sub-group selected, then this button will create events
+within that selected subgroup.
+<DT><CODE>Delete</CODE>
+<DD>
+<A NAME="IDX802"></A>
+The Delete button removes the currently selected Events or groups from
+the Environment.
+<DT><CODE>Xfer/Dupe, Xfer Event, Dupe Event, Dupe Group</CODE>
+<DD>
+<A NAME="IDX803"></A>
+If event(s) are selected, Dupe Event will duplicate them.  If
+sub-group(s) are selected, Dupe Group will duplicate them (and their
+associated sub-events).  If a group and some events are selected, then
+Xfer Event will transfer the events into the selected group.
+<DT><CODE>Set Spec/Type, Change Type</CODE>
+<DD>
+<A NAME="IDX804"></A>
+If event(s) are selected, Set Spec/Type will bring up a choice of either
+setting the spec for these events, or changing their type.  If
+sub-group(s) are selected, Change Type will change their type.
+<DT><CODE>Apply</CODE>
+<DD>
+<A NAME="IDX805"></A>
+The Apply button saves the changes made to the Patterns. It will appear
+hi-lighted if there are potentially changes which have not been saved.
+<DT><CODE>Init/Revert</CODE>
+<DD>
+<A NAME="IDX806"></A>
+The Init button refreshes the EnviroView to reflect the stored values
+of the currently displayed Events. <I>Any un-applied changes to the
+patterns will be lost.</I>
+</DL>
+
+<P>
+At the bottom of the EnviroView is a painting ColorBar. This colorbar
+differs from the colorbar in the scale region of the NetView in that the
+different shades of color are selectable for use in "painting" values
+into the patterns of the Events. In addition, four custom value pads are
+provided for entering specific values. The color corresponding to the
+value of the pad appears next to the value and is selectable for use in
+painting just like to shades of the colorbar. These pads appear above
+the ColorBar and have default values of (-1.0, 0.0, 0.5, 1.0), which can
+be changed just by typing in a new value. The minimum and maximum of the
+range of the ColorBar may be independently specified or automatically
+scaled to the minimum and maximum value of the currently displayed
+events if the "Auto Range" toggle in the upper left corner of the
+EnviroView is selected.
+
+</P>
+<P>
+When an Event is selected for viewing, it appears in the EnviroView as
+as set of name labels and colored blocks. The labels and blocks are
+positioned according to <CODE>pos</CODE> and <CODE>geom</CODE> values of the
+PatternSpecs for each Pattern in the Event (see section <A HREF="pdp-user_142.html">11.6  Edit Specs in the EnviroView</A> for
+how to configure this interactively). The color of the blocks
+corresponds to its value in the ColorBar at the bottom of the
+EnviroView. If a pad or shade value is selected in the ColorBar, the
+user may change the values of the Patterns by clicking or dragging on
+the colored blocks. Pressing the left mouse button changes the value of
+the block under the mouse pointer to be the selected value in the
+ColorBar. Pressing the middle mouse button changes the block's value to
+it previous value.
+
+</P>
+<P>
+In the upper left area of the EnviroView are several menus which
+control certain features of each event which is displayed.  The first
+menu called <I>Val Txt</I> determines what kind of textual information is
+rendered along with the pattern values (could be <CODE>VALUES</CODE> or
+<CODE>NAMES</CODE> (for the value_names) aor <CODE>BOTH</CODE>).  The <I>Disp Md:</I>
+menu selects the way in which the values are rendered -- <CODE>COLOR</CODE>,
+<CODE>AREA</CODE>, or <CODE>LINEAR</CODE>, just as in the NetView
+(see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).
+
+</P>
+<P>
+The next two menus control what kinds of labels are shown along with
+each event and each pattern.  <I>Evt Label</I> controls which propery of
+the Event is shown in the Event Label region (bottom) of the displayed
+events. Likewise, the <I>Pat Label</I> menu contols what pattern properties
+are shown in the formatted pattern label section of the displayed events
+(at the top of each pattern). If the displayed event and/pr pattern does
+not have the propery which is selected, a "n/a" will be displayed.
+
+</P>
+<P>
+The <I>Pat Block</I> menu controls which property of the pattern is being
+displayed and edited when the user clicks on the pattern blocks
+described above. By default this menu is set to "Pattern Values"
+indicating that changes in the blocks colors reflect changes in the
+actual values of the patterns. More complicated patterns which behave in
+specialized ways can be created by changing the the "Pat Block" menu to
+one of the other selections and editing a pattern's flags
+(see section <A HREF="pdp-user_137.html">11.2  Events, Patterns and their Specs</A>.) When editing pattern values a color value greater
+than zero sets the flag on, and a colorvalue less than or equal to zero
+sets the flag off. The user may also choose to edit the global
+PatternSpec flags from this menu. In this case the global flags on the
+displayed pattern's PatternSpec will be displayed and changed when the
+"Apply" button is pressed. Note that if multiple Events are being edited
+and more than one of those Events shares the same EventSpec then the
+last selected Event's values will be applied when the "Apply" button is
+pressed.
+
+</P>
+<P>
+The EnviroView provides the following variables for customizing the
+display:
+<DL COMPACT>
+
+<DT><CODE>EventLayout event_layout</CODE>
+<DD>
+<A NAME="IDX807"></A>
+Controls whether events are arranged <CODE>VERTICALLY</CODE> or
+<CODE>HORIZONTALLY</CODE> when multiple events are selected for viewing.
+<DT><CODE>bool auto_scale</CODE>
+<DD>
+<A NAME="IDX808"></A>
+Controls whether or not the ColorBar at the bottom off the
+EnviroView is automatically scaled to reflect the minimum and maximum
+pattern values of the Events currently displayed in the EnviroView.
+<DT><CODE>ValDispMode val_disp_mode</CODE>
+<DD>
+<A NAME="IDX809"></A>
+Controls how the values of the Patterns are displayed in
+the blocks. The <CODE>COLOR</CODE> setting fills the blocks with the colors
+from the colorbar, while the <CODE>AREA</CODE>, and <CODE>LINEAR</CODE> settings draw
+size varying spirals in the blocks. The spirals are similar to
+the spirals available for viewing in the NetView and a described in more
+detail in that section. (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).
+<DT><CODE>ColorScale* colorspec</CODE>
+<DD>
+The colorscale to use for the ColorBar at the bottom of the
+EnviroView (see section <A HREF="pdp-user_61.html">6.18  Color Scale Specifications</A>).
+<DT><CODE>ValTextMode val_text</CODE>
+<DD>
+Can be <CODE>VALUES</CODE> or <CODE>LABELS</CODE> or <CODE>BOTH</CODE> (same as <I>Val
+Txt</I> menu) -- controls whether or not the names stored in PatternSpecs'
+<CODE>value_names</CODE> array are displayed on top of the blocks (LABELS),
+and/or the numerical value of the pattern is displayed (VALUES).
+<DT><CODE>bool no_border</CODE>
+<DD>
+<A NAME="IDX810"></A>
+If selected, this eliminates the black border around the pattern
+values.  This is useful for displaying picture-like stimuli.
+<DT><CODE>FontSpec view_font</CODE>
+<DD>
+<A NAME="IDX811"></A>
+The X11 specification for the font to use in drawing all of the basic
+text in the view.
+<DT><CODE>FontSpec value_font</CODE>
+<DD>
+<A NAME="IDX812"></A>
+The X11 specification for the font to use in drawing the
+pattern labels and values in the View Region (might want it smaller).
+</DL>
+
+<P>
+In addition, the EnviroView provides the following functions:
+<DL COMPACT>
+
+<DT><CODE>SelectEvents(int start=0, int n_events=-1)</CODE>
+<DD>
+<A NAME="IDX813"></A>
+This will automatically select a range of events for display in the view
+-- saves on clicking.  start is the index of the event to start
+displaying, and n_events is the number to display (-1 = all).
+<DT><CODE>DeselectEvents(int start=0, int n_events=-1)</CODE>
+<DD>
+<A NAME="IDX814"></A>
+This is the de-selecting complement to SelectEvents.
+<DT><CODE>SetEventSpec(EventSpec* es)</CODE>
+<DD>
+<A NAME="IDX815"></A>
+Changes the EventSpec of all the currently displayed Events to <CODE>es</CODE>
+<DT><CODE>ChangeEventType(TypeDef* new_type)</CODE>
+<DD>
+<A NAME="IDX816"></A>
+Change event types for selected events
+<DT><CODE>ChangeEventGpType(TypeDef* new_type)</CODE>
+<DD>
+<A NAME="IDX817"></A>
+Change event group types for selected event groups
+<DT><CODE>DuplicateEvents()</CODE>
+<DD>
+<A NAME="IDX818"></A>
+Duplicate selected events
+<DT><CODE>DuplicateEventGps()</CODE>
+<DD>
+<A NAME="IDX819"></A>
+Duplicate selected event groups
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_140.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_142.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

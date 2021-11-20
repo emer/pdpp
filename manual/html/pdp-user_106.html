@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-signals</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_105.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_107.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX513" HREF="pdp-user_toc.html">9.4  Signals to Control a PDP++ Process</A></H2>
+<P>
+<A NAME="IDX514"></A>
+<A NAME="IDX515"></A>
+
+</P>
+<P>
+When a PDP++ process is running in the background (see previous section
+for instructions on how to do this), it is no longer possible to gain
+control of it through either the script or graphical interface.
+However, the process will respond to a number of signals which allow
+one to save the state of the process to a file.  The saved file can then
+be pulled up in the interface and the state of the simulation examined.
+
+</P>
+<P>
+Signals can be sent to a process using the unix <CODE>kill</CODE> command,
+with two arguments: the signal type and the process id.  There are two
+signal types that are "user defined", <CODE>USR1</CODE> and <CODE>USR2</CODE>.  We
+have defined <CODE>USR1</CODE> to save any networks in the process to file(s)
+named <TT>`PDP++NetSave.#.net.gz'</TT>, and <CODE>USR2</CODE> to save any projects
+to file(s) named <TT>`PDP++Project.#.proj.gz'</TT>.  The <CODE>ALRM</CODE> (alarm)
+signal will also save project files.
+
+</P>
+<P>
+Any of the "lethal" signals like <CODE>SEGV</CODE> and <CODE>BUS</CODE> which cause
+the process to crash result in an attempt to save the current state of
+any open projects in <CODE>PDP++Recover.#.proj.gz</CODE> files.  Thus, the
+user will not typically lose any work even when (or if) the software
+crashes.  Note that the number # of the saved file will increment to be
+unique in the directory.
+
+</P>
+<P>
+To kill a process without getting one of these recover files, use the
+strongest kill signal, <CODE>KILL</CODE> (signal number 9), which will bypass
+the saving of a recover file.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_105.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_107.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

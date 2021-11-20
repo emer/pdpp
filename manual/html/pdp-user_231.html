@@ -1,0 +1,183 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - so-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_230.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_232.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1411" HREF="pdp-user_toc.html">16.2  So Connection Specifications</A></H2>
+<P>
+<A NAME="IDX1412"></A>
+<A NAME="IDX1413"></A>
+<A NAME="IDX1414"></A>
+<A NAME="IDX1415"></A>
+<A NAME="IDX1416"></A>
+
+</P>
+<P>
+<A NAME="IDX1417"></A>
+<A NAME="IDX1418"></A>
+The basic connection type used in all the algorithms, <B>SoCon</B> has a
+delta-weight variable <CODE>dwt</CODE> and a previous-delta-weight variable
+<CODE>pdw</CODE>.  <CODE>dwt</CODE> is incremented by the current weight change
+computations, and then cleared when the weights are updated.  <CODE>pdw</CODE>
+should be used for viewing, since <CODE>dwt</CODE> of often zero.   While it
+has not been implemented in the standard distribution, <CODE>pdw</CODE> could
+be used for momentum-based updating (see section <A HREF="pdp-user_200.html">14.1.2  Bp Connection Specifications</A>).
+
+</P>
+<P>
+<A NAME="IDX1419"></A>
+<A NAME="IDX1420"></A>
+<A NAME="IDX1421"></A>
+The basic <B>SoConSpec</B> has a learning rate parameter <CODE>lrate</CODE>, and
+a range to keep the weight values in: <CODE>wt_range</CODE>.  Unlike
+error-driven learning, many self-organizing learning algorithms require
+the weights to be forcibly bounded, since the positive-feedback loop
+phenomenon of associative learning can lead to infinite weight growth
+otherwise.  Finally, there is a variable which determines how to compute
+the average and summed activation of the input layer(s), which is needed
+for some of the learning rules.  If the network is fully connected, then
+one can set <CODE>avg_act_source</CODE> to compute from the
+<CODE>LAYER_AVG_ACT</CODE>, which does not require any further computation.
+However, if the units receive connections from only a sub-sample of the
+input layer, then the layer average might not correspond to that which
+is actually seen by individual units, so you might want to use
+<CODE>COMPUTE_AVG_ACT</CODE>, even though it is more computationally
+expensive.
+
+</P>
+<P>
+The different varieties of <B>SoConSpec</B> are as follows:
+<DL COMPACT>
+
+<DT><B>HebbConSpec</B>
+<DD>
+<A NAME="IDX1422"></A>
+This computes the most basic Hebbian learning rule, which is just the
+coproduct of the sending and receiving unit activations:
+<PRE>  cn-&#62;dwt += ru-&#62;act * su-&#62;act;
+</PRE>
+
+Though it is perhaps the simplest and clearest associative learning
+rule, its limitations are many, including the fact that the weights will
+typically grow without bound.  Also, for any weight decrease to take
+place, it is essential that activations be able to take on negative
+values.  Keep this in mind when using this form of learning.  One
+application of this con spec is for simple pattern association, where
+both the input and output patterns are determined by the environment,
+and learning occurs between these patterns.
+
+<DT><B>ClConSpec</B>
+<DD>
+<A NAME="IDX1423"></A>
+This implements the standard competitive learning algorithm as described
+in <CITE>Rumelhart &#38; Zipser, 1985</CITE>.  This rule can be seen as attempting
+to align the weight vector of a given unit with the center of the
+cluster of input activation vectors that the unit responds to.  Thus,
+each learning trial simply moves the weights some amount towards the
+input activations.  In standard competitive learning, the vector of
+input activations is <EM>normalized</EM> by dividing by the sum of the
+input activations for the input layer, <CODE>sum_in_act</CODE> (see
+<CODE>avg_act_source</CODE> above for details on how this is computed).
+<PRE>  cn-&#62;dwt += ru-&#62;act * ((su-&#62;act / cg-&#62;sum_in_act) - cn-&#62;wt);
+</PRE>
+
+The amount of learning is "gated" by the receiving unit's activation,
+which is determined by the competitive learning function.  In the
+winner-take-all "hard" competition used in standard competitive
+learning, this means that only the winning unit gets to learn.
+Note that if you multiply through in the above equation, it is
+equivalent to a Hebbian-like term minus something that looks like weight
+decay:
+<PRE>  cn-&#62;dwt += (ru-&#62;act * (su-&#62;act / cg-&#62;sum_in_act)) - (ru-&#62;act * cn-&#62;wt);
+</PRE>
+
+This solves both the weight bounding and the weight decrease problems
+with pure Hebbian learning as implemented in the <B>HebbConSpec</B>
+described above.
+
+<DT><B>SoftClConSpec</B>
+<DD>
+<A NAME="IDX1424"></A>
+This implements the "soft" version of the competitive learning learning
+rule <CITE>Nowlan, 1990</CITE>.  This is essentially the same as the "hard"
+version, except that it does not normalize the input activations.  Thus,
+the weights move towards the center of the actual activation vector.
+This can be thought of in terms of maximizing the value of a
+multi-dimensional Gaussian function of the distance between the weight
+vector and the activation vector, which is the form of the learning rule
+used in soft competitive learning.  The smaller the distance between
+the weight and activation vectors, the greater the activation value.
+<PRE>  cn-&#62;dwt += ru-&#62;act * (su-&#62;act - cn-&#62;wt);
+</PRE>
+
+This is also the form of learning used in the self-organizing map
+algorithm, which also seeks to minimize the distance between the weight
+and activation vectors.  The receiving activation value again gates the
+weight change.  In soft competitive learning, this activation is
+determined by a soft competition among the units.  In the SOM, the
+activation is a function of the activation kernel centered around the
+unit with the smallest distance between the weight and activation
+vectors.
+
+<DT><B>ZshConSpec</B>
+<DD>
+<A NAME="IDX1425"></A>
+<A NAME="IDX1426"></A>
+This implements the "zero-sum" Hebbian learning algorithm (ZSH)
+<CITE>O'Reilly &#38; McClelland, 1992</CITE>, which implements a form of
+<EM>subtractive</EM> weight constraints, as opposed to the
+<EM>multiplicative</EM> constraints used in competitive learning.
+Multiplicative constraints work to keep the weight vector from growing
+without bound by maintaining the length of the weight vector normalized
+to that of the activation vector.  This normalization preserves the
+ratios of the relative correlations of the input units with the cluster
+represented by a given unit.  In contrast, the subtractive weight
+constraints in ZSH exaggerate the weights to those inputs which are
+greater than the average input activation level, and diminish those to
+inputs which are below average:
+<PRE>  cn-&#62;dwt += ru-&#62;act * (su-&#62;act - cg-&#62;avg_in_act);
+</PRE>
+
+where <CODE>avg_in_act</CODE> is the average input activation level.  Thus,
+those inputs which are above average have their weights increased, and
+those which are below average have them decreased.  This causes the
+weights to go into a corner of the hypercube of weight values (i.e.,
+weights tend to be either 0 or 1).  Because weights are going towards
+the extremes in ZSH, it is useful to introduce a "soft" weight bounding
+which causes the weights to approach the bounds set by <CODE>wt_range</CODE>
+in an exponential-approach fashion.  If the weight change is greater
+than zero, then it is multiplied by <SAMP>`wt_range.max - cn-&#62;wt'</SAMP>, and if
+it is less than zero, it is multiplied by <SAMP>`cn-&#62;wt - wt_range.min'</SAMP>.
+This is selected by using the <CODE>soft_wt_bound</CODE> option.
+
+<DT><B>MaxInConSpec</B>
+<DD>
+<A NAME="IDX1427"></A>
+This learning rule is basically just the combination of SoftCl and Zsh.
+It turns out that both of these rules can be derived from an objective
+function which seeks to maximize the input information a unit receives,
+which is defined as the signal-to-noise ratio of the unit's response to
+a given input signal <CITE>O'Reilly, 1994</CITE>.  The formal derivation is
+based on a different kind of activation function than those implemented
+here, and it has a special term which weights the Zsh-like term
+according to how well the signal is already being separated from the
+noise.  Thus, this implementation is simpler, and it just combines Zsh
+and SoftCl in an additive way:
+<PRE>  cn-&#62;dwt += ru-&#62;act * (su-&#62;act - cg-&#62;avg_in_act) +
+             k_scl * ru-&#62;act * (su-&#62;act - cn-&#62;wt);
+</PRE>
+
+Note that the parameter <CODE>k_scl</CODE> can be adjusted to control the
+influence of the SoftCl term.  Also, the <CODE>soft_wt_bound</CODE> option
+applies here as well.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_230.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_232.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,62 @@
+
+# rns++ makefile for pdp++
+
+##########################################
+# these are the things to set for the user
+#
+
+# IMPORTANT: any time this file is edited, you must do a 'make NewMakeDepend'
+# to actually make a new Makefile, CPU/Makefile, and dependencies in the latter.
+# Some systems require the Makefile to be made separately, so you should do
+# a 'make NewMakefile' followed by 'make MakeDepend' instead.
+
+
+# Need to include algorithm-specific libraries at front of the folowing list
+# (e.g., -lpdp_bp or -lpdp_cs or -lpdp_so) so they will be linked in.
+#
+# The default is to include all of them, which may be wasteful on 
+# some systems, so you should edit this to only include the libraries
+# you are actually using.
+
+LIBS = -lpdp_bp -lpdp_cs -lpdp_so -lpdp -ltamisc -livgraphic -lcss -ltypea -livmisc \
+	-lreadline -ltermcap -ltastring $(IV_LIB) $(X11_LIB) \
+	$(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# This is the basic set of libraries:
+#
+# LIBS = -lpdp -ltamisc -livgraphic -lcss -ltypea -livmisc \
+# 	-lreadline -ltermcap -ltastring $(IV_LIB) -lX11 \
+#	$(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# the two main 'make' targets are dbgBin (debugging binary) or optBin
+# (optimized binary).  default is to make the optimized (when user just
+# types 'make' or 'make all').
+
+#default: dbgBin
+default: optBin
+
+PROJNAME = rns
+
+MAKETA_FLAGS = -hx -css -instances
+
+# need to include other header files in directory in TAHEADS
+# with leading $(VPATH)/ *and* in HEADS without it
+
+TAHEADS = $(VPATH)/rns.h
+HEADS = rns.h $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+# and any other .cc files here
+
+SRCS = 	rns.cc $(PROJNAME)_TA.cc main.cc
+
+# ditto for objects 
+
+OBJS =  rns.o $(PROJNAME)_TA.o
+EXEOBJS = $(OBJS) main.o
+
+# and dependencies
+
+DEPS = 	rns.d $(PROJNAME)_TA.d main.d
+
+# this includes pdp in the library name
+LIB = libpdp_$(PROJNAME).$(LIB_EXT)

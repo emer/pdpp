@@ -1,0 +1,44 @@
+# makefile for a few functions in the manual directory of PDP++
+
+all:	pdp_all ta_all clean
+
+clean:
+	rm *.aux *.cp *.cps *.dvi *.fn *.fns *.ky *.log *.pg *.toc *.tp *.tps *.vr *.vrs
+
+pdp_all: pdp_toinfo pdp_tohtml pdp_tops
+
+ta_all: ta_toinfo ta_tohtml ta_tops
+
+pdp_toinfo:
+	makeinfo --fill-column=70 pdp-user.texi
+
+# expect errors for this due to bad references..
+ta_toinfo:
+	- makeinfo --fill-column=70 ta_css.texi
+
+pdp_tohtml:
+	cd html;\
+	rm pdp-user*.html; rm pdp-user*.gif;\
+	texi2html -b icons -tex -split_node -verbose -menu /usr/local/pdp++/manual/pdp-user.texi
+
+pdp_tohtml_notex:
+	cd html;\
+	rm pdp-user*.html;\
+	texi2html -b icons -split_node -verbose -menu /usr/local/pdp++/manual/pdp-user.texi
+
+ta_tohtml:
+	cd html;\
+	rm ta_css*.html;\
+	texi2html -b icons -split_node -verbose -menu /usr/local/pdp++/manual/ta_css.texi
+
+pdp_tops:
+	texi2dvi pdp-user.texi
+	dvips -o pdp-user.ps pdp-user.dvi
+	- rm pdp-user.ps.gz
+	gzip pdp-user.ps
+
+ta_tops:
+	texi2dvi ta_css.texi
+	dvips -o ta_css.ps ta_css.dvi
+	- rm ta_css.ps.gz
+	gzip ta_css.ps

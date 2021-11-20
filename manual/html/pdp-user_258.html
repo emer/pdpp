@@ -1,0 +1,127 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - comdir-meths</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_257.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_259.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1733" HREF="pdp-user_toc.html">18.3.3  Method Directives</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>#MENU</CODE>
+<DD>
+Creates a Menu for this function item in an Edit dialog.
+<DT><CODE>#MENU_SEP_BEFORE</CODE>
+<DD>
+Create a separator before this item in the menu.
+<DT><CODE>#MENU_SEP_AFTER</CODE>
+<DD>
+Create a separator after this item in the menu.
+<DT><CODE>#MENU_ON_xxx</CODE>
+<DD>
+Puts this function on given menu.  Creates menu if not already there.
+This does not replace the #MENU directive.  Everything on the File and
+Edit menus will be on the edit button for this class in an edit dialog.
+<DT><CODE>#BUTTON</CODE>
+<DD>
+Creates a button for this function in the edit dialog.
+<DT><CODE>#LABEL_xxx</CODE>
+<DD>
+Sets the label for item (or menu or button) to be xxx.
+<DT><CODE>#USE_RVAL</CODE>
+<DD>
+Use (display) return value from this function.  Otherwise return values
+are ignored.
+<DT><CODE>#USE_RVAL_RMB</CODE>
+<DD>
+Use (display) return value from this function only if the right mouse
+button was pressed on the Ok button.  Otherwise return values are ignored.
+<DT><CODE>#NO_APPLY_BEFORE</CODE>
+<DD>
+Do not apply any changes to dialog before calling this function.  The
+default is to apply the changes first.
+<DT><CODE>#NO_REVERT_AFTER</CODE>
+<DD>
+Do not update (revert) dialog after calling this function (and do not
+call the UpdateAfterEdit function either).  The default is to do both.
+<DT><CODE>#UPDATE_MENUS</CODE>
+<DD>
+Update the global menus after calling this function (e.g., because
+altered the structure reflected by those menus).
+<DT><CODE>#ARGC_x</CODE>
+<DD>
+How many args to present to the user (if default args are available).
+<DT><CODE>#ARG_ON_OBJ</CODE>
+<DD>
+An argument to this function is an object within the base object (e.g., a
+member of the group).
+<DT><CODE>#TYPE_xxx</CODE>
+<DD>
+For TypeDef pointer args: use given type to anchor the listing of possible
+types.  if xxx == 'this', then the type of the current object is used.
+<DT><CODE>#TYPE_ON_xxx</CODE>
+<DD>
+For a function with (any) TypeDef or Token args, uses the member xxx of
+this to anchor type selection or type of tokens to present.
+<DT><CODE>#FROM_GROUP_xxx</CODE>
+<DD>
+Performs selection of tokens for args from given group member xxx, which
+is a member of this object (like ARG_ON_OBJ).  Can also specify which
+arg(s) this applies to by doing #FROM_GROUP_1_gp: 1 = this arg or below
+uses from_group, so put your from_group args first and specify the
+highest index as this.
+<DT><CODE>#NO_GROUP_OPT</CODE>
+<DD>
+For FROM_GROUP_xxx args, disallows group itself as an option.
+<DT><CODE>#NO_SCOPE</CODE>
+<DD>
+Don't scope the argument to this function.  See SCOPE object directive
+<DT><CODE>#NO_SCRIPT</CODE>
+<DD>
+Do not generate script code to call this function, if script code
+recording is currently active.
+section <A HREF="pdp-user_256.html">18.3.1  Object Directives</A>.
+<DT><CODE>#GHOST_ON_xxx</CODE>
+<DD>
+For BUTTON meths, ghosts the button based on the value of boolean member
+xxx of this class.  If member == true, button is ghosted.
+<DT><CODE>#GHOST_OFF_xxx</CODE>
+<DD>
+Like above, except if member == false, button is ghosted.
+<DT><CODE>#CONFIRM</CODE>
+<DD>
+For functions with no args, put up a dialog for confirmation (shows
+function description too).
+<DT><CODE>#NEW_FUN</CODE>
+<DD>
+Give user the option to call this (void) function during New (in the
+"new" dialog).
+<DT><CODE>#NULL_OK</CODE>
+<DD>
+A null value is ok as an option for the user (else not). for all
+pointers as args.
+<DT><CODE>#EDIT_OK</CODE>
+<DD>
+Include Edit as an option on the token pointer menu (else not)
+<DT><CODE>#FILE_ARG_EDIT</CODE>
+<DD>
+For functions with one ostream arg, use the normal arg edit dialog,
+instead of a shortcut directly to the file chooser (arg edit allows user
+to choose open mode for saving).
+<DT><CODE>#QUICK_SAVE</CODE>
+<DD>
+For functions with one ostream arg, use existing file name if possible
+(default is to prompt).
+<DT><CODE>#APPEND_FILE</CODE>
+<DD>
+For functions with one ostream arg, use append as the file opening mode.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_257.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_259.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

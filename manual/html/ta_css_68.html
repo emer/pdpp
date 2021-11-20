@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-group</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_67.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_69.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX352" HREF="ta_css_toc.html">8.2  Groups</A></H2>
+<P>
+<A NAME="IDX353"></A>
+<A NAME="IDX354"></A>
+<A NAME="IDX355"></A>
+<A NAME="IDX356"></A>
+<A NAME="IDX357"></A>
+<A NAME="IDX358"></A>
+<A NAME="IDX359"></A>
+<A NAME="IDX360"></A>
+<A NAME="IDX361"></A>
+
+</P>
+<P>
+Groups are one of the major workhorse objects in the PDP++ software.
+Virtually every object is contained in a group object.  Thus, groups
+provide a way of managing other objects, creating them, ordering them,
+and iterating through them.
+
+</P>
+<P>
+A particular group typically manages objects of the same type.  Thus, a
+group of units always contains units of one form or another.  Groups
+have a <EM>default type</EM> of object that they expect to contain, and
+this is what they will create if asked to create a new object.
+
+</P>
+<P>
+Groups also have a notion of a <EM>default element</EM>, which can be
+useful.  For example, the default element of the group of color
+specifications on the root object is the default color spec that will be
+used by all windows that need a color spec.
+
+</P>
+<P>
+There are two basic types of groups.  The simpler form of group is
+actually just a <B>List</B>.  A <B>List</B> object manages a single list of
+elements, and does not allow for any sub-grouping of these elements.
+Lists are used to hold simple objects that probably don't need to have
+such subgroups.
+
+</P>
+<P>
+A <B>Group</B> may also contain subgroups, which are similar in type to the
+group itself. The nested structure of subgroups within subgroups within
+groups can be organized into a conceptual "tree" of groups and elements.
+The initial group comprises the base of the tree with each of its
+subgroups representing a branch. The subgroup's subgroups continually
+branch off until in the end a group is reached without any further
+subgroups. The actual elements of the group are conceptually represented
+as "leaves", and may occur within any group at any level of the group
+tree.
+
+</P>
+<PRE> Ex:
+
+                        __(initial group)____
+                       /      |       \   \  \
+            (subgroup1)   (subgroup2) el6 el7 el8
+              /  |  \         |     \
+   (subgroup11) el2 el3 (subgroup21)(subgroup22)
+          |                   | \
+         el1                  el4 el5
+
+</PRE>
+
+<P>
+In this example there are six groups and eight "leaf" elements. The
+leaves are numbered in their Depth First Search retrieval order which is
+used by the <CODE>Leaf()</CODE> function described in the group functions
+section See section <A HREF="ta_css_71.html">8.2.3  Group Functions</A>.
+
+</P>
+<P>
+In some cases it useful for the same group element to occur in more than
+one group at time. The parent groups share the element, however, one
+group is assigned to be the owner (usually the initial group the element
+was created within). Usually a group will own all of its elements, but
+sometimes it may contain elements from other groups as well. Those
+elements which are owned by other groups are known as <EM>linked</EM>
+elements, and are added to a group by using the <CODE>Link()</CODE> function
+described in the group functions section. When a group is deleted, it
+breaks its link to the linked elements, but does not delete them as it
+does the other elements it owns. Subgroups can also be linked.
+
+</P>
+<PRE>Ex:
+        (group1)                  (group2)
+        /   |   \                /    |  \
+(subgroup1) el1  \.............el2    el3 \
+  /  \                                     \
+el4   \...................................(subgroup2)
+</PRE>
+
+<P>
+In this example group1 has a link to element el2 in group2. El2 is owned
+by group2 and is a link element of group1. In addition, subgroup1 has a
+link to subgroup2, which is owned by group2.
+
+</P>
+<P>
+The following sections document the various operations and variables of
+the group types. These are probably of most interest to users who will
+be manipulating groups in the CSS language, or in programming in PDP++.
+However, some of the group functions are available in the <I>Actions</I>
+menu in the gui, and their function might not be fully clear from their
+name and arguments.
+
+</P>
+
+<UL>
+<LI><A HREF="ta_css_69.html">1         Iterating Through Group Elements</A>
+<LI><A HREF="ta_css_70.html">2         Group Variables</A>
+<LI><A HREF="ta_css_71.html">3         Group Functions</A>
+<LI><A HREF="ta_css_72.html">4              Group Edit Dialog</A>
+</UL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_67.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_69.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

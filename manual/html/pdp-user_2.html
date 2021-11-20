@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - inst</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_3.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A HREF="pdp-user_toc.html">2  Installation Guide</A></H1>
+
+<P>
+This chapter provides a guide to installing the PDP++ software.  There
+are two basic forms in which the software is distributed -- the
+executable files only for use by an "end user", and the complete source
+code, for use by a "programmer" who will be compiling new additions to
+PDP++.  We will refer to the executable files only distribution as the
+"end user's version", and the source code distribution as the
+"programmer's version", where the version refers to the manner in which
+the software is distributed, not to the software itself (it's all the
+same code).
+
+</P>
+<P>
+For most systems, the end user's distribution is obtained in two parts,
+a tar file containing pre-compiled binaries for a particular system, and
+another which contains the manual, demos, default files, and other
+miscellaneous things.  This is for the end user who will not need to
+compile new versions of the software to add new functionality to it.
+The relevant tar files are:
+<PRE>  pdp++_version_bin_CPU.tar.gz
+  pdp++_version_ext.tar.gz
+</PRE>
+
+<P>
+where <VAR>version</VAR> is the version number of the software release, and
+<VAR>CPU</VAR> is the cpu-type of the system you will be running on (see
+below).
+
+</P>
+<P>
+For LINUX systems under RedHat or compatible distributions, an rpm
+version (with the <TT>`.rpm'</TT> extension) is available.
+
+</P>
+<P>
+For MS Windows, a standard <CODE>setup</CODE> install file (with the
+<TT>`.exe'</TT> extension) is available.
+
+</P>
+<P>
+For Mac OS-X, a standard "package" file (with the <TT>`.pkg.sit'</TT>
+extension) is available.
+
+</P>
+<P>
+The currently supported <VAR>CPU</VAR> types (listed in rough order of level
+of support) are:
+<DL COMPACT>
+
+<DT><CODE>LINUX</CODE>
+<DD>
+An Intel 386-Pentium machine running a modern glibc version of
+Linux (e.g., RedHat 7+).
+<DT><CODE>CYGWIN</CODE>
+<DD>
+An Intel 386-Pentium machine running the Windows operating system (using
+the Cygnus CygWin system as a compilation environment).
+<DT><CODE>DARWIN</CODE>
+<DD>
+A Mac running OS-X (aka Darwin), which is based on FreeBSD.  Binaries
+are for the power PC (PPC) architecture.
+<DT><CODE>SUN4</CODE>
+<DD>
+A SUN sparc-station system running a modern 5.x Solaris version of the
+operating system.
+<DT><CODE>SGI</CODE>
+<DD>
+A Silicon Graphics workstation running a recent Irix 6.x release.
+<DT><CODE>HP800</CODE>
+<DD>
+A Hewlett Packard workstation running HP-UX version 10.x.
+<DT><CODE>IBMaix</CODE>
+<DD>
+An IBM RS/6000 machine running AIX v4.1.4 (4.1.x shouldwork)
+</DL>
+
+<P>
+If you don't have one of these machines, then you will have to compile
+the software from the source code using the programmers distribution.
+
+</P>
+<P>
+The programmer's distribution is contained in one tar file that contains
+the source code along with the manual and other supporting files:
+<PRE>  pdp++_version_src.tar.gz
+</PRE>
+
+<P>
+These and any other files mentioned below can be obtained from our
+anonymous FTP servers:
+<PRE>CMU FTP Site: 	        ftp://cnbc.cmu.edu/pub/pdp++/
+Colorado FTP Site: 	ftp://grey.colorado.edu/pub/oreilly/pdp++/
+European (UK) Mirror:   ftp://unix.hensa.ac.uk/mirrors/pdp++/
+</PRE>
+
+<P>
+The Colorado site is updated most frequently.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_3.html">1                  Installing the End User's Version</A>
+<LI><A HREF="pdp-user_4.html">2                   Installing the Programmers Version</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_3.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

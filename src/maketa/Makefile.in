@@ -1,0 +1,38 @@
+# maketa makefile for g++
+
+##################################
+# these are the things to set
+#
+
+# this directory cannot be optimized -O2 in linux, so using -O instead
+#OPT_FLAGS = -O
+
+LIBS = -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+EXTERNAL_LIBS = $(LIBS) -lcss -ltamisc -livmisc -livgraphic -lreadline -ltermcap -lIV -lX11
+PROJNAME = maketa
+PROJDIR	 = maketa
+
+EXE = maketa
+DIST_EXE = maketa.bkup
+
+LIB = libtypea.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx -css
+
+EXTRA_HX_FILE = mta_parse
+EXTRA_CPU_FILES = mta.parse.cc
+
+# these flags make it compile in the right way
+IN_FLAGS = -DYYDEBUG -DNO_TA_BASE
+
+HEADS = ta_stdef.h ta_list.h ta_list_tmplt.h mta_constr.h maketa.h mta_parse.h typea.h
+
+SRCS = ta_list.cc mta_parse.cc mta_lex.cc mta_constr.cc maketa.cc typea.cc
+
+OBJS = ta_list.o mta_parse.o mta_lex.o mta_constr.o maketa.o typea.o 
+EXEOBJS = $(OBJS)
+
+DEPS = 	ta_list.d mta_parse.d mta_lex.d mta_constr.d maketa.d typea.d
+
+default:  optBin
+#default:	dbgBin

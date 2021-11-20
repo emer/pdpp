@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_183.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_185.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1102" HREF="pdp-user_toc.html">13.3  Log Views</A></H2>
+<P>
+<A NAME="IDX1103"></A>
+
+</P>
+<P>
+The PDPLog structure has many options for viewing its data. Each of
+these options is represented by a corresponding LogView object. Like
+the network object, PDPLogs can have multiple views.
+
+</P>
+<P>
+Each of the views has its own methods of interacting with the data,
+however all the views have some properties in common. All the views are
+window's into the data stored in the log's datatable <CODE>data</CODE>. While
+some of the views may show only a portion of the datatable at a time,
+the maximum amount of data they can show is limited by the size of the
+datatable itself, <CODE>data_bufsz</CODE>. The <CODE>log_file</CODE> however records
+all the information sent to log sequentially. Each of the LogViews
+provides four buttons which shift the the view's window on the
+datatable. If the view's window on the datatable moves outside the range
+of the datatable, the datatable is scrolled by moving log's
+<CODE>data_range</CODE> throughout the <CODE>log_file</CODE>.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_185.html">1           The LogView Class</A>
+<LI><A HREF="pdp-user_186.html">2              The Text Log View</A>
+<LI><A HREF="pdp-user_187.html">3               The Net Log View</A>
+<LI><A HREF="pdp-user_188.html">4             The Graph Log View</A>
+<LI><A HREF="pdp-user_194.html">5              The Grid Log View</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_183.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_185.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

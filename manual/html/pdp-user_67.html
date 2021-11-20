@@ -1,0 +1,280 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-tut-run</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_66.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_68.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX190" HREF="pdp-user_toc.html">7.2.1  Running an Example Program in CSS</A></H3>
+
+<P>
+The following example will be used to illustrate the use of the CSS
+system:
+
+</P>
+<PRE>
+// a function that decodes the number
+String Decode_Number(float number) {
+  String rval = "The number, " + number + " is: ";
+  if(number &#60; 0)
+    rval += "negative";
+  else if(number &#60; .5)
+    rval += "less than .5";
+  else if(number &#60; 1)
+    rval += "less than 1";
+  else
+    rval += "greater than 1";
+  return rval;
+}
+
+// decodes n_numbers randomly generated numbers
+void Decode_Random(int n_numbers) {
+  int i;
+  for(i=0; i&#60;n_numbers; i++) {
+    float number = 4.0 * (drand48()-.5);
+    String decode = Decode_Number(number);  // call our decoding function
+    cout &#60;&#60; i &#60;&#60; "\t" &#60;&#60; decode &#60;&#60; "\n";    // c++ style output
+  }
+}
+
+</PRE>
+
+<P>
+You can enter this code using a text editor (e.g., emacs or vi), or use
+the example code in <TT>`css_example.css'</TT> included with the PDP++
+software in the <TT>`css/include'</TT> directory.  Then, run the PDP++
+software.  At the prompt (which will vary depending on which executable
+you run -- the example will use <CODE>css&#62;</CODE>), type:
+
+</P>
+<PRE>css&#62; load "css_example.css"
+</PRE>
+
+<P>
+and the prompt should return.  If you made any typos, they might show up
+as a Syntax Error, and should be corrected in the text file, which can
+be re-loaded with:
+
+</P>
+<PRE>css&#62; reload
+</PRE>
+
+<P>
+Loading the text file translates it into an internal "machine code" that
+actually implements CSS.  This is like compiling the code in traditional
+C, but it does not write out an executable file.  Instead, it keeps the
+machine code in memory, so that it can be run interactively by the user.
+
+</P>
+<P>
+To ensure that CSS has loaded the text, you can list the program:
+
+</P>
+<PRE>css&#62; list
+
+Listing of Program: css_example.css
+1
+2       // a function that decodes the number
+3       String Decode_Number(float number) {
+4         String rval = "The number, " + number + " is: ";
+5         if(number &#60; 0)
+6           rval += "negative";
+7         else if(number &#60; .5)
+8           rval += "less than .5";
+9         else if(number &#60; 1)
+10          rval += "less than 1";
+11        else
+12          rval += "greater than 1";
+13        return rval;
+14      }
+15
+16      // decodes n_numbers randomly generated numbers
+17      void Decode_Random(int n_numbers) {
+18        int i;
+19        for(i=0; i&#60;n_numbers; i++) {
+20          float number = 4.0 * (drand48()-.5);
+21          String decode = Decode_Number(number);  // call decoder
+css&#62; list
+
+Listing of Program: css_example.css
+21          String decode = Decode_Number(number);  // call decoder
+22          cout &#60;&#60; i &#60;&#60; "\t" &#60;&#60; decode &#60;&#60; "\n";    // c++ style output
+23        }
+24      }
+26      list
+
+</PRE>
+
+<P>
+Note that you have to type <CODE>list</CODE> in twice in order to see the
+whole program (by default, <CODE>list</CODE> only shows 20 lines of code).
+Also, notice that the list command itself shows up at the end of the
+program--this is because commands that are entered on the command line
+are actually compiled, run, and then deleted from the end of the
+program.  Because <CODE>list</CODE>, when run, shows the current state of the
+code (i.e., before it has itself been deleted), it shows up at the
+bottom of the listing.
+
+</P>
+<P>
+Now, let's try running the example:
+
+</P>
+<PRE>css&#62; run
+css&#62;
+</PRE>
+
+<P>
+Nothing happens!  This is because the code as written only defines
+functions, it does not actually call them.  The program would have to
+have had some statements (i.e., function calls, etc) at the <EM>top
+level</EM> (i.e., not within the definition of a function) in order to do
+something when the <CODE>run</CODE> command is issued.
+
+</P>
+<P>
+However, we can call the functions directly:
+
+</P>
+<PRE>css&#62; Decode_Random(5);
+0       The number, -0.414141 is: negative
+1       The number, 1.36194 is: greater than 1
+2       The number, -0.586656 is: negative
+3       The number, -0.213666 is: negative
+4       The number, -0.725229 is: negative
+css&#62;
+</PRE>
+
+<P>
+(of course, your output will vary depending on the random number
+generator).  This illustrates the interactive nature of CSS -- you can
+call any function with any argument, and it will execute it for you
+right then and there.  This is especially useful for debugging functions
+individually.  Thus, we can call the <CODE>Decode_Number</CODE> function
+directly with different numbers to make sure it handles the cases
+appropriately:
+
+</P>
+<PRE>css&#62; Decode_Number(.25);
+css&#62;
+</PRE>
+
+<P>
+Notice, however, that there was no output.  This is because the function
+simply returns a string, but does not print it out.  There are several
+ways to print out results, but the easiest is probably to use the
+<CODE>print</CODE> command:
+
+</P>
+<PRE>css&#62; print Decode_Number(.25);
+(String)  = The number, 0.25 is: less than .5
+</PRE>
+
+<P>
+<CODE>print</CODE> gives you the type name, the variable name (which is blank
+in this case), and the value.  To illustrate this, you can just declare
+a variable directly:
+
+</P>
+<PRE>css&#62; String foo = "a string";
+css&#62; print foo
+(String) foo = a string
+</PRE>
+
+<P>
+Compare this with the print <EM>function</EM> (not command) <CODE>printf</CODE>:
+
+</P>
+<PRE>css&#62; printf(Decode_Number(.25));
+The number, 0.25 is: less than .5css&#62;
+</PRE>
+
+<P>
+which just gives you the value of the string (and does not automatically
+append a '\n' return at the end of the line).  Finally, we can use C++
+stream-based printing, which directs the return value from the function
+to print itself to the default current output <CODE>cout</CODE>:
+
+</P>
+<PRE>css&#62; cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+The number, 0.75 is: less than 1
+css&#62;
+</PRE>
+
+<P>
+Note also that you can put any expression in the arguments to the
+function:
+
+</P>
+<PRE>css&#62; print Decode_Number(exp(cos(tan(.2) + .5) * PI)/ 20);
+(String)  = The number, 0.549689 is: less than 1
+</PRE>
+
+<P>
+In order to actually be able to run a script, we can add the following
+lines to the code by switching to <CODE>define</CODE> mode instead of the
+default interactive mode:  
+
+</P>
+<PRE>css&#62; define
+css# cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+css# Decode_Random(5);
+css# exit
+</PRE>
+
+<P>
+Note that we use <CODE>exit</CODE> to exit the <CODE>define</CODE> mode.  You could
+also use the <CODE>EOF</CODE> character (<KBD>ctrl-D</KBD> on most systems) to exit
+this mode.  To see that we have added to the program, list it from line
+20 onwards:
+
+</P>
+<PRE>css&#62; list 20
+
+Listing of Program: css_example.css
+20          float number = 4.0 * (drand48()-.5);
+21          String decode = Decode_Number(number);  // call decoder
+22          cout &#60;&#60; i &#60;&#60; "\t" &#60;&#60; decode &#60;&#60; "\n";    // c++ style output
+23        }
+24      }
+26      cout &#60;&#60; Decode_Number(.75) &#60;&#60; "\n";
+27      Decode_Random(5);
+28      exit
+29      list 20
+</PRE>
+
+<P>
+Now, when we <CODE>run</CODE> the program, we get:
+
+</P>
+<PRE>css&#62; run
+The number, 0.75 is: less than 1
+0       The number, 1.54571 is: greater than 1
+1       The number, -1.93767 is: negative
+2       The number, 0.336361 is: less than .5
+3       The number, -1.36253 is: negative
+4       The number, -0.465137 is: negative
+css&#62;
+</PRE>
+
+<P>
+All of the C language rules about declaring or defining functions before
+they are called apply in CSS as well (in general, CSS obeys most of the
+same rules as C), so we could not have put those two extra lines of code
+in the example program before the functions themselves were defined.  In
+general, this leads to a program layout consisting of various different
+functions, followed at the very end by one or two lines of code at the
+top-level which call the relevant function to start things off.  If you
+are feeling traditional, you can call this function <CODE>main</CODE>, and it
+will look like a regular C/C++ program, except for the last line which
+calls the main function.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_66.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_68.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

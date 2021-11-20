@@ -1,0 +1,156 @@
+// generic functions useful for writing startup scripts
+
+bool Start_ArgCheck(int min_args, String ctrs) {
+  if(argc < min_args) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "\n\nStartup script should be used as follows:\n\n"
+	   << argv[0] << " -nogui -f startup.css <myproj> " << ctrs << "&\n" 
+	   << "\n<myproj> is the name of your project (with or without the .proj.gz)\n"
+	   << "Optionally counter maxima can be set with " << ctrs << "\n"
+	   << "Appropriate log files will be automatically saved.\n\n";
+    }
+    return false;
+  }
+  return true;
+}
+
+String Start_GetStub() {
+  String stub_nm = argv[2];	// always 2nd arg
+  if(stub_nm.contains(".proj.gz"))
+    stub_nm = stub_nm.before(".proj.gz");
+  return stub_nm;
+}
+
+void Start_LoadProj(String stub_nm, bool set_net_nm = true) {
+  .projects->Load(stub_nm + ".proj.gz");
+  if(set_net_nm)
+    .networks.DefaultEl().name = stub_nm;	// net file gets stub name
+}
+
+void Start_BuildNet() {
+  .networks.DefaultEl().Build();
+  .networks.DefaultEl().Connect();
+}
+
+String Start_FindFile(String fnm, String ext) {
+  String_Array& fls = Dir();
+  int i;
+  for(i=0;i<fls.size;i++) {
+    if(fls[i].contains(fnm) && fls[i].contains(ext))
+      return fls[i];
+  }
+  return "";
+}
+
+void Start_ReadWts(Network* net, String fnm) {
+  String wts = Start_FindFile(fnm, ".wts.gz");
+  if(wts.empty()) {
+    cerr << "ERROR: Start_ReadWts could not find weight file for: " << fnm << endl;
+    return;
+  }
+  net.ReadWeights(wts);
+}
+
+void Start_LogFile(String path, String stub_nm, String sufx, bool appnd = false) {
+  PDPLog* lg = .logs.FindFromPath(path);
+  if(lg == NULL) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "ERROR: Start_LogFile: log " << path << " not found in .logs" << endl;
+    }
+    return;
+  }
+  if(taMisc::dmem_nprocs > 1) {
+    Network* net = .networks.DefaultEl();
+    if(net->dmem_nprocs_actual == taMisc::dmem_nprocs) { // running only parallel conns
+      if(taMisc::dmem_proc != 0) return; // don't save from other procs
+    }
+    else { // running parallel epochs
+      if(lg->cur_proc != NULL) {
+	if(lg->cur_proc.InheritsFrom(TA_TrialProcess) ||
+	   lg->cur_proc.InheritsFrom(TA_SettleProcess) ||
+	   lg->cur_proc.InheritsFrom(TA_CycleProcess) ||
+	   lg->cur_proc.InheritsFrom(TA_SequenceProcess)) {
+	  sufx = ".p" + taMisc::dmem_proc + sufx;
+	}
+	else {
+	  if(taMisc::dmem_proc != 0) return; // don't save multiple higher-level procs!
+	}
+      }
+    }
+  }
+  String fnm = stub_nm + sufx;
+  if(appnd) {
+    lg.SetAppendFile(fnm);
+  }
+  else {
+    lg.SetSaveFile(fnm);
+  }
+}
+
+// set maximum value of a counter based on arg at given index
+Counter* Start_CtrMax(Process_MGroup* gp, String path, int arg_idx) {
+  if(path.contains(".max"))
+    path = path.before(".max");
+  Counter* ctr = gp.FindFromPath(path);
+  if(ctr == NULL) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "ERROR: Start_SetCtrMax: path " << path << " not found in "
+	   << gp.GetPath() << endl;
+    }
+    return NULL;
+  }
+  if(!ctr->InheritsFrom("Counter")) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "ERROR: Start_SetCtrMax: path " << path << " not found in "
+	   << gp.GetPath() << endl;
+    }
+    return NULL;
+  }
+  if(argc > arg_idx) {
+    ctr.max = argv[arg_idx];
+  }
+  return ctr;
+}
+
+// set maximum value of a counter based on direct value provided
+Counter* Start_CtrMax_Val(Process_MGroup* gp, String path, int val) {
+  if(path.contains(".max"))
+    path = path.before(".max");
+  Counter* ctr = gp.FindFromPath(path);
+  if(ctr == NULL) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "ERROR: Start_SetCtrMax_Val: path " << path << " not found in "
+	   << gp.GetPath() << endl;
+    }
+    return NULL;
+  }
+  if(!ctr->InheritsFrom("Counter")) {
+    if(taMisc::dmem_proc == 0) {
+      cerr << "ERROR: Start_SetCtrMax_Val: path " << path << " not found in "
+	   << gp.GetPath() << endl;
+    }
+    return NULL;
+  }
+  ctr.max = val;
+  return ctr;
+}
+
+void Start_DMemNetNProcs(Network* net, EpochProcess* epc, int arg_idx) {
+  if(taMisc::dmem_proc == 0) {
+    cerr << "Network: " << net->name << " dmem_nprocs = ";
+  }
+  if(argc > arg_idx) {
+    net->dmem_nprocs = argv[arg_idx];
+  }
+  net->UpdateAfterEdit();
+  epc->UpdateAfterEdit();	// update the epoch process allocations!
+}
+
+int Start_SetEpochBatchN(EpochProcess* epc, int arg_idx) {
+  if(argc > arg_idx) {
+    epc->batch_n = argv[arg_idx];
+  }
+  epc->UpdateAfterEdit();
+  return epc->batch_n;
+}
+    

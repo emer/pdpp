@@ -1,0 +1,89 @@
+// this was created from the script record of creating the prototype-based patterns
+// used in the bp_softmax.proj.gz project
+
+class GenRndPrototypes {
+public:
+  int		n_bits_active;
+  int		min_proto_ovlp;
+  int		n_protos;
+  int		n_exemplars;	// including the prototoype
+  int		n_bits_flipped;	// for the exemplars
+  Random	noise;		// parameters for the noise
+
+  GenRndPrototypes();
+  ~GenRndPrototypes();
+  void		GenProtos();	// #BUTTON generate prototype patterns
+  void		GenExempFlip(); // #BUTTON generate exemplars from prototypes by flipping
+  void		GenExempNoise(); // #BUTTON generate exemplars from prototypes by adding noise
+};
+
+GenRndPrototypes::GenRndPrototypes() {
+  n_bits_active = 4;
+  min_proto_ovlp = 8;
+  n_protos = 4;
+  n_exemplars = 4;
+  n_bits_flipped = 1;
+  noise = new Random;
+}
+
+GenRndPrototypes::~GenRndPrototypes() {
+  delete noise;
+}
+
+void GenRndPrototypes::GenProtos() {
+  Environment* env = .environments[0]; // prototypes in 0
+  env->name = "Prototypes";
+  env.events->RemoveAll();
+  env.events->New(n_protos, Event);
+  int pro;
+  for(pro=0; pro<n_protos; pro++) {
+    env.events[pro].name = "Proto_" + pro;
+    env.events[pro].patterns[1].value[pro] = 1.0; // set output
+  }
+  env.views[0].Revert();
+  env.PermutedBinary_MinDist(0, n_bits_active, min_proto_ovlp, false);
+  env.views[0].Revert();
+  env.DistMatrix("prototypes.distmat", 0, false, false);
+  system("more prototypes.distmat");
+}
+
+void GenRndPrototypes::GenExempFlip() {
+  .environments->DuplicateEl(.projects[0].environments[0]);
+  Environment* env = .environments.Peek();
+  env->name = "Exemplars";
+  env.ReplicateEvents(n_exemplars-1, false); // subtract one for the existing proto
+  env.FlipBits(0, n_bits_flipped);
+  int pro, exem;
+  int cnt = 0;
+  for(pro=0; pro<n_protos; pro++) {
+    for(exem=0; exem<n_exemplars; exem++, cnt++) {
+      env.events[cnt].name = "Ex_" + pro + "_" + exem;
+      env.events[cnt].patterns[1].value[pro] = 1.0; // set output
+    }
+  }
+  env.views[0].Revert();
+  env.DistMatrix("exemplars.distmat", 0, false, false);
+  system("more exemplars.distmat");
+}
+
+void GenRndPrototypes::GenExempNoise() {
+  .environments->DuplicateEl(.projects[0].environments[0]);
+  Environment* env = .environments.Peek();
+  env->name = "Exemplars";
+  env.ReplicateEvents(n_exemplars-1, false); // subtract one for the existing proto
+  env.AddNoise(0, noise);
+  int pro, exem;
+  int cnt = 0;
+  for(pro=0; pro<n_protos; pro++) {
+    for(exem=0; exem<n_exemplars; exem++, cnt++) {
+      env.events[cnt].name = "Ex_" + pro + "_" + exem;
+      env.events[cnt].patterns[1].value[pro] = 1.0; // set output
+    }
+  }
+  env.views[0].Revert();
+  env.DistMatrix("exemplars.distmat", 0, false, false);
+  system("more exemplars.distmat");
+}
+
+GenRndPrototypes gen_rnd_protos;
+EditObj(gen_rnd_protos);

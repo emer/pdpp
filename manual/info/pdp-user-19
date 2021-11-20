@@ -1,0 +1,1201 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: comdir-membs,  Next: comdir-meths,  Prev: comdir-objs,  Up: prog-comdir
+
+Member Directives
+-----------------
+
+`#HIDDEN'
+     Hides member from user's view in edit dialogs and CSS type
+     information printouts.
+
+`#HIDDEN_INLINE'
+     Hides member when inlined in another object, but not when edited
+     itself.  This only applies to members of #INLINE objects.
+
+`#SHOW'
+     Always show this member in the edit dialog (i.e., even if it was
+     marked #READ_ONLY).
+
+`#IGNORE'
+     Does not register this member in the type information for this
+     class.
+
+`#DETAIL'
+     Flags this member as a level of detail that the user usually
+     does not need to deal with -- can be viewed by changing the Show
+     setting in the edit dialog.
+
+`#NO_SAVE'
+     This member is not saved when dumping to a file.
+
+`#NO_SAVE_PATH_R'
+     Don't create these objects in the 1st pass of the dump file
+     (e.g., they will be created automatically by something else,
+     usually an #IMMEDIATE_UPDATE UpdateAfterEdit function on a
+     parent object).  This can be used to speed up saving and loading
+     of large numbers of repetitive objects which can be created
+     instead.
+
+`#READ_ONLY'
+     Allows the user to see but not edit this item.  By default the
+     gui edit dialog will not show these items.  This prevents the
+     member from being changed in CSS as well.
+
+`#IV_READ_ONLY'
+     Like READ_ONLY, but user can modify the value via CSS (which is
+     prevented by READ_ONLY).
+
+`#LIST_xxx'
+     Sets the Lookup List for this element.  This is used mainly for
+     pointers to functions, where one wants the gui to show a list of
+     top-level functions that have been scanned by maketa (*note
+     comdir-funs::).
+
+`#TYPE_xxx'
+     Sets the default type for members which are pointers to TypeDef
+     objects.  This also works for MemberDef pointers.  If xxx is
+     'this', then the type of the current object is used.
+
+`#TYPE_ON_xxx'
+     For object, TypeDef, or MemberDef pointers: use member xxx of
+     this object to anchor the listing of possible types, tokens, or
+     members.
+
+`#FROM_GROUP_xxx'
+     For token pointers, use given member xxx as the group from which
+     to select token options (xxx can be a pointer to a group).
+
+`#GROUP_OPT_OK'
+     For FROM_GROUP_xxx mbrs, allows group itself as an option (else
+     not allowed).
+
+`#SUBTYPE_xxx'
+     Sets this token pointer member to be only subitems (objects
+     owned by this one) of type xxx.  A recursive scan of members on
+     this object is performed to search for objects of the given type
+     as possible values for this field.
+
+`#NO_SUBTYPE'
+     Don't search this ptr for possible subitems (use if this ptr
+     might point "up", causing a endless loop of searching for
+     subitems).
+
+`#NO_FIND'
+     Don't search this member for the recursive FindMembeR function
+     which searches recursively through objects (use if this ptr
+     might point up in the hierarchy, which might cause an endless
+     loop).
+
+`#NO_SCOPE'
+     Don't use scope for tokens for a token pointer member.  See
+     SCOPE object directive
+
+`#LABEL_xxx'
+     Set the label for item (or menu or button) to be xxx.
+
+`#OWN_POINTER'
+     For a pointer to an object, when loading, set the owner of the
+     obj to be this object.  Thus, this pointer is always created and
+     owned by this object.
+
+`#NULL_OK'
+     A null value is ok as an option for the user (else not) for
+     pointer to a type, and SUBTYPE tokens.
+
+`#NO_NULL'
+     A null value is not ok (for tokens) (else ok).
+
+`#NO_EDIT'
+     Don't include Edit as an option on a token pointer menu (else
+     ok).
+
+`#POS_ONLY'
+     Only positive (non-negative) integers, this controls behavior of
+     the stepper for integer types.
+
+`#LINK_GROUP'
+     This group member only has linked items (doesn't allow user to
+     create new tokens in this group).
+
+`#IN_GPMENU'
+     This members' items should appear in the group menu. The member
+     must be a taGroup_impl descendent type, and the class must have a
+     MEMB_IN_GPMENU option set.
+
+`#CONDEDIT_xxx'
+     This makes editing a member conditional on the value of another
+     member.  For example: #CONDEDIT_OFF_type:NONE,LT_MAX specifies
+     that this member is to be not editable (OFF) when the type enum
+     variable is either NONE or LT_MAX.  One alternatively specify ON
+     for conditions when it should be editable.  The comparison is
+     based on the string representation of the member value -
+     sub-paths to members within contained objects can also be used.
+
+`#DEF_xxx'
+     Specifies a default value for the member.  If the field is set
+     to a value other than this default value, it will be highlighted
+     in yellow to indicate that the value is different from default.
+     This should only be used where there are clear default values
+     that are typically not changed.
+
+`#AKA_xxx'
+     This allows old project files etc to be loaded correctly after
+     changing the name of a field or enum by matching xxx to the new
+     field/enum.
+
+
+File: pdp-user,  Node: comdir-meths,  Next: comdir-funs,  Prev: comdir-membs,  Up: prog-comdir
+
+Method Directives
+-----------------
+
+`#MENU'
+     Creates a Menu for this function item in an Edit dialog.
+
+`#MENU_SEP_BEFORE'
+     Create a separator before this item in the menu.
+
+`#MENU_SEP_AFTER'
+     Create a separator after this item in the menu.
+
+`#MENU_ON_xxx'
+     Puts this function on given menu.  Creates menu if not already
+     there.  This does not replace the #MENU directive.  Everything
+     on the File and Edit menus will be on the edit button for this
+     class in an edit dialog.
+
+`#BUTTON'
+     Creates a button for this function in the edit dialog.
+
+`#LABEL_xxx'
+     Sets the label for item (or menu or button) to be xxx.
+
+`#USE_RVAL'
+     Use (display) return value from this function.  Otherwise return
+     values are ignored.
+
+`#USE_RVAL_RMB'
+     Use (display) return value from this function only if the right
+     mouse button was pressed on the Ok button.  Otherwise return
+     values are ignored.
+
+`#NO_APPLY_BEFORE'
+     Do not apply any changes to dialog before calling this function.
+     The default is to apply the changes first.
+
+`#NO_REVERT_AFTER'
+     Do not update (revert) dialog after calling this function (and
+     do not call the UpdateAfterEdit function either).  The default
+     is to do both.
+
+`#UPDATE_MENUS'
+     Update the global menus after calling this function (e.g.,
+     because altered the structure reflected by those menus).
+
+`#ARGC_x'
+     How many args to present to the user (if default args are
+     available).
+
+`#ARG_ON_OBJ'
+     An argument to this function is an object within the base object
+     (e.g., a member of the group).
+
+`#TYPE_xxx'
+     For TypeDef pointer args: use given type to anchor the listing
+     of possible types.  if xxx == 'this', then the type of the
+     current object is used.
+
+`#TYPE_ON_xxx'
+     For a function with (any) TypeDef or Token args, uses the member
+     xxx of this to anchor type selection or type of tokens to
+     present.
+
+`#FROM_GROUP_xxx'
+     Performs selection of tokens for args from given group member
+     xxx, which is a member of this object (like ARG_ON_OBJ).  Can
+     also specify which arg(s) this applies to by doing
+     #FROM_GROUP_1_gp: 1 = this arg or below uses from_group, so put
+     your from_group args first and specify the highest index as this.
+
+`#NO_GROUP_OPT'
+     For FROM_GROUP_xxx args, disallows group itself as an option.
+
+`#NO_SCOPE'
+     Don't scope the argument to this function.  See SCOPE object
+     directive
+
+`#NO_SCRIPT'
+     Do not generate script code to call this function, if script code
+     recording is currently active.  *Note comdir-objs::.
+
+`#GHOST_ON_xxx'
+     For BUTTON meths, ghosts the button based on the value of
+     boolean member xxx of this class.  If member == true, button is
+     ghosted.
+
+`#GHOST_OFF_xxx'
+     Like above, except if member == false, button is ghosted.
+
+`#CONFIRM'
+     For functions with no args, put up a dialog for confirmation
+     (shows function description too).
+
+`#NEW_FUN'
+     Give user the option to call this (void) function during New (in
+     the "new" dialog).
+
+`#NULL_OK'
+     A null value is ok as an option for the user (else not). for all
+     pointers as args.
+
+`#EDIT_OK'
+     Include Edit as an option on the token pointer menu (else not)
+
+`#FILE_ARG_EDIT'
+     For functions with one ostream arg, use the normal arg edit
+     dialog, instead of a shortcut directly to the file chooser (arg
+     edit allows user to choose open mode for saving).
+
+`#QUICK_SAVE'
+     For functions with one ostream arg, use existing file name if
+     possible (default is to prompt).
+
+`#APPEND_FILE'
+     For functions with one ostream arg, use append as the file
+     opening mode.
+
+
+File: pdp-user,  Node: comdir-funs,  Next: comdir-pdp,  Prev: comdir-meths,  Up: prog-comdir
+
+Top-Level Function Directives
+-----------------------------
+
+   In addition to class objects and typedef's, it is possible to scan
+information about certain top-level functions.  These functions must
+be preceded by a `#REG_FUN' comment, and the comments that apply to
+the function must precede the trailing `;' that ends the function
+declaration.
+
+     // #REG_FUN
+     void Cs_Simple_WtDecay(CsConSpec* spec, CsCon* cn, Unit* ru, Unit* su)
+     // #LIST_CsConSpec_WtDecay Simple weight decay (subtract decay*wt)
+          ;				// term here so scanner picks up comment
+
+   These functions get registered as `static' functions of a mythical
+object with a TypeDef of `TA_taRegFun'.  The purpose of registering
+functions in this way is to make them available for members of
+classes that are pointers to functions.  These registered functions
+are shown in a menu in the edit dialog if the `#LIST_xxx' directive
+matches on the registered function and the pointer to a function.
+
+
+File: pdp-user,  Node: comdir-pdp,  Prev: comdir-funs,  Up: prog-comdir
+
+PDP++ Specific Directives
+-------------------------
+
+`#NO_VIEW'
+     For real-valued unit members, do not display this item in the
+     net view display.
+
+`#AGGOP_xxx'
+     (Process object only) sets the default aggregate operator for
+     this process's statistics.
+
+`#FINAL_STAT'
+     (Stat object only) indicates if this should be created as a
+     final stat.
+
+`#LOOP_STAT'
+     (Stat object only) indicates if this should be created as a loop
+     stat.
+
+`#COMPUTE_IN_xxx'
+     (Stat object only) level at which this stat should be computed,
+     xxx is a process type.
+
+`#NO_INHERIT'
+     In specs, makes member not-inherit from higher-ups.
+
+
+File: pdp-user,  Node: prog-coding,  Prev: prog-comdir,  Up: prog
+
+Coding Conventions and Standards
+================================
+
+   This section describes the steps that need to be taken to define a
+new class.  Every class based on the taBase type (i.e., all classes in
+the PDP++ software) needs to have a set of standard methods (member
+functions) that allow it to interface with the rest of the software.
+Also, many commonly occurring data types and tasks that a class needs
+to perform have been dealt with in a standardized way.  This chapter
+familiarizes the programmer with these standards and interfaces.
+
+   Defining a new class is typically the first step a user will take
+in programming with the PDP++ software.  This is because the software
+is designed to be extended, not revised, by the user.  Fortunately,
+most everything that is done by the PDP++ library code can be
+overwritten by defining a new class that does something differently,
+or simply by adding on to what the existing code does.  Both of these
+approaches require the definition of a new class.
+
+   The first step in defining a new class is figuring out which
+existing class to base the new one on.  This requires a knowledge of
+the existing class structure, which is covered in this manual.  Once
+this has been decided, the guidelines in this section should be
+followed as closely as possible.  It is assumed that the reader knows
+C++ and the basic ideas about constructors, destructors, virtual vs.
+non-virtual functions, etc.
+
+* Menu:
+
+* coding-names::                Naming Conventions
+* coding-funs::                 Basic Functions
+
+
+File: pdp-user,  Node: coding-names,  Next: coding-funs,  Prev: prog-coding,  Up: prog-coding
+
+Naming Conventions
+------------------
+
+   The basic tension in naming something is the length vs.
+descriptiveness tradeoff.  In general, we try to avoid abbreviations,
+but really long words like "environment" inevitably get shortened to
+"Env", etc.
+
+   The bulk of the conventions we have established have to do with
+distinguishing between different categories of names: class type
+names, member function names, and member names being the major
+categories.  In addition, the way in which names composed of multiple
+words are formed is discussed.
+
+Object Class Names
+==================
+
+   Class types are first-letter-capitalized with words separated by
+capitalization: e.g. `MyClass'.  There are certain exceptions, where
+an underbar '_' is used to attach a high-frequency suffix, usually
+from a template, to the name:
+
+   Common Suffixes:
+`_List'
+     taList derivative.
+
+`_Group'
+     taGroup derivative.
+
+`_MGroup'
+     MenuGroup derivative.
+
+`_Array'
+     taArray derivative.
+
+`_SPtr'
+     Smart Spec object pointer (PDP++).
+
+   Also if the class name contains multiple words, words which are
+actually acronyms ending with a capital letter are separated from the
+following word by an '_', e.g., (CE_Stat).
+
+   Classes in lower-level libraries also have the name-space
+identifier prefixed to the name, which is lower case: e.g., `ta',
+`taiv', `css'.
+
+Enums
+=====
+
+   `enum' type names follow the same naming convention as class types.
+`enum' members are all upper-case, words are separated by '_', e.g.,
+`INIT_STATE'.
+
+Member Names
+============
+
+   Members are lower-case, words are separated by a '_', e.g.,
+member_name.  One exception is for names ending in spec or specs in
+which case there is no separation (e.g., viewspecs).
+
+Method Names
+============
+
+   Methods are first-letter-capitalized, words are separated by
+capitalization (e.g., `RunThis()').  However, there some special
+prefixes and suffixes that are exceptions to this rule, because they
+are "high frequency" and denote a whole class of methods:
+
+   Prefixes:
+`Dump_'
+     Saving and loading functions.
+
+`Compute_'
+     Network computation functions (PDP++).
+
+`Send_'
+     Network communication functions (PDP++).
+
+`C_'
+     C code versions of process functions (PDP++).
+
+`Init_'
+     Special initialize function for processes (PDP++).
+
+   Suffixes:
+`_impl'
+     Implementation (guts) of some other function which is the one
+     that should be called by the user.
+
+`_xxxx'
+     Other _impl type functions that do specific aspects of the
+     implementation (xxx is lower case).  Examples in PDP++ include
+     _flag, _force.
+
+`_'
+     (just a trailing underbar) This is a short version of _impl,
+     which is used extensively in InterViews, and sparingly in
+     TA/PDP++.
+
+`_post'
+     A function which is to be called after another one of the same
+     name (for two-step processes).
+
+`_Copy'
+     A function called after the Copy function (e.g., to clean up
+     pointers).
+
+`_gui'
+     A special GUI version of function call.
+
+`_mc'
+     A special menu callback version of function call.
+
+
+File: pdp-user,  Node: coding-funs,  Prev: coding-names,  Up: prog-coding
+
+Basic Functions
+---------------
+
+   These are the functions that must be either specified or
+considered in any new instance of a taBase class:
+
+`void Initialize()'
+        * It is called in every constructor.
+
+        * Do not call `Parent::Initialize()', as this is a constructor
+          function and the parent's will be called for you by C++ as
+          the object is constructed.
+
+        * Set the initial/default values of each member in the class.
+
+        * Set the default type for groups that you own
+          (`SetBaseType()').
+
+        * Call `taBase::InitPointer(ptr)' on every taBase object
+          pointer in class, or just set all pointers to NULL.
+
+        * EVEN IF NOTHING NEEDS INITIALIZING: use `void Initialize()
+          { };' to avoid multiple calls to the parent's Initialize.
+
+`void Destroy()'
+        * It is called in every destructor.
+
+        * Do not call the parent, as C++ will automatically call the
+          parent's destructor for you.
+
+        * Free any resources you might have allocated.
+
+        * Call `CutLinks()', if defined, to sever links with other
+          objects.
+
+        * EVEN IF NOTHING TO DESTROY: use `void Destroy() { };' to
+          avoid multiple calls to parents Destroy.
+
+`void InitLinks()'
+        * Called when an object is linked into some kind of ownership
+          structure.
+
+        * Call the `Parent::InitLinks()', since this is not a
+          constructor function and the parent's links will not
+          otherwise be set.
+
+        * Own any classes contained as members: `taBase::Own(recv,
+          this);'
+
+        * Set any pointers to objects with default values (e.g.,
+          `spec->SetDefaultSpec(this));', etc.
+
+        * Be sure to use `taBase::SetPointer(ptr, new_val);' for
+          setting pointers.
+
+        * Or use `taBase::OwnPointer(ptr, new_val);' for those you
+          own.
+
+        * If you do not need to do any of these InitLinks actions,
+          then you do not need to define an InitLinks function.
+
+`void CutLinks()'
+        * Called when an object is removed from its owner, or as part
+          of the `Destroy' function when an object is actually
+          deleted, or explicitly by the user when the object is a
+          member of another object.
+
+        * At end of `CutLinks()', call `Parent::CutLinks()', since
+          this is not always used as a destructor function, and
+          parent's might not be called.  Note, however, that when it
+          is called in the destructor, it will be repeatedly called,
+          so it should be robust to this (i.e., SET ANY POINTERS YOU
+          DELETE TO NULL SO YOU DON'T DELETE THEM AGAIN!).
+
+        * Should sever all links to other objects, allowing them to
+          be freed too.
+
+        * Call `CutLinks()' on any owned members, especially groups!
+
+        * Use `taBase::DelPointer()' on any pointers.
+
+        * If you have a spec, call `CutLinks()' on it.
+
+        * If you have group members, call `CutLinks()' on those
+          groups.
+
+`void Copy_(const T& cp), Copy(const T& cp)'
+        * Used to duplicate the class, Copy is the = oper and copy
+          constructor
+
+        * Call `Parent::Copy' since this will not be called otherwise.
+
+        * `Copy_(const T& cp)' is an "implementation" that does the
+          copying for just this class, and does not call the parent
+          `Copy'.
+
+        * Use `COPY_FUNS(T, P);' (type and parent-type) to define the
+          default macros for doing this:
+                 void Copy(const T& cp)      { P::Copy(cp); Copy_(cp); }
+
+        * Use `SIMPLE_COPY(T);' to define a `Copy_' function that
+          automatically copies the members unique to this class in a
+          member-by-member (using TypeDef) way.  This is less
+          optimal, but easy when members are just simple floats and
+          ints, etc.
+
+        * Be sure to use `taBase::SetPointer(&ptr, cp.ptr)' for
+          copying pointers.
+
+`TA_BASEFUNS(T);'
+     This defines the actual "basic" functions like constructors,
+     destructors, `GetTypeDef()' etc. for taBase classes.  These
+     default constructors and destructors call the other functions
+     like `Initialize()' and `Destroy()'.
+
+`TA_CONST_BASEFUNS(T);'
+     This defines the actual "basic" functions like constructors,
+     etc. for taBase classes which have `const' members defined in
+     the class.  These need to be initialized as part of the
+     constructor, so this macro leaves out the default constructors
+     and destructor, which should contain the following code:
+            MyClass() { Register(); Initialize(); SetDefaultName(); }
+            MyClass(const MyClass& cp)
+             { Register(); Initialize(); Copy(cp); }
+            ~MyClass() { unRegister(); Destroy(); }
+
+`TA_TMPLT_BASEFUNS(y,T);'
+     Defines the actual "basic" functions like constructors, etc. for
+     taBase classes which are also templates.  `y' is the template
+     class, `T' is the template class parameter.
+
+`void UpdateAfterEdit()'
+        * Called after class members change via edit dialogs, loading
+          from a file, or and assign operator in CSS.
+
+        * Maintain consistency of member values.
+
+        * Update links, etc.
+
+When you add/remove/change any class members:
+=============================================
+
+   Check and add/remove/change initialization, copying, of this
+member in:
+`Initialize()'
+
+`Copy_()'
+
+`Copy()'
+For classes with Specs:
+=======================
+
+   A pointer to a spec is encapsulated in a SpecPtr template class,
+which is declared once immediately after a new class of spec types is
+defined as follows (this will not typically done by the user):
+       SpecPtr_of(UnitSpec);  // this defines the template class
+     				    (only for base spec type)
+
+   This pointer is then included in the class with the following:
+       UnitSpec_SPtr  spec;  // this puts a spec pointer in the class
+
+   Also, InitLinks() should have:
+       spec.SetDefaultSpec(this);
+   So that the spec pointer will set its pointer to a default
+instance of the correct spec type (the `this' pointer is because this
+also "owns" the spec pointer object.
+
+For classes with taBase members:
+================================
+
+   All taBase members which appear as members of another class should
+be owned by the parent class.  This increments their ref counter, so
+that if they are ever pointed to by something else (e.g., during
+loading this happens), and then unref'd, they won't then be deleted.
+
+   `InitLinks()' should own the object member as follows:
+       ta_Base::Own(obj_memb, this);
+
+   For members that derive from taList or taGroup, `Initialize()'
+should set the default type of object that goes in the group:
+       gp_obj.SetDefaultType(&TA_typename);
+
+Referring to other objects via pointers:
+========================================
+
+   If a class contains a pointer to another object, it should
+typically refer to that object whenever the pointer is set.  The
+interface assumes that this is the case, and any pointer member that
+it sets will use the `SetPointer' function described below, which
+does the referencing of the new value and the dereferencing of the
+current one.
+
+   HOWEVER, when the pointer is to a physical PARENT of the object
+(or just higher in the deletion hierarchy) then it should not be
+referenced, as this will prevent the parent from being deleted, which
+will then prevent the child from being deleted.
+
+   In this case, and in general when the pointer is just for
+"internal use" of the class, and is not to be set by the user, the
+following comment directives should always be used: `#READ_ONLY
+#NO_SAVE' as this will prevent the user from overwriting the pointer,
+and the loading code automatically does a reference when setting a
+pointer, so these should not be saved.  DO NOT COPY SUCH POINTERS,
+since they typically are set by the `InitLinks' based on the owner,
+which is usually different for different tokens.
+
+   When managing a pointer that the user can set, there are a set of
+convenient functions in taBase that manage this process (note that the
+argument is a _pointer_ to the pointer):
+
+`taBase::InitPointer(TAPtr* ptr)'
+     initializes the pointer (or just set the ptr to NULL yourself)
+     in `Initialize()'
+
+`taBase::SetPointer(TAPtr* ptr, TAPtr new_val)'
+     unRef's *ptr obj if non-null, refs the new one.
+
+`taBase::OwnPointer(TAPtr* ptr, TAPtr new_val, TAPtr ownr)'
+     like set, but owns the pointer too with the given owner.
+
+`taBase::DelPointer(ptr)'
+     unRefDone the object pointed to, sets pointer to NULL.
+
+   Using these functions will ensure correct refcounts on objects
+pointed to, etc.
+
+   If you `Own' the object at the pointer, then you should either mark
+the member as `#NO_SAVE' if it is automatically created, or
+`#OWN_POINTER' if it is not.  This is because saving and loading,
+being generic, use `SetPointer' unless this comment is present, in
+which case they use `OwnPointer'.
+
+Using Group Iterators:
+======================
+
+   There are special iterator functions which iterate through the
+members of a group.  One method is to iterate through those sub-groups
+(including the 'this' group) which contain actual terminal elements
+("leaves").  This is leaf-group iteration.  Then, the elements of each
+group can be traversed simply using the `El' or `FastEl' functions.
+
+   * for leaf-group iteration, using macros (preferred method):
+            Con_Group* recv_gp;		// the current group
+            int g;
+            FOR_ITR_GP(Con_Group, recv_gp, u->recv., g)
+              recv_gp->UpdateWeights();
+
+   * for leaf-group iteration without macros:
+            Con_Group* recv_gp;		// the current group
+            int g;
+            for(recv_gp = (Con_Group*)u->recv.FirstGp(g); recv_gp;
+                recv_gp = (Con_Group*)u->recv.NextGp(g))
+              recv_gp->UpdateWeights();
+
+   When all you care about are the leaf elements themselves, you can
+iterate over them directly using leaf-iteration:
+
+   * for leaf-iteration, using macros (preferred method):
+            Connection* con;		// the current leaf
+            taLeafItr i;			// the iterator data
+            FOR_ITR_EL(Connection, con, u->recv., i)
+              con->UpdateWeights();
+
+   * for leaf-iteration without macros:
+            Connection* con;		// the current leaf
+            taLeafItr i;			// the iterator data
+            for(con = (Connection*)u->recv.FirstEl(i); con;
+                con = (Connection*)u->recv.NextEl(i))
+              con->UpdateWeights();
+
+
+File: pdp-user,  Node: copyright,  Next: intro,  Prev: Top,  Up: Top
+
+Copyright Information
+*********************
+
+   Manual Copyright (C) 1995 Chadley K. Dawson, Randall C. O'Reilly,
+James L. McClelland, and Carnegie Mellon University
+
+   Software Copyright (C) 1995 Randall C. O'Reilly, Chadley K. Dawson,
+James L. McClelland, and Carnegie Mellon University
+
+   Both updated through 2003 primarily by O'Reilly.
+
+   We would like to acknowledge the contributions in writing the
+software of David Fogel, Gautam Vallabhajosyula, Alex Holcombe, and
+the contributions in testing, debugging, and improving the software
+of Yuko Munakata, Craig Stark, Todd Braver, Jonathan Cohen, Shaun
+Vecera, Deanna Barch, and the rest of the PDP Lab at CMU.  Finally,
+we would like to thank David Rumelhart for his early involvement in
+designing the overall shape of the simulator.
+
+   The PDP++ specific portions of the software are copyright under the
+following conditions:
+
+   Permission to use, copy, and modify this software and its
+documentation for any purpose other than distribution-for-profit is
+hereby granted without fee, provided that the above copyright notice
+and this permission notice appear in all copies of the software and
+related documentation.
+
+   Permission to distribute the software or modified or extended
+versions thereof on a not-for-profit basis is explicitly granted,
+under the above conditions.  HOWEVER, THE RIGHT TO DISTRIBUTE THE
+SOFTWARE OR MODIFIED OR EXTENDED VERSIONS THEREOF FOR PROFIT IS *NOT*
+GRANTED EXCEPT BY PRIOR ARRANGEMENT AND WRITTEN CONSENT OF THE
+COPYRIGHT HOLDERS.
+
+   The TypeAccess/C-Super-Script (TA/CSS) portions of the software are
+copyright under the following conditions:
+
+   Permission to use, copy, modify, and distribute this software and
+its documentation for any purpose is hereby granted without fee,
+provided that the above copyright notice and this permission notice
+appear in all copies of the software and related documentation.
+
+   Note that the PDP++ software package, which contains this package,
+has a more restrictive copyright, which applies only to the
+PDP++-specific portions of the software, which are labeled as such.
+
+   Note that the taString class, which is derived from the GNU String
+class, is Copyright (C) 1988 Free Software Foundation, written by
+Doug Lea, and is covered by the GNU General Public License, see
+ta_string.h.  The iv_graphic library and some iv_misc classes were
+derived from the InterViews morpher example and other InterViews code,
+which is Copyright (C) 1987, 1988, 1989, 1990, 1991 Stanford
+University Copyright (C) 1991 Silicon Graphics, Inc.
+
+   THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+   IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE FOR ANY
+SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON
+ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE
+OR PERFORMANCE OF THIS SOFTWARE.
+
+
+File: pdp-user,  Node: conceptindex,  Next: typeindex,  Prev: prog,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* .cssinitrc:                            css-startup.
+* .pdpinitrc:                            proj-settings.
+* Actions Menu:                          gui-actions.
+* Actions, Makefile:                     prog-make.
+* Adaptive Critic:                       leabra-misc.
+* Almeida-Pineda Algorithm:              rbp-ap.
+* Analysis, of Network Representations <1>: proc-special-misc.
+* Analysis, of Network Representations:  how-proc.
+* Arguments, Startup:                    proj-startup.
+* Arrays:                                obj-array.
+* Associative Learning:                  so.
+* Background Processes <1>:              proj-signals.
+* Background Processes:                  how-proc.
+* Backpropagation:                       bp.
+* Backpropagation, Implementation:       bp-over.
+* Base Class, Type-Aware:                prog-typea-base.
+* Batch Process:                         proc-levels-batch.
+* Boltzmann Machines:                    cs.
+* Bp, Defaults:                          bp-defs.
+* Bridge Process:                        proc-special-bridge.
+* C++:                                   css-c++-intro.
+* Class Inheritance:                     obj-basics-obj.
+* Class Inheritance, C++:                css-c++-intro.
+* Classes:                               obj-basics-obj.
+* Classes, C++:                          css-c++-intro.
+* Closest Event:                         how-proc.
+* Closest Event, Statistic:              proc-stats-close-event.
+* Cluster Plot:                          how-proc.
+* Color:                                 gui-colors.
+* Color Scale Specifications:            gui-colors.
+* Color Scales:                          gui-colors.
+* Colormap, Private:                     proj-startup.
+* Comment Directives:                    prog-comdir.
+* Comparing Statistics:                  proc-stats-compare.
+* Competitive Learning:                  so.
+* Compiling CSS:                         css-hard.
+* Computing on Statistics:               proc-stats-compare.
+* Con_Group Structure:                   net-con-impl.
+* Connection:                            net-con.
+* Connections, Backpropagation:          bp-con.
+* Connections, Cs:                       cs-con.
+* Connections, Leabra:                   leabra-con.
+* Connections, RBp:                      rbp-con.
+* Connections, Saving and Loading:       net-con-impl.
+* Connections, So:                       so-con.
+* Constraint Satisfaction:               cs.
+* Contrastive Hebbian Learning:          cs.
+* Control Panel:                         proc-base.
+* Cross-validation:                      how-proc.
+* Cs, Defaults:                          cs-defs.
+* CSS Commands:                          css-commands.
+* CSS Errors:                            css-errors.
+* CSS Functions:                         css-functions.
+* CSS Shell:                             css-shell.
+* CSS Types:                             css-types.
+* CSS, Compiling:                        css-hard.
+* CSS, Object Copying:                   how-css.
+* CSS, Type Information:                 how-css.
+* css/include directory:                 proj-scripts.
+* Customization:                         proj-defaults.
+* Customizing, GUI:                      gui-settings.
+* Cycle Process:                         proc-levels-cycle.
+* Cycles to Settle:                      how-proc.
+* Data Environment:                      proc-stats-misc.
+* Default File:                          proj-objdef.
+* Default Settings:                      gui-settings.
+* Defaults:                              proj-objdef.
+* defaults directory:                    proj-objdef.
+* Defaults, Bp:                          bp-defs.
+* Defaults, Cs:                          cs-defs.
+* Defaults, Edit dialogs:                gui-edit.
+* Defaults, Leabra:                      leabra-defs.
+* Defaults, RBp:                         rbp-defs.
+* Dialog, Edit:                          gui-edit.
+* Distributed Memory Processing <1>:     proc-epoch-dmem.
+* Distributed Memory Processing <2>:     how-net.
+* Distributed Memory Processing:         how-proc.
+* Distributions, Measuring:              cs-stats-dist.
+* DMEM <1>:                              proc-epoch-dmem.
+* DMEM <2>:                              how-net.
+* DMEM:                                  how-proc.
+* DurEvent:                              leabra-proc.
+* Edit Dialogs:                          css-gui.
+* Editing Objects:                       gui-edit.
+* Editing, Selected fields:              proj-seledit.
+* Environment <1>:                       env.
+* Environment <2>:                       over-stru-env.
+* Environment:                           over-stru.
+* Environment Patterns, Labeling:        how-env.
+* Environment, Analysis:                 env-analyze.
+* Environment, Data:                     proc-stats-misc.
+* Environment, Generation:               env-gen.
+* Environment, Probability:              cs-prob-env.
+* Environment, Time:                     rbp-seq.
+* Environments, Converting:              env-import.
+* Environments, Interactive <1>:         proc-special-inter.
+* Environments, Interactive <2>:         env-other.
+* Environments, Interactive:             how-env.
+* Epoch Counter:                         how-proc.
+* Epoch Process:                         proc-levels-epoch.
+* Error Backpropagation:                 bp.
+* Error, Statistic:                      proc-stats-se.
+* Errors, CSS:                           css-errors.
+* Event:                                 env-event.
+* Event Frequencies:                     how-env.
+* Event Sequences:                       how-env.
+* Event Specs, updating from Network:    how-env.
+* Event, Closest:                        proc-stats-close-event.
+* Event-wise Distributed Memory Processing <1>: proc-epoch-dmem.
+* Event-wise Distributed Memory Processing: how-proc.
+* Events:                                over-stru-env.
+* Events, Different Targets:             how-env.
+* Events, Frequency of:                  env-freq.
+* Events, from a file <1>:               env-other.
+* Events, from a file:                   how-env.
+* Events, Presenting:                    how-env.
+* Exporting Patterns:                    env-import.
+* File, reading events from <1>:         env-other.
+* File, reading events from:             how-env.
+* Frequency, Events:                     how-env.
+* Frequency, of Events:                  env-freq.
+* Goodness <1>:                          leabra-stats-good.
+* Goodness:                              cs-stats-good.
+* GRAIN Networks:                        cs.
+* Group Iteration:                       obj-group-iteration.
+* Group Object:                          obj-group.
+* Group Ownership:                       obj-group.
+* Group, Connection:                     net-con.
+* Groups <1>:                            obj-group.
+* Groups:                                over-group.
+* GUI, Customizing:                      gui-settings.
+* Harmony <1>:                           leabra-stats-good.
+* Harmony:                               cs-stats-good.
+* Hebbian Learning:                      so.
+* Hopfield Networks:                     cs.
+* Hybrid Networks <1>:                   proc-special-bridge.
+* Hybrid Networks:                       how-proc.
+* Implementation, Backpropagation:       bp-over.
+* Importing Patterns:                    env-import.
+* Include Paths:                         proj-settings.
+* Inheritance, of Objects:               obj-basics-obj.
+* Inheritance, of Objects, C++:          css-c++-intro.
+* Inheritance, Spec:                     obj-spec.
+* Init Files <1>:                        proj-settings.
+* Init Files:                            css-startup.
+* Initial Weights:                       how-net.
+* Initializing Networks, Automatically:  proc-special-misc.
+* Interactive Activation and Competition: cs.
+* Interactive Environments <1>:          env-other.
+* Interactive Environments:              how-env.
+* Interactive Environments, Processes:   proc-special-inter.
+* Iteration, Groups:                     obj-group-iteration.
+* Labeling Environment Patterns:         how-env.
+* Layer:                                 net-layer.
+* Layer Lesion:                          how-net.
+* Layer, Leabra:                         leabra-layer.
+* Layers, Display of:                    net-view-view.
+* Layers, Self-organizing:               so-unit.
+* LayerSpec:                             leabra-over.
+* Leabra:                                leabra.
+* Leabra, Defaults:                      leabra-defs.
+* Learning, Self-organizing:             so.
+* Lesion, Temporary:                     how-net.
+* Lesion, Units:                         how-net.
+* Lesion, Weights:                       how-net.
+* Links:                                 obj-group.
+* List Object:                           obj-group.
+* Lists:                                 obj-group.
+* Loading Networks, Automatically:       proc-special-misc.
+* Loading Objects:                       obj-basics-files.
+* Log Files:                             log.
+* Logging:                               over-stru.
+* Logging Data:                          log.
+* Logging, State Variables:              how-proc.
+* Makefile, Actions:                     prog-make.
+* Member Functions:                      obj-basics-obj.
+* Member Functions, C++:                 css-c++-intro.
+* Members:                               obj-basics-obj.
+* Members, C++:                          css-c++-intro.
+* Menu Operation:                        gui-menu-operation.
+* Menu, Actions:                         gui-actions.
+* Menu, Object:                          gui-object.
+* Menu, Subgroup:                        gui-subgroup.
+* Methods:                               obj-basics-obj.
+* Methods, C++:                          css-c++-intro.
+* Methods, Redefining:                   obj-basics-obj.
+* Monitoring State Variables:            proc-stats-monitor.
+* MPI <1>:                               proc-epoch-dmem.
+* MPI <2>:                               how-net.
+* MPI:                                   how-proc.
+* Multidimensional Scaling:              how-proc.
+* Names, Object:                         obj-basics-names.
+* Naming, Statistics:                    how-proc.
+* Network <1>:                           net.
+* Network:                               over-stru.
+* Network (Objects):                     over-stru-net.
+* Network Auto Save:                     how-proc.
+* Network Viewer:                        net-view.
+* Network Weights, Displaying:           proc-special-misc.
+* Network, Analysis of <1>:              proc-special-misc.
+* Network, Analysis of:                  how-proc.
+* Network, Distributed Memory Processing: how-net.
+* Network, Receptive Fields:             how-proc.
+* Networks, Initializing Automatically:  proc-special-misc.
+* Networks, Loading Automatically:       proc-special-misc.
+* Networks, Saving:                      proc-special-misc.
+* Object Menu:                           gui-object.
+* Object Names:                          obj-basics-names.
+* Object Oriented Programming:           obj-basics-obj.
+* Object Oriented Programming, C++:      css-c++-intro.
+* Object Oriented Software:              over-objs.
+* Object Save Files:                     obj-basics-files.
+* Objects:                               obj-basics-obj.
+* Objects, C++:                          css-c++-intro.
+* Objects, Editing:                      gui-edit.
+* Objects, Main Types:                   over-stru.
+* Objects, Overview:                     over-objs.
+* Objects, Saving and Loading:           obj-basics-files.
+* OOP:                                   obj-basics-obj.
+* OOP, C++:                              css-c++-intro.
+* Overloading:                           obj-basics-obj.
+* Ownership, Groups:                     obj-group.
+* Parallel Processing <1>:               proc-epoch-dmem.
+* Parallel Processing <2>:               net-net.
+* Parallel Processing <3>:               how-net.
+* Parallel Processing:                   how-proc.
+* Parameters, Different:                 how-net.
+* Pattern:                               env-event.
+* Pattern Specs, updating from Network:  how-env.
+* Patterns:                              over-stru-env.
+* Patterns, from a file <1>:             env-other.
+* Patterns, from a file:                 how-env.
+* Patterns, Importing/Exporting:         env-import.
+* Patterns, Probabilistic:               cs-prob-env.
+* Phases, Plus and Minus:                cs.
+* Presenting Events:                     how-env.
+* Principal Components Analysis:         how-proc.
+* Process:                               proc-base.
+* Process Hierarchy:                     over-stru-proc.
+* Process Hierarchy, Changing:           how-proc.
+* Process, Backpropagation Trial:        bp-proc.
+* Process, Batch:                        proc-levels-batch.
+* Process, Bridge:                       proc-special-bridge.
+* Process, Cs:                           cs-proc.
+* Process, Cycle:                        proc-levels-cycle.
+* Process, Epoch:                        proc-levels-epoch.
+* Process, Leabra:                       leabra-proc.
+* Process, RBp Sequences:                rbp-seq.
+* Process, RBp Trial:                    rbp-trial.
+* Process, Sequences:                    proc-special-seq.
+* Process, Settle:                       proc-levels-settle.
+* Process, Training:                     proc-levels-train.
+* Process, Trial:                        proc-levels-trial.
+* Processes, Controlling:                proc-stat-crit.
+* Processes, Interactive Environments:   proc-special-inter.
+* Processing, Multiple:                  proc-special-fork.
+* Processing/Scheduling (Training, Testing, etc): over-stru.
+* Project <1>:                           proj.
+* Project:                               over-stru.
+* Project Management:                    proj-basics.
+* Project Viewer:                        proj-viewer.
+* Projection <1>:                        net-prjn.
+* Projection:                            over-stru-net.
+* Projection of Data onto a Vector:      proc-stats-misc.
+* Projections vs. Connections:           how-net.
+* Projections, Display of:               net-view-view.
+* Random Numbers:                        obj-random.
+* RBp, Defaults:                         rbp-defs.
+* Reaction Time <1>:                     proc-stats-rt.
+* Reaction Time:                         how-proc.
+* Receptive Fields:                      how-proc.
+* Receptive Fields, Activity Based:      proc-stats-actrf.
+* Recording Activations:                 how-proc.
+* Recording Data:                        log.
+* Recording Scripts:                     over-scripts.
+* Recording State Variables:             proc-stats-monitor.
+* Recording, Scripts:                    proj-scripts.
+* Recurrent Backpropagation, Implementation: rbp-over.
+* Redefining Methods:                    obj-basics-obj.
+* Reinforcement Learning:                leabra-misc.
+* Representations, Analysis <1>:         proc-special-misc.
+* Representations, Analysis:             how-proc.
+* Saving Networks:                       proc-special-misc.
+* Saving Objects:                        obj-basics-files.
+* SchedProcess:                          over-stru.
+* Schedule Processes <1>:                proc-sched.
+* Schedule Processes:                    over-stru-proc.
+* Scheduling:                            over-stru-proc.
+* Scheduling/Processing (Training, Testing, etc): over-stru.
+* Script Objects:                        proj-scripts.
+* Script Recording:                      proj-scripts.
+* Script-based Objects:                  over-scripts.
+* Scripts <1>:                           proj-scripts.
+* Scripts:                               over-scripts.
+* Scripts, Auto-Run Errors:              how-css.
+* Scripts, Recording:                    over-scripts.
+* Select Edit:                           proj-seledit.
+* Self-organizing Connections:           so-con.
+* Self-organizing Layers:                so-unit.
+* Self-organizing Learning:              so.
+* Self-organizing Map:                   so.
+* Self-organizing Units:                 so-unit.
+* Sequences of Events <1>:               proc-special-seq.
+* Sequences of Events:                   how-env.
+* Sequences, RBp:                        rbp-seq.
+* Settings <1>:                          proj-settings.
+* Settings:                              gui-settings.
+* Settle Process:                        proc-levels-settle.
+* Settling Time:                         how-proc.
+* Shell, CSS:                            css-shell.
+* Signals:                               proj-signals.
+* Simple Recurrent Networks <1>:         leabra-misc.
+* Simple Recurrent Networks:             bp-srn.
+* Simulation Log:                        proj-basics.
+* Smart Pointer:                         obj-spec.
+* SMP:                                   net-net.
+* Spec Inheritance:                      obj-spec.
+* Spec Objects:                          over-spec.
+* Spec Pointer:                          obj-spec.
+* Specifications <1>:                    obj-spec.
+* Specifications:                        over-spec.
+* Specs:                                 obj-spec.
+* Squared Error Statistic:               proc-stats-se.
+* Startup Arguments:                     proj-startup.
+* Startup Options, CSS:                  css-startup.
+* State Variables, Logging:              how-proc.
+* State Variables, Recording:            proc-stats-monitor.
+* State vs. Specification:               over-spec.
+* Statistics <1>:                        proc-stat.
+* Statistics:                            over-stru-proc.
+* Statistics, Comparing:                 proc-stats-compare.
+* Statistics, Computing on:              proc-stats-compare.
+* Statistics, Cs:                        cs-stats.
+* Statistics, Leabra:                    leabra-stats.
+* Statistics, Naming:                    how-proc.
+* Statistics, Where to Create?:          how-proc.
+* Stats, Receptive Fields:               how-proc.
+* Stopping Criteria:                     proc-stat-crit.
+* Stopping Criterion:                    how-proc.
+* Stress <1>:                            leabra-stats-good.
+* Stress:                                cs-stats-good.
+* Subgroup Menu:                         gui-subgroup.
+* Subgroups:                             obj-group.
+* Substructure <1>:                      obj-group.
+* Substructure:                          over-group.
+* Symmetric Initial Weights:             net-con.
+* Temporal Differences (TD):             leabra-misc.
+* Threaded Processing:                   net-net.
+* Time Environment:                      rbp-seq.
+* Time, Reaction or Settling Cycles:     how-proc.
+* Total Information Gain:                cs-stats-dist.
+* Training Process:                      proc-levels-train.
+* Trial Process:                         proc-levels-trial.
+* Type-Aware Base Class:                 prog-typea-base.
+* Unit:                                  net-unit.
+* Unit Groups:                           net-layer.
+* Unit, Cs:                              cs-unit.
+* Unit, Leabra:                          leabra-unit.
+* Units, Backpropagation:                bp-unit.
+* Units, Display of:                     net-view-view.
+* Units, RBp:                            rbp-unit.
+* Units, Self-organizing:                so-unit.
+* Value Labels:                          how-env.
+* Viewing, Networks:                     net-view.
+* Views:                                 gui-win-view.
+* Weight Limits:                         net-con.
+* Weight Linking <1>:                    net-con-impl.
+* Weight Linking:                        how-net.
+* Weight Sharing:                        how-net.
+* Weights, Initial Values:               how-net.
+* Weights, Matrix View:                  how-net.
+* Weights, Symmetric:                    net-con.
+* Window Hierarchy:                      gui-windows.
+* Window Operation:                      gui-win-operation.
+* Wizard:                                how-wizard.
+* Wizard, Leabra:                        leabra-misc.
+* Xdefaults:                             gui-settings-xdef.
+* XWindow Resources:                     gui-settings-xdef.
+

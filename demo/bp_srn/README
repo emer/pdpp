@@ -1,0 +1,74 @@
+demo/bp_srn:
+
+	srn_fsa.proj.gz		the project
+	simple_fsa.css		a script file which creates the
+				training patterns
+
+This example shows the kind of network used in Cleeremans,
+Servan-Schreiber, and McClelland, 1989, Neural Computation, which
+explored the use of a simple recurrent network (SRN) (Elman, 1988), to
+learn a finite state automata (FSA).  The network uses previous
+context information to be able to solve the sequential task of
+predicting the next symbol that will appear.
+
+Context is implemented as a copy of the hidden unit activation states
+from the previous time step.  In pdp++, the way this is done is by
+making the context units use a 'BpContextSpec' which is derived from
+the standard 'BpUnitSpec'.  This unit spec assumes that the units all
+have a single projection that contains a single connection from the
+corresponding hidden unit.  This is set up by giving the projection
+into the context layer a 'OneToOnePrjnSpec', which specifies this kind
+of one-to-one connectivity.
+
+The training patterns are generated probabalistically at the start of
+every 10 epochs (this is controled by the 1st 's_args' parameter of
+the environment), and presented to the network as a sequence of events
+separated by an initialization of the unit activations.  Each sequence
+is a single run through the FSA grammar.  In pdp++, the environment is
+a 'ScriptEnv', which allows a script to control the creation of the
+event sequences.  Each sequence is contained in a 'Event_MGroup',
+which is simply a subgroup of events within the main .events group of
+the environment.
+
+The processing hierarchy for a sequence-based network includes an
+additional level, the 'SequenceProcess', which lies between the Epoch
+(actually a SequenceEpoch) and the Trial.  The SequenceEpoch iterates
+over Event groups, and the SequenceProcess iterates over the events
+with a single group.  There are various flags and parameters which
+control the order (sequential or permuted) at each of these levels of
+processing.  In the present example, everything is presented
+sequentially since the randomization is done by the script that
+generates the events.
+
+In order to create a sequential type of processing hierarchy by
+default, use the 'bp_seq.def' set of defaults.  Thus, before creating
+the project, enter 'bp_seq.def' into the PDPRoot edit window.
+
+In the FSA problem, there are two possible outputs, since the output
+is which letter will be next in the sequence, only one of which will
+actually be the next letter.  At any given point, the network does not
+know which output to choose, so it tends to activate both
+possiblities at around .5.
+
+The environments deal with this situation with two modes of event
+generation: testing and training.  Testing mode makes events where
+both possible output targets are present, but the one that is actually
+going to be the next step in the sequence is used for training the
+network, while the other target is used in comparing against the
+activations for the error statistic.  Thus, in testing mode, the error
+should go to zero when the network has the problem sovled (there is
+also a .5 threshold on the error computation, so it just has to get
+the units on the correct side of .5 to get the problem right).
+
+In training mode, only the actual next input is present as a target.
+This is the way the original networks were actually trained.  It is
+also possible to train in testing mode, which means that the network
+is not punished (or rewarded) for activating the "other" possible
+output value, and the training error signal should go to zero when the
+network has solved the problem.
+
+It takes a while for the network to solve the problem, so you might
+want to run the network in the background, using the 'startup.css'
+script provided (see the manual and the script itself for further
+instructions).  This will save a "final" network that can be loaded up
+and tested.

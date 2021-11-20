@@ -1,0 +1,15 @@
+#!/bin/csh -f
+
+if ($#argv < 2) then
+   echo "usage: $0 <np> <config.cfg>"
+   echo "       <np> is number of processors to run on"
+   echo "       <config.cfg> is configuration file to load"
+   echo "       (note, uses file: machines in local dir for list of machines"
+   exit 0
+endif
+
+echo "running: mpirun.ch_gm -np $1 -machinefile machines /usr/local/bin/dmg_bp++ ${argv[2-]}"
+
+/bin/cp -f $HOME/.ssh/rc.dream $HOME/.ssh/rc
+mpirun.ch_gm -np $1 -machinefile machines /usr/local/bin/dmg_bp++ ${argv[2-]}
+/bin/rm -f $HOME/.ssh/rc $HOME/.ssh/environment

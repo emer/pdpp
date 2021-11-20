@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - gui-settings-xdef</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_59.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_61.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX177" HREF="pdp-user_toc.html">6.17.2  XWindow Resources (Xdefaults)</A></H3>
+<P>
+<A NAME="IDX178"></A>
+<A NAME="IDX179"></A>
+
+</P>
+<P>
+The following XWindow resources can be set.  These are typically placed
+in the user's <TT>`.Xdefaults'</TT> file in their home directory.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>PDP++*flat</CODE>
+<DD>
+The color of the buttons.  It is typically some kind of greyish
+color.  The default has a blueish tint: <CODE>#c0c4d3</CODE>
+<DT><CODE>PDP++*background</CODE>
+<DD>
+The color of various non-view background regions.  The default
+is an aquamarine color: <CODE>#70c0d8</CODE>.
+<DT><CODE>PDP++*name*flat</CODE>
+<DD>
+If you change the valueof background, you should change this one to
+match.  It makes the member names in the edit dialogs
+(see section <A HREF="pdp-user_54.html">6.6  The Edit Dialog</A>) the same color as the background.
+<DT><CODE>PDP++*apply_button*flat</CODE>
+<DD>
+The color of the apply button (and other buttons) when they are
+the "suggested" choice.  It is a dusty-red by default: <CODE>#c090b0</CODE>.
+<DT><CODE>PDP++*FieldEditor*background</CODE>
+<DD>
+The color of the edit fields, default is white.
+<DT><CODE>PDP++*font</CODE>
+<DD>
+The generic font to use for buttons, etc:
+<CODE>*-helvetica-medium-r-*-*-10*</CODE>.
+<DT><CODE>PDP++*name*font</CODE>
+<DD>
+The font to use for member names: <CODE>*-helvetica-medium-r-*-*-10*</CODE>.
+<DT><CODE>PDP++*title*font</CODE>
+<DD>
+The font to use for titles of edit dialogs:
+<CODE>*-helvetica-bold-r-*-*-10*</CODE>.
+<DT><CODE>PDP++*small_menu*font</CODE>
+<DD>
+The font to use for small menus (e.g., those in edit dialogs):
+<CODE>*-helvetica-medium-r-*-10*</CODE>.
+<DT><CODE>PDP++*small_submenu*font</CODE>
+<DD>
+This font is used for menu items that contain sub-menus (these are also
+indicated by three dots after the name)
+<CODE>*-helvetica-medium-r-*-*-10*</CODE>.
+<DT><CODE>PDP++*big_menu*font</CODE>
+<DD>
+This font is used for big menus like those on the permanent object
+windows, default is <CODE>*-helvetica-medium-r-*-12*</CODE>.
+<DT><CODE>PDP++*big_submenu*font</CODE>
+<DD>
+For sub menus on big menus: <CODE>*-helvetica-medium-r-*-*-12*</CODE>.
+<DT><CODE>PDP++*big_menubar*font</CODE>
+<DD>
+For big menus, the name of the menu itself:
+<CODE>*-helvetica-bold-r-*-*-14*</CODE>.
+<DT><CODE>PDP++*big_italic_menubar*font</CODE>
+<DD>
+For big menus, name of italicized menu items (i.e. those that apply to
+the object and not to its sub-objects):
+<CODE>*-helvetica-bold-o-*-*-14*</CODE>.
+<DT><CODE>PDP++*double_buffered:</CODE>
+<DD>
+Double buffering makes the display smoother, but can use lots of display
+memory.  Default is "on".
+<DT><CODE>PDP++*FileChooser.width</CODE>
+<DD>
+The width of the file-chooser in pixels. Default is 100.
+<DT><CODE>PDP++*FileChooser.rows</CODE>
+<DD>
+The number of items to list in the file chooser, default is 20.
+<DT><CODE>PDP++*clickDelay</CODE>
+<DD>
+This is the number of milliseconds to count two clicks as a
+double-click.  The default is 250.
+</DL>
+
+
+<H3>6.17.3  For MS Windows Users:</H3>
+
+<P>
+To set XResources under MS Windows, you need to create an "application
+defaults" file that is formatted much like the XResources.  There are
+two steps for creating this application defaults file:
+
+</P>
+<P>
+1. Edit <TT>`C:\WINDOWS\WIN.INI'</TT>, and add the following two lines:
+
+</P>
+<PRE>[InterViews]
+location = C:\PDP++
+</PRE>
+
+<P>
+Where the location should be the actual location where you installed
+the software.
+
+</P>
+<P>
+2. Create a sub-directory under <TT>`C:\PDP++'</TT> (again, use the actual
+location) called <TT>`app-defaults'</TT>, and then create a file called
+<TT>`InterViews'</TT> in that directory.  This file should contain resource
+values you want to set.  For example, to change the amount of time to
+detect a double-click, you would enter:
+
+</P>
+<PRE>*clickDelay: 400
+</PRE>
+
+<P>
+To change the overall size of the PDP++ windows (scaling):
+
+</P>
+<PRE>*mswin_scale: 1.25
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_59.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_61.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

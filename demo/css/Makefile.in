@@ -1,0 +1,42 @@
+#####################################################
+#
+#  Hardcode CSS Makefile
+#	    
+
+# this must be set to point to the location where pdp++ was actually
+# installed!!
+PDPDIR = /usr/local/pdp++
+
+# this must be set to point to the location where this file is actually
+# located.  
+TOP = $(PDPDIR)/src
+
+# use this command first to actually make the makefile!
+InitMakefile:
+	-@ cp Makefile Makefile.bak;\
+	cat $(PDPDIR)/config/Makefile.defs \
+	$(PDPDIR)/config/Makefile.$(CPU) \
+	$(TOP)/Makefile.user Makefile.in >Makefile
+
+# this is for any _vt or _ti files that might be needed..
+PROJNAME = hard_of_css
+
+LIBS = -lhard_css -ltypea_min -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# usually compiling optimized..
+OPT_DEBUG = $(OPT_FLAGS)
+
+% : %.c
+	$(CC) -o $@ $(CFLAGS) $(LDIRS) $(IDIRS) $<  $(LIBS)
+
+% : %.cc 
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.css
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.o
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+.cc.o:
+	$(CXX) -o $@ $(VT_INST_FLAG) $(IDIRS) $(CCFLAGS) -c $< 

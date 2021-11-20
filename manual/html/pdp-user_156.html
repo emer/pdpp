@@ -1,0 +1,137 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-levels-epoch</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_155.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_157.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX936" HREF="pdp-user_toc.html">12.4.3  Iterating over Trials: EpochProcess</A></H3>
+<P>
+<A NAME="IDX937"></A>
+<A NAME="IDX938"></A>
+<A NAME="IDX939"></A>
+
+</P>
+<P>
+The <B>EpochProcess</B> loops over the set of Events in the Environment
+(see section <A HREF="pdp-user_135.html">11  Environments, Events, and Patterns</A>). Each presentation of an event is known as a <I>trial</I>,
+and this process typically has a <B>TrialProcess</B> as its
+<CODE>sub_proc</CODE>, although the situation is different when the
+environment contains sequences of events (see section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).
+
+</P>
+<P>
+The epoch process is responsible for ordering the presentation of events
+to the network.  Thus, at the beginning of the epoch (when the process
+is initialized), it tells the environment to initialize itself (using
+<CODE>InitEvents()</CODE>), and then obtains the total number of events in the
+environment (using <CODE>EventCount()</CODE>, see section <A HREF="pdp-user_136.html">11.1  Environments</A>).  The epoch
+process then makes a list of event indexes, which represents the order
+in which events will be presented.  Depending on the state of the
+<CODE>order</CODE> variable, this list will either remain sequential or be
+randomized.
+
+</P>
+<P>
+The epoch process is also responsible for determining when to update the
+weights in the network, since this can usually be done either after each
+event or at the end of the epoch (depending on the state of the
+<CODE>wt_update</CODE> variable).  The epoch process itself calls the
+<CODE>UpdateWeights</CODE> function on the network, even when it is doing
+updates after each event.  Thus, lower-level processes should never call
+this function themselves.
+
+</P>
+<P>
+Also see the following information about Epoch Processes:
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_157.html">1             Distributed Memory Computation in the EpochProcess</A>
+</UL>
+
+<P>
+The following variables are on the <B>EpochProcess</B>:
+
+</P>
+
+<H2>12.5  Variables</H2>
+<DL COMPACT>
+
+<DT><CODE>Counter trial</CODE>
+<DD>
+<A NAME="IDX940"></A>
+The number of the current trial being executed.  This is the counter for
+the epoch process.  It is automatically initialized to be the number of
+events in the environment.
+<DT><CODE>Event* cur_event</CODE>
+<DD>
+<A NAME="IDX941"></A>
+This is a pointer to the current event being processed. After each
+trial, the EpochProcess updates this variable to point to the next event
+based on its list of event indexes.  It gets the event from the
+environment using the <CODE>GetEvent</CODE> function of the environment
+(see section <A HREF="pdp-user_136.html">11.1  Environments</A>).
+<DT><CODE>Order order</CODE>
+<DD>
+<A NAME="IDX942"></A>
+Controls the order in which Events are presented to the network. The
+values for this are:
+<DL COMPACT>
+
+<DT><CODE>SEQUENTIAL</CODE>
+<DD>
+Present events in sequential order (i.e. in the order they currently are
+in the Environment <CODE>events</CODE> group).
+<DT><CODE>PERMUTED</CODE>
+<DD>
+Present events in permuted order.  This ensures that each event is only
+presented once per epoch, but the order is randomized.
+<DT><CODE>RANDOM</CODE>
+<DD>
+This picks an event at random (with replacement) from the list of
+events.  This does not use the epoch process's list of events, and it
+allows the same event to be presented multiple times in an epoch, while
+other events might not be presented at all.
+</DL>
+
+<DT><CODE>WtUpdate wt_update</CODE>
+<DD>
+<A NAME="IDX943"></A>
+Determines when the network's weights are updated (if at all).  The
+possible values are:
+<DL COMPACT>
+
+<DT><CODE>TEST</CODE>
+<DD>
+Don't update weights at all (for testing the network).  This also causes
+the training process to not increment the epoch counter of the network
+after each epoch, since the epoch counter is supposed to reflect the
+extent of training experience the network has had.
+<DT><CODE>ON_LINE</CODE>
+<DD>
+Update the weights on-line (after every event).
+<DT><CODE>BATCH</CODE>
+<DD>
+Update the weights after every epoch (batch mode).
+<DT><CODE>SMALL_BATCH</CODE>
+<DD>
+Update the weights after every <CODE>batch_n</CODE> events.  This allows an
+intermediate level of batch mode learning which can be parameterized
+independent of the number of events in the epoch. 
+</DL>
+<DT><CODE>int batch_n</CODE>
+<DD>
+<A NAME="IDX944"></A>
+Specifies the number of events between weight updates if
+<CODE>wt_update</CODE> is <CODE>SMALL_BATCH</CODE>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_155.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_157.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

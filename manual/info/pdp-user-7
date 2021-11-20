@@ -1,0 +1,1209 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: css-commands,  Next: css-functions,  Prev: css-types,  Up: css-ref
+
+CSS Commands
+------------
+
+   The following are the commands available in CSS.  Commands are a
+little bit "special" in that they are typically executed immediately,
+they can be called with arguments without using the parentheses
+required in normal C functions (though they can be used if desired),
+and they do not need to be terminated with a semicolon (note that
+this also means that commands cannot extend across more than one
+line).  Also, they do not generate return values.  In general,
+commands provide debugging and program management (loading, listing,
+etc) kinds of facilities.
+
+`alias <cmd> <new_nm>'
+     Gives a new name to an existing command.  This is useful for
+     defining shortcuts (e.g., `alias list ls'), but does not allow
+     more complex functionality.  For that, either define a new
+     function, or use a pre-processor `#define' macro.
+
+`chsh <script_path>'
+     Switches the CSS interface to access the CSS script object
+     pointed to by the given path.  This is for hard-coded objects
+     that have CSS script objects in them (of type `cssProgSpace').
+
+`clearall'
+     Clears out everything from the current program space.  This is
+     like restarting the CSS shell, compared to `reset' which does
+     not remove any variables defined at the top-level.
+
+`commands'
+     Shows a list of the currently available commands (including any
+     aliases that have been defined, which will appear at the end of
+     the list).
+
+`constants'
+     Shows a list of the pre-defined constants that have been defined
+     in CSS.  These are just like globally-defined `Int' and `Real'
+     values, and thus they can be assigned to different values
+     (though this is obviously not recommended).
+
+`cont'
+     Continues the execution of a program that was stopped either by a
+     breakpoint or by single-stepping.  To continue at a particular
+     line in the code, use the `goto' command.
+
+`debug <level>'
+     Sets the debug level.  Level 1 provides a trace of the source
+     lines executed.  Level 2 provides a more detailed, machine-level
+     trace, and causes `list' to show the program at the machine
+     level instead of at the usual source level. Levels greater than
+     2 provide increasing amounts of detail about the inner workings
+     of CSS, which should not be relevant to most users.
+
+`define'
+     Toggles the mode where statements that are typed in become part
+     of the current program to be executed later (define mode), as
+     opposed the default (run mode) where statements are executed
+     immediately after entering them.
+
+`defines'
+     Shows a list of all of the current `#define' pre-processor
+     macros.
+
+`edit <object> [<wait>]'
+     If the GUI (graphical user interface) is active (i.e., by using
+     `-gui' to start up CSS), `edit' will bring up a graphical edit
+     dialog for the given object, which must be either a
+     script-defined or hard-coded `class' object.  The optional
+     second argument, if `true', will cause the system to wait for
+     the user to close the edit dialog before continuing execution of
+     the script.
+
+`enums'
+     Shows a list of all the current `enum' types.  Note that most
+     `enum' types are defined within a `class' scope, and can be
+     found there by using the `type' command on the class type.
+
+`exit'
+     Exits from the program (CSS), or from another program space if
+     `chsh' (or its GUI equivalent) was called.
+
+`frame [<back>]'
+     Shows the variables and their values associated with the current
+     block or frame of processing.  The optional argument gives the
+     number of frames back from the current one to display.  This is
+     most relevant for debugging at a breakpoint, since otherwise
+     there will only be a single, top-level frame to display.
+
+`functions'
+     Shows a list of all of the currently defined functions.
+
+`globals'
+     Shows a list of all of the currently defined global variables,
+     including those in the script and hard-coded ones.
+
+`goto <src_ln>'
+     Continues execution at the given source line.
+
+`help [<expr>]'
+     Shows a short help message, including lists of commands and
+     functions available.  When passed argument (command, function,
+     class, etc), provides help information for it.
+
+`inherit <object_type>'
+     Shows the inheritance path for the given object type.
+
+`list [<start_ln> [<n_lns>]] [<function>]'
+     Lists the program source (or machine code, if `debug' is 2 or
+     greater), optionally starting at the given source line number,
+     and continuing for either 20 lines (the initial default) or the
+     number given by the second argument (which then becomes the new
+     default).  Alternatively, a function name can be given, which
+     will start the listing at the beginning of that function (even
+     if the function is `extern'al and does not appear in a
+     line-number based list).  `list' with no arguments will resume
+     where the last one left off.
+
+`load <program_file>'
+     Loads and compiles a new program from the given file.
+
+`mallinfo'
+     Generates a listing of the current `malloc' memory allocation
+     statistics, including changes from the last time the command was
+     called.
+
+`print <expr>'
+     Prints the results of the given expression (which can be any
+     valid CSS expression), giving some type information and
+     following with a new line (`\n').  This is useful for debugging,
+     but not for printing values as part of an executing program.
+
+`printr <object>'
+     Prints an object and any of its sub-objects in a indented style
+     output.  This can be very long for objects near the top of the
+     object hierarchy (i.e., the root object), so be careful!
+
+`reload'
+     Reloads the current program from the last file that was `load'ed.
+     This is useful because you do not have to specify the program
+     file when making a series of changes to a program.
+
+`remove <var_name>'
+     Removes given variable from whatever space it was defined in.
+     This can be useful if a variable was defined accidentally or
+     given the wrong name during interactive use.
+
+`reset'
+     Reset is like `clearall', except that it does not remove any
+     top-level variables that might have been defined.  Neither of
+     these commands will remove anything declared `extern'.
+
+`restart'
+     Resets the script to start at the beginning.  This is useful if
+     you want to stop execution of the program after a break point.
+
+`run'
+     Runs the script from the start (as opposed to `cont' which
+     continues execution from the current location).
+
+`setbp <src_ln>'
+     Sets a breakpoint at the given source-code line.  Execution of
+     the program will break when it gets to that line, and you will
+     be able to examine variables, etc.
+
+`setout <ostream>'
+     Sets the default output of CSS commands to the given stream.
+     This can be used to redirect listings or program tracing output
+     to a file.
+
+`settings'
+     Shows the current values of various system-level settings or
+     parameters.  These settings are all static members of the class
+     `ta_Misc', and can be set by using the scoped member name, for
+     example: `ta_Misc::display_width = 90;'
+
+`shell <"shell_cmd">'
+     Executes the given Unix shell command (i.e., `shell "ls -lt"').
+
+`showbp'
+     Shows a list of all currently defined breakpoints, and the
+     source code line they point to.
+
+`source <cmd_file>'
+     Loads a file which contains a series of commands or statements,
+     which are executed exactly as if they were entered from the
+     keyboard.  Note that this is different than `load'ing a program,
+     which merely compiles the program but does not execute it
+     immediately thereafter.  `source' uses run mode, while `load'
+     uses define mode.
+
+`stack'
+     Displays the current contents of the stack.  This can be useful
+     for debugging.
+
+`status'
+     Displays a brief listing of various status parameters, such as
+     current source line, depth, etc.
+
+`step <step_n>'
+     Sets the single-step mode for program execution.  The parameter
+     is the number of lines to step through before pausing.  A value
+     of 0 turns off single stepping.
+
+`tokens <obj_type>'
+     Lists the instances of the given object type which are known to
+     have been created.  Many object types do not register tokens,
+     which will be indicated in the results of this command if
+     applicable.  It is possible to refer to the objects by their
+     position in this list with the `Token' function, which can be a
+     useful shortcut to using the object's path.
+
+`trace [<level>]'
+     Displays a trace of the functions called up to the current one
+     (i.e., as called from within a breakpoint). A trace level of 0
+     (the default) just gives function names, line numbers, and the
+     source code for the function call, while level 1 adds stack
+     information, level 2 adds stack and auto variable state
+     information, and level 3 gives a complete dump of all available
+     information.
+
+`type <type_name>'
+     Gives type information about the given type.  This includes full
+     information about classes (both hard-coded and script-defined),
+     including members, functions, scoped types (enums), etc.
+
+`undo'
+     This undoes the previous statement, when in `define' mode.
+
+`unsetbp <src_ln>'
+     Removes a breakpoint associated with the given source-code line
+     number.
+
+
+File: pdp-user,  Node: css-functions,  Next: css-settings,  Prev: css-commands,  Up: css-ref
+
+CSS Functions
+-------------
+
+   The following functions are built into CSS, and provide some of the
+basic functionality found in the standard C library.  Note that the
+`String' and `stream' objects encapsulate many commonly-used C
+library functions, which have not in general been reproduced in CSS
+(with the exception of some of the file functions).
+
+`Int access(String fname, int ac_type)'
+     This POSIX command determines if the given file name is
+     accessible according to the ac_type argument, which should be
+     some bitwise OR of the enums `R_OK W_OK X_OK F_OK'.  Returns
+     success and sets errno flag on failure.
+
+`Real acos(Real x)'
+     The arc-cosine (inverse cosine) - takes an X coordinate and
+     returns the angle (in radians) such that cos(angle)=X.
+
+`Real acosh(Real x)'
+     The hyperbolic arc-cosine.
+
+`Int alarm(int seconds)'
+     Generate an alarm signal in the given number of seconds.  Returns
+     success and sets errno flag on failure.
+
+`Real asin(Real x)'
+     The arc-sine (inverse sine) - takes a Y coordinate and returns
+     the angle (in radians) such that sin(angle)=Y.
+
+`Real asinh(Real x)'
+     The hyperbolic arc-sine.
+
+`Real atan(Real x)'
+     The arc-tangent (inverse tangent) - takes a Y/X slope and
+     returns angle (in radians) such that tan(angle)=Y/X.
+
+`Real atan2(Real y, Real x)'
+     The arc-tangent (inverse tangent) - takes a Y/X slope and
+     returns angle (in radians) such that tan(angle)=Y/X.
+
+`Real atanh(Real x)'
+     The hyperbolic arc-tangent.
+
+`Real beta(Real z, Real w)'
+     The Beta function.
+
+`Real beta_i(Real a, Real b, Real x)'
+     The incomplete Beta function.
+
+`Real bico_ln(Int n, Int j)'
+     The natural logarithm of the binomial coefficient "n choose j".
+     The number of ways of choosing j items out of a set containing n
+     elements:
+            / n \        n!
+            |   |  = ------------
+            \ j /      k! (n-k)!
+
+`Real binom_cum(Int n, Int j, Int p)'
+     The cumulative binomial probability of getting j _or more_ in n
+     trials of probability p.
+
+`Real binom_den(Int n, Int j, Real p)'
+     The binomial probability density function for j "successes" in n
+     trials, each with probability p of success.
+                         / n \   j      (n-j)
+            P(n,j,p) =   |   |  p  (1-p)
+                         \ j /
+
+`Real binom_dev(Int n, Real p)'
+     The binomial random deviate: produces an integer number of
+     successes for a binomial distribution with p probability over n
+     trials.
+
+`Int CancelEditObj(obj)'
+     Cancels the edit dialog for the given object that would have
+     been opened by `EditObj'.
+
+`Real ceil(Real x)'
+     Rounds up the value to the next-highest integral value.
+
+`int chdir(String dir_name)'
+     Change the current directory to given argument.  Returns success
+     and sets errno flag on failure.
+
+`Real chisq_p(Real X, Real v)'
+     Gives the chi-squared statistic P(X^2 | v).
+
+`Real chisq_q(Real X, Real v)'
+     Gives the complement of the chi-squared statistic Q(X^2 | v).
+
+`Int chown(String fname, int user, int group)'
+     Changes the ownership of the given file to the given user and
+     group numbers.  Returns success and sets errno flag on failure.
+
+`Real clock()'
+     Returns processor time used by current process in seconds (with
+     fractions expressed in decimals).
+
+`Real cos(Real x)'
+     The cosine of angle x (given in radians).  Use `cos(x / DEG)' if
+     x is in degrees.
+
+`Real cosh(Real x)'
+     The hyperbolic cosine of angle x.
+
+`String ctermid()'
+     Returns the character-id of the current terminal.
+
+`String cuserid()'
+     Returns the character-id of the current user.
+
+`String_Array& Dir([String& dir_nm])'
+     Fills an array with the names of all the files in the given
+     directory (defaults to "." if no directory name is passed).  The
+     user should copy the array if they want to keep it around, since
+     the one returned is just a pointer to an internal array object.
+
+`Real drand48()'
+     Returns a uniformly-distributed random number between 0 and 1.
+
+`Int EditObj(<object>, [Int wait])'
+     This is the function version of the `edit' command.  If the GUI
+     (graphical user interface) is active (i.e., by using `-gui' to
+     start up CSS), edit will bring up a graphical edit dialog for
+     the given object, which must be either a script-defined or
+     hard-coded `class' object.  The optional second argument, if
+     TRUE, will cause the system to wait for the user to close the
+     edit dialog before continuing execution of the script.
+
+`Real erf(Real x)'
+     The error function, which provides an approximation to the
+     integral of the normal distribution.
+
+`Real erf_c(Real x)'
+     The complement of the error function.
+
+`Real exp(Real x)'
+     The natural exponential (e to the power x).
+
+`css* Extern(String& name)'
+     Returns the object with the given name on the 'extern' variable
+     list.  This provides a mechanism for passing arbitrary (i.e.,
+     class objects) data across different name spaces (i.e., across
+     different instances of the css program space), since you can
+     pass the name of the extern class object that contains data
+     relevant to another script, and use this function to get that
+     object from its name.
+
+`Real fabs(Real x)'
+     The absolute value of x.
+
+`Real fact_ln(Int x)'
+     The natural logarithm of the factorial of x (x!).
+
+`void fclose(FILE fh)'
+     Closes the file, which was opened by `fopen'.  The FILE type is
+     not actually a standard C FILE, but actually a `fstream' type, so
+     stream operations can be performed on it.
+
+`Real floor(Real x)'
+     Rounds the value down to the next lowest integral value.
+
+`Real fmod(Real x, Real y)'
+     Returns the value of x modulo y (i.e., `x % y') for
+     floating-point values.
+
+`FILE fopen(String& file_nm, String& mode)'
+     Opens given file name in the given mode, where the modes are
+     "r", "w", and "a" for read, write and append. The FILE type is
+     not actually a standard C FILE, but actually a `fstream' type,
+     so stream operations can be performed on it.
+
+`void fprintf(FILE strm, v1 [,v2...])'
+     Prints the given arguments (which must be comma separated) to the
+     stream.  Values to be printed can be of any type, and are
+     actually printed with the `<<' operator of the stream classes.
+     Unlike the standard C function, there is no provision for
+     specifying formatting information.  Instead, the formatting must
+     be specified by changing the parameters of the stream object.
+     The FILE type is not actually a standard C FILE, but actually a
+     `fstream' type, so stream operations can be performed on it.
+
+`Real Ftest_q(Real F, Real v1, Real v2)'
+     Gives the F probability distribution for P(F | (v1 < v2)).
+     Useful for performing statistical significance tests.  The _q
+     suffix means that this is the complement distribution.
+
+`Real gamma_cum(Int i, Real l, Real t)'
+     The cumulative gamma distribution for event i with parameters
+     l=lambda and t=time, which is the same as `gamma_p(j, l * t)'.
+
+`Real gamma_den(Int j, Real l, Real t)'
+     The gamma probability density function for j events, l=lambda,
+     and t=time.
+                           j  (j-1)
+                          l  t         -lt
+            P(j,l,t)  =  -----------  e           (t > 0)
+                              j!
+
+`Real gamma_dev(Int j)'
+     A random gamma deviate: how long it takes to wait until j events
+     occur with a unit lambda (l=1).
+
+`Real gamma_ln(Real z)'
+     The natural logarithm of the gamma function, which is a
+     generalization of (n-1)! to real-valued arguments. Note that
+     this is not the gamma probability distribution.
+                          x
+                        /   z-1  -t
+            Gamma(z) =  |  t    e   dt
+                        /
+                         0
+
+`Real gamma_p(Real a, Real x)'
+     The incomplete gamma function:
+                                    x
+                          1       /   a-1  -t
+            P(a,x) =  --------    |  t    e   dt          (a > 0)
+                      Gamma(a)    /
+                                   0
+
+`Real gamma_q(Real a, Real x)'
+     The incomplete gamma function as the complement of `gamma_p'
+                                   inf
+                          1       /   a-1  -t
+            P(a,x) =  --------    |  t    e   dt          (a > 0)
+                      Gamma(a)    /
+                                   x
+
+`Real gauss_cum(Real x)'
+     The cumulative of the Gaussian or normal distribution up to
+     given x (sigma = 1, mean = 0).
+
+`Real gauss_den(Real x)'
+     The Gaussian or normal probability density function at x with
+     sigma = 1 and mean = 0.
+
+`Real gauss_inv(Real p)'
+     Inverse of the cumulative for p: returns z value for given p.
+
+`Real gauss_dev()'
+     Returns a Gaussian random deviate with unit variance and 0 mean.
+
+`String getcwd()'
+     Returns the current working directory path.
+
+`String getenv(String var)'
+     Returns the environment variable definition for varable var.
+
+`Int getegid()'
+     Returns the current effective group id number for this process.
+
+`Int geteuid()'
+     Returns the current effective user id number for this process.
+
+`Int getgid()'
+     Returns the current group id number for this process.
+
+`Int getuid()'
+     Returns the current user id number for this process.
+
+`String getlogin()'
+     Returns the name the current user logged in as.
+
+`Int getpgrp()'
+     Returns the process group id for current process.
+
+`Int getpid()'
+     Returns the process id for current process.
+
+`Int getppid()'
+     Returns the parent process id for current process.
+
+`Int gettimesec()'
+     Returns current time of day in seconds.
+
+`Int gettimmesec()'
+     Returns current time of day in microseconds.
+
+`Real hyperg(Int j, Int s, Int t, Int n)'
+     The hypergeometric probability function for getting j number of
+     the "target" items in an environment of size "n", where there
+     are "t" targets and a sample (without replacement) of this
+     environment of size "s" is taken.
+
+`Int isatty()'
+     Returns true if the current input terminal is a tty (as opposed
+     to a file or a pipe or something else).
+
+`Int link(String from, String to)'
+     Creates a hard link from given file to other file.  (see also
+     symlink).  Returns success and sets errno flag on failure.
+
+`Real log(Real x)'
+     The natural logarithm of x.
+
+`Real log10(Real x)'
+     The logarithm base 10 of x.
+
+`Int lrand48()'
+     Returns a uniformly-distributed random number on the range of the
+     integers.
+
+`MAX(<v1>, <v2>) or max(<v1>, <v2>)'
+     Works like the commonly-used `#define' macro that gives the
+     maximum of the two given arguments.  The return type is that of
+     the maximum-valued argument.
+
+`MIN(<v1>, <v2>) or min(<vi>, <v2>)'
+     Just like `MAX', except it returns the minimum of the two given
+     arguments.
+
+`Int pause()'
+     Pause (wait) until an alarm or other signal is received.  Returns
+     success and sets errno flag on failure.
+
+`void perror(String prompt)'
+     Prints out the current error message to stderr (cerr).  The
+     prompt argument is printed before the error message.  Also, the
+     global variable `errno' can be checked.  Further, there is an
+     include file in css/include called errno.css that defines an
+     enumerated type for the defined values of errno.
+
+`Real poisson_cum(Int j, Real l)'
+     The cumulative Poisson distribution for getting 0 to j-1 events
+     with an exected number of events of l (lambda).
+
+`Real poisson_den(Int j, Real l)'
+     The Poisson probability density function for j events given an
+     expected number of events of l (lambda).
+                         j
+                        l    -l
+            P(j, l) =  ---- e
+                        j!
+
+`Real poisson_dev(Real l)'
+     A random Poisson deviate with a mean of l (lambda).
+
+`Real pow(Real x, Real y)'
+     Returns x to the y power.  This can also be expressed in CSS as
+     x ^ y.
+
+`void PrintR(<object>)'
+     This is the function version of the `printr' command.  Prints an
+     object and any of its sub-objects in a indented style output.
+     This can be very long for objects near the top of the object
+     hierarchy (i.e., the root object), so be careful!
+
+`void printf(v1 [,v2...])'
+     Prints the given arguments (which must be comma separated) to the
+     standard output stream.  Values to be printed can be of any
+     type, and are actually printed with the `<<' operator of the
+     stream classes.  Unlike the standard C function, there is no
+     provision for specifying formatting information.  Instead, the
+     formatting must be specified by changing the parameters of the
+     standard stream output object, `cout'.  The FILE type is not
+     actually a standard C FILE, but actually a `fstream' type, so
+     stream operations can be performed on it.
+
+`Int putenv(String env_val)'
+     Put the environment value into the list of environment values
+     (avail through getenv).
+
+`Int random()'
+     Returns a uniformly-distributed random number on the range of the
+     integers.  CSS actually uses the `lrand48' function to generate
+     the number given the limitations of the standard `random'
+     generator.
+
+`String_Array& ReadLine(istream& strm)'
+     Reads a line of data from the given stream, and returns a
+     reference to an internal array (which is reused upon a
+     subsequent call to ReadLine) of strings with elements containing
+     the whitespace-delimited columns of the line.  The size of the
+     array gives the number of columns, etc.  This allows one to
+     easily implement much of the functionality of awk.  See the file
+     `css_awk.css' in `css/include' for an example.
+
+`Int rename(String from, String to)'
+     Renames given file.  Returns success and sets errno flag on
+     failure.
+
+`Int rmdir(String dir_name)'
+     Removes given directory.  Returns success and sets errno flag on
+     failure.
+
+`Int setgid(Int id)'
+     Sets group id for given process to that given.  Note that only
+     the super-user can in general do this.  Returns success and sets
+     errno flag on failure.
+
+`Int setpgid(Int id)'
+     Sets process group id for given process to that given.  Note
+     that only the super-user can in general do this.  Returns
+     success and sets errno flag on failure.
+
+`Int setuid(Int id)'
+     Sets user id for given process to that given.  Note that only the
+     super-user can in general do this.  Returns success and sets
+     errno flag on failure.
+
+`Real sin(Real x)'
+     The sine of angle x (given in radians).  Use `sin(x / DEG)' if x
+     is in degrees.
+
+`Real sinh(Real x)'
+     The hyperbolic sine of x.
+
+`Real sqrt(Real x)'
+     The square-root of x.
+
+`void srand48(Int seed)'
+     Provides a new random seed for the random number generator.
+
+`Int sleep(Int seconds)'
+     Causes the process to wait for given number of seconds.  Returns
+     success and sets errno flag on failure.
+
+`Real students_cum(Real t, Real v)'
+     Gives the cumulative Student's distribution for v degrees of
+     freedom t test.
+
+`Real students_den(Real t, Real v)'
+     Gives the Student's distribution density function for v degrees
+     of freedom t test.
+
+`Int symlink(String from, String to)'
+     Creates a symbolic link from given file to other file.  (see
+     also link).  Returns success and sets errno flag on failure.
+
+`void system(String& cmd)'
+     Executes the given command in the Unix shell.
+
+`Real tan(Real x)'
+     The tangent of angle x (given in radians).  Use `tan(x / DEG)'
+     if x is in degrees.
+
+`Real tanh(Real x)'
+     The hyperbolic tangent of x.
+
+`Int tcgetpgrp(Int file_no)'
+     Gets the process group associated with the given file descriptor.
+     Returns success and sets errno flag on failure.
+
+`Int tcsetpgrp(Int file_no)'
+     Sets the process group associated with the given file descriptor.
+     Returns success and sets errno flag on failure.
+
+`String ttyname(Int file_no)'
+     Returns the terminal name associated with the given file
+     descriptor.
+
+`Token(<obj_type>, Int tok_no)'
+     Returns the token of the given type of object at index `tok_no'
+     in the list of tokens.  Use the `tokens' command to obtain a
+     listing of the tokens of a given type of object.
+
+`TypeDef Type(String& typ_nm | <obj_type>)'
+     Returns a type descriptor object (generated by TypeAccess), for
+     the given type name or type object (the type object can be used
+     directly in some situations, but not all).
+
+`Int unlink(String fname)'
+     Unlinks (removes) the given file name.
+
+
+File: pdp-user,  Node: css-settings,  Prev: css-functions,  Up: css-ref
+
+Parameters affecting CSS Behavior
+---------------------------------
+
+   All of the settings that control the behavior of CSS are contained
+in the global object called `cssSettings'.  This is actually just a
+reference to the `taMisc' class, which is part of the TypeAccess
+system.  The members of this class that can be set by the user are
+listed below (see also *note gui-settings::):
+
+`int display_width'
+     Width of the shell display in characters.
+
+`int sep_tabs'
+     Number of tabs to separate items by in listings.
+
+`int search_depth'
+     The recursive depth at which css stops searching for an object's
+     path.
+
+`TypeInfo type_info'
+     The amount of information about a class type that is reported
+     when the "type" command is used in CSS.
+
+
+     Type_info has one of the following values:
+
+
+
+          `MEMB_OFFSETS'       shows the byte offset of members
+
+          `All_INFO'          shows all type info except memb_offsets
+
+          `NO_OPTIONS'        shows all info except type options
+
+          `NO_LISTS'          shows all info but lists
+
+          `NO_OPTIONS_LISTS'  shows all info but options and lists
+
+
+
+     The default is `NO_OPTIONS_LISTS'
+
+
+
+File: pdp-user,  Node: css-errors,  Next: css-hard,  Prev: css-ref,  Up: css
+
+Common User Errors
+==================
+
+   The following are common user errors, which you can anticipate and
+avoid by reading about them in advance.
+
+   *Forgetting the semicolon:* CSS, being essentially like C or C++,
+requires most statements to end with a semicolon (;). This allows one
+to spread statements over multiple lines, since the semicolon and not
+the newline indicates the end of a statement.  However, it is easy to
+forget it when typing stuff in interactively.  The consequences of
+this are that the following command or statement will be treated as
+if it was part of the one where the semicolon was forgotten, usually
+resulting in a `Syntax Error'.  Note that commands are exempt from
+the semicolon requirement, and, as a corollary, can not be extened
+across multiple lines.
+
+   *Delayed impact of syntax error:*  This happens when the user types
+in something erroneous (i.e., something that will result in a Syntax
+Error), without following it with a semicolon (usually because it was
+supposed to be a command, which does not require a semicolon).
+However, because the entry was neither a command nor followed by a
+semicolon, it treats the following material as being on the same line,
+so that only after the second line has been entered (typically), is
+the first syntax error caught.  The solution is to simply press enter
+a couple of times (or hit the semicolon and press enter), which will
+clear out the preceding line and let you continue on.
+
+   *Trying to `print' or do something else with a `void':* If an
+expression cannot be evaluated (resulting in a `void' value), or a
+function is called which returns a type of `void' (i.e., nothing is
+returned), and the result of this expression is then printed or
+passed to some other function, the following error will result:
+`Incomplete argument list for: <function_name>, Should have: 1 Got:
+0'.  Since the void does not get passed to the function or command
+which is expecting an argument, the function/command (typically
+`print') complains with the above error.
+
+
+File: pdp-user,  Node: css-hard,  Prev: css-errors,  Up: css
+
+Compiling CSS files as C++ Hard Code
+====================================
+
+   Because they use the standard C++ syntax, CSS script files can be
+compiled into "hard" code that runs (fast) as a stand-alone
+application.  Of course, the files must not use any of the CSS
+shortcuts, and must otherwise be standard C++ code (i.e., no
+executable code outside of functions, using the correct `.' or `->'
+operator, etc).
+
+   There are three main steps that are needed to compile your CSS
+code.  The first, which need only be done once, is the creation of the
+appropriate libraries that will be linked with the C++ compiled code
+to produce an executable.  The second is formatting your file so that
+it can be both run by CSS and compiled by C++.  The third is creating
+a Makefile which will allow C++ to compile your file.  An example of
+this is provided in the directory `demo/css'.
+
+   There are two special libraries that are linked into your C++
+executable, one in the `src/ta' directory, and one in the `src/css'
+directory.  Both can be made using top-level Makefile commands, or by
+going into the directories separately.  `make LibMin' makes a library
+which contains the minimal type-access stuff from the `src/ta'
+directory of the distribution, and it makes the `libtypea_min'
+library.  `make hard_css' makes a library of special functions in
+`src/css' (e.g., the "special math" functions which have been added
+into CSS and are not part of the standard C library, and the Dir and
+ReadLine functions).  This library is `libhard_css'.  Both of these
+libraries will be visible to the C++ compiler using the makefiles as
+described below.
+
+   The CSS file needs to have a couple of conditially-included
+elements that resolve the basic differences between CSS and C++.
+Basically, this amounts to including a header file that estabilshes
+some defines and includes some commonly-used standard library
+headers, which are automatically present in CSS.  This is the
+`css/hard_of_css.h' file.  It is only included when compiling by
+making it conditional on the pre-processor define `__CSS__', which is
+automatically defined by CSS.  Also, `hard_of_css.h' defines a `main'
+function which calls a function called `s_main', which is the actual
+main function that should be defined in your script.
+
+   The following example illustrates these elements, and can be used
+as a template for making your own CSS files compilable (see `demo/css'
+for a larger example):
+
+     #ifndef __CSS__
+     #include <css/hard_of_css.h>
+     #endif
+     
+     void s_main(int ac, String* av) {
+       // do stuff here..
+     }
+     
+     // in css, call our main function as the thing we actually run..
+     #ifdef __CSS__
+     s_main(argc, argv);
+     #endif
+
+   In order to make the C++ compiling environment as similar to CSS as
+possible, a variant of the same Makefile can be used.  This assumes
+that the makefiles for your CPU type are correct (i.e., those used in
+installing the PDP++/CSS source-code distribution (*note inst::,
+*Note inst-prog::)).  The following steps will result in a Makefile
+that will enable you to compile your CSS code.
+
+   1) Copy the sample makefile in `config/Makefile.hard_of_css' into
+the directory where your CSS file is to be compiled, and name it
+`Makefile.in'.
+
+   2) Edit this file and ensure that the PDPDIR path is pointing to
+the installed pdp++ distribution.
+
+   3) Then, do a `make -f Makefile.in InitMakefile', which will make a
+`Makefile' in the current directory that can be used to compile your
+file.
+
+   4) To compile, just type `make <filenm>', where `<filenm>' is the
+CSS file without any extension (i.e., the name of the executable that
+will be produced.  Some C++ compilers will complain if the file does
+not end in a "standard" C++ extension like .cc or .C, so you may have
+to rename it or create a symbolic link from your .css file (CSS does
+not care about using a non .css extension, as long as you specify the
+entire file name).
+
+
+File: pdp-user,  Node: obj,  Next: proj,  Prev: css,  Up: Top
+
+Object Basics and Basic Objects
+*******************************
+
+   PDP++ is written in the computer language C++. C++ extends the C
+language in many ways, but its primary addition is the concept of
+objects and object oriented programming (OOP). Many PDP concepts such
+as Units, Layers, and Networks easily fall into the object paradigm,
+while some other concepts such as Processes and Environments are
+initially difficult to grasp in this framework. The following
+chapters explain the particulars of the PDP concepts in the
+object-based paradigm in greater detail. This chapter establishes a
+number of conventions in PDP++ used for organizing and structuring
+its objects.  It is really only relevant if you will be programming
+with PDP++, either in the script language or directly in C++ -- the
+end user generally need not be concerned with this level of detail.
+
+   In addition to these object basics, this chapter also describes a
+number of basic types of objects that are used in many different
+places within the software.  Examples of these include lists, groups,
+arrays, and specifications.
+
+* Menu:
+
+* obj-basics::                  Object Basics
+* obj-array::                   Arrays
+* obj-group::                   Groups
+* obj-spec::                    Specifications
+* obj-random::                  Random Distributions
+
+
+File: pdp-user,  Node: obj-basics,  Next: obj-group,  Prev: obj,  Up: obj
+
+Object Basics
+=============
+
+   The following sections describe some basic ideas about objects and
+general things you can do with them.
+
+* Menu:
+
+* obj-basics-obj::              What is an Object?
+* obj-basics-names::            Object Names
+* obj-basics-files::            Saving and Loading Objects
+
+
+File: pdp-user,  Node: obj-basics-obj,  Next: obj-basics-names,  Prev: obj-basics,  Up: obj-basics
+
+What is an Object?
+------------------
+
+   An object has both fields with data and functions (aka methods)
+which it can perform.  A PDP Unit as an object might have the fields
+`activation' and `netinput', and some functions like
+`ComputeActivation()' and `ClearNetInput()'. In C++ this might look
+like:
+
+     class Unit {
+       float         activation;     // this is a member holding activation
+       float         netinput;       // this is a member holding net input
+     
+       virtual void  ComputeActivation(); // this is a function
+       void          ClearNetInput();        // this is a function
+     }
+
+   C++ also provides the mechanisms for object inheritance in which a
+new object can be defined as having the same fields and functions as
+its "parent" object with the addition of a few fields and/or
+functions of its own. In PDP++ the BpUnit object class inherits from
+the parent Unit class and adds fields such as `bias weight' and a
+BackProp version of `ComputeActivation'. In C++ this might look like:
+
+     class BpUnit : public Unit {
+       float         biasweight;     // a new member in addition to others
+     
+       void          ComputeActivation(); // redefining this function
+       void          ClearBiasWeight();  // adding a new function
+     }
+
+   By overloading the ComputeActivation function the BpUnit redefines
+the way in which the activation is computed. Since it doesn't
+overload the ClearNetInput function, the BPUnit clears its net input
+in the exact same way as the standard unit would. The new function
+ClearBiasWeight exists only on the BpUnit and is not available on the
+base Unit class. Through this type of class inheritance, PDP++
+provides a hierarchical class structure for its objects.
+
+   For a slightly more detailed treatment of some of the basic ideas
+in OOP and C++, see *Note css-c++-intro::.
+
+
+File: pdp-user,  Node: obj-basics-names,  Next: obj-basics-files,  Prev: obj-basics-obj,  Up: obj-basics
+
+Object Names
+------------
+
+   In PDP++, many objects have a `name' field.  This gives the
+particular object an identifier that can be used to refer to it in the
+CSS script language (*note css-tut-access::), and it makes it easier
+to identify when you need to point to it one of the GUI operations.
+
+   All objects when created are given default names that consist of
+the their type followed by a number which increases for each
+subsequent object of that type which is created.  Thus, the first
+Layer created will be called "Layer_0", and so on.
+
+   Note that the name given to an object is not necessarily the same
+name that object will have when saved to a file.  It is simply a
+value of a particular member of the object.
+
+
+File: pdp-user,  Node: obj-basics-files,  Prev: obj-basics-names,  Up: obj-basics
+
+Saving and Loading Objects
+--------------------------
+
+   All PDP++ objects can also be saved to a file and loaded back in
+from that file.  Note that when you save an object that has
+sub-objects in it (i.e. a Layer, which has Units in it), those
+sub-objects are also saved in the file, and loaded back in as well.
+Thus, to save all the elements of a project, one only has to save the
+project object, which will automatically save all of its sub-objects.
+
+   There are two ways in which objects can be loaded back in: in one
+case, you load the file _over_ an existing object.  This corresponds
+to the Load Over menu item that you will frequently see in PDP++.
+This will simply replace the values of the existing object with those
+saved in the file.  This also applies to any sub-objects. Note if the
+existing object has _fewer_ of some kind of sub-object than the saved
+file, new sub-objects will be created as needed.  However, the same
+is not also true if the existing object has _more_ of these
+sub-objects--they are not removed to make the existing object exactly
+the same as that which was saved in the file.  If you want to make
+sure the object is exactly as it was saved, open a new one, do not
+open over an existing one.
+
+   To open a new object from a saved file, use the Open in menu item
+(instead of Load Over).  This is equivalent to opening a new item
+into a parent group object.  For example, the project has a group that
+contains its networks.  If you open a saved network file in this
+group, as opposed to over an existing network in the group, a new
+network will automatically be created (along with all of its saved
+substructure).
+
+   Some types of objects have default "extensions" that are
+automatically added on to the file name to identify the type of file.
+For example, projects are saved with a `.proj' extension.  Further,
+some objects automatically compress the file after saving, (and
+automatically uncompress it before loading) in order to save disk
+space.  This is because the file format objects are saved in is
+actually text-based and human readable.  Thus, it is much more
+efficient to save large files in a compressed form.  These files
+automatically get the compression suffix associated with the type of
+compression used (.gz for gzip, which is the default).
+
+
+File: pdp-user,  Node: obj-group,  Next: obj-array,  Prev: obj-basics,  Up: obj
+
+Groups
+======
+
+   Groups are one of the major workhorse objects in the PDP++
+software.  Virtually every object is contained in a group object.
+Thus, groups provide a way of managing other objects, creating them,
+ordering them, and iterating through them.
+
+   A particular group typically manages objects of the same type.
+Thus, a group of units always contains units of one form or another.
+Groups have a _default type_ of object that they expect to contain,
+and this is what they will create if asked to create a new object.
+
+   Groups also have a notion of a _default element_, which can be
+useful.  For example, the default element of the group of color
+specifications on the root object is the default color spec that will
+be used by all windows that need a color spec.
+
+   There are two basic types of groups.  The simpler form of group is
+actually just a List.  A List object manages a single list of
+elements, and does not allow for any sub-grouping of these elements.
+Lists are used to hold simple objects that probably don't need to have
+such subgroups.
+
+   A Group may also contain subgroups, which are similar in type to
+the group itself. The nested structure of subgroups within subgroups
+within groups can be organized into a conceptual "tree" of groups and
+elements.  The initial group comprises the base of the tree with each
+of its subgroups representing a branch. The subgroup's subgroups
+continually branch off until in the end a group is reached without
+any further subgroups. The actual elements of the group are
+conceptually represented as "leaves", and may occur within any group
+at any level of the group tree.
+
+      Ex:
+     
+                             __(initial group)____
+                            /      |       \   \  \
+                 (subgroup1)   (subgroup2) el6 el7 el8
+                   /  |  \         |     \
+        (subgroup11) el2 el3 (subgroup21)(subgroup22)
+               |                   | \
+              el1                  el4 el5
+
+   In this example there are six groups and eight "leaf" elements. The
+leaves are numbered in their Depth First Search retrieval order which
+is used by the `Leaf()' function described in the group functions
+section *Note obj-group-functions::.
+
+   In some cases it useful for the same group element to occur in
+more than one group at time. The parent groups share the element,
+however, one group is assigned to be the owner (usually the initial
+group the element was created within). Usually a group will own all
+of its elements, but sometimes it may contain elements from other
+groups as well. Those elements which are owned by other groups are
+known as _linked_ elements, and are added to a group by using the
+`Link()' function described in the group functions section. When a
+group is deleted, it breaks its link to the linked elements, but does
+not delete them as it does the other elements it owns. Subgroups can
+also be linked.
+
+     Ex:
+             (group1)                  (group2)
+             /   |   \                /    |  \
+     (subgroup1) el1  \.............el2    el3 \
+       /  \                                     \
+     el4   \...................................(subgroup2)
+
+   In this example group1 has a link to element el2 in group2. El2 is
+owned by group2 and is a link element of group1. In addition,
+subgroup1 has a link to subgroup2, which is owned by group2.
+
+   The following sections document the various operations and
+variables of the group types. These are probably of most interest to
+users who will be manipulating groups in the CSS language, or in
+programming in PDP++.  However, some of the group functions are
+available in the Actions menu in the gui, and their function might
+not be fully clear from their name and arguments.
+
+* Menu:
+
+* obj-group-iteration::         Iterating Through Group Elements
+* obj-group-variables::         Group Variables
+* obj-group-functions::         Group Functions
+* obj-group-edit::              Group Edit Dialog
+
+
+File: pdp-user,  Node: obj-group-iteration,  Next: obj-group-variables,  Prev: obj-group,  Up: obj-group
+
+Iterating Through Group Elements
+--------------------------------
+
+   The elements in a group with nested sub-structure can be accessed
+as though this structure were "flattened out".  This can be done more
+efficiently using an iterator scheme as opposed to repeatedly calling
+the `Leaf()' function.  The iterator for going through leaves is an
+object that remembers information about where it is in the group
+structure.  This iterator is of type taLeafItr, and a variable should
+be declared of this type before beginning a for loop to iterate.  The
+`FirstEl' and `NextEl' functions use this iterator to traverse
+through the elements of the group.
+
+   There is a macro which makes group traversal relatively painless.
+The following example illustrates its use:
+
+       Unit* u;                      // a pointer to a unit object
+       taLeafItr i;                  // the iterator object
+       FOR_ITR_EL(Unit, u, layer->units., i) {
+         u->DoSomething();
+       }
+
+   The FOR_ITR_EL macro iterates though the leaves of a group. It
+accepts four arguments. The first is the type of object expected at
+the leaf level of the group. The second is a pointer to an object of
+that type.  The third is group followed by its access method. In the
+example, the group is "layer->units", and the access method is the
+"." . If the group was instead a pointer to group called "mygroup"
+then the third argument would be "mygroup->". The fourth argument is
+the iterator object.
+
+   To iterate through all the leaf groups (groups which contain leaf
+elements) the FOR_ITR_GP macro may be used. Its first argument is the
+group type (not the leaf type). The second is a pointer to group of
+that type. The third is pointer group and its access method. And
+again, the fourth argument is the iterator object.
+
+
+File: pdp-user,  Node: obj-group-variables,  Next: obj-group-functions,  Prev: obj-group-iteration,  Up: obj-group
+
+Group Variables
+---------------
+
+   The Group class has the following variables:
+
+`String  name'
+     The (optional) name of the group
+
+`int size'
+     Number of elements in the group.
+
+`TypeDef*  el_typ'
+     The "minimum" type of an element in the Group. When objects are
+     created, transferred, or linked in the group, only objects of
+     this type, or objects of a type which inherits from this type
+     are considered for inclusion.
+
+`int el_def'
+     The index of the default element of the group. This element is
+     returned when the `Default_El()' function is called on the group.
+
+`int leaves'
+     The number of leaves of the Group. This is the total sum of all
+     the elements in this group plus all the elements of its
+     subgroups, their subgroups and so on.
+
+`Group gp'
+     This is the group of subgroups.
+
+`Geometry  pos'
+     The Group's position. In some cases, the group is represented
+     graphically and the position provides a relative offset for the
+     elements of the group
+
+`Geometry geom'
+     The Group's geometry. Although the group is accessed linearly,
+     it can be represented graphically in more than one dimension. The
+     geometry specifies the layout of the group's elements.
+

@@ -1,0 +1,66 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# DARWIN - c++ (g++) 3.1 (os X 10.2)
+####################################################
+
+# this is for Mac OSX, aka darwin.  it is pretty standard (linux-like), except
+# you need to do the following steps:
+
+# all actions below need to be as root (sudo su in osx):
+
+# 0. you need the developer's tools, to get the g++ compiler and all the
+# system headers, etc.  find this on the apple website.
+
+# 1. fake malloc.h
+# touch /usr/include/malloc.h
+
+# 2. readline is not included, so:
+# get readline-4.3.tar.gz from ftp://ftp.gnu.org
+# (or our ftp site in darwin)
+# ./configure --prefix=/usr/local; make; make install 
+# (puts libreadline.a in /usr/local/lib -- the .dylib seems to fail but its ok)
+
+# 3. libjpeg is not included, so: 
+# grab the libjpeg code from the home website:
+# www.ijg.org/files/jpegsrc.v6b.tar.gz
+# (or get it from our ftp server in darwin)
+# ./configure; make; make install-lib
+
+# if you want to compile interviews:
+# 1. requires iv-15.tar.gz
+# 2. ./configure --prefix=/usr/local; make; make install
+
+# That should be it!
+####################################
+
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DLINUX -DDARWIN
+
+IDIRS_EXTRA = -I/usr/X11R6/include
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/gcc/darwin/3.1/g++-v3
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# often in /lib/cpp but not on darwin, requires __ppc__ for system includes!
+cppC = /usr/libexec/gcc/darwin/ppc/3.1/cpp -xc++ -D__ppc__
+
+# only within-program dependencies: avoid bug in overflow on no of included files
+DEP_FLAG = -MM
+
+# darwin does not support shared libs yet (apparently..)
+# *NOT* using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

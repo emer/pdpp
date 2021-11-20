@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-spec</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_117.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_119.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX616" HREF="pdp-user_toc.html">10.3.2  The Projection Specification</A></H3>
+<P>
+<A NAME="IDX617"></A>
+
+</P>
+<P>
+The <B>ProjectionSpec</B> class describes the patterns of connectivity
+between units in the two layers involved in a projection.  The base
+ProjectionSpec class is a parent class for the more specific Projection
+Spec classes which are actually used (see section <A HREF="pdp-user_87.html">8.1  Object Basics</A>). Nonetheless,
+it provides the basic functions and variables common to all Projection
+Specs.
+
+</P>
+<P>
+The projection spec actually implements many of the functions associated
+with the projection, so functionality can be modified just by changing
+the spec. 
+
+</P>
+<P>
+<A NAME="IDX618"></A>
+<A NAME="IDX619"></A>
+There are two variables that are common to all projection specs.  One is
+the <CODE>self_con</CODE> flag.  This indicates if self-connections from a
+unit to itself should be created in <CODE>SELF</CODE> projections.  The other
+is <CODE>init_wts</CODE>, which indicates whether the connection weights
+should be initialized from this projection spec (see Tessel and Random,
+below) or via the ConSpec (which is the default, see section <A HREF="pdp-user_127.html">10.5  Connections</A>).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_117.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_119.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

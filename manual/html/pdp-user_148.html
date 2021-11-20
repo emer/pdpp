@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_147.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_149.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H1><A NAME="IDX885" HREF="pdp-user_toc.html">12  Processes and Statistics</A></H1>
+
+<P>
+Processes in PDP++ play the role of orchestrating and coordinating the
+interactions between different object types in order to carry out
+particular tasks.  Processes are <I>objects</I> (see section <A HREF="pdp-user_88.html">8.1.1  What is an Object?</A>),
+which means that they can have their own variables and functions. This
+is fundamentally different from the idea of a process as something that
+simply acts on a data structure.  There are many different kinds of
+process objects which have been designed to perform specific kinds of
+tasks.
+
+</P>
+<P>
+The scheduling processes coordinate the overall scheduling of processing
+during training and testing of networks, and are the "backbone" of
+processing system.  They are organized into a hierarchy of objects, each
+of which performs a specific level of processing:
+<PRE>TrainProcess (loop over epochs)
+    EpochProcess (loop over trials)
+        TrialProcess (present a single pattern)
+        .
+        .
+    .
+    .
+</PRE>
+
+<P>
+The rest of the processes hang off of the schedule processes in
+different places, and perform specific tasks.  The largest category of
+such processes are <EM>statistics</EM>, which compute and record data
+about the network, environment or other processes, and make this data
+available to the logs for displaying.
+
+</P>
+<P>
+Statistics often need to be viewed at multiple levels of processing.
+Thus, one often wants to simultaneously view the trial-wise and the
+aggregated epoch-summed squared error.  This is accomplished in PDP++ by
+having statistics which actually compute the squared-error for a given
+event in the trial process, but also copies of this squared-error
+statistic at subsequent (higher) levels of processing which perform the
+<EM>aggregation</EM> of the statistic over these higher levels.
+
+</P>
+<P>
+Since the different time-grains of processing are represented by the
+schedule process hierarchy, other things like updating displays and
+logging data, which can also happen at different time-grains, are tied
+to the schedule process hierarchy.  Thus, one can decide to log data at
+the <B>TrialProcess</B>, <B>EpochProcess</B>, and/or <B>TrainProcess</B> level,
+and similarly for updating displays like the network viewer.
+
+</P>
+<P>
+The code to control a Process can either be hard-coded C++
+code, or a pointer to a CSS script file. This means that one can change
+the behavior of a Process simply a writing a CSS script and setting the
+Process to use it (see section <A HREF="pdp-user_180.html">12.9  Processes and CSS Scripts</A>).
+
+</P>
+<P>
+The best way to interact and configure processes is throught the project
+viewer (see section <A HREF="pdp-user_104.html">9.2  The Project Viewer</A>).  Processes edit dialogs are yellow
+(<CODE>SchedProcess</CODE>) gold (regular <CODE>Process</CODE>) or slate blue
+(<CODE>Stat</CODE>) in the default color scheme.
+
+</P>
+<P>
+The <B>EpochProcess</B> can also coordinate the processing of different
+events on different <EM>distributed memory processors</EM> to achieve
+much faster processing on parallel hardware (see section <A HREF="pdp-user_157.html">12.5.0.1  Distributed Memory Computation in the EpochProcess</A>).
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_149.html">1                   The Basic Features of All Processes</A>
+<LI><A HREF="pdp-user_150.html">2                  The Schedule Process (SchedProcess)</A>
+<LI><A HREF="pdp-user_153.html">3                 The Different Levels of Schedule Processes</A>
+<LI><A HREF="pdp-user_161.html">4                Specialized Processes</A>
+<LI><A HREF="pdp-user_167.html">5                   The Statistic Process</A>
+<LI><A HREF="pdp-user_171.html">6                  Different Types of Statistics</A>
+<LI><A HREF="pdp-user_180.html">7                    Processes and CSS Scripts</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_147.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_149.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

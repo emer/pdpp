@@ -1,0 +1,23 @@
+##########################################################
+# simple initial makefile that makes the actual makefile
+# by concatenating various ones together..
+#
+# this is used by the shell script bin/mknewpdp to construct
+# a user-extended compile directory for pdp++. 
+
+# this setting is here only for backwards compatibility.
+# it is now overridden by settings in the Makefile.user
+# in the $(TOP) directory above the one where this file is installed
+PDPDIR = /usr/local/pdp++
+
+CP = cp
+CAT = cat
+
+NewMakefile:
+	-@if [ -z "$(CPU)" ]; then (echo "ERROR: Need to set CPU variable!!!" )\
+	else $(CP) Makefile Makefile.bak;\
+	$(CAT) $(PDPDIR)/config/Makefile.defs \
+	$(PDPDIR)/config/Makefile.$(CPU) \
+	$(TOP)/Makefile.user Makefile.in \
+	$(PDPDIR)/config/Makefile.std >Makefile;\
+	fi

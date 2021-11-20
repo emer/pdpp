@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-grid-logview</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_194.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_196.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX1183" HREF="pdp-user_toc.html">13.3.5.1  The GridLogView Class</A></H4>
+
+<P>
+The GridLogView class provides the following variables for customizing
+the display:
+<DL COMPACT>
+
+<DT><CODE>BlockFill fill_type</CODE>
+<DD>
+<A NAME="IDX1184"></A>
+Controls the way in which the Log data values are
+displayed as blocks. The <CODE>COLOR</CODE> setting fills the block with its
+value's respective color from the colorbar at the bottom of the
+GridLogView display. The <CODE>AREA</CODE> and <CODE>LINEAR</CODE> fill the block with
+size-varying spirals in a manner similar to the spirals in the NetView
+and described in more detail in that section. (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>). 
+<DT><CODE>ColorScale* colorspec</CODE>
+<DD>
+<A NAME="IDX1185"></A>
+The colorscale to use for the colorbar at the bottom of the
+GridLogView display (see section <A HREF="pdp-user_61.html">6.18  Color Scale Specifications</A>).
+<DT><CODE>int block_size</CODE>
+<DD>
+<A NAME="IDX1186"></A>
+The size (width and height) of the block area for the value
+blocks -- note that this is only a <I>maximum</I> value -- if the blocks
+need to be shrunk to fit everything in the current window size, they
+will be!
+<DT><CODE>int block_border_size</CODE>
+<DD>
+<A NAME="IDX1187"></A>
+The horizontal and vertical spacing between the blocks in the
+GridLogView.
+<DT><CODE>bool header_on</CODE>
+<DD>
+<A NAME="IDX1188"></A>
+Whether to display the header or not (also accessable through the
+<I>Hdr</I> check box on the display itself).
+<DT><CODE>bool auto_scale</CODE>
+<DD>
+<A NAME="IDX1189"></A>
+Whether to scale the block colors by the actual values of items
+displayed, or to use a fixed range given by the colorscale at the bottom
+of the screen (also accessable through the <I>Auto</I> check box on the
+display itself).
+<DT><CODE>FontSpec view_font</CODE>
+<DD>
+<A NAME="IDX1190"></A>
+Font to use for rendering of all text in the display.
+</DL>
+
+<P>
+The GridLogView also provides the following functions:
+<DL COMPACT>
+
+<DT><CODE>SetColorSpec(ColorScaleSpec* colors)</CODE>
+<DD>
+<A NAME="IDX1191"></A>
+Set the color spectrum to use for color-coding values (NULL = use default)
+<DT><CODE>SetBlockFill(BlockFill fill_typ)</CODE>
+<DD>
+<A NAME="IDX1192"></A>
+Set's the way that data blocks representing values are displayed
+according to the <CODE>fill_type</CODE> variable of the GridLogView, either
+<CODE>COLOR</CODE>, <CODE>AREA</CODE>, or <CODE>LINEAR</CODE>.
+<DT><CODE>SetBlockSizes(int block_sz, int border sz)</CODE>
+<DD>
+<A NAME="IDX1193"></A>
+Set's the <I>maximum</I> size of the data blocks -- actual size can be
+smaller depending on size of display.
+<DT><CODE>UpdateGridLayout(MatrixLayout layout)</CODE>
+<DD>
+<A NAME="IDX1194"></A>
+Arranges the columns of data to fit without gaps, according to the
+geometry of the <CODE>view_spec</CODE>. Possible choices for <CODE>layout</CODE> are:
+<DL COMPACT>
+
+<DT><CODE>LFT_RGT_BOT_TOP</CODE>
+<DD>
+<DT><CODE>LFT_RGT_TOP_BOT</CODE>
+<DD>
+<DT><CODE>BOT_TOP_LFT_RGT</CODE>
+<DD>
+<DT><CODE>TOP_BOT_LFT_RGT</CODE>
+<DD>
+</DL>
+These are explained more fully in the next section.
+<DT><CODE>SetViewFontSize(int point_size)</CODE>
+<DD>
+<A NAME="IDX1195"></A>
+Set the point size of the font used for labels in the display
+<DT><CODE>AllBlockTextOn()</CODE>
+<DD>
+<A NAME="IDX1196"></A>
+Turn text on (in addition to the block) for all block displayed items.
+<DT><CODE>AllBlockTextOff()</CODE>
+<DD>
+<A NAME="IDX1197"></A>
+Turn text off for all block displayed items (so they only display as colored blocks).
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_194.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_196.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

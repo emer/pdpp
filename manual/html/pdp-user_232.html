@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - so-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_231.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_233.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1427" HREF="pdp-user_toc.html">16.3  So Unit and Layer Specifications</A></H2>
+<P>
+<A NAME="IDX1428"></A>
+<A NAME="IDX1429"></A>
+<A NAME="IDX1430"></A>
+<A NAME="IDX1431"></A>
+<A NAME="IDX1432"></A>
+<A NAME="IDX1433"></A>
+
+</P>
+<P>
+Activity of units in the So implementation is determined jointly by the
+unit specifications and the layer specifications.  The unit
+specifications determine how each unit individually computes its net
+input and activation, while the layer specifications determine the
+actual activation of the unit based on a competition that occurs between
+all the units in a layer.
+
+</P>
+<P>
+<A NAME="IDX1434"></A>
+All So algorithms use the same unit type, <B>SoUnit</B>.  The only thing
+this type adds to the basic <B>Unit</B> is the <CODE>act_i</CODE> value, which
+reflects the "independent" activation of the unit prior to any
+modifications that the layer-level competition has on the final
+activations.  This is primarily useful for the soft Cl units, which
+actually transform the net input term with a Gaussian activation
+function, the parameters of which can be tuned by viewing the resulting
+<CODE>act_i</CODE> values that they produce.
+
+</P>
+<P>
+There are three basic types of unit specifications, two of which derive
+from a common <B>SoUnitSpec</B>.  The <B>SoUnitSpec</B> does a very simple
+linear activation function of the net input to the unit.  It can be used
+for standard competitive learning, or for Hebbian learning on linear
+units.
+
+</P>
+<P>
+<A NAME="IDX1435"></A>
+<A NAME="IDX1436"></A>
+The <B>SoftClUnitSpec</B> computes a Gaussian function of the distance
+between the weight and activation vectors.  The variance of the Gaussian
+is given by the <CODE>var</CODE> parameter, which is not adapting and shared by
+all weights in the standard implementation, resulting in a fixed
+spherical Gaussian function.  Note that the <CODE>net</CODE> variable on units
+using this spec is the distance measure, not the standard dot product of
+the weights and activations.
+
+</P>
+<P>
+<A NAME="IDX1437"></A>
+The <B>SomUnitSpec</B> simply computes a sum-of-squares distance function
+of the activations and weights, like the <B>SoftClUnitSpec</B>, but it does
+not apply a Gaussian to this distance.  The winning unit in the SOM
+formalism is the one with the weight vector closest to the current input
+activation state, so this unit provides the appropriate information for
+the layer specification to choose the winner.
+
+</P>
+<P>
+There are three algorithm-specific types of layer specifications,
+corresponding to the Cl, SoftCl, and SOM algorithms, and the parent
+<B>SoLayerSpec</B> type which simply lets the units themselves determine
+their own activity.  Thus, the <B>SoLayerSpec</B> can be used when one does
+not want any competition imposed amongst the units in a layer.  This can
+be useful in the case where both layers are clamped with external
+inputs, and the task is to perform simple pattern association using
+Hebbian learning.  Note that all layer specs do not impose a competition
+when they are receiving external input from the environment.
+
+</P>
+<P>
+<A NAME="IDX1438"></A>
+There is one parameter on the <B>SoLayerSpec</B> which is used by the
+different algorithms to determine how to pick the winning unit.  If
+<CODE>netin_type</CODE> is set to <CODE>MAX_NETIN_WINS</CODE>, then the unit with
+the maximum net input value wins.  This is appropriate if the net input
+is a standard dot-product of the activations times the weights (i.e.,
+for standard competitive learning).  If it is <CODE>MIN_NETIN_WINS</CODE>,
+then the unit with the minimal net input wins, which is appropriate when
+this is a measure of the distance between the weights and the
+activations, as in the SOM algorithm.  Note that soft competitive
+learning does not explicitly select a winner, so this field does not
+matter for that algorithm.
+
+</P>
+<P>
+<A NAME="IDX1439"></A>
+The <B>ClLayerSpec</B> selects the winning unit (based on
+<CODE>netin_type</CODE>), and assigns it an activation value of 1, and it
+assigns all other units a value of 0.  Thus, only the winning unit gets
+to learn about the current input pattern.  This is a "hard"
+winner-take-all competition.
+
+</P>
+<P>
+<A NAME="IDX1440"></A>
+<A NAME="IDX1441"></A>
+The <B>SoftClLayerSpec</B> does not explicitly select a winning unit.
+Instead, it assigns each unit an activation value based on a <EM>Soft
+Max</EM> function:
+
+</P>
+<IMG SRC="pdp-user_232.html_sub_1.gif" ALIGN="MIDDLE" ALT="a_j = e^g_j / (SUM_k e^g_k)
+">
+<P>
+Where <I>g_j</I> is the Gaussian function of the distance between the
+unit's weights and activations (stored in <CODE>act_i</CODE> on the <B>SoUnit</B>
+object).  Thus, the total activation in a layer is normalized to add up
+to 1 by dividing through by the sum over the layer.  The exponential
+function serves to magnify the differences between units.  There is an
+additional <CODE>softmax_gain</CODE> parameter which multiplies the Gaussian
+terms before they are put through the exponential function, which can be
+used to sharpen the differences between units even further.
+
+</P>
+<P>
+Note that <B>SoftClLayerSpec</B> can be used with units using the
+<B>SoUnitSpec</B> to obtain a "plain" SoftMax function of the dot product
+net input to a unit.
+
+</P>
+<P>
+<A NAME="IDX1442"></A>
+<A NAME="IDX1443"></A>
+<A NAME="IDX1444"></A>
+Finally, the <B>SomLayerSpec</B> provides a means of generating a
+"neighborhood kernel" of activation surrounding the winning unit in a
+layer.  First, the unit whose weights are closest to the current input
+pattern is selected (assuming the <B>SomUnitSpec</B> is being used, and the
+<CODE>netin_type</CODE> is set to <CODE>MIN_NETIN_WINS</CODE>).  Then the neighbors
+of this unit are activated according to the <CODE>neighborhood</CODE> kernel
+defined on the spec.  The fact that neighboring units get partially
+activated is what leads to the development of topological "map"
+structure in the network.
+
+</P>
+<P>
+The shape and weighting of the neighborhood kernel is defined by a list
+of <B>NeighborEl</B> objects contained in the <CODE>neighborhood</CODE> member.
+Each of these defines one element of the kernel in terms of the offset
+in 2-D coordinates from the winning unit (<CODE>off</CODE>), and the
+activation value for a unit in this position (<CODE>act_val</CODE>).
+While these can be created by hand, it is easier to use one of the
+following built-in functions on the <B>SomLayerSpec</B>:
+
+</P>
+
+<P>
+<A NAME="IDX1445"></A>
+<DL COMPACT>
+
+<DT><CODE>KernelEllipse(int half_width, int half_height, int ctr_x, int ctr_y)</CODE>
+<DD>
+<A NAME="IDX1446"></A>
+This makes a set of kernel elements in the shape of an ellipse with the
+given dimensions and center (typically 0,0).
+<DT><CODE>KernelRectangle(int width, int height, int ctr_x, int ctr_y)</CODE>
+<DD>
+<A NAME="IDX1447"></A>
+This makes a rectangular kernel with the given dimensions and center.
+<DT><CODE>KernelFromNetView(NetView* view)</CODE>
+<DD>
+<A NAME="IDX1448"></A>
+This makes a kernel based on the currently selected units in the NetView
+(see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>).  Select the center of the kernel first, followed by
+the other elements.  Then call this function.
+<DT><CODE>StepKernelActs(float val)</CODE>
+<DD>
+<A NAME="IDX1449"></A>
+This assigns the <CODE>act_val</CODE> values of the existing kernel elements
+to be all the same value, <CODE>val</CODE>.
+<DT><CODE>LinearKernelActs(float scale)</CODE>
+<DD>
+<A NAME="IDX1450"></A>
+This assigns the <CODE>act_val</CODE> values of the existing kernel elements
+as a linear function of their distance from the center, scaled by the
+given scale parameter.
+<DT><CODE>GaussianKernelActs(float scale, float sigma)</CODE>
+<DD>
+<A NAME="IDX1451"></A>
+This assigns the <CODE>act_val</CODE> values of the existing kernel elements
+as a Gaussian function of their distance from the center, scaled by the
+given scale parameter, where the Gaussian has a variance of <CODE>sigma</CODE>.
+</DL>
+
+<P>
+One can see the resulting kernel function by testing the network and
+viewing activations.  Also, there is a demo project that illustrates how
+to set up a SOM network in <TT>`demo/so/som.proj.gz'</TT>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_231.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_233.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,149 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-sched</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_149.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_151.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX900" HREF="pdp-user_toc.html">12.2  The Schedule Process (SchedProcess)</A></H2>
+<P>
+<A NAME="IDX901"></A>
+<A NAME="IDX902"></A>
+
+</P>
+<P>
+Instead of putting all the control necessary to iterate over the several
+levels of processing needed to train a network (training, epochs,
+trials, settles, cycles, etc.) into one process object, we have divided
+up the processing hierarchy into a set of nested scheduling processes,
+each of which handles one level of processing.  This results in a lot of
+flexibility, since one can then change only the code controlling the
+trial, for example, or easily extend it using a CSS script.
+
+</P>
+<P>
+The Schedule Process (or <B>SchedProcess</B>) is an extension of the basic
+Process type. It provides more variables and functions with which one
+can control the execution of the Process.  It has fields for the parent
+and child processes in its hierarchy, support for counters that
+control the iteration of the process over time, places to link in
+<B>View</B> objects and <B>Log</B> objects to be updated, and groups to
+hold the various sub-processes and statistics that can be associated
+with a given level of processing.
+
+</P>
+<P>
+In order to support all of its extended functionality, the schedule
+process has a somewhat complicated execution structure.  However,
+understanding how a schedule process runs should make it easier to
+figure out how to get them to do what you want them to.
+
+</P>
+<P>
+The central function a schedule process performs is one of looping,
+where the process repeated performs some function.  In most cases, this
+function simply involves telling the process below it in the hierarchy
+to run.  Thus, an epoch process repeatedly loops over the trial process,
+for example.  The functions in a schedule process center around the main
+loop of processing,
+
+</P>
+<P>
+The main loop is written so as to be re-entrant.  Thus, something can
+cause the process to pop out of the loop (i.e., the user pressing
+<I>Stop</I>), and when it runs again, it will fall back down to the point
+where it was last running and pick up again where it left off.
+
+</P>
+<P>
+The places where the things that hang off of a schedule process, like
+statistics, logs and displays, can all be seen in the main schedule
+process loop code, which is reproduced here:
+
+</P>
+<PRE>void SchedProcess::C_Code() {
+  bool stop_crit = false;        // a stopping criterion was reached
+  bool stop_force = false;       // either the Stop or Step reached
+
+  if(re_init) {                // if its time to re-initialize, then do it
+    Init();                     // this sets the counters to zero, etc.
+    InitProcs();                // this runs any initialization processes
+  }
+
+  do {
+    Loop();                     // user defined code goes here
+    if(!bailing) {
+      UpdateCounters();         // increment the counters (before logging)
+      LoopProcs();              // check/run loop procs (use mod of counter)
+      LoopStats();              // update in-loop statistics
+      if(log_loop)              // can log inside loop or after it...
+        UpdateLogs();           // generate log output and update logs
+      UpdateState();            // update process state vars (current event..)
+
+      stop_crit = Crit();       // check if stopping criterion was reached
+      if(!stop_crit) {         // if at critera, going to quit anyway, so don't
+        stop_force = StopCheck(); // check for stopping (Stop or Step)
+      }
+    }
+  }
+  while(!bailing &#38;&#38; !stop_crit &#38;&#38; !stop_force);
+  // loop until we reach criterion (e.g. ctr &#62; max) or are forcibly stopped
+
+  if(stop_crit) {              // we stopped because we reached criterion
+    Final();                    // user defined code at end of loop 
+    FinalProcs();               // call the final procs
+    FinalStats();               // run final_stats at end of loop
+    if(!log_loop)
+      UpdateLogs();             // if not logging in loop, logging at end 
+    UpdateDisplays();           // update displays after the loop
+    SetReInit(true);            // made it through the loop, so Init next time
+    FinalStepCheck();           // always stop at end if i'm the step process
+  }
+  else {                       // we we're forcibly stopped for some reason
+    bailing = true;             // now we're bailing out of all further procs
+  }
+}
+</PRE>
+
+<P>
+The fall-through character of processing is made possible by storing all
+of the counter state variables on the process object itself, so it is
+preserved even when we pop out of the loop, and by only initializing
+once we make it through the loop (by setting the <CODE>re_init</CODE> flag).
+
+</P>
+<P>
+As you can see, there are two places where statistics get updated,
+inside the loop (<CODE>LoopStats()</CODE>) and after the loop
+(<CODE>FinalStats()</CODE>).  While it is more natural to think of computing
+statistics at the end of the loop (e.g., at the end of the trial or the
+end of the epoch), the need to aggregate statistic values over time
+(e.g., compute the sum of the squared-errors over an entire epoch)
+necessitates inside-the-loop statistics.
+
+</P>
+<P>
+Finally, it should be noted that all schedule processes are written to
+allow any number of intervening processes to be added in to the
+hierarchy at any point.  Thus, new and unanticipated levels of
+processing can be introduced by the user without breaking the
+assumptions of the existing process objects.  Basically, any time there
+is a dependency of one level of processing on another (e.g., the trial
+process looks to its parent epoch process to determine if it should be
+testing or training the network), the dependent process searches through
+the entire hierarchy for the type of process it depends on.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_151.html">1             Variables and Functions used in a SchedProcess</A>
+<LI><A HREF="pdp-user_152.html">2            Statistics and Logging in a SchedProcess</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_149.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_151.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-stats-good</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_241.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_243.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1640" HREF="pdp-user_toc.html">17.6.1  The Goodness (Energy) Statistic</A></H3>
+<P>
+<A NAME="IDX1641"></A>
+<A NAME="IDX1642"></A>
+<A NAME="IDX1643"></A>
+<A NAME="IDX1644"></A>
+
+</P>
+<P>
+The <B>LeabraGoodStat</B> computes the overall goodness of the activation
+state, which is composed of two terms, the <EM>harmony</EM> and <EM>stress</EM>.
+Harmony reflects the extent to which the activations satisfy the
+constraints imposed by the weights.  It is just a sum over all units of
+the product of the activations times the weights:
+
+</P>
+<IMG SRC="pdp-user_242.html_sub_1.gif" ALIGN="MIDDLE" ALT="H = SUM_j SUM_i a_j w_ij a_i
+">
+<P>
+The stress term reflects the extent to which unit's activations are
+"stressed" at their extreme values.  It is just the inverse sigmoidal
+function of the unit activation values:
+
+</P>
+<IMG SRC="pdp-user_242.html_sub_2.gif" ALIGN="MIDDLE" ALT="S = SUM_j f^-1(a_j) 
+">
+<P>
+The total goodness is just the harmony minus the stress. These values
+are stored in the <CODE>hrmny</CODE>, <CODE>strss</CODE>, and <CODE>gdnss</CODE> stat
+value members of the goodness stat.  The net input to a unit is used
+for computing the harmony term, since harmony is just the unit's
+activation times its net input.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_241.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_243.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

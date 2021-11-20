@@ -1,0 +1,14 @@
+#!/bin/csh
+
+foreach i ($*) 
+	echo $i
+	fgrep 'Resource::ref(' $i >tmp.r.cr
+	fgrep 'Resource::unref(' $i >tmp.u.cr
+	sort tmp.r.cr >tmp.r.crs
+	sort tmp.u.cr >tmp.u.crs
+	abut tmp.r.crs tmp.u.crs > tmp.cr
+	more tmp.cr
+end
+/bin/rm tmp.*cr*
+
+	

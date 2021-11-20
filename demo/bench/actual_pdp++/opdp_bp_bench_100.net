@@ -1,0 +1,12 @@
+definitions:
+nunits 300
+ninputs 100
+noutputs 100
+end
+network:
+%r 100 100  0 100
+%r 200 100 100 100
+end
+biases:
+%r 100 200
+end

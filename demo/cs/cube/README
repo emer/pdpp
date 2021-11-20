@@ -1,0 +1,330 @@
+cube.proj.gz
+------------
+
+This illustrates the use of constraint satisfaction in the context of
+the neker cube.  The following text is a handout used in a PDP class
+at CMU, and is not guaranteed to be up-to-date or accurate, but should
+be useful.
+-----------------------------------------------------------------------
+
+HOMEWORK 1 HANDOUT ADDENDUM: The Necker Cube
+
+OVERVIEW OF EXERCISES
+ 
+In Ex. 3.1, we give you the chance to explore the basic properties of
+this constraint satisfaction system, using the Necker cube example in
+PDP:14 (originally from Feldman, 1981).
+
+Ex. 3.1  THE NECKER CUBE
+
+  Feldman (1981) has provided a clear example of a constraint
+satisfaction problem well-suited to a PDP implementation.  That is, he
+has shown how a simple constraint satisfction model can capture the
+fact that there are exactly two good interpretations of a Necker cube.
+In PDP:14 (pp. 8-17), we describe a variant of the Feldman example
+relevant to this exercise.  In this example we assume that we have a
+16-unit network (as illustrated in Figure 1 on page 59 of the PDP
+HandBook).  Each unit in the network represents a hypothesis about the
+correct interpretation of a vertex of a Necker cube.  For example, the
+unit in the lower left-hand part of the network represents the
+hypothesis that the lower left-hand vertex of the drawing is a
+front-lower-left (fll) vertex.  The upper right-hand unit of the
+network represents the hypothesis that the upper right-hand vertex of
+the Necker cube represents a front-upper-right (fur) vertex.  Note
+that these two interpretations are inconsistent in that we do not
+normally see both of those vertices as being in the frontal plane.
+The Necker cube has eight vertices, each of which has two possible
+interpretations--one corresponding to each of the two interpretations
+of the cube.  Thus, we have a total of 16 units.  Three kinds of
+constraints are represented in the network.  First, since each vertex
+can have only one interpretation, we have a negative connection
+between units representing alternative interpretations of the same
+vertex.  Second, since the same interpretation cannot be given to more
+than one vertex, units representing the same interpretation are
+mutually inhibiting.  Finally, units that represent locally consistent
+interpretations should be mutually exciting.  Thus, there are positive
+connections between a unit and its three consistent neighbors.  The
+system will achieve maximal goodness when all units representing one
+consistent interpretation of the Necker cube are turned on and those
+representing the other interpretation are turned off.  In the diagram,
+the two subsets of units are segregated so that we expect that either
+the eight units on the left will come on with the others turned off or
+the eight units on the right will come on.
+
+
+Minor Changes in the Model
+
+The PDP++ version of the program has slight differences in how it computes
+net inputs.
+
+The net input to a unit is defined with the same function as in the
+Jets-n-Sharks model, but with an added bias term:
+
+    net_i = SUM_j w_ij * o_j + bias_i + clamp_gain * ext_i
+
+Starting up.  Before running this exercise, you must first set up a
+pdp++ directory as described in the handout: "Getting Started ..." If
+you have not already done so, change your working directory to the
+"hw1" directory, and enter
+
+	cs ~psy512/homework/hw1/cube.proj.gz
+
+
+This causes the program to begin running using the project
+cube.proj.gz.  Inside the project file is a description of the network
+structure and the processes which control the settling of the
+network. The network contains 16 units in 2 layers. The first layer
+represents the "A" interpretation of the cube, while the second layer
+represents the "B" interpretation. In each layer, the 8 units
+represent the 8 verticies of the cube. The connections between units
+in the network are described in more detail below.
+
+The project file also sets the values of the parameters of the
+model.  These values are
+
+   decay = 0;
+   clamp_gain = 4
+   step = .4
+   max = 1.0
+   min = 0.0
+   rest = 0.0
+
+
+After the program has read the information contained in the
+cube.proj.gz file, it displays a number of windows. The NetView and
+control panel windows should be familiar from your experience with
+them in the jets-n-sharks model. The cube project however does not
+have an EnviroView window since we are not providing any external
+input in this example. If the NetView window does not initialize the
+overlaid drawings of the cubes on top of the units, you may need
+to press the "Init" button on the left side of the NetView Window.
+
+The NetView display depicts the two interpretations of the cube and
+shows the activation values of the units, the current cycle number,
+and the Goodness of the network state.The activation values of all 16
+units are shown, initialized to 0, at the corners of the two cubes
+drawn on the screen.  The units in the cube on the left, cube A, are
+the ones consistent with the interpretation that the cube is facing
+down and to the left.  Those in the cube on the right, cube B, are the
+ones consistent with the interpretation of the cube as facing up and
+to the right.  The connections are those shown in the Necker cube
+network in Figure 1.  The vertices are labeled, and the labels on the
+screen correspond to those in Figure 1.  All units have names.  Their
+names are given by a capital letter indicating which interpretation is
+involved (A or B), followed by the label appropriate to the associated
+vertex.  Thus, the unit displayed at the lower left vertex of cube A
+is named Afll, the one directly above it is named Aful (for the
+front-upper-left vertex of cube A), and so on.  As in the
+jets-n-sharks model, you can view the connection weights between units
+buy clicking on "r.wt" in the lower left corner of the NetView and
+using the "View" hand pointer to select a unit.  Thus, for example, it
+is possible to examine the connection between the unit Aflr (the unit
+representing the hypothesis that the lower right-hand vertex of the
+Necker cube is in the frontal plane--interpretation A) and the unit
+Bblr (the unit representing the hypothesis that the lower right-hand
+vertex of the Necker cube is in the back plane--interpretation B) by
+clicking on the Aflr unit with the hand pointer. The weights between
+these two units should be -1.5.  (This is reasonable since these two
+units represent alternative interpretations of the same vertex and so
+should be inhibitory.)
+
+  We are now ready to begin exploring the cube example.  The biases
+and connections among the units have already been read into the
+program. In this example, all units have positive biases, therefore
+there is no need to specify inputs.  You can view the bias weights by
+selecting "bias.wt" from the list of variables in the lower left
+corner of the NetView window. Viewing bias weights is similar to
+viewing Activations or NetInputs in that the pointer remains the the
+"Select" mode.  When you are done viewing the biases, switch the
+NetView back to viewing Activations for the next part of this
+exercise.
+
+At this point you can start the network settling by pressing "Step" in
+the control panel window. After the display stops flashing you should
+see that the units activations have attained some new values. The
+variable cycle should be 39, indicating that the program has completed
+40 cycles.  The goodness may have reached a value of 16. If it does
+the network has reached a global maximum and has found one of the two
+"standard" interpretations of the cube. In this case you should find
+that the activation values of those units in one subnetwork have all
+reached their maximum value and those in the other subnetwork are all
+at 0.  If the goodness value is less than 16, then the system has
+found a local maximum and there will be nonzero activation values in
+both subnetworks. To restart the example with a new random sequencing
+of unit updates, press the "New Init" button in the control panel
+window, followed by "Step" or "Run".  To restart the example with the
+same unit update sequence press "ReInit", followed by "Step" or "Run"
+as before.  Do a "NewInit", and run the example say, 20 times to get a
+feeling for the distribution of final states reached.
+
+Q.3.1.1.  How many times was each of the two valid interpretations
+	  found? How many times did the system settle into a local
+	  maximum?  What were the local maxima the system found?  Do
+ 	  they correspond to reasonable interpretations of the cube?
+
+  Now that you have  a feeling for the range of final states that the
+system can reach, try to see if you can understand the course of
+processing leading up to the final state.
+
+Q.3.1.2.  What causes the system to reach one interpretation or the
+	  other?  How early in the processing cycle does the eventual
+	  interpretation become clear?  What happens when the system
+	  reaches a local maximum?  Is there a characteristic of the 
+	  early stages of processing that leads the system to move
+	  toward a local maximum?
+
+Hints.    The movement on the screen can be rapid, and it may be
+	  difficult to see exactly what is happening. It is sometimes
+	  useful to step the cycling one unit update at a time.
+          Setting the step paramater "n" in the Control Panel
+          window to 1, and then pressing "Step", will step the network
+          by 1 iteration of the "Cycle" process which performs 16
+          updates of randomly selected units. In order to step 1 unit
+          update a time, we need to change the "n_updates" parameter
+          of the cycle process to 1. To do this, use the mouse pointer
+          to select Edit->Cycle_0->Cycle_0  from the .Processes menu in the
+          Project window. The n_updates parameter is near the bottom of
+          the edit window and should be currently set to 16. Change
+          this value to 1, and press "Ok". Now when you press "Step",
+          in the Control Panel window with the "n" field set to 1,
+          the network will step one unit update at a time.
+
+Q.3.1.3.  The step parameter of the IAC_Unit_Spec multiplies the
+          net_inputs and in effect, determines the rate of activation flow
+          within the schema model.  The probability of finding a local
+	  maximum depends on the value of this parameter.  How does the
+	  relative frequency of local maxima vary as this parameter is
+	  varied?  Try several values from 0.08 to 2.0.  Explain the
+	  results you obtain. 
+
+Hints.	  
+	  To repeatedly test the settling of the network you will find
+	  yourself pressing "NewInit" and then "Run" or "Step" on the
+	  control panel a number of times and recording the interpretation
+	  of the result.  To speed up the "Run" time, you can turn off the
+	  NetView display by clicking on the "Display" checkmark in the
+	  upper left corner of the NetView. Now then you press the "Run"
+	  button in the control panel you will not see any change in
+	  activation on the units in the NetView. Don't worry. When the
+	  settling process finishes the "Run" button is re-enabled and the
+	  cursor is no longer an hourglass), you can press the "Update"
+	  button on the left of the NetView to see the final activation
+	  states after settling. In this way, the "Run" time should only
+	  be a few seconds.  You will probably find that at low step
+	  values you will want to increase the maximum number of update
+	  cycles the network performs when you press the "Run" button. To
+	  do this edit the settle process by choosing Edit->Settle_0 from
+	  the Processes menu in the Project Window. Set the "max" field
+	  the "cycle" parameter to say 250 (instead of its default value
+	  of 100) and press "Ok".
+ 	  
+          You may also want to set the "n_updates" parameter of
+          the cycle process which we changed earlier back to 16.
+	  Do not be disturbed by the fact that the values of goodness
+          are  different here than in previous runs.  Since the step
+          parameter of the IAC_Unit_Spec  multiplies the netinput,
+          it also multiplies the goodness so that goodness is
+	  proportional to the step parameter.
+
+          Reset the step parameter of the IAC_Unit_Spec to its initial
+          value of 0.1 before proceeding to the next question.  
+
+Q.3.1.4.  It is possible to use bias weights to bias the network in
+	  favor of one of the two interpretations.  Study the effects
+	  of changing a bias weight of one of the units to 1.0 and to
+          0. Look at how the  distribution of interpretations changes
+          as a result of the number of units receiving external input
+          in a particular subnetwork. 
+
+Hints:    In PDP++ bias weights are implemented in a similar fashion to
+          connection weights though a Connection object on each unit.
+          To change a bias weight you need to select a unit in the
+          netview, and chose the "Edit Unit(s)" button. In the
+          unit's edit dialog there will be a parameter called "bias"
+          which has a menu of options to the right of it. Choose
+          "Edit" from the menu, and a edit dialog for the bias "connection"
+          will appear. From here you can change the wt parameter.
+
+	
+Running the Program in Boltzmann Mode
+
+
+Ex. 3.5. Simulated Annealing in the Cube Example
+
+  Compare simulated annealing using the Boltzmann machine to the
+results you obtained with the schema model for the cube example.  To
+switch to Boltzmann  mode, you need to change the unit specifications
+for all the units to be BoltzUnitSpecs instead of IACUnitSpecs. To
+do the use the mouse pointer and choose Selections->SelectAllLayers
+from the the menu at the top of the NetView window. The network
+display should change so that the two layers surrounded by dashed
+lines. Next choose Selections->SetUnitSpec->BoltzUnitSpec_0 from the
+same menu. 
+
+The annealing schedule for the temperature is specified by 2
+parameters in the BoltzUnitSpec. The first is the "temperature"
+parameter which stays constant and is used as a base multiplier for
+the second parameter which is a schedule of start times and percentages.
+The start times indicate the cycle number at which the effective
+temperature should be exactly the corresponding percentage multiplied
+by the base "temperature" parameter. In the BoltzUnitSpec, the
+schedule is activated by setting the "use_annealing" parameter to on.
+The schedule itself is specified in the "noise_schedule" parameter
+which is a contains a list schedule entries each with a "start_ctr"
+specifying the cycle for which their "start_value" is scheduled.
+Cycles which do not have an entry in the schedule receive a
+temperature which is linearly interpolated between the values of the
+temperature specified for the previous and next cycles with scheduled
+temperature values. The default annealing schedule is set to gradually
+lower the temperature over the first 20 cycles. Initially the
+percentage multiplier is 2. At cycle 20 the multiplier is .5 where it
+remains for the rest of the cycling.
+
+Q.3.5.1.  Run 20 runs with the Boltzmann machine, using its default 
+	  annealing schedule, and see how often the program gets stuck
+	  in a local minimum.  Compare these results to the case where
+	  the continuous updating scheme is used.
+
+Hints:    To change the annealing schedule you need to edit the
+          BoltzUnitSpec_0 and then choose "Edit" from the menu
+          to the right of the noise_sched parameter. The schedule items
+          as described above will appear in the bottom of the Group
+          Edit window.
+
+Q.3.5.2.  Examine the density of local maxima as a function of the
+	  annealing schedule.  Try several schedules varying in
+	  gradualness and starting temperature.  Which variable makes 
+	  more of a difference?  Can you explain why?
+
+Hints:	  To create a more complex annealing schedule you will need
+          to add more entries to the list of SchedItems on the
+          BoltzUnitSpec. To do this edit the BoltzUnitSpec_0 spec
+          and choose "New" from the menu to the right of the
+          noise_sched parameter. A "New" dialog will appear asking
+          you the number (and type) of item to create. Set the number
+          of additional SchedItems you wish to add and press OK. Now
+          choose Edit from the noise_sched menu and a Group Edit
+          Dialog for the annealing schedule will appear with your
+          new additions. If you already had a previous Group Edit
+          Dialog for the annealing schedule on your screen then you
+          will need to press the "Revert" button at the bottom
+          of its window to account for your new additions. Similarly
+          the RemoveEl menu selection of the noise_sched parameter
+          in the BoltzUnitSpec allows you to remove annealing schedule
+          entries.
+         
+          It is necessary to run 20 runs or so with each schedule to
+	  get reasonable estimates of the probabilities of getting
+	  stuck in local maxima.  Use relatively high values of the 
+	  starting temperature and very quick drops if you want to get
+	  a feel for what is happening.  To study the time course of 
+	  these simulations, it is useful to step though the settling
+          on a unit by unit basis as described above. You will note that
+          things begin to  settle down when the temperature begins to
+          get rather low, say, in the range of 0.5 to 0.05.
+
+
+
+
+
+

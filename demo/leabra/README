@@ -1,0 +1,11 @@
+demo/leabra/
+
+nav.proj.gz:	Demonstrates an interactive script environment where events
+		are created on each trial in response to the network output.
+		In this case, input is current location in a 10x10 grid, and
+		output is which of 4 directions to move next.  The training
+		is simplistic: a training signal is provided to get the network
+		to go to the goal location (position 5x5) most directly.  
+		Reinforcement learning algorithms can actually discover the 
+		route to the goal, but this is just to test the technology.
+		

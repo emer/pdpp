@@ -1,0 +1,45 @@
+# ivgraphics makefile for g++
+
+##################################
+# these are the things to set
+#
+
+# reset opt flags to not do anything for linux, crashes with dynamic linking
+#OPT_FLAGS=
+
+IVLIB = -lIV
+IVDEBUGLIB = -lIVd
+
+LIBS =  $(IVLIB) -lX11 -lm 
+DEBUGLIBS =  $(IVDEBUGLIB) -lX11 -lm 
+
+PROJNAME = iv_graphic
+PROJDIR = iv_graphic
+
+EXE = ivtest
+
+LIB = libivgraphic.$(LIB_EXT)
+
+MAKETA_FLAGS = -hx
+
+TAHEADS = $(VPATH)/graphic.h $(VPATH)/graphic_text.h $(VPATH)/graphic_viewer.h
+
+HEADS = graphic.h graphic_text.h graphic_idraw.h graphic_objs.h graphic_viewer.h \
+	$(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS =  graphic.cc graphic_text.cc graphic_objs.cc graphic_viewer.cc graphic_idraw.cc \
+	$(PROJNAME)_TA.cc
+
+OBJS =  graphic.o graphic_text.o graphic_objs.o graphic_viewer.o graphic_idraw.o \
+	$(PROJNAME)_TA.o
+
+EXEOBJS = 
+DEPS = 	graphic.d graphic_text.d graphic_objs.d graphic_viewer.d graphic_idraw.d\
+	$(PROJNAME)_TA.d
+
+default: optLib
+#default: dbgBin
+#default: dbgLib
+
+
+

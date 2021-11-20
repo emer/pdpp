@@ -1,0 +1,409 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - coding-funs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_43.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_45.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX242" HREF="ta_css_toc.html">6.8.1  Basic Functions</A></H3>
+
+<P>
+These are the functions that must be either specified or considered in
+any new instance of a <B>taBase</B> class:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>void Initialize()</CODE>
+<DD>
+
+<IL>
+<LI>
+
+It is called in every constructor.
+<LI>
+
+Do not call <CODE>Parent::Initialize()</CODE>, as this is a constructor
+function and the parent's will be called for you by C++ as the object is
+constructed.
+<LI>
+
+Set the initial/default values of each member in the class.
+<LI>
+
+Set the default type for groups that you own (<CODE>SetBaseType()</CODE>).
+<LI>
+
+Call <CODE>taBase::InitPointer(ptr)</CODE> on every taBase object pointer in
+class, or just set all pointers to NULL.
+<LI>
+
+EVEN IF NOTHING NEEDS INITIALIZING: use <SAMP>`void Initialize() { };'</SAMP>
+to avoid multiple calls to the parent's Initialize.
+</IL>
+
+<DT><CODE>void Destroy()</CODE>
+<DD>
+
+<IL>
+<LI>
+
+It is called in every destructor.
+<LI>
+
+Do not call the parent, as C++ will automatically call the parent's
+destructor for you.
+<LI>
+
+Free any resources you might have allocated.
+<LI>
+
+Call <CODE>CutLinks()</CODE>, if defined, to sever links with other objects.
+<LI>
+
+EVEN IF NOTHING TO DESTROY: use <SAMP>`void Destroy() { };'</SAMP> to avoid
+multiple calls to parents Destroy.
+</IL>
+
+<DT><CODE>void InitLinks()</CODE>
+<DD>
+
+<IL>
+<LI>
+
+Called when an object is linked into some kind of ownership structure.
+<LI>
+
+Call the <CODE>Parent::InitLinks()</CODE>, since this is not a constructor
+function and the parent's links will not otherwise be set.
+<LI>
+
+Own any classes contained as members: <SAMP>`taBase::Own(recv, this);'</SAMP>
+<LI>
+
+Set any pointers to objects with default values (e.g.,
+<SAMP>`spec-&#62;SetDefaultSpec(this));'</SAMP>, etc.
+<LI>
+
+Be sure to use <SAMP>`taBase::SetPointer(ptr, new_val);'</SAMP> for setting
+pointers.
+<LI>
+
+Or use <SAMP>`taBase::OwnPointer(ptr, new_val);'</SAMP> for those you own.
+<LI>
+
+If you do not need to do any of these InitLinks actions, then you do not
+need to define an InitLinks function.
+</IL>
+
+<DT><CODE>void CutLinks()</CODE>
+<DD>
+
+<IL>
+<LI>
+
+Called when an object is removed from its owner, or as part of the
+<CODE>Destroy</CODE> function when an object is actually deleted, or
+explicitly by the user when the object is a member of another object.
+<LI>
+
+At end of <CODE>CutLinks()</CODE>, call <CODE>Parent::CutLinks()</CODE>, since this
+is not always used as a destructor function, and parent's might not be
+called.  Note, however, that when it is called in the destructor, it
+will be repeatedly called, so it should be robust to this (i.e., SET ANY
+POINTERS YOU DELETE TO NULL SO YOU DON'T DELETE THEM AGAIN!).
+<LI>
+
+Should sever all links to other objects, allowing them to be freed too.
+<LI>
+
+Call <CODE>CutLinks()</CODE> on any owned members, especially groups!
+<LI>
+
+Use <CODE>taBase::DelPointer()</CODE> on any pointers.
+<LI>
+
+If you have a spec, call <CODE>CutLinks()</CODE> on it.
+<LI>
+
+If you have group members, call <CODE>CutLinks()</CODE> on those groups.
+</IL>
+
+		
+<DT><CODE>void Copy_(const T&#38; cp), Copy(const T&#38; cp)</CODE>
+<DD>
+
+<IL>
+<LI>
+
+Used to duplicate the class, Copy is the = oper and copy constructor
+<LI>
+
+Call <CODE>Parent::Copy</CODE> since this will not be called otherwise.
+<LI>
+
+<CODE>Copy_(const T&#38; cp)</CODE> is an "implementation" that does the copying
+for just this class, and does not call the parent <CODE>Copy</CODE>.
+<LI>
+
+Use <CODE>COPY_FUNS(T, P);</CODE> (type and parent-type) to define the default
+macros for doing this:
+<PRE>  void Copy(const T&#38; cp)      { P::Copy(cp); Copy_(cp); }
+</PRE>
+
+<LI>
+
+Use <CODE>SIMPLE_COPY(T);</CODE> to define a <CODE>Copy_</CODE> function that
+automatically copies the members unique to this class in a
+member-by-member (using TypeDef) way.  This is less optimal, but easy
+when members are just simple floats and ints, etc.
+<LI>
+
+Be sure to use <CODE>taBase::SetPointer(&#38;ptr, cp.ptr)</CODE> for copying
+pointers.
+</IL>
+
+<DT><CODE>TA_BASEFUNS(T);</CODE>
+<DD>
+This defines the actual "basic" functions like constructors,
+destructors, <CODE>GetTypeDef()</CODE> etc. for taBase classes.  These default
+constructors and destructors call the other functions like
+<CODE>Initialize()</CODE> and <CODE>Destroy()</CODE>.
+
+<DT><CODE>TA_CONST_BASEFUNS(T);</CODE>
+<DD>
+This defines the actual "basic" functions like constructors, etc. for
+<B>taBase</B> classes which have <CODE>const</CODE> members defined in the class.
+These need to be initialized as part of the constructor, so this macro
+leaves out the default constructors and destructor, which should contain
+the following code:
+<PRE>  MyClass() { Register(); Initialize(); SetDefaultName(); }
+  MyClass(const MyClass&#38; cp)
+   { Register(); Initialize(); Copy(cp); }
+  ~MyClass() { unRegister(); Destroy(); }
+</PRE>
+
+<DT><CODE>TA_TMPLT_BASEFUNS(y,T);</CODE>
+<DD>
+Defines the actual "basic" functions like constructors, etc. for
+<B>taBase</B> classes which are also templates.  <CODE>y</CODE> is the template
+class, <CODE>T</CODE> is the template class parameter.
+
+<DT><CODE>void UpdateAfterEdit()</CODE>
+<DD>
+
+<IL>
+<LI>
+
+Called after class members change via edit dialogs, loading from a file,
+or and assign operator in CSS.
+<LI>
+
+Maintain consistency of member values.
+<LI>
+
+Update links, etc.
+</IL>
+
+</DL>
+
+
+<H2>6.9  When you add/remove/change any class members:</H2>
+
+<P>
+Check and add/remove/change initialization, copying, of this member in:
+<DL COMPACT>
+
+<DT><CODE>Initialize()</CODE>
+<DD>
+<DT><CODE>Copy_()</CODE>
+<DD>
+<DT><CODE>Copy()</CODE>
+<DD>
+</DL>
+
+
+<H2>6.10  For classes with Specs:</H2>
+
+<P>
+A pointer to a spec is encapsulated in a SpecPtr template class, which
+is declared once immediately after a new class of spec types is defined
+as follows (this will not typically done by the user):
+<PRE>  SpecPtr_of(UnitSpec);  // this defines the template class 
+				    (only for base spec type)
+</PRE>
+
+<P>
+This pointer is then included in the class with the following:
+<PRE>  UnitSpec_SPtr  spec;  // this puts a spec pointer in the class
+</PRE>
+
+<P>
+Also, InitLinks() should have:
+<PRE>  spec.SetDefaultSpec(this);
+</PRE>
+
+<P>
+So that the spec pointer will set its pointer to a default instance of
+the correct spec type (the <CODE>this</CODE> pointer is because this also
+"owns" the spec pointer object.
+
+</P>
+
+
+<H2>6.11  For classes with <B>taBase</B> members:</H2>
+
+<P>
+All <B>taBase</B> members which appear as members of another class should
+be owned by the parent class.  This increments their ref counter, so
+that if they are ever pointed to by something else (e.g., during loading
+this happens), and then unref'd, they won't then be deleted.
+
+</P>
+<P>
+<CODE>InitLinks()</CODE> should own the object member as follows:
+<PRE>  ta_Base::Own(obj_memb, this);
+</PRE>
+
+<P>
+For members that derive from <B>taList</B> or <B>taGroup</B>,
+<CODE>Initialize()</CODE> should set the default type of object that goes in
+the group:
+<PRE>  gp_obj.SetDefaultType(&#38;TA_typename);
+</PRE>
+
+
+<H2>6.12  Referring to other objects via pointers:</H2>
+
+<P>
+If a class contains a pointer to another object, it should typically
+refer to that object whenever the pointer is set.  The interface assumes
+that this is the case, and any pointer member that it sets will use the
+<CODE>SetPointer</CODE> function described below, which does the referencing
+of the new value and the dereferencing of the current one.
+
+</P>
+<P>
+HOWEVER, when the pointer is to a physical PARENT of the object 
+(or just higher in the deletion hierarchy) then it should not be
+referenced, as this will prevent the parent from being deleted,
+which will then prevent the child from being deleted.
+
+</P>
+<P>
+In this case, and in general when the pointer is just for "internal use"
+of the class, and is not to be set by the user, the following comment
+directives should always be used: <CODE>#READ_ONLY #NO_SAVE</CODE> as this
+will prevent the user from overwriting the pointer, and the loading code
+automatically does a reference when setting a pointer, so these should
+not be saved.  DO NOT COPY SUCH POINTERS, since they typically are set
+by the <CODE>InitLinks</CODE> based on the owner, which is usually different
+for different tokens.
+
+</P>
+<P>
+When managing a pointer that the user can set, there are a set of
+convenient functions in taBase that manage this process (note that the
+argument is a <EM>pointer</EM> to the pointer):
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>taBase::InitPointer(TAPtr* ptr)</CODE>
+<DD>
+initializes the pointer (or just set the ptr to NULL yourself) in <CODE>Initialize()</CODE>
+<DT><CODE>taBase::SetPointer(TAPtr* ptr, TAPtr new_val)</CODE>
+<DD>
+unRef's *ptr obj if non-null, refs the new one.
+<DT><CODE>taBase::OwnPointer(TAPtr* ptr, TAPtr new_val, TAPtr ownr)</CODE>
+<DD>
+like set, but owns the pointer too with the given owner.
+<DT><CODE>taBase::DelPointer(ptr)</CODE>
+<DD>
+unRefDone the object pointed to, sets pointer to NULL.
+</DL>
+
+<P>
+Using these functions will ensure correct refcounts on objects pointed to, 
+etc.
+
+</P>
+<P>
+If you <CODE>Own</CODE> the object at the pointer, then you should either mark
+the member as <CODE>#NO_SAVE</CODE> if it is automatically created, or
+<CODE>#OWN_POINTER</CODE> if it is not.  This is because saving and loading,
+being generic, use <CODE>SetPointer</CODE> unless this comment is present, in
+which case they use <CODE>OwnPointer</CODE>.
+
+</P>
+
+
+<H2>6.13  Using Group Iterators:</H2>
+
+<P>
+There are special iterator functions which iterate through the members
+of a group.  One method is to iterate through those sub-groups
+(including the 'this' group) which contain actual terminal elements
+("leaves").  This is leaf-group iteration.  Then, the elements of each
+group can be traversed simply using the <CODE>El</CODE> or <CODE>FastEl</CODE>
+functions.
+
+</P>
+
+<IL>
+<LI>
+
+for leaf-group iteration, using macros (preferred method):
+<PRE>  Con_Group* recv_gp;		// the current group
+  int g;
+  FOR_ITR_GP(Con_Group, recv_gp, u-&#62;recv., g)
+    recv_gp-&#62;UpdateWeights();
+</PRE>
+
+<LI>
+
+for leaf-group iteration without macros:
+<PRE>  Con_Group* recv_gp;		// the current group
+  int g;
+  for(recv_gp = (Con_Group*)u-&#62;recv.FirstGp(g); recv_gp;
+      recv_gp = (Con_Group*)u-&#62;recv.NextGp(g))
+    recv_gp-&#62;UpdateWeights();
+</PRE>
+
+</IL>
+
+<P>
+When all you care about are the leaf elements themselves, you can
+iterate over them directly using leaf-iteration:
+
+</P>
+
+<IL>
+<LI>
+
+for leaf-iteration, using macros (preferred method):
+<PRE>  Connection* con;		// the current leaf
+  taLeafItr i;			// the iterator data
+  FOR_ITR_EL(Connection, con, u-&#62;recv., i)
+    con-&#62;UpdateWeights();
+</PRE>
+
+<LI>
+
+for leaf-iteration without macros:
+<PRE>  Connection* con;		// the current leaf
+  taLeafItr i;			// the iterator data
+  for(con = (Connection*)u-&#62;recv.FirstEl(i); con;
+      con = (Connection*)u-&#62;recv.NextEl(i))
+    con-&#62;UpdateWeights();
+</PRE>
+
+</IL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_43.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_45.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

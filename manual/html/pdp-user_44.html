@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - how-css</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_43.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_45.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX93" HREF="pdp-user_toc.html">5.4  Questions about CSS</A></H2>
+
+<DL COMPACT>
+
+<DT><B>How do I know what functions or members are available in CSS?</B>
+<DD>
+<A NAME="IDX94"></A>
+ 
+Use the 'type' command, such as 'type UnitSpec', which will display a
+list of all CSS-accesable type information for that object, including
+descriptive comments.  If you just type 'type' with no arguments, then a
+list of all defined types is presented.
+
+<A NAME="IDX95"></A>
+<DT><B>How do I call the copy operator (=) for a hard-coded objects in CSS?</B>
+<DD>
+Hard coded types are a little different than types defined within CSS
+(e.g., a Unit is a hard-coded type), because they are used to refer to
+things like units, layers, etc, in the network, which are external to
+css. In particular, they are *always* pointers. There is no such thing
+as a 'Unit un' in css -- its always really (implicitly) 'Unit* un'. So,
+dereferencing a pointer to a hard-coded object doesn't do anything,
+meaning that it can't tell the difference between assigning the pointer
+to point to a new object, and copying the object that the pointer
+currently points to.  To explicitly invoke the object's copy operator,
+use the CopyFrom() member function (e.g., Unit* un = .units[0];
+un.CopyFrom(.units[1]); ).  Note that if you obtain a pointer to a
+hard-coded object via a "path" in the object hierarchy, then it knows
+that this is not just a free css pointer, and it will apply CopyFrom
+when you do '='.
+
+<A NAME="IDX96"></A>
+<DT><B>How do I deal with errors in Scripts that are auto-running at startup?</B>
+<DD>
+If you startup the program with the project name on the
+command line, then the project will load over and over again if there is
+an error with a script that is set to run upon loading the project
+(auto-run).  The solution is to load the project from the Root menu, and
+to immediately move the mouse over the xterminal window, and type a
+Return into that window when the error occurs.  Then, you can debug the
+problem with the script at the point where the error occurred.
+
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_43.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_45.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

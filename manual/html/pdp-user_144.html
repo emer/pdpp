@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-gen</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_143.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_145.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX835" HREF="pdp-user_toc.html">11.8  Environment Generation Functions</A></H2>
+<P>
+<A NAME="IDX836"></A>
+
+</P>
+<P>
+The following functions are available on the <B>Environment</B> object (in
+the <I>Generate</I> menu) for algorithmically creating events.  See
+<TT>`demo/bp_misc/gen_rnd_prototypes.css'</TT> for a CSS script that creates
+prototypes and random exemplars based on these prototypes using some of
+the following functions.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>ReplicateEvents(int n_replicas, bool make_groups)</CODE>
+<DD>
+<A NAME="IDX837"></A>
+This will create n_replicas of all of the existing events in the
+environment.  If make_groups is set, then all events which are replicas
+of a given one will be placed into the same sub-group.   Otherwise, the
+replicas appear right after the event they are replicas of.  This can
+be used to replicate a set of prototype events, and noise can be added
+(AddNoise, FlipBits) to create random distortions of these prototypes.
+<DT><CODE>PermutedBinary(int pat_no, int n_on)</CODE>
+<DD>
+<A NAME="IDX838"></A>
+This produces random (permuted) binary patterns of 1's and 0's over the
+existing events in the environment.  <CODE>pat_no</CODE> determines which
+pattern to use, and <CODE>n_on</CODE> specifies the number of 1's in each
+random pattern.
+<DT><CODE>PermutedBinary_MinDist(int pat_no, int n_on, float dist, bool max_correl)</CODE>
+<DD>
+<A NAME="IDX839"></A>
+This is like PermutedBinary, but it ensures that the hamming distance
+between any two patterns is at least <CODE>dist</CODE> (i.e., all patterns are
+separated by at least this minimum distance).  If max_correl is set,
+this ensures that the maximum correlation between patterns is below the
+<CODE>dist</CODE> value.
+<DT><CODE>FlipBits(int pat_no, int n_off, int n_on)</CODE>
+<DD>
+<A NAME="IDX840"></A>
+This switches exactly <CODE>n_off</CODE> values of a pattern from 1 to 0, and
+<CODE>n_on</CODE> from 0 to 1.  In other words, some values that were 1 will
+now be 0, and some values that were 0 will now be 1.  This is a useful
+way of creating random distortions of prototypical patterns.
+<DT><CODE>FlipBits_MinMax(int pat_no, int n_off, int n_on, float min_dist, float max_dist, metric, norm, tol)</CODE>
+<DD>
+<A NAME="IDX841"></A>
+This does FlipBits, but if the new event that was just flipped is
+outside the distance limits set by min_ and max_dist, according to the
+metric supplied, then another pattern is tried.  There is a timeout and
+an error message will be reported if it takes too many retries to fit
+these criteria.
+<DT><CODE>Clear(int pat_no)</CODE>
+<DD>
+<A NAME="IDX842"></A>
+Simply clears out the pattern values to a specified value (e.g., zero).
+<DT><CODE>AddNoise(int pat_no, Random rnd_spec)</CODE>
+<DD>
+<A NAME="IDX843"></A>
+This will add noise of the given specification to all events in pattern
+<CODE>pat_no</CODE>.
+<DT><CODE>TransformPats(int pat_no, PreProcessVals trans)</CODE>
+<DD>
+<A NAME="IDX844"></A>
+This will apply given transformation (simple math) operation to all
+events in pattern <CODE>pat_no</CODE>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_143.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_145.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

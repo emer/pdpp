@@ -1,0 +1,186 @@
+there are only 7 machines thus 14 means 2 processes per machine
+first: the first parameter selected such that all machines write
+and perhaps process equal volume of data
+They are selected to closelly match original values
+Machines differ in speed by 20 per cent and in cache sizes
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1
+0:448-448 
+procs, 1, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 51.06, 	Mcon/sec, 49.1344
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2
+0:448-224 1:448-224 
+procs, 2, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 34.91, 	Mcon/sec, 71.8648
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:448-112 2:448-112 1:448-112 3:448-112 
+procs, 4, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 27.14, 	Mcon/sec, 92.4392
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+1:448-64 0:448-64 2:448-64 6:448-64 5:448-64 3:448-64 4:448-64 
+procs, 7, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 23.78, 	Mcon/sec, 105.5
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8 7:bg1 8:bg2 9:bg3 10:bg4 11:bg6 12:bg7 13:bg8
+1:448-32 0:448-32 2:448-32 3:448-32 4:448-32 5:448-32 11:448-32 10:448-32 13:448-32 12:448-32 7:448-32 6:448-32 9:448-32 8:448-32 
+procs, 14, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 30.37, 	Mcon/sec, 82.6078
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1
+0:896-896 
+procs, 1, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 82.66, 	Mcon/sec, 60.7017
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2
+0:896-448 1:896-448 
+procs, 2, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 47.97, 	Mcon/sec, 104.599
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:896-224 2:896-224 1:896-224 3:896-224 
+procs, 4, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 31.27, 	Mcon/sec, 160.461
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+0:896-128 3:896-128 1:896-128 6:896-128 5:896-128 2:896-128 4:896-128 
+procs, 7, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 23.57, 	Mcon/sec, 212.881
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8 7:bg1 8:bg2 9:bg3 10:bg4 11:bg6 12:bg7 13:bg8
+2:896-64 4:896-64 6:896-64 5:896-64 0:896-64 1:896-64 7:896-64 3:896-64 11:896-64 8:896-64 9:896-64 13:896-64 12:896-64 10:896-64 
+procs, 14, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 24.62, 	Mcon/sec, 203.802
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1
+0:4480-4480 
+procs, 1, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 152.73, 	Mcon/sec, 65.7055
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2
+0:4480-2240 1:4480-2240 
+procs, 2, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 78.87, 	Mcon/sec, 127.237
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:4480-1120 2:4480-1120 1:4480-1120 3:4480-1120 
+procs, 4, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 41.89, 	Mcon/sec, 239.561
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+2:4480-640 0:4480-640 3:4480-640 5:4480-640 4:4480-640 1:4480-640 6:4480-640 
+procs, 7, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 25.51, 	Mcon/sec, 393.383
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8 7:bg1 8:bg2 9:bg3 10:bg4 11:bg6 12:bg7 13:bg8
+1:4480-320 2:4480-320 4:4480-320 5:4480-320 0:4480-320 8:4480-320 7:4480-320 6:4480-320 11:4480-320 3:4480-320 10:4480-320 12:4480-320 13:4480-320 9:4480-320 
+procs, 14, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 16.33, 	Mcon/sec, 614.525
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1
+0:8960-8960 
+procs, 1, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 149.07, 	Mcon/sec, 67.3187
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2
+1:8960-4480 0:8960-4480 
+procs, 2, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 76.44, 	Mcon/sec, 131.282
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2 2:bg3 3:bg4
+1:8960-2240 0:8960-2240 2:8960-2240 3:8960-2240 
+procs, 4, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 39.35, 	Mcon/sec, 255.024
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+4:8960-1280 6:8960-1280 5:8960-1280 0:8960-1280 1:8960-1280 2:8960-1280 3:8960-1280 
+procs, 7, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 23.38, 	Mcon/sec, 429.222
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8 7:bg1 8:bg2 9:bg3 10:bg4 11:bg6 12:bg7 13:bg8
+6:8960-640 0:8960-640 4:8960-640 2:8960-640 3:8960-640 7:8960-640 13:8960-640 9:8960-640 11:8960-640 10:8960-640 5:8960-640 1:8960-640 12:8960-640 8:8960-640 
+procs, 14, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 13.54, 	Mcon/sec, 741.152
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1
+0:35840-35840 
+procs, 1, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 266.27, 	Mcon/sec, 60.3009
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2
+0:35840-17920 1:35840-17920 
+procs, 2, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 125.92, 	Mcon/sec, 127.512
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2 2:bg3 3:bg4
+1:35840-8960 0:35840-8960 2:35840-8960 3:35840-8960 
+procs, 4, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 63.67, 	Mcon/sec, 252.18
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+4:35840-5120 5:35840-5120 6:35840-5120 1:35840-5120 0:35840-5120 2:35840-5120 3:35840-5120 
+procs, 7, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 37.01, 	Mcon/sec, 433.837
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8 7:bg1 8:bg2 9:bg3 10:bg4 11:bg6 12:bg7 13:bg8
+6:35840-2560 4:35840-2560 5:35840-2560 12:35840-2560 13:35840-2560 11:35840-2560 0:35840-2560 3:35840-2560 7:35840-2560 1:35840-2560 8:35840-2560 2:35840-2560 9:35840-2560 10:35840-2560 
+procs, 14, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 19.28, 	Mcon/sec, 832.797
+compare performance on good and not so good option choosen
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 50 400000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:416-104 1:416-104 3:416-96 2:416-96 
+procs, 4, 	units, 50, 	weights, 5000, 	cycles, 400000, 	con_trav, 2e+09, 	secs, 24.47, 	Mcon/sec, 81.7327
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:448-112 1:448-112 2:448-112 3:448-112 
+procs, 4, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 27.18, 	Mcon/sec, 92.3032
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 50 400000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+0:448-64 2:448-56 1:448-56 6:448-56 3:448-56 4:448-56 5:448-56 
+procs, 7, 	units, 50, 	weights, 5000, 	cycles, 400000, 	con_trav, 2e+09, 	secs, 21.97, 	Mcon/sec, 91.0332
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 56 400000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+0:448-64 1:448-64 2:448-64 4:448-64 3:448-64 6:448-64 5:448-64 
+procs, 7, 	units, 56, 	weights, 6272, 	cycles, 400000, 	con_trav, 2.5088e+09, 	secs, 23.83, 	Mcon/sec, 105.279
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 100 200000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:800-200 1:800-200 3:800-200 2:800-200 
+procs, 4, 	units, 100, 	weights, 20000, 	cycles, 200000, 	con_trav, 4e+09, 	secs, 26.68, 	Mcon/sec, 149.925
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:896-224 3:896-224 2:896-224 1:896-224 
+procs, 4, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 31.5, 	Mcon/sec, 159.289
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 100 200000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+1:840-120 0:840-120 3:840-112 2:840-112 6:840-112 5:840-112 4:840-112 
+procs, 7, 	units, 100, 	weights, 20000, 	cycles, 200000, 	con_trav, 4e+09, 	secs, 20.76, 	Mcon/sec, 192.678
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 112 200000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+1:896-128 5:896-128 0:896-128 3:896-128 6:896-128 2:896-128 4:896-128 
+procs, 7, 	units, 112, 	weights, 25088, 	cycles, 200000, 	con_trav, 5.0176e+09, 	secs, 23.59, 	Mcon/sec, 212.7
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 500 16000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:4000-1000 1:4000-1000 3:4000-1000 2:4000-1000 
+procs, 4, 	units, 500, 	weights, 500000, 	cycles, 16000, 	con_trav, 8e+09, 	secs, 33.88, 	Mcon/sec, 236.128
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2 2:bg3 3:bg4
+1:4480-1120 0:4480-1120 3:4480-1120 2:4480-1120 
+procs, 4, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 42.2, 	Mcon/sec, 237.801
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 500 16000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+2:4032-576 0:4032-576 4:4032-568 6:4032-568 1:4032-576 5:4032-568 3:4032-568 
+procs, 7, 	units, 500, 	weights, 500000, 	cycles, 16000, 	con_trav, 8e+09, 	secs, 20.85, 	Mcon/sec, 383.693
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 560 16000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+0:4480-640 2:4480-640 5:4480-640 1:4480-640 4:4480-640 3:4480-640 6:4480-640 
+procs, 7, 	units, 560, 	weights, 627200, 	cycles, 16000, 	con_trav, 1.00352e+10, 	secs, 25.48, 	Mcon/sec, 393.846
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1000 4000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:8000-2000 3:8000-2000 1:8000-2000 2:8000-2000 
+procs, 4, 	units, 1000, 	weights, 2e+06, 	cycles, 4000, 	con_trav, 8e+09, 	secs, 34.28, 	Mcon/sec, 233.372
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:8960-2240 3:8960-2240 2:8960-2240 1:8960-2240 
+procs, 4, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 42.27, 	Mcon/sec, 237.407
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1000 4000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+4:8008-1144 5:8008-1144 6:8008-1136 0:8008-1144 2:8008-1144 1:8008-1144 3:8008-1144 
+procs, 7, 	units, 1000, 	weights, 2e+06, 	cycles, 4000, 	con_trav, 8e+09, 	secs, 20.82, 	Mcon/sec, 384.246
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 1120 4000 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+6:8960-1280 4:8960-1280 5:8960-1280 0:8960-1280 3:8960-1280 1:8960-1280 2:8960-1280 
+procs, 7, 	units, 1120, 	weights, 2.5088e+06, 	cycles, 4000, 	con_trav, 1.00352e+10, 	secs, 25.3, 	Mcon/sec, 396.648
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 5000 400 - 0:bg1 1:bg2 2:bg3 3:bg4
+1:40000-10000 0:40000-10000 2:40000-10000 3:40000-10000 
+procs, 4, 	units, 5000, 	weights, 5e+07, 	cycles, 400, 	con_trav, 2e+10, 	secs, 78.95, 	Mcon/sec, 253.325
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2 2:bg3 3:bg4
+0:35840-8960 1:35840-8960 3:35840-8960 2:35840-8960 
+procs, 4, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 63.38, 	Mcon/sec, 253.334
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 5000 400 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+4:40040-5712 5:40040-5712 6:40040-5712 0:40040-5720 3:40040-5712 1:40040-5720 2:40040-5712 
+procs, 7, 	units, 5000, 	weights, 5e+07, 	cycles, 400, 	con_trav, 2e+10, 	secs, 45.29, 	Mcon/sec, 441.599
+Running: gtmem -P -u 0 -o 0x0 -c 100 -b 4 -d 0 -w 0x00000000 
+running ./ptest_gt 4480 400 - 0:bg1 1:bg2 2:bg3 3:bg4 4:bg6 5:bg7 6:bg8
+4:35840-5120 6:35840-5120 5:35840-5120 3:35840-5120 0:35840-5120 2:35840-5120 1:35840-5120 
+procs, 7, 	units, 4480, 	weights, 4.01408e+07, 	cycles, 400, 	con_trav, 1.60563e+10, 	secs, 36.79, 	Mcon/sec, 436.432

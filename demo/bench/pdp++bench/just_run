@@ -1,0 +1,5 @@
+#! /bin/csh -f
+
+./pdp++bench 500 100
+./pdp++bench 100 2500
+./pdp++bench 10	250000

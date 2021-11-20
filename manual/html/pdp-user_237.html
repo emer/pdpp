@@ -1,0 +1,283 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_236.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_238.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1453" HREF="pdp-user_toc.html">17.2  Leabra Connection Specifications</A></H2>
+<P>
+<A NAME="IDX1454"></A>
+<A NAME="IDX1455"></A>
+<A NAME="IDX1456"></A>
+
+</P>
+<P>
+The Leabra connection type <B>LeabraCon</B> contains the following parameters:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>wt</CODE>
+<DD>
+<A NAME="IDX1457"></A>
+The weight value (shows up in NetView as r.wt for receiving, s.wt for sending
+<DT><CODE>dwt</CODE>
+<DD>
+<A NAME="IDX1458"></A>
+Accumulated change in weight value computed for current trial:
+this is usually zero by the time NetView is updated
+<DT><CODE>pdw</CODE>
+<DD>
+<A NAME="IDX1459"></A>
+Previous dwt weight change value: this is what is visible in NetView.
+</DL>
+
+<P>
+The Leabra connection specification <B>LeabraConSpec</B> type contains the following parameters:
+
+</P>
+<P>
+<A NAME="IDX1460"></A>
+<DL COMPACT>
+
+<DT><CODE>rnd</CODE>
+<DD>
+<A NAME="IDX1461"></A>
+Controls the random initialization of the weights:
+
+<DL COMPACT>
+
+<DT><CODE>type</CODE>
+<DD>
+<A NAME="IDX1462"></A>
+Select type of random distribution to use (e.g., UNIFORM (default), NORMAL (Gaussian)).
+
+<DT><CODE>mean</CODE>
+<DD>
+<A NAME="IDX1463"></A>
+Mean of the random distribution (mean rnd weight val).
+<DT><CODE>var</CODE>
+<DD>
+<A NAME="IDX1464"></A>
+Variance of the distribution (range for UNIFORM).
+<DT><CODE>par</CODE>
+<DD>
+<A NAME="IDX1465"></A>
+2nd parameter for distributions like BINOMIAL and GAMMA that require it (not typically used).
+</DL>
+
+<DT><CODE>wt_limits</CODE>
+<DD>
+<A NAME="IDX1466"></A>
+Sets limits on the weight values --Leabra weights are constrained between 0 and 1 and are initialized
+    to be symmetric:
+
+<DL COMPACT>
+
+<DT><CODE>type</CODE>
+<DD>
+<A NAME="IDX1467"></A>
+Type of constraint (GT_MIN = greater than
+    min, LT_MAX = less than max, MIN_MAX (default) within both min
+    and max)
+
+<DT><CODE>min</CODE>
+<DD>
+<A NAME="IDX1468"></A>
+Minimum weight value (if GT_MIN or MIN_MAX).
+<DT><CODE>max</CODE>
+<DD>
+<A NAME="IDX1469"></A>
+Maximum weight value (if LT_MAX or MIN_MAX).
+<DT><CODE>sym</CODE>
+<DD>
+<A NAME="IDX1470"></A>
+Symmetrizes the weights (only done at initialization).
+</DL>
+
+<DT><CODE>inhib</CODE>
+<DD>
+<A NAME="IDX1471"></A>
+Makes the connection inhibitory (net input goes to g_i instead of net).
+
+<DT><CODE>wt_scale</CODE>
+<DD>
+<A NAME="IDX1472"></A>
+Controls relative and absolute scaling of
+    weights from different projections:
+
+<DL COMPACT>
+
+<DT><CODE>abs</CODE>
+<DD>
+<A NAME="IDX1473"></A>
+Absolute scaling (s_k): directly multiplies weight value.
+<DT><CODE>rel</CODE>
+<DD>
+<A NAME="IDX1474"></A>
+Relative scaling (r_k): effect is normalized by sum of rel values for all incoming projections.
+</DL>
+
+<DT><CODE>wt_sig</CODE>
+<DD>
+<A NAME="IDX1475"></A>
+Parameters for the sigmoidal weight contrast enhancement function:
+
+<DL COMPACT>
+
+<DT><CODE>gain</CODE>
+<DD>
+<A NAME="IDX1476"></A>
+Gain parameter: how sharp is the contrast enhancement. 1=linear function.
+<DT><CODE>off</CODE>
+<DD>
+<A NAME="IDX1477"></A>
+Offset parameter: for values &#62;1, how 
+far above .5 is neutral point on contrast enhancement curve
+(1=neutral is at .5, values &#60;1 not used, 2 is probably the
+maximum usable value).
+</DL>
+
+<DT><CODE>lrate</CODE>
+<DD>
+<A NAME="IDX1478"></A>
+Learning rate (epsilon).
+
+<DT><CODE>cur_lrate</CODE>
+<DD>
+<A NAME="IDX1479"></A>
+Current learning rate as affected by
+<CODE>lrate_sched</CODE>: note that this is only updated when the network is
+actually run (and only for ConSpecs that are actually used in
+network).
+ 
+<DT><CODE>lrate_sched</CODE>
+<DD>
+<A NAME="IDX1480"></A>
+Schedule of learning rate over training
+epochs: to use, create elements in the list, assign start_ctr's
+to epoch vals when lrate's (given by start_val's) take effect.
+These start_val lrates <EM>multiply</EM> the basic lrate, so use .1
+for a cur_lrate of .001 if basic lrate = .01.
+
+<DT><CODE>lmix</CODE>
+<DD>
+<A NAME="IDX1481"></A>
+Sets mixture of Hebbian and err-driven learning:
+<DL COMPACT>
+
+<DT><CODE>hebb</CODE>
+<DD>
+<A NAME="IDX1482"></A>
+Amount of Hebbian learning: unless using
+pure Hebb (1), values greater than .05 are usually to big.  For
+large networks trained on many patterns, values as low as .00005 are
+still useful.
+<DT><CODE>err</CODE>
+<DD>
+<A NAME="IDX1483"></A>
+Amount of error-driven: automatically
+set to be 1-hebb, so you can't set this independently.
+</DL>
+
+<DT><CODE>fix_savg</CODE>
+<DD>
+<A NAME="IDX1484"></A>
+Sets fixed sending avg activity
+    value for normalizing netin (aka alpha_k): g_e_k = 1 / alpha_k &#60; x_i
+    w_ij &#62;_k.  This is useful when expected activity of sending
+    region that projection actually receives is different from that of
+    sending layer
+    as a whole.
+
+<DL COMPACT>
+
+<DT><CODE>fix</CODE>
+<DD>
+<A NAME="IDX1485"></A>
+Toggle for actually fixing the sending avg activation to value set in savg.
+<DT><CODE>savg</CODE>
+<DD>
+<A NAME="IDX1486"></A>
+The fixed sending average activation value -- should be between 0 and 1.
+<DT><CODE>div_gp_n</CODE>
+<DD>
+<A NAME="IDX1487"></A>
+Divide by group n, not layer n,
+where group n is the number of actual connections in the
+connection group that this unit receives from (corresponds to a
+given projection).  Usually, the netinput is averaged by dividing
+by layer n, so it is the same even with partial connectivity ---
+use this flag to override where projection n is more meaningful.
+</DL>
+
+<DT><CODE>savg_cor</CODE>
+<DD>
+<A NAME="IDX1488"></A>
+Correction for sending average activation
+    levels in hebbian learning -- renormalizes weights to use full
+    dynamic range even with sparse sending activity levels that would
+    otherwise result in generally very small weight values.
+
+<DL COMPACT>
+
+<DT><CODE>cor</CODE>
+<DD>
+<A NAME="IDX1489"></A>
+Amount of correction to apply (0=none, 1=all, .5=half, etc): (aka q_m):
+    alpha_m = .5 - q_m (.5 - alpha), where m = .5 / alpha_m),
+    and Delta w_ij = epsilon [y_j x_i (m - wij) + y_j (1-x_i)(0 -
+    wij)]
+
+<DT><CODE>src</CODE>
+<DD>
+<A NAME="IDX1490"></A>
+Source of the sending average act for use in
+    correction. SLAYER_AVG_ACT (default) = use actual sending layer
+    average activation. SLAYER_TRG_PCT = use sending layer target
+    activation level.  FIXED_SAVG = use value specified in
+    fix_savg.savg.  COMPUTED_SAVG = use actual computed average
+    sending activation <EM>for each specific projection</EM> -- this is
+    very computationally expensive and almost never used.
+
+<DT><CODE>thresh</CODE>
+<DD>
+<A NAME="IDX1491"></A>
+Threshold of sending average
+    activation below which Hebbian learning does not occur -- if the
+    sending layer is essentially inactive, it is much faster to simply
+    ignore it.  Note that this also has the effect of preserving
+    weight values for projections coming from inactive layers, whereas
+    they would otherwise uniformly decrease.
+</DL>
+</DL>
+
+<P>
+<A NAME="IDX1492"></A>
+The <B>LeabraBiasSpec</B> connection specification is for bias weight (bias
+weights do not have the normal weight bounding and <CODE>wt_limits</CODE>
+settings, are initialized to zero with zero variance, and do not have
+a Hebbian learning component).  The parameters are:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>dwt_thresh</CODE>
+<DD>
+<A NAME="IDX1493"></A>
+Don't change weights if <CODE>dwt</CODE>
+  (weight change) is below this value -- this prevents bias weights
+  from slowly creeping up or down and growing ad-infinitum even when
+  the network is basically performing correctly -- essentially a
+  tolerance factor for how accurate the actual activation has to be
+  relative to the target.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_236.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_238.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

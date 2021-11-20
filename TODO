@@ -1,0 +1,423 @@
+TODO list for PDP++ software.  
+Items with !! or a release number in front of them should be done before release.
+Items with ?? are suggestions that have no specific target date.
+
+General/High pri/Bugs:
+======================
+
+- fctn to get event pattern by name (lookup from eventspec), so you don't
+always have to use indicies.
+
+- Event_MGroup:: PresentEventGp button
+
+- log view spec buttons: add a format string (better yet, a smart object
+containing format generation parameters) for generating string 
+representation of data, and add functions to set this for entire group.
+The TextViewSpec  object then uses the width parameter of this to
+determine display width	instead of current width paramter.
+
+- enviro wizard: convert single events to event groups with
+replication of events..
+
+- schedule item start_val = 1 as default!
+
+- process step.n: store different n vals for the different proc levels, switch
+when proc is changed (often want to have n = 10 for cycle, but n=1 for settle, etc).
+
+- automatic setting of default values in Initialize function via the #DEF_
+parameters!!
+
+- #DEPRECATED flag for types: during loading, automatically replace these
+types with their parents.  Could be useful for new version where all
+ _MGroup -> Group
+
+- n_gp field for layers (end use of z as implicit group count: can keep
+that around for backward compatibility)
+
+- Layer_Group support in new interface: layer groups are like brain areas
+and can have some ability to "iconify" or not view details of these guys.
+
+- some way to specify defaults "after the fact" for inherited members
+(probably some kind of #ifdef __MAKETA__ thing and then an ability to
+specify #DEF for sub-members of an INLINE member object)
+
+- mechanism for taking snapshot of network (saving weights etc) when various
+conditions are met (e.g., in a given stat, or via a short script).
+(counter to determine how many times to run it).
+
+- infinite loop in:  "new script" -> "open" and typing the filename of
+the new script file.  static linked only.  not in 3.02.  extra arg for open??
+
+- dupe env: child event specs not getting copied properly (override on target
+flag not copying) and copied events not pointing properly to child especs
+(creating a new rew).
+
+- auto-set override flag for child patspecs if edit sets value to be diff
+than parent!  allows right-click edit to work..
+
+- edit of patspec dialog does not update children patspecs!  not getting
+unit_value names..
+
+- reading log from file: check for display label for header and don't create
+a new column if header is display label!
+
+- special wizard function for checking various parameters and offering
+suggestions, with flag mask for "don't remind me again" responses.  Include
+"doit for me" option.
+      - send delta for larger nets
+      - kwta_avg for input/output
+      - non-standard .25/.6 ikwta pt values
+      - unused specs (replace existing annoying comment: use flag for usage!)
+      - ?
+
+- ScriptStat creating of new vars doesn't get propagated to higher levels
+and log is not reflecting things.
+
+- SimLog dialog: add button that allows project info to be updated but not
+written to SimLog file.
+
+- some way of seeing which EventSpec events are using..
+
+- skipping over gp_space in Tessel is not working for 12ax4s project..
+  only when gp_spc.y = 1.  only one y row.. doesn't get last row of y's
+
+- do/while crashes after 72 iterations!  ken norman
+
+- root window moves up tiny bit everytime project saved!
+
+- SelectEdit generate a param file or .css file to save/load these 
+params: make a startup.css that reads these and sets the
+log/nets after the param file name.. (Nico's idea)
+
+- auto tabulate/extract operations on logs:  updater of log is another log
+and results are extraction and/or tabulation of data.  extraction allows you
+to (a) enter a list of AND/OR matches for fields (regexp!?) or (b) write arbitrary
+script code that returns true or false.  tabulation has usual agg operators
+on fields.  operates post-extraction.  provide automatic ways of parsing
+strings?  _ : delimiters, positions, etc?
+
+- saving specs (.specs.SaveAs) seems to save 2 copies..  'sup?
+
+- CE_Stat is broken?  From Jeremy Reynolds:
+
+Should be:
+	-(target * log(output) + (1-target)*log(1-output))
+
+The Cross Entropy statistic that it logs is different, it is:
+	target * log(target/output) + (1-target)*log((1-target)/(1-output))
+
+which is equivalent to:
+	-(target * log(output) + (1-target)*(log(1-output))) + 
+	target*log(target) + (1-target)*log(1-target)
+
+which is also equivalent to:
+	(Cross Entropy Error used for training) + target*log(target) + 
+(1-target)*log(1-target)
+
+- Leabra TD stuff:
+- wizard code: look at ordering of layer dependencies: none neccssary?
+  just do it in the wiz?  also, make geom linear in wiz
+- new patch with go/nogo
+- further go competition in GP layer?
+- toggle off = actively suppress?
+
+- new enviro gen code (ala eprime, etc):
+  - pattern type that gets output from the network (response)
+  - subpatterns within pattern specs for subsets of bits (mutex, etc)
+    - subclasses for labeled units, text, images, bitslib, etc
+    - although pattern is flat, subgroups can map to unitgroups on layer
+      to solve that problem
+  - fix event spec gui: auto non-ovlp, edit for pat vals, ability to 
+    define subpatterns, etc.
+  - gui for condlists
+
+- css edit of arrays -- pulls up edit for index, then doesn't pull up item
+
+- css #BUTTON calling one function inside another #BUTTON function
+causes a crash!
+
+- css lookup (member/array finding) is slow..: strings? test speed?
+
+- add Remove versions of other FindMake functions..
+
+- InitLinks taBase::Own(statval) for all stats!?
+
+- leabra: synapse-based synaptic depression: update every n to prevent
+doing too much computation.  make separate cons, etc
+
+- leabra: it crashes when you set the layer inhib_group to "GPS
+THEN UNITS", if the layer does not have unit groups. Of
+course, it doesn't make sense to do this so one wouldn't
+normally try it, but I just thought I'd tell you.
+
+- LeabraGoodStat should have option to restrict computation of harmony
+to connections within a layer (if layer field is set).. (dnoelle)
+
+- BIG: pass UpdateAfterEdit a list of members that were changed in
+the edit (based on script record diff function).  then, e.g.,
+Layer can issue warning message for changing UnitSpec pointer
+without pressing the magic apply button!
+
+- DIST: include rbp++ link in rpm 
+
+---------------------
+
+- DMEM MultiEnv: parallel processing of entire environments using
+  batch weight updating (needed for InteractiveEpoch of
+  sequential material under dmem!)
+
+- figure out continued relevance of display_labels given current setup
+of viewspecs in logs..
+
+- taivGetFile has leftovers from old compress method
+
+- taFile initialization is rather difficult and should be more encapsulated
+  it should get its own getfile, with a member defining the pattern
+  and some other things.  why is style being passed in taivGetFile init?
+
+- leabra savg_cor: change default to TRG instead of AVG ACT?
+simpler.  check in various sims if it makes any difference:
+Might make it worse (e.g., 12ax); maybe not to do here.
+
+
+
+----
+CYGWIN ISSUES:
+
+- CYGWIN edit dialog navigation: up arrow, down arrow, tab..
+
+- pointer icons not working under windows.
+
+- DARWIN bug for many script files: Sean Polyn project.
+
+Manual: 
+============
+
+- better demo and explanation of control scripts.
+
+Editing:
+============
+
+- object chooser should be able to select/highlight current value
+of an item when used to select.
+
+- fix group/array edit dialog to resize properly when new items are
+	added. (window resizing in general).
+
+- #HILIGHT_MODIFY or something comment directive to
+	          highlight buttons such as UpdateView on viewspecs
+
+
+Makefiles/Packaging/Porting:
+===========================
+
+- configure-based makefiles!
+
+- CYGWIN is very flaky for saving in directories.  need to always put drive
+ label at start, but starting from cygwin command line never seems to work at
+ all.
+
+- should have a fancier prompt for which libraries to depend on in
+mknewpdp, which could then grab the appropriate .def file, and 
+insert the correct library in the makefile (and in the _vt file!)..
+
+
+ProjectView:
+============
+
+- different color themes (current = CRAYOLA or NEON, others could be
+ more subtle..)
+
+- support for syncepochproc, forkprocess -- multiple env, net links.
+
+- process view: Run button for clicking on processes
+
+
+
+Enviro/View:
+============
+
+- when creating new pattern, select by default.
+
+- draw mode instead of rescale in enviroview?
+
+- add graphical representation of event groups and associated
+  parameters?  probably too difficult with event layout.
+
+- maybe not: make a new class of EnviroGen objects, which each
+have various arguments, a "Run" button, inherit from ScriptBase, 
+and implement various environment generate routines..
+	
+Log/Views:
+============
+
+- Project through weights across multiple layers function -- graph in grid log.
+
+- display monitor stats with unit group structure in grid log -- workaround is
+to monitor the unit groups separately.
+
+- make display toggle to turn off displaying more accessable (its on view..)
+  ( add a check box to view window..)
+
+NetView:
+============
+
+- make highilght a different bright color?
+
+- can't move self-con prjns, should be able to...
+
+- Projection View mode, which allows user to turn off projections
+  or show only minimal projections (only one arrow drawn between
+  layers with more than one projection connecting them)
+  
+- add an arbitrary calling of spec functions (registered with a #NETVIEW
+directive) menu to netview, just contains menu_methods for these
+specs.  then, need a function on network/layer/unit/etc. that 
+calls these functions where applicable.  provides central interface
+for misc additional functions (in addition to
+build, connect, etc)
+
+Netstru/Enviro/Proc simulation object stuff:
+============================================
+
+- automatic MIN_MAX_AVG aggregators?
+
+- Epoch.max should not be settable in epoch process
+
+- bug in loading network into empty project: need to check for base-level
+spec pointer compatibility (projectionspec points to conspec in bp++ by default).
+
+- some option to get copy to env to include over sequence level.
+
+- manytoonepjnspec send_n -1 not getting all... add to comment too
+
+- prjn spec for rectangular chunks of input space def'd by corners,
+operating over chunks of recv units.
+
+- Some way to fix PolarRandom to not be so circulo-centric ---
+correction factor for density of closer points?
+
+- tesselprjnspec weight init does not work for clipped weights: can it be fixed?
+(very hard to fix, probably just leave as is)
+	
+
+Algorithms:
+============
+- automatic checking for proper configs for special objects in leabra
+ and other algos
+
+- rbp++ rbp_xor.proj.gz demo sometimes blows up se..  (Danke Xie)
+
+- aa++ (auto-associator) executable: linear, clipped BSB, Hopfield,
+	simple IAC (0 decay), std binary (perceptron),
+	 different learning rules (ext - int), jay's special version, etc.
+
+Demos:
+============
+
+
+CSS/low-level Misc
+==================
+
+- Stat member/method pointers: special ivs for #NONAGG_STAT and #AGG_STAT
+  use for TimeCounterReset, others?
+
+- #SUB_MENU_xxx for regular menus, #MENU_ON_main:sub
+
+- why can't cssTA types do things like: Unit un; -- if 
+we make the distinction between Unit* and Unit, then it should be able
+to set an ownership flag for this intialization condition..
+
+- arg-level comments, that can go into the description fields of
+the function arg requestor dialog..  two options: 1. comments
+literally after each arg, with implicit binding thereto.
+2. #ARG_1:xxx syntax within main comment to allow for
+descriptions.
+
+- get rid of setjmp/longjmp in css: set a flag and check it 
+everywhere..
+
+- would be nice to have multiple default path options in the
+ file requestor (home, defaults, mypdp/defaults, etc)
+- file selector does not show prior path information..
+
+- also, need to support more useful key inputs ala emacs, etc.
+maybe even cut & paste from X?
+
+- static vars in scripts with initialization expressions are having the
+ initialization run every time -- should only happen at compile time.
+
+- Import from script file to script string and vice-versa.
+- ideally want to have big edit window w/ scroll to edit script string
+
+- move lots of the basic special stuff in float_RArrays down to the
+float_Array.  Maybe not because it is more than needed there..
+
+- Last() and Prev() functions for leaf itr based traversal of a list
+in reverse order.
+
+- css: float_Array ary; ary.Peek() = 22;  doesn't assign: again need two-way ref stubs.
+
+- css classes: assign to/from strings.
+
+- css: redefining an extern-declared class object prevents it
+from being updated when class changes.  soln is to use a pointer!
+
+- redefine operator '->' to be magic GetFromPath() for all
+taBase objects, so you can write lazy css-like code in C++ and
+it will work.. (problem is, can you have it take an arg??)
+
+- time stamp for auto-recompile on scripts..
+
+- wait cursor while running css code..
+
+- css: are enums optimized in css (does it look it up every time?)
+
+- css: also enable the taLeafItr to be used in looping constructs in css,
+need to have both-way-assignment of reference variables in the stubs.
+
+- support for 'up' and 'down' stack traversal in css: get this with 'trace' cmd,
+but ability to print stuff selectively at given level would be nice.
+
+
+Longer-Term (bigger jobs) General:
+==================================
+
+- convert to Qt?
+
+- css command strings can be sent via USR2 signal 
+	(look for file with exec name + pid and then load that into css
+	and then continue (which is the hard part))
+	- user has to have a "Run()" to continue processing in script
+
+- type default scripts: css script attached to a typedefault object
+	that will do things when object is created (create sub-structure,
+	establish links to other objects?)
+
+- replace current output (css print) mechanism with one
+	based on the ta_iv_type objects, which would have a new
+	function that does the outputting.  this would allow specs
+	to flag those members which are unique in the print output..
+	(are all ta_iv_types loaded if no iv?  not currently.  need to 
+	remedy this first).
+
+- unify output (above) and copying with the taiv_Type thing, 
+	and generalize the mechanism for copying (currently it is
+		a bit hacky, esp w/ pointers to functions, etc.
+
+Probably not worth it:
+======================
+
+- Scripted UNDO feature
+
+- scale factor on spec inherited floats/ints
+
+- spaghetti line display for unit connections
+
+- record scripts should not create *ths for edit dialog changes when
+  only one member has changed
+
+- GraphLogView:	- maybe axis should be named?
+
+- gp rnd tessel spec: treat one layer as one group if no subgroups.
+

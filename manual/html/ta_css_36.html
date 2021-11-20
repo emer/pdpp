@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - prog-comdir</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_35.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_37.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX241" HREF="ta_css_toc.html">6.3  Standard TypeAccess Comment Directives</A></H2>
+<P>
+<A NAME="IDX242"></A>
+
+</P>
+<P>
+The following sections document comment directives that are recognized
+by the standard TypeAccess GUI and script-language interfaces.  These
+must be placed in comments immediately following the definition of that
+which the apply to.  Thus, an object directive should appear as
+
+</P>
+<PRE>  class whatever : public something {  // #IGNORE comment goes here
+</PRE>
+
+<P>
+for members and methods, it should be as follows:
+<PRE>  class whatever : public something {  // #IGNORE comment goes here
+    int         member_1;       // #HIDDEN comment goes here
+    float       member_2;
+    // #READ_ONLY or here
+    float       get_real();     /* #USE_RVAL note that multi-line
+       old-fashioned c-style comments are legal too! */ 
+</PRE>
+
+
+<UL>
+<LI><A HREF="ta_css_37.html">1                 Object Directives</A>
+<LI><A HREF="ta_css_38.html">2                Member Directives</A>
+<LI><A HREF="ta_css_39.html">3                Method Directives</A>
+<LI><A HREF="ta_css_40.html">4                 Top-Level Function Directives</A>
+<LI><A HREF="ta_css_41.html">5                  PDP++ Specific Directives</A>
+</UL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_35.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_37.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

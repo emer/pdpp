@@ -1,0 +1,106 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-prjn-random</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_121.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_123.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX639" HREF="pdp-user_toc.html">10.3.3.3  Random Patterns of Connectivity</A></H4>
+<P>
+<A NAME="IDX640"></A>
+
+</P>
+<P>
+The <B>UniformRandomPrjnSpec</B> specifies a uniform random pattern of
+connectivity.  
+
+</P>
+<P>
+<A NAME="IDX641"></A>
+<A NAME="IDX642"></A>
+<A NAME="IDX643"></A>
+<CODE>p_con</CODE> specifies the overall probability of connectivity -- a
+connection is made with a given sending unit with this probability.  The
+<CODE>permute</CODE> flag indicates that a randomly-ordered list of sending
+units is created, and p_con * n_units are selected for connecting ---
+creates exactly the same number of connections per receiving unit.
+<CODE>same_seed</CODE> specifies that this projection saves the random seed
+used for creating connections, so tht the pattern is the same every time
+(useful for being able to read in weight files for randomly connected
+networks).
+
+</P>
+<P>
+<A NAME="IDX644"></A>
+The <B>PolarRndPrjnSpec</B> creates randomized patterns of connectivity as
+a function of distance and angle between sending and receiving unit.
+Distance and angle are computed from the center of a receiving unit's
+receptive field in the sending layer, which, as with the
+<B>TesselPrjnSpec</B> described above, can be computed in different ways.
+Two different random functions control the distribution of connectivity
+in distance and angle.
+
+</P>
+<P>
+<A NAME="IDX645"></A>
+The <CODE>dist_type</CODE> field controls how the distance is computed, as
+follows:
+<DL COMPACT>
+
+<DT><CODE>XY_DIST</CODE>
+<DD>
+Just a simple distance function using the receiver's coordinates in the
+sending layer.  This works fine when both layers are the same size.
+<DT><CODE>XY_DIST_CENTER</CODE>
+<DD>
+The receiver's coordinates are transformed relative to the center of the
+sending layer.  This makes the distance distribution symmetrical.
+<DT><CODE>XY_DIST_NORM</CODE>
+<DD>
+The receiver's coordinates are normalized by the total size of the
+sending layer.
+<DT><CODE>XY_DIST_CENTER_NORM</CODE>
+<DD>
+The receiver's coordinates are normalized by the total size of the
+sending layer, and are computed relative to the center of the layer.
+This will result in a reasonable distance measure even when the two
+layers are of different sizes.
+</DL>
+
+<P>
+<A NAME="IDX646"></A>
+<A NAME="IDX647"></A>
+<A NAME="IDX648"></A>
+<A NAME="IDX649"></A>
+The <CODE>rnd_dist</CODE> and <CODE>rnd_angle</CODE> are <B>Random</B>
+(see section <A HREF="pdp-user_101.html">8.5  Random Distributions</A>) classes that specify the distributions and
+associated parameters for connection distance and angle from the
+receiving unit.  Distance is scaled as above, and angle is done on a 0-1
+scale (i.e., the random number is multiplied by 2pi).  <CODE>p_con</CODE>
+determines how many connections are made.  A target value of p_con *
+n_units in the sending layer is used, and connections are attempted,
+rejecting attempts to reconnect to an existing connection, until
+<CODE>max_retries</CODE> such rejections have been made.  Thus, for very tight
+distributions, the same units will be selected again and again, and it
+may be impossible for <CODE>p_con</CODE> different connections to be
+established.  In this case, a warning message is issued.
+
+</P>
+<P>
+<A NAME="IDX650"></A>
+The <CODE>wrap</CODE> flag determines if the units are treated as one big
+wrapping-around surface, or if it is clipped at the edges of the layer.
+
+</P>
+<P>
+<A NAME="IDX651"></A>
+<CODE>same_seed</CODE> functions as on the UniformRandomPrjnSpec
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_121.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_123.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

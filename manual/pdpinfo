@@ -1,0 +1,2 @@
+#!/bin/csh
+xinfo -file /usr/local/pdp++/manual/dir -path /usr/local/pdp++/manual &

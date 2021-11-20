@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-trial</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_210.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_212.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1294" HREF="pdp-user_toc.html">14.2.4  The RBp Trial Process</A></H3>
+<P>
+<A NAME="IDX1295"></A>
+
+</P>
+<P>
+In order to accommodate both the real-time and discrete sequence-based
+processing modes of RBp, the lowest level of processing in RBp is still
+the Trial, just as in regular Bp.  Thus, each cycle of activation update
+is performed by the trial.  In addition, the trial process looks at the
+number of stored activation states that have been accumulated in the
+network's units, and if this is equal to the time-window over which
+backprop is supposed to occur, the trial process will then perform a
+backpropagation through all of these stored activation states.  Thus,
+the scheduling of backpropagations is fairly autonomous, which makes
+real-time mode work well.  When not operating in real-time mode, the
+time-window for error backpropagation is automatically set to be the
+total duration of the current sequence.  This makes it easy to use
+variable length sequences, etc.
+
+</P>
+<P>
+The distinction between whether the network is trained in real-time or
+sequence-based mode is based on the kinds of processes that are created
+above the level of the <B>RBpTrial</B> process, and on the setting of the
+<CODE>real_time</CODE> flag on the <B>RBpTrial</B> process itself.  If using the
+sequence-based mode, where backpropagations are performed at the end of
+discrete sequences of events, then the user should create a
+Sequence-based process hierarchy, which includes a <B>SequenceEpoch</B>, an
+<B>RBpSequence</B> process, and finally a <B>RBpTrial</B> process.  If one is
+using real-time mode, only a regular <B>EpochProcess</B> and a <B>RBpTrial</B>
+process need to be used.
+
+</P>
+<P>
+The following parameters are available on the <B>RBpTrial</B>.  Note that
+all of the parameters are expressed in terms of the abstract time units,
+and not in terms of the specific ticks of the discrete clock on which
+the actual events are presented to the network, activations are updated,
+etc.  This makes the parameters invariant with respect to changes in
+<CODE>dt</CODE>, which controls the size of a tick of discrete time.
+
+</P>
+<P>
+<A NAME="IDX1296"></A>
+<DL COMPACT>
+
+<DT><CODE>float time</CODE>
+<DD>
+<A NAME="IDX1297"></A>
+The current time, relative to the start of the most recent
+sequence, or since the units were last initialized if in real-time mode.
+It is a read-only variable.
+<DT><CODE>float dt</CODE>
+<DD>
+<A NAME="IDX1298"></A>
+The delta-time increment, which is copied automatically from the
+units in the network.  It is used in updating the time in the trial
+process.
+<DT><CODE>float time_window</CODE>
+<DD>
+<A NAME="IDX1299"></A>
+Determines the time window over which error
+backpropagation will be performed.  Thus, units will hold their
+activation states for this long before a backpropagation will occur.
+<DT><CODE>float bp_gap</CODE>
+<DD>
+<A NAME="IDX1300"></A>
+The time to wait in between successive backpropagations after
+an initial activation settling time of <CODE>time_window</CODE> in duration.
+This is used primarily in real-time mode, and controls the amount of
+overlap between successive backpropagations.  For example, a
+<CODE>time_window</CODE> of 4 and a <CODE>bp_gap</CODE> of 2 would result in the
+following schedule of backpropagations:
+<PRE>time:   0 1 2 3 4 5 6 7 8
+bp:           x   x   x
+</PRE>
+
+where each backprop goes back 4 time steps, resulting in an overlap of 2
+time steps for each backprop.
+<DT><CODE>bool real_time</CODE>
+<DD>
+<A NAME="IDX1301"></A>
+Checking this flag will cause the network to shift the activation
+buffers after each backpropagation, so that the appropriate amount of
+activation state information will be available for the next
+backpropagation (i.e., it shifts them by the size of <CODE>bp_gap</CODE>).  Not
+checking this flag will cause the <CODE>time_window</CODE> to be automatically
+set to the length of the current sequence.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_210.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_212.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

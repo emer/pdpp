@@ -1,0 +1,197 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - cs-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_219.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_221.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1342" HREF="pdp-user_toc.html">15.3  Cs Unit Specifications</A></H2>
+<P>
+<A NAME="IDX1343"></A>
+<A NAME="IDX1344"></A>
+<A NAME="IDX1345"></A>
+
+</P>
+<P>
+<A NAME="IDX1346"></A>
+<A NAME="IDX1347"></A>
+<A NAME="IDX1348"></A>
+<A NAME="IDX1349"></A>
+The <B>CsUnit</B> is fairly simple.  As was described for backpropagation
+(see section <A HREF="pdp-user_201.html">14.1.3  Bp Unit Specifications</A>) the bias weight is implemented as a connection object
+on the unit.  It also keeps a record of the minus and plus phase
+activation values, <CODE>act_m</CODE> and <CODE>act_p</CODE> (primarily for display
+purposes), and the change in activation state for this unit, <CODE>da</CODE>.
+
+</P>
+<P>
+All of the different flavors of constraint satisfaction algorithms
+differ only in their activation function.  Thus, each one has a
+different type of unit spec.  However, they all derive from a common
+<B>CsUnitSpec</B>, which has parameters shared by all the different
+algorithms.  This unit spec has the parameters for noise and gain, the
+step size taken in updating activations, and schedules for adapting
+noise and gain over time:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>CsConSpec_SPtr bias_spec</CODE>
+<DD>
+<A NAME="IDX1350"></A>
+Points the the connection spec that controls the learning of the
+bias weight on the unit.
+<DT><CODE>MinMaxRange real_range</CODE>
+<DD>
+<A NAME="IDX1351"></A>
+The actual range to allow units to be in. Typically, units are
+kept within some tolerance of the absolute <CODE>act_range</CODE> values, in
+order to prevent saturation of the computation of inverse-sigmoid
+functions and other problems.
+<DT><CODE>Random noise</CODE>
+<DD>
+<A NAME="IDX1352"></A>
+These are the parameters of the noise to be added to the unit.
+<CODE>GAUSSIAN</CODE> noise with zero mean is the standard form of noise to
+use.  Noise is always added to the activations in an amount proportional
+to the square-root of the step size (except in the BoltzUnitSpec, where
+no noise is added).
+<DT><CODE>float step</CODE>
+<DD>
+<A NAME="IDX1353"></A>
+The step size to take in updating activation values.  A smaller
+step leads to smoother updating, but longer settling times.
+<DT><CODE>float gain</CODE>
+<DD>
+<A NAME="IDX1354"></A>
+The sharpness of the sigmoidal activation function, or 1 over
+the temperature for the Boltzmann units.  A higher gain makes the units
+act more like binary units, while a lower gain makes them act more
+continuous and graded.
+<DT><CODE>ClampType clamp_type</CODE>
+<DD>
+<A NAME="IDX1355"></A>
+This controls the way in which external inputs (from the environment)
+are applied to the network.  <CODE>HARD_CLAMP</CODE> means that the activation
+is exactly the <CODE>ext</CODE> value from the environment.
+<CODE>HARD_FAST_CLAMP</CODE> is like hard clamp, but optimized so that all of
+the inputs from clamped layers are computed once at the start of
+settling, saving considerable computational overhead.  This should not
+be used if the inputs are noisy, since this noise will not be included!
+<CODE>SOFT_CLAMP</CODE> means that external inputs are added into the net
+input to a unit, instead of forcing the activation value to take on the
+external value.  <CODE>SOFT_THEN_HARD_CLAMP</CODE> performs soft clamping in
+the minus phase, and then hard clamping in the plus phase.
+<DT><CODE>float clamp_gain</CODE>
+<DD>
+<A NAME="IDX1356"></A>
+When soft clamping, this parameter determines how strongly the external
+input contributes to the unit net input.  It simply multiplies the value
+in the <CODE>ext</CODE> field.
+<DT><CODE>Random initial_act</CODE>
+<DD>
+<A NAME="IDX1357"></A>
+Controls the random initialization of unit activations in the
+<CODE>InitState</CODE> function.
+<DT><CODE>bool use_annealing</CODE>
+<DD>
+<A NAME="IDX1358"></A>
+Controls whether an annealing schedule is used to adapt the
+variance of the noise distribution over time (<CODE>noise_sched</CODE>).
+<DT><CODE>Schedule noise_sched</CODE>
+<DD>
+<A NAME="IDX1359"></A>
+This schedule contains values which are multiplied times the <CODE>var</CODE>
+parameter of the <CODE>noise</CODE> field to get an effective variance level.
+The value from the schedule is the linear interpolation of the
+<CODE>cycle</CODE> count from the settle process based on points listed in the
+schedule.  Thus, each point in the schedule gives a variance multiplier
+for a particular cycle count, and intermediate cycles yield interpolated
+multiplier values.
+<DT><CODE>bool use_sharp</CODE>
+<DD>
+<A NAME="IDX1360"></A>
+Controls whether a sharpening schedule is used to adapt the
+gain parameter over time (<CODE>gain_sched</CODE>).
+<DT><CODE>Schedule gain_sched</CODE>
+<DD>
+<A NAME="IDX1361"></A>
+This is a schedule for the gain multiplier.  The effective gain is the
+<CODE>gain</CODE> parameter times the value from this schedule.  The schedule
+works just like the <CODE>noise_sched</CODE> described above.
+</DL>
+
+<P>
+The basic <B>CsUnitSpec</B> uses the inverse-logistic activation function
+developed by <CITE>Movellan and McClelland, 1994</CITE>.  Thus, the change in
+activation is a function of the difference between the actual net input,
+and the inverse logistic of the current activation value.  This
+formulation ends up being an exact solution to the objective function
+used in their derivation.
+
+</P>
+<P>
+<A NAME="IDX1362"></A>
+The <B>SigmoidUnitSpec</B> uses a simple sigmoidal function of the net
+input, which is like the formulation of <CITE>Hopfield, 1984</CITE>, and is
+also the same as the RBp units described in section <A HREF="pdp-user_210.html">14.2.3  RBp Unit Specifications</A>.  This type
+also has the option with the <CODE>time_avg</CODE> parameter of computing time
+averaging (i.e., as a function of the <CODE>step</CODE> parameter) on either
+the <CODE>ACTIVATION</CODE> or the <CODE>NET_INPUT</CODE>, as was the case with the
+RBp implementation.  As was described there the <CODE>NET_INPUT</CODE> option
+allows units to settle faster.
+
+</P>
+<P>
+<A NAME="IDX1363"></A>
+The <B>BoltzUnitSpec</B> implements a binary activation function like that
+used Boltzmann machine and the network of <CITE>Hopfield, 1982</CITE>.  Here,
+the unit takes on a 0 or 1 value probabilistically as a sigmoidal
+function of the net input.  The gain of this sigmoid can also be
+represented by its inverse, which is known as temperature, by analogy
+with similar systems in statistical physics.  Thus, we have a
+<CODE>temp</CODE> parameter which is used to update the gain parameter. Noise
+is intrinsic to this function, and is not added in any other way.
+
+</P>
+<P>
+<A NAME="IDX1364"></A>
+<A NAME="IDX1365"></A>
+<A NAME="IDX1366"></A>
+<A NAME="IDX1367"></A>
+The <B>IACUnitSpec</B> implements the interactive activation and
+competition function.  This requires two new parameters, <CODE>rest</CODE> and
+<CODE>decay</CODE>.  If the net input to the unit is positive, the activation
+is increased by <CODE>net * (max - act)</CODE>, and if it is negative it is
+decreased by <CODE>net * (act - min)</CODE>.  In either case, the activation
+is also decayed towards the resting value by subtracting off a
+<CODE>decay * (act - rest)</CODE> term.  IAC also has the option of only
+sending activation to other units when it is over some threshold
+(<CODE>send_thresh</CODE>).  Doing this requires a different way of computing
+the net input to units, so it must be selected with the
+<CODE>use_send_thresh</CODE> flag, and by setting the <CODE>update_mode</CODE> in
+the <B>CsCycle</B> process to <CODE>SYNC_SENDER_BASED</CODE>.  Pressing
+<I>ReInit</I> or <I>NewInit</I> at any level of process including and above
+the <B>CsTrial</B> process will check for the consistency of these
+settings, and prompt to change them.
+
+</P>
+<P>
+The <B>LinearCsUnitSpec</B> computes activation as a simple linear function
+of the net input.
+
+</P>
+<P>
+<A NAME="IDX1368"></A>
+The <B>ThreshLinCsUnitSpec</B> computes activation as a threshold-linear
+function of the net input, where net input below threshold gives an
+activity of 0, and (net - threshold) above that.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_219.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_221.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,61 @@
+// this is a statistic that is used to measure how well the units
+// are picking up the four corners of the environment
+
+// this is the number of units
+int n_units = network->layers[1].units.size;
+
+// put this in the final_stats of the epoch process with a monitor stat 
+// create n_units StatVals in the stat, one for each unit in the output
+
+// this keeps getting re-initialized..
+// maybe we don't need to do this?  why does it have to do the array
+// at run-time?
+float_RArray* targs[4];		// target bit-patterns over time
+
+void InitTargs() {
+  static bool already_init;	// all bools are init to false
+
+//   if(already_init)	// need to init every time..
+//     return;
+
+  int i;
+  for(i=0; i<4; i++) {
+    targs[i] = new float_RArray;
+    int on_min = i * 5;
+    int on_max = on_min + 5;
+    int j;
+    for(j=0; j<20; j++) {
+      if((j >= on_min) && (j < on_max))
+	targs[i]->Add(1.0);
+      else
+	targs[i]->Add(0.0);
+    }
+//    targs[i].List();
+  }
+  already_init = true;
+}
+
+void ScriptRun() {
+  InitTargs();
+  
+  EpochProcess* epc = GetOwner(EpochProcess);
+  if(epc == NULL)
+    return;
+
+  PDPLog* logger = epc->sub_proc->logs[0];	// get the log of trial process
+
+  int i;
+  for(i=0; i<n_units; i++) {		// iterate over columns of data (units)
+    float_RArray* ar = *(logger->data.gp[0][i].ar);
+    float max_correl = 0.0;
+    int j;
+    for(j=0; j<4; j++) {
+      float correl = ar.Correl(targs[j]);
+      if(correl > max_correl)
+	max_correl = correl;
+    }
+    vals[i].val = max_correl;	// value of stat is just max correlation
+  }
+}
+	
+ScriptRun();

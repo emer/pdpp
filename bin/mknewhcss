@@ -1,0 +1,31 @@
+#!/bin/csh
+# make a new "hard of css" makefile
+
+set LOCAL = /usr/local
+set PDPDIR = $LOCAL/pdp++
+
+if( $?CPU == 0) then
+	echo " "
+   	echo "You must set the CPU environment variable to the type of machine"
+	echo "this is.  Use the 'setenv' command, and it is a good idea to"
+	echo "put it in your .cshrc so that it will be installed automatically"
+	echo "when you log in.  Supported types are: SUN4, HP800, SGI"
+	echo " "
+	exit 1
+endif
+
+if( !(-e $PDPDIR/config/Makefile.user) ) then
+	echo " "
+	echo "This installation script needs to be edited and the correct"
+	echo "path to the PDPDIR needs to be set.  I was not able to find"
+	echo "the files necessary to construct a new project directory."
+	echo " "
+	exit 1
+endif
+
+rm -f Makefile.bak
+mv Makefile Makefile.bak
+cat $PDPDIR/config/Makefile.defs $PDPDIR/config/Makefile.$CPU \
+	$PDPDIR/config/Makefile.hard_of_css >Makefile
+
+cp $PDPDIR/config/hard_of_css_vt.cc .

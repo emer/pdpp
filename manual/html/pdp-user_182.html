@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-variables</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_181.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_183.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1088" HREF="pdp-user_toc.html">13.1  PDPLog Variables</A></H2>
+
+<DL COMPACT>
+
+<DT><CODE>File log_file</CODE>
+<DD>
+<A NAME="IDX1089"></A>
+File to use for saving the log. This field is set by using the File
+Requester (see section <A HREF="pdp-user_62.html">6.19  File Requester</A>), or by using the
+log function <CODE>SetSaveFile()</CODE>. This field can be set to <CODE>NULL</CODE> in which
+case there is no file i/o.
+<DT><CODE>int log_lines</CODE>
+<DD>
+<A NAME="IDX1090"></A>
+The number of lines recorded so far in the log. This number is
+incremented each time the log receives a new line of input.
+<DT><CODE>DataTable data</CODE>
+<DD>
+<A NAME="IDX1091"></A>
+Holds and provides organization for the information sent to the log.
+<DT><CODE>int data_bufsz</CODE>
+<DD>
+<A NAME="IDX1092"></A>
+The size in lines of the log buffer. If the log overflows the buffer
+size, information is dropped from the beginning of the Log and the buffer
+is "scrolled" by <CODE>data_shift</CODE> to make room for the new data.
+<DT><CODE>float data_shift</CODE>
+<DD>
+<A NAME="IDX1093"></A>
+The percentage of the buffer to shift upon overflow.
+<DT><CODE>MinMax data_range</CODE>
+<DD>
+<A NAME="IDX1094"></A>
+A structure containing the minimum and maximum line values of the log
+s buffer's view of the data in the <CODE>log_file</CODE>.
+<DT><CODE>Process_Group log_proc</CODE>
+<DD>
+<A NAME="IDX1095"></A>
+A link group of processes which log information to this log.  Usually,
+there is just one process that sends data to the log.  The menu
+functions AddUpdater/RemoveUpdater manipulate this information.
+<DT><CODE>String_Array display_labels</CODE>
+<DD>
+<A NAME="IDX1096"></A>
+Provides replacement labels for data columns.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_181.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_183.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

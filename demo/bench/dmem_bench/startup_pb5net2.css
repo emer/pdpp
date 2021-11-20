@@ -1,0 +1,68 @@
+// startup and run a project in the background, use like this:
+// nice +10 pdp++ -nogui -f startup.css <myproj> [ctr_max...] &
+// - nice +10 is optional but is nice to other users/processes.
+// - replace pdp++ with name of the specific pdp++ executable, e.g., bp++.
+// - <myproj> is the name of your project (with or without the .proj.gz).
+// - [ctr_max...] are other optional arguments as defined in the script
+//   below, which typically set counter maxima (like epoch.max, etc)
+//   for controlling how many epochs to train.
+// - & at the end puts the job in the background.
+
+// include standard functions (usually in /usr/local/pdp++/css/include)
+#include "startup_fctns_quiet.css"
+
+void Startup() {
+  if(!Start_ArgCheck(3, "[epoch] [batch]"))
+    return;
+
+  String stub_nm = Start_GetStub();
+  Start_LoadProj(stub_nm);
+
+  // group where processes are (could be sub group in .processes.gp)
+  Process_MGroup* gp = .processes;
+
+  // set counter maxima, only if you have these processes..
+  Start_CtrMax(gp, "NEpochProcess.epc_ctr", 3);	// argv[3]
+  // comment out or remove if no batch process
+  //  Start_CtrMax(gp, "BatchProcess.batch", 4);	// argv[4]
+
+  .networks[0].dmem_nprocs = 2; // two here
+  gp.EpochProcess.wt_update = EpochProcess::SMALL_BATCH; // use all possible!
+  gp.EpochProcess.dmem_nprocs = 5; // 5 here
+  .specs.LeabraUnitSpec.opt_thresh.updt_wts = false;
+  .networks[0].UpdateAfterEdit();
+  gp.EpochProcess.UpdateAfterEdit();
+
+  gp.SettleProcess.send_delta = true; // turn sdelta on!
+
+  Start_BuildNet();		// network is saved unbuilt -- this builds it
+
+  // change log file object name if not a graph log, etc
+  // Start_LogFile("Epoch_0_GraphLog", stub_nm, ".epc.log");
+  // Start_LogFile("Train_0_TextLog", stub_nm, ".bat.log");
+
+  gp[0].time_used.rec = true;
+  gp[0].ReInit();
+  .networks.DefaultEl()->InitWtState();	// not otherwise doing this!
+  gp[0].Run();
+  if(taMisc::dmem_proc == 0) {
+//     cerr << "\nTotal time: " << gp[0].time_used.GetString() << endl;
+    float n_units = .networks[0].layers[0].n_units;
+    float ncon_net = n_units * n_units * 5.0;
+    // on recurrent nets, its 5 projectsions; on ff bp++, its 3 + 2 backwards passes..
+    float ncon_tot = ncon_net * gp[0].epc_ctr.max * gp.EpochProcess.trial.max;
+    if(.processes.size > 3) {
+      ncon_tot *= .processes.SettleProcess.cycle.max * 2;
+    }
+    ncon_tot /= 1.0e6;		// mega-cons
+    float ticks_per = 1.0e2;
+    float mytime = (float)gp[0].time_used.tot / ticks_per;
+    float nconps = ncon_tot / mytime;
+    cerr << "procs, " << taMisc::dmem_nprocs
+	 << ", units, " << n_units << ", cons, " << ncon_net << ", MCons, "
+	 << ncon_tot << ", Mcon/sec, " << taMisc::FormatValue(nconps, 8, 4)
+	 << ", secs, " << mytime << endl;
+  }
+}
+
+Startup();

@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-logs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_26.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_28.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.7  Logging Training and Testing Data</A></H3>
+
+<P>
+Before we start to train our <B>Network</B>, and see if it can learn the
+XOR problem, we will need a couple of tools for visualizing the
+network's performance as it learns.  To allow for this, we have created
+two objects called <B>Log</B>s, one for recording the state of various
+network statistics and variables as they are computed during the
+training process, and one for recording the activations of the hidden
+and output units, when the network is tested with the learning process
+switched off.  The data recorded in these logs are displayed in the
+<B>GraphlogView</B> and the <B>GridLogView</B> respectively.  Double click on
+both of these to open them up.
+
+</P>
+<P>
+The <B>GraphLogView</B> is set to display the sum of the sum-squared-error
+measure (<CODE>sum_sum_se</CODE>), summing over all output units and all of
+the training patterns presented within each epoch.  The Epoch number
+will be the X axis and the summed squared error will be the Y axis.
+When we start to run the network this will be updated after every epoch
+as we shall see.
+
+</P>
+<P>
+The <B>GridLogView</B> is set to display detailed information about each
+pattern whenever a special test process is run.  During the test, each
+event in the environment is presented once, and the View displays the
+epoch number, the Event name, the sum_squared error over all output
+units (though in this case there is only one), and the activations of
+the hidden and output units that occur when the input pattern associated
+with this event is presented.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_26.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_28.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

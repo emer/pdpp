@@ -1,0 +1,24 @@
+define: layout
+$  Jets   $      Art           Phil          _Art          _Phil     cycle $  
+   Sharks        Al            Ike           _Al           _Ike      
+                 Sam           Nick          _Sam          _Nick     
+   in20s         Clyde         Don           _Clyde        _Don      
+   in30s         Mike          Ned           _Mike         _Ned      
+   in40s         Jim           Karl          _Jim          _Karl     
+                 Greg          Ken           _Greg         _Ken      
+   JH            John          Earl          _John         _Earl     
+   HS            Doug          Rick          _Doug         _Rick     
+   College       Lance         Ol            _Lance        _Ol       
+                 George        Neal          _George       _Neal     
+   Single        Pete          Dave          _Pete         _Dave     
+   Married       Fred                        _Fred     
+   Divorce       Gene                        _Gene     
+                 Ralph                       _Ralph    
+   Pusher    
+   Burglar   
+   Bookie    
+end
+cycleno	   variable	1	$ 	2 	cycleno    4	1
+extinput   look		2	$	0	extinput   2 100. 14 jets.loo
+activation look		1	$ 	1 	activation 3 100. 14 jets.loo
+

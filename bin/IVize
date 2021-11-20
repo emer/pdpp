@@ -1,0 +1,8 @@
+#!/bin/csh
+# script to change ta_Root to ta_Base
+
+foreach i ($*)
+	echo $i
+	sed -f "/usr/local/pdpdev/bin/IVize.sed" $i >tmp.xxx
+	mv tmp.xxx $i
+end

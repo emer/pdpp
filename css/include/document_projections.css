@@ -1,0 +1,23 @@
+
+void DescribePrjn() {
+  fstream strm;
+  strm.open("projection.description.txt", ios::out);
+
+  int i;
+  for(i=0; i<.layers.size; i++) {
+    Layer* lay = .layers[i];
+    strm << lay->name << "\n";
+    int j;
+    for(j=0; j<lay->projections.size; j++) {
+      Projection* prj = lay->projections[j];
+      strm << "\t" << j << "\t";
+      fprintf(strm,prj->spec.type);
+      strm << "\t" << prj->spec.spec->name
+	   << "\n\t\t" << prj->from->name
+	   << "\t" << prj->con_spec.spec->name << "\n";
+    }
+  }
+  strm.close();
+}
+
+DescribePrjn();

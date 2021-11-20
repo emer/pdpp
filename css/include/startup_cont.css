@@ -1,0 +1,26 @@
+// startup and continue a project that was stopped and saved before
+// it finished running
+
+// note that this does not open the log files, it assumes that the
+// project was saved with them already open, which means that they
+// will automatically be opened when loaded here
+
+// include standard functions (usually in /usr/local/pdp++/css/include)
+#include "startup_fctns.css"
+
+void Startup() {
+  if(!Start_ArgCheck(3, ""))
+    return;
+
+  String stub_nm = Start_GetStub();
+  Start_LoadProj(stub_nm, false); // false means don't set network name to stub_nm
+
+  Process_MGroup* gp = .processes;
+
+  cerr << "Continuing: " << stub_nm << ".proj.gz\n";
+  gp[0].Run();		// runs the first project..
+}
+
+Startup();
+
+

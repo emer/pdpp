@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_126.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_128.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX688" HREF="pdp-user_toc.html">10.5  Connections</A></H2>
+<P>
+<A NAME="IDX689"></A>
+<A NAME="IDX690"></A>
+<A NAME="IDX691"></A>
+<A NAME="IDX692"></A>
+<A NAME="IDX693"></A>
+
+</P>
+<P>
+The Connection class contains the weights which represent the strengths
+of the relationship between units.  Since there are typically many more
+connections than any other type of object in a simulation, these objects
+are treated specially to speed up processing speed and reduce their
+memory consumption.
+
+</P>
+<P>
+The main way in which connections are different than other objects, like
+Units, for example, is that they are usually operated on in a group.
+Thus, the <B>Con_Group</B> class becomes very important to determining how
+connections behave, which is not the case with a <B>Unit_Group</B>, for
+example.
+
+</P>
+<P>
+The <B>Con_Group</B>, and not each connection, contains a pointer to the
+<B>ConSpec</B> which governs the behavior of all of the connections in the
+group.  Also, <B>Con_Group</B>s can contain algorithm-specific parameters,
+and in general algorithms define their own type of <B>Con_Group</B>.  When
+connections are created by projections, a new <B>Con_Group</B> is created
+to hold all of the connections for each projection.
+
+</P>
+<P>
+<A NAME="IDX694"></A>
+The basic <B>Connection</B> class (which is often abbreviated <B>Con</B> when
+new types are defined based on it, e.g. <B>BpCon</B>) has only the weight
+value, <CODE>wt</CODE>.  Other algorithms will add other variables as needed.
+
+</P>
+<P>
+<A NAME="IDX695"></A>
+The basic <B>ConSpec</B> connection specification has parameters for
+determining how a connection's weights are to be initialized.  The
+<CODE>rnd</CODE> field, which is of type <B>Random</B> (see section <A HREF="pdp-user_101.html">8.5  Random Distributions</A>),
+allows for weights to be initialized with random values.  To get a
+specific weight value, use <CODE>UNIFORM</CODE> with a <CODE>mean</CODE> of the
+value you want and a <CODE>var</CODE> of zero.  The <CODE>NONE</CODE> type of
+randomization will simply not do anything to the weight value.  Note
+that this may be ignored if the <B>ProjectionSpec</B> which created the
+connections has its <CODE>init_wts</CODE> flag set (but most projection specs
+just use the ConSpec initialization anyway) (see section <A HREF="pdp-user_116.html">10.3  Projections</A>).
+
+</P>
+<P>
+<A NAME="IDX696"></A>
+<A NAME="IDX697"></A>
+<A NAME="IDX698"></A>
+<A NAME="IDX699"></A>
+<A NAME="IDX700"></A>
+
+</P>
+<P>
+Each ConSpec also has a WeightLimit object which controls how the
+weights are constrained. This object has <VAR>min</VAR> and <VAR>max</VAR> fields
+and a controling field called <VAR>type</VAR> which can have the following
+values: 
+<DL COMPACT>
+
+<DT><CODE>NONE</CODE>
+<DD>
+no weight limitations (default).
+<DT><CODE>GT_MIN</CODE>
+<DD>
+constrain weights to be greater than min value.
+<DT><CODE>LT_MAX</CODE>
+<DD>
+constrain weights to be less than max value.
+<DT><CODE>MIN_MAX</CODE>
+<DD>
+constrain weights to be within min and max values.
+</DL>
+
+<P>
+<A NAME="IDX701"></A>
+<A NAME="IDX702"></A>
+<A NAME="IDX703"></A>
+In addition the ConSpec has a boolean field called <VAR>sym</VAR> which
+if true, symmetrizes (sets to the same value) the initial weights
+across two different connections that reciprocally connect the same two
+units.
+
+</P>
+<P>
+The <B>ConSpec</B> is the place to look for parameters that determine how
+weights are updated, for example learning rate, etc.  These are all
+defined in algorithm-specific versions of the ConSpec.
+
+</P>
+<P>
+Note: the following information should be useful to those who wish to
+program in PDP++, but is not necessary for the average user to
+understand.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_128.html">1                 Implementational Details About Connections</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_126.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_128.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

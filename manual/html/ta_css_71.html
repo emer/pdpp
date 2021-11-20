@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-group-functions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_70.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_72.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX371" HREF="ta_css_toc.html">8.2.3  Group Functions</A></H3>
+
+<P>
+Groups have many functions for operating on the elements of the group.
+
+</P>
+<P>
+These functions return an element of the group. The element is an
+instance of the group's element type.
+<P>
+<DL COMPACT>
+
+<DT><CODE>El (int i)</CODE>
+<DD>
+<A NAME="IDX372"></A>
+Returns the element of the group at index <CODE>i</CODE>. If the index is
+out of range, an out of rangeerror is reported, and <CODE>NULL</CODE> is
+returned. 
+<DT><CODE>DefaultEl()</CODE>
+<DD>
+<A NAME="IDX373"></A>
+Returns the element indexed by the <CODE>default_el</CODE> variable of the
+group. 
+<DT><CODE>Leaf (int n)</CODE>
+<DD>
+<A NAME="IDX374"></A>
+Performs a depth first search to find the nth leaf of the
+group tree.
+<DT><CODE>FirstEl()</CODE>
+<DD>
+<A NAME="IDX375"></A>
+Utilizes sets the internal leaf index to zero and return
+the first leaf.
+<DT><CODE>NextEl();</CODE>
+<DD>
+<A NAME="IDX376"></A>
+Increments the internal leaf index and returns the leaf
+of that index.
+<DT><CODE>Pop()</CODE>
+<DD>
+<A NAME="IDX377"></A>
+Returns the last element of the group, and removes it from
+the group as well.
+<DT><CODE>Peek()</CODE>
+<DD>
+<A NAME="IDX378"></A>
+This function is similar to the <CODE>Pop()</CODE> function, but it does not
+remove the element.
+</DL>
+
+<P>
+These functions return an integer indicating the index of the element in
+the group. In all these functions if no match is found, a value of "-1"
+is returned.
+<P>
+<DL COMPACT>
+
+<DT><CODE>FindEl (inst el)</CODE>
+<DD>
+<A NAME="IDX379"></A>
+Returns the index of the element of the group which
+matches <CODE>el</CODE>.
+<DT><CODE>FindName (char* name)</CODE>
+<DD>
+<A NAME="IDX380"></A>
+Returns the index of the element which has a name field
+which matches <CODE>name</CODE>.
+<DT><CODE>Find (TypeDef t)</CODE>
+<DD>
+<A NAME="IDX381"></A>
+Returns the index of the first element of type <CODE>T</CODE>.
+<DT><CODE>FindLeaf (char* name)</CODE>
+<DD>
+<A NAME="IDX382"></A>
+Returns the leaf index of the leaf element which has a
+name field which matches <CODE>name</CODE>.
+<DT><CODE>FindLeafEl (inst el)</CODE>
+<DD>
+<A NAME="IDX383"></A>
+Returns the leaf index of the leaf element which matches
+<CODE>el</CODE>. 
+</DL>
+
+<P>
+These functions are used to add elements to the group.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>AddEl (inst el)</CODE>
+<DD>
+<A NAME="IDX384"></A>
+Adds element <CODE>el</CODE> to the group
+<DT><CODE>AddUniqueName (inst el)</CODE>
+<DD>
+<A NAME="IDX385"></A>
+Adds an element <CODE>el</CODE> to the group and adds an instance
+index to its name if another element in the group has the same name.
+<DT><CODE>Push (inst el)</CODE>
+<DD>
+<A NAME="IDX386"></A>
+Adds element <CODE>el</CODE> to the end of the group.
+<DT><CODE>PushUnique (inst el)</CODE>
+<DD>
+<A NAME="IDX387"></A>
+Adds element <CODE>el</CODE> to the end of group only if it is
+not in the group already.
+<DT><CODE>PushUniqueName (inst el)</CODE>
+<DD>
+<A NAME="IDX388"></A>
+Adds element <CODE>el</CODE> to the end of the group only if
+there are no other elements of the group with the same name.
+<DT><CODE>Insert (inst el, int i)</CODE>
+<DD>
+<A NAME="IDX389"></A>
+Inserts element <CODE>el</CODE> at position <CODE>i</CODE> in the group.
+If the position <CODE>i</CODE> is out of range, it is added to the beginning or
+end of the group accordingly.
+<DT><CODE>Replace (int i ,inst el)</CODE>
+<DD>
+<A NAME="IDX390"></A>
+Replaces the element at location <CODE>i</CODE> with the element
+<CODE>el</CODE>.
+<DT><CODE>ReplaceEl (inst rel, inst el)</CODE>
+<DD>
+<A NAME="IDX391"></A>
+Replaces the element <CODE>rel</CODE> of the group with element
+<CODE>el</CODE>. If no match is found, the element <CODE>el</CODE> is not inserted.
+<DT><CODE>ReplaceName (char* name, inst el)</CODE>
+<DD>
+<A NAME="IDX392"></A>
+Replaces the element with the name <CODE>name</CODE> with the
+element <CODE>el</CODE>. If no match is found, the element <CODE>el</CODE> is not
+inserted.
+<DT><CODE>Transfer (inst el)</CODE>
+<DD>
+<A NAME="IDX393"></A>
+Removes <CODE>el</CODE> from the group or owner it is currently
+in and adds it to this group.
+<DT><CODE>Link (inst el)</CODE>
+<DD>
+<A NAME="IDX394"></A>
+Adds a link to the object <CODE>el</CODE> to this group.
+There are also corresponding functions (InsertLink, ReplaceLink, etc)
+which perform as the do the Add functions except they link instead of
+add (see section <A HREF="ta_css_68.html">8.2  Groups</A>).
+<DT><CODE>New (int i, typedef t)</CODE>
+<DD>
+<A NAME="IDX395"></A>
+Creates <CODE>i</CODE> new objects of type <CODE>t</CODE> in the group.
+</DL>
+
+<P>
+These functions are used for removing elements from the group.
+<P>
+<DL COMPACT>
+
+<DT><CODE>Remove (int i)</CODE>
+<DD>
+<A NAME="IDX396"></A>
+Removes the element at position i. If the element is owned
+by the group it deletes the element. If the element is a linked element,
+it deletes the link.
+<DT><CODE>Move (int from, int to)</CODE>
+<DD>
+<A NAME="IDX397"></A>
+Removes an element from position <CODE>from</CODE> and inserts at position <CODE>to</CODE>.
+<DT><CODE>RemoveName (char* name)</CODE>
+<DD>
+<A NAME="IDX398"></A>
+Removes the element with a name matching <CODE>name</CODE>.
+<DT><CODE>RemoveLeafName (char* name)</CODE>
+<DD>
+<A NAME="IDX399"></A>
+Removes the leaf with a name matching <CODE>name</CODE>.
+<DT><CODE>RemoveAll()</CODE>
+<DD>
+<A NAME="IDX400"></A>
+Removes all the elements of the group.
+</DL>
+
+<P>
+These functions return a subgroup of the group.
+<P>
+<DL COMPACT>
+
+<DT><CODE>Gp (int i)</CODE>
+<DD>
+<A NAME="IDX401"></A>
+Returns the subgroup at index(i)
+<DT><CODE>LeafGp (int n)</CODE>
+<DD>
+<A NAME="IDX402"></A>
+Returns the nth subgroup which contains leaves.
+<DT><CODE>FirstGp()</CODE>
+<DD>
+<A NAME="IDX403"></A>
+Sets the group index to zero and returns the first
+subgroup with leaf elements.
+<DT><CODE>NextGp()</CODE>
+<DD>
+<A NAME="IDX404"></A>
+Increments the group index and return the corresponding
+subgroup with leaf elements.
+</DL>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_70.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_72.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

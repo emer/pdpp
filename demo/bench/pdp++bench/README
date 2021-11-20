@@ -1,0 +1,51 @@
+pdp++bench README
+
+This benchmark runs backpropagation using the exact same code as the
+pdp++ software.  Three sizes of fully interconnected, three-layered
+networks are used: 500x500x500 (lg), 100x100x100 (med), and 10x10x10
+(small).
+
+The files pdp++bench.CPU are 'csh' scripts for compiling and running
+the benchmark for the given CPU type (see below)
+
+pdp++bench.h and pdp++bench.cc are the source code.
+
+In order to run this benchmark on a new machine, start with a script
+for a related machine:
+
+	HP800 = HP 735, both native C++, cfront (+T), g++.
+
+	IBMaix = IBM AIX v.4.1.4, xlC, g++.
+
+	LINUX = linux, g++.
+
+	SGI = SGI Irix 5.3, OCC, NCC, g++.
+
+	SUN4 = Sun 4, sunos 4.1.3, g++.
+
+	DEC = Dec alpha/True 64
+
+Then, set the compiler variable 'CC' to whatever you think will be the
+optimal C++ compiler and optimization flags.  Please try several
+different flags, if possible, so that we can be relatively sure the
+results are as good as they get.
+
+To run, just type ./pdp++bench.CPU, which will compile and run the
+benchmark, and report the results, which should look something like:
+
+g++ -O2
+weights: 500000         pats: 100       con_trav: 1.5e+08
+secs:   Mcon/sec:
+40.65   3.69004
+weights: 20000  pats: 2500      con_trav: 1.5e+08
+secs:   Mcon/sec:
+37.1    4.04313
+weights: 200    pats: 250000    con_trav: 1.5e+08
+secs:   Mcon/sec:
+45.07   3.32816
+
+(which are lg, med, and small results, sequentially)
+
+See CURRENT_RESULTS file for a listing of current results for various
+machine types.
+

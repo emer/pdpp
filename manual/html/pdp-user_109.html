@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proj-objdef</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_108.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_110.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX522" HREF="pdp-user_toc.html">9.5.2  Project Object Defaults (TypeDefaults)</A></H3>
+<P>
+<A NAME="IDX523"></A>
+<A NAME="IDX524"></A>
+
+</P>
+<P>
+The <CODE>.defaults</CODE> group on the Project object contains a number of
+objects called <B>TypeDefault</B>s.  These objects can represent the
+default values of fields within a whole range of possible objects that
+could be created in the project.  These defaults are used to make sure
+that the appropriate types of objects are created for particular
+algorithms.  This is done through the use of default files, which are
+saved groups of TypeDefault objects.
+
+</P>
+<P>
+<A NAME="IDX525"></A>
+<A NAME="IDX526"></A>
+There are a number of different default files saved in the
+<TT>`defaults'</TT> directory, one of which is automatically loaded into the
+<CODE>.defaults</CODE> group of the project when it is created.  Which one is
+used is based on the name of the PDP++ executable (i.e., bp.def for
+bp++).  When PDP++ starts, it checks the name of the executable, and
+puts the appropriate defaults file name in the <CODE>default_file</CODE>
+field of the PDPRoot object.  Changing this field will change the
+default file that will be used when a new project is created.
+
+</P>
+<P>
+The user can create their own defaults files, to have things
+come up just the way they like them.  It is recommended that you start
+with the basic defaults appropriate to a given algorithm that you will
+be using.  Simply edit an existing or create a new <B>TypeDefault</B>
+object in the <CODE>.defaults</CODE> group of a project that has the right
+initial defaults in it.  There is one <B>TypeDefault</B> object for each
+different type or class of object whose default values are being set.
+Derived classes (see section <A HREF="pdp-user_88.html">8.1.1  What is an Object?</A>) automatically inherit default
+values set on parent classes.
+
+</P>
+<P>
+The TypeDefault object has the following members:
+
+</P>
+<P>
+<A NAME="IDX527"></A>
+<A NAME="IDX528"></A>
+<DL COMPACT>
+
+<DT><CODE>TypeDef* default_type</CODE>
+<DD>
+<A NAME="IDX529"></A>
+This is where you pick the type of object you want to set the default
+values of.  Note that many types are descended from <B>taNBase</B>, so look
+in its submenu.  Be sure to press <I>Apply</I> after selecting a type, so
+that the object knows what type of <CODE>token</CODE> to make.
+
+<DT><CODE>TAPtr token</CODE>
+<DD>
+<A NAME="IDX530"></A>
+This field contains a token of the type selected in <CODE>default_type</CODE>
+(remember to hit <I>Apply</I> first before editing this!).  Default values
+are set by simply editing this object and setting the values of the
+fields as you want them to be by default.  Only those fields that have a
+check in the leftmost checkbox next to the field will have default
+values saved.  Thus, make sure that box is checked when you make changes
+to the fields.  Then, <I>Ok</I> the dialog, and be sure to hit <I>Apply</I> on
+the <B>TypeDefault</B> object itself.  This causes the specific changes you
+specified to be registered in the <CODE>active_membs</CODE> group, which only
+records the values of those members that were checked.
+
+<DT><CODE>taBase_Group active_membs</CODE>
+<DD>
+<A NAME="IDX531"></A>
+The type default values are actually saved as name-value pairs (using
+the <B>NameValue</B> object), where the name is the name of the member, and
+the value is a string representation of its value.  This is a group of
+such name-value pairs for the checked fields.  While you can enter
+things directly in here, it is recommended that you use the
+<CODE>token</CODE> to do it instead.
+
+</DL>
+
+<P>
+When you have created a set of defaults, save them using the <I>Save
+As/All</I> menu item in the <CODE>.defaults</CODE> group.  If you have the
+appropriate permissions, it is easier to put the defaults file in the
+global <TT>`/usr/local/pdp++/defaults'</TT> directory.  However, it is
+cleaner to keep your defaults in your own directory.  Since your home
+directory is searched automatically for default files, you could put the
+default files there.  A better solution is to create a special
+directory to hold your defaults, and add this directory to your
+<CODE>include_path</CODE> in your <TT>`.pdpinitrc'</TT> file
+(see section <A HREF="pdp-user_108.html">9.5.1  Settings and the .pdpinitrc and .cssinitrc Files</A>). 
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_108.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_110.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

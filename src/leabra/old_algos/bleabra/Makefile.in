@@ -1,0 +1,46 @@
+# bleabra makefile for pdp++
+
+##################################
+# these are the things to set
+#
+
+# this directory should be optimized for speed, so if shared libs slow it
+# down, don't use them here
+CXX = $(SIM_NONSHARED_CXX)
+AR_CMD = $(SIM_NONSHARED_AR_CMD)
+LIB_EXT = $(SIM_NONSHARED_LIB_EXT)
+
+LIBS = -lpdp -ltamisc -livgraphic -lcss -ltypea -livmisc -lreadline -ltermcap\
+	 -ltastring $(IV_LIB) -lX11 $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+PROJNAME = bleabra
+
+MAKETA_FLAGS = -hx -css -instances
+
+TAHEADS = $(VPATH)/biobel.h $(VPATH)/bleabra.h
+HEADS = biobel.h bleabra.h $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS = 	biobel.cc bleabra.cc $(PROJNAME)_TA.cc main.cc
+
+OBJS =  biobel.o bleabra.o $(PROJNAME)_TA.o
+
+EXEOBJS = $(OBJS) main.o
+
+DEPS = 	biobel.d bleabra.d $(PROJNAME)_TA.d main.d
+
+# include pdp in library name 
+LIB = libpdp_$(PROJNAME).$(LIB_EXT)
+
+#default: dbgBin
+default: optBin
+
+# for a long-standing (long-running) executable
+longBin:
+	@if [ -d $(CPU) ]; then ( $(CD) $(CPU);\
+	$(MAKE) longBin_impl)\
+	else $(MAKE) longBin_impl; fi
+
+longBin_impl:
+	@echo "Making long-standing Binary: " $(EXE).long " of bin: " $(EXE)
+	- $(CP) $(EXE) $(EXE).long
+

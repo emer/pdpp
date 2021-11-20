@@ -1,0 +1,12 @@
+// finds a file name in the directory that contains given target file name
+// returns "" if not found
+
+String FindDirName(String trg_fnm, String extn) {
+  String_Array& dir = Dir();
+  int i;
+  for(i=0; i<dir.size; i++) {
+    if(dir[i].contains(trg_fnm) && dir[i].contains(extn))
+      return dir[i];
+  }
+  return "";
+}

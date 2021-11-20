@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_209.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_211.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1285" HREF="pdp-user_toc.html">14.2.3  RBp Unit Specifications</A></H3>
+<P>
+<A NAME="IDX1286"></A>
+
+</P>
+<P>
+The unit-level specifications contain most of the RBp-specific
+parameters, although some important ones are also present in the
+<B>RBpTrial</B> process.  Note that the <CODE>dt</CODE> parameter should be the
+same for all unit specs used in a given network.  Also, this parameter
+is copied automatically to the <B>RBpTrial</B> process, which also needs to
+know the value of this parameter.  Thus, the unit spec is the place to
+change <CODE>dt</CODE>, not the trial process.
+
+</P>
+<P>
+The unit object in RBp is essentially the same as the <B>BpUnit</B>, except
+for the addition of variables to hold the previous values of all the
+state variables, and special circular buffers to hold the entire record
+of activation state variables over the update trajectory.  These are
+described in greater detail in section <A HREF="pdp-user_216.html">14.2.9  RBp Implementation Details</A>.
+
+</P>
+<P>
+<A NAME="IDX1287"></A>
+<DL COMPACT>
+
+<DT><CODE>float dt</CODE>
+<DD>
+<A NAME="IDX1288"></A>
+Controls the time-grain of activation settling and error
+backpropagation as described above.  In <CODE>ACTIVATION</CODE> mode, the
+activations are updated towards the raw activation value computed as a
+sigmoid function of the current net input by an amount proportional to
+<CODE>dt</CODE>:
+<PRE>    u-&#62;da = dt * (u-&#62;act_raw - u-&#62;prv_act);
+    u-&#62;act = u-&#62;prv_act + u-&#62;da;
+</PRE>
+
+Similarly, in <CODE>NET_INPUT</CODE> mode, the net-inputs are moved towards
+the current raw net input proportional to the size of <CODE>dt</CODE>:
+<PRE>    u-&#62;da = dt * (u-&#62;net - u-&#62;prv_net);
+    u-&#62;net = u-&#62;prv_net + u-&#62;da;
+</PRE>
+
+<DT><CODE>TimeAvgType time_avg</CODE>
+<DD>
+<A NAME="IDX1289"></A>
+Controls the type of time-averaging to be performed.
+<CODE>ACTIVATION</CODE> based time-averaging, as shown above, adapts the
+current activations towards the raw activation based on the current net
+input, while <CODE>NET_INPUT</CODE> based time-averaging, also shown above,
+adapts the net input towards the current raw value.  The latter is
+generally preferred since it allows networks with large weights to update
+activations quickly compared to activation-based updates, which have a
+strict ceiling on the update rate since the maximum activation value is
+1, while the maximum net input value is unbounded.
+<DT><CODE>bool soft_clamp</CODE>
+<DD>
+<A NAME="IDX1290"></A>
+Soft clamping refers to the application of an environmental input to the
+network as simply an additional term in the unit's net input, as opposed
+to a hard-clamped pre-determined activation value.  Soft clamping allows
+input units to behave a little more like hidden units, in that raw
+inputs are only one source of influence on their activation values.
+<DT><CODE>float soft_clamp_gain</CODE>
+<DD>
+<A NAME="IDX1291"></A>
+A strength multiplier that can be used to set the level of
+influence that the inputs have in soft-clamp mode.  This allows the user
+to use the same environments for hard and soft clamping, while still
+giving the soft-clamp values stronger influence on the net input than
+would be the case if only 0-1 values were being contributed by the
+external input.
+<DT><CODE>bool teacher_force</CODE>
+<DD>
+<A NAME="IDX1292"></A>
+A modification of the RBp algorithm where the activation values are
+"forced" to be as given by the teaching (target) values.  Given that the
+error is backpropagated over a long series of time steps, this can help
+error on previous time steps be computed as if the later time steps were
+actually correct, which might help in the bootstrapping of
+representations that will be appropriate when the network actually is
+performing correctly.
+<DT><CODE>bool store_states</CODE>
+<DD>
+<A NAME="IDX1293"></A>
+This flag determines if activity states are stored over time for use in
+performing a backpropagation through them later.  This usually must be
+true, except in the Almeida-Pineda algorithm, or when just testing the
+network.
+<DT><CODE>Random initial_act</CODE>
+<DD>
+<A NAME="IDX1294"></A>
+Sets the parameters for the initialization of activation states at
+the beginning of a sequence.  This state forms the 0th element of the
+sequence of activations.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_209.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_211.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

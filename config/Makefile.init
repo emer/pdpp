@@ -1,0 +1,15 @@
+##########################################################
+# simple initial makefile that makes the actual makefile
+# by concatenating various ones together..
+#
+# this is used by the top-level Makefile (in the installed pdp++ home dir)
+# to create initial makefiles.  all of the definitions are inherited from
+# config/Makefile.defs, etc, and are thus not defined in this file.
+
+NewMakefile:
+	-@ $(CP) Makefile Makefile.bak;\
+	$(CAT) $(PDPDIR)/config/Makefile.defs \
+	$(PDPDIR)/config/Makefile.$(CPU) \
+	$(TOP)/Makefile.user Makefile.in \
+	$(PDPDIR)/config/Makefile.std >Makefile
+

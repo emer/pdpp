@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-stru</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_6.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_8.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX2" HREF="pdp-user_toc.html">3.2  Overview of the Main Object Types</A></H2>
+<P>
+<A NAME="IDX3"></A>
+<A NAME="IDX4"></A>
+<A NAME="IDX5"></A>
+<A NAME="IDX6"></A>
+<A NAME="IDX7"></A>
+
+</P>
+<P>
+This section describes the main ways in which the many tasks involved in
+neural network simulation have been divided up and assigned to different
+types of objects.  It is essential to understand this division of labor
+in order to use the software effectively.
+
+</P>
+<P>
+There are four central components to a neural network simulation as we
+see it:
+
+<IL>
+<LI>The <B>Network</B>, including layers, units, connections, etc.
+
+(see section <A HREF="pdp-user_112.html">10  Networks (Layers, Units, etc)</A>).
+<LI>The <B>Environment</B> on which the network is to be trained and
+
+tested (see section <A HREF="pdp-user_135.html">11  Environments, Events, and Patterns</A>).
+<LI>The <B>Processing</B> or <B>Scheduling</B> of training and testing a
+
+network, which determines how long to train the network, with what
+environment, etc. (see section <A HREF="pdp-user_148.html">12  Processes and Statistics</A>).
+<LI>The <B>Logging</B> of the results of training and testing.  One
+
+can view these results as a graph, a table of numbers, or a grid of
+color chips that represent values in a graphical similar to that used in
+the viewing of networks (see section <A HREF="pdp-user_181.html">13  Logs and Graphs</A>).
+</IL>
+
+<P>
+Since all of these components work together in a given simulation, we
+have grouped them all under a <B>Project</B> object (see section <A HREF="pdp-user_102.html">9  Projects (and Defaults, Scripts)</A>), which
+also has some additional objects (defaults and scripts) that make life
+easier.  Thus, when you start a simulation, the first thing you do is
+create a new project, and then start creating networks, environments,
+etc. within this project.
+
+</P>
+<P>
+<B>New for 2.0:</B> There is now a graphical interface for the
+project-level organization of objects, which can really help make
+complex projects more managable, especially for dealing with the
+processing aspects of things.  Just enlarge your project window on
+existing projects to see the new view.
+
+</P>
+<P>
+<B>New for 3.0:</B> The complexity of dealing with distributed objects is
+partially simplified through the introduction of a <B>Wizard</B> object
+that automates the contstruction of typically-used network simulation
+objects.  See section <A HREF="pdp-user_45.html">5.5  The Wizard Object</A> for details.  Also new are principal
+components analysis (PCA) and multidimensional scaling (MDS)
+techniques for analyzing network representations
+(see section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>), and much imporoved graph log features for
+displaying overlapping traces of data, including a spike raster plot.
+In addition, distributed memory parallel processing support, both for
+connection-level and event-level parallelism, was added.
+
+</P>
+<P>
+<A NAME="IDX8"></A>
+<A NAME="IDX9"></A>
+<A NAME="IDX10"></A>
+
+</P>
+<P>
+Of the different simulation components, Processing (aka Scheduling) is
+probably the least intuitive.  Indeed, we might have decided instead
+that networks knew how to train themselves, or that environments would
+know how to train networks.  The main reasons we chose to make
+Processing a separate major category of function in the software are: 1)
+The ways in which one trains and tests a network are common to different
+types of networks and learning algorithms. 2) Many different kinds of
+training and testing processing can be performed on the same network and
+environment.  3) Processing depends in part on the nature of the network
+and the nature of the environment, so that putting this task in either
+of these separately would lead to strange dependencies of networks on
+environments or vice versa.
+
+</P>
+<P>
+Thus, one can think of the processing function as being similar to that
+of a movie director, who coordinates the actors and the camera
+operators, set designers, etc. to produce a finished product.
+Similarly, the processing coordinates the network with the environment
+and other elements to direct the overall process of training and
+testing.  For more information on how processing is implemented in the
+software see section <A HREF="pdp-user_150.html">12.2  The Schedule Process (SchedProcess)</A>.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_8.html">1               The Objects in Networks</A>
+<LI><A HREF="pdp-user_9.html">2               The Objects in Environments</A>
+<LI><A HREF="pdp-user_10.html">3              The Objects Involved in Scheduling</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_6.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_8.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

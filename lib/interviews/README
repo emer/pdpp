@@ -1,0 +1,8 @@
+Interviews for PDP++ has improved significantly for the 2.0 release.
+
+See ANNOUNCE.IV_PATCHES for details.
+
+Makefile.IV_CYGWIN is the makefile for src/lib/IV/CYGWIN for compiling
+under CYGWIN (which happens the old way still).  It should be found in
+this directory when the iv-pdp-r2.0.tar.gz file is installed.
+

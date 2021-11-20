@@ -1,0 +1,29 @@
+# moe makefile for pdp++
+
+##########################################
+# these are the things to set for the user
+#
+
+LIBS = -lpdp_bp -lpdp -ltamisc -livgraphic -lcss -ltypea -livmisc -lreadline -ltermcap\
+	 -ltastring $(IV_LIB) -lX11 $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+PROJNAME = moe
+
+MAKETA_FLAGS = -hx -css -instances
+
+TAHEADS = $(VPATH)/moe.h
+HEADS = moe.h $(PROJNAME)_TA_type.h $(PROJNAME)_TA_inst.h
+
+SRCS = 	moe.cc $(PROJNAME)_TA.cc main.cc
+
+OBJS =  moe.o $(PROJNAME)_TA.o
+EXEOBJS = $(OBJS) main.o
+
+DEPS = 	moe.d $(PROJNAME)_TA.d main.d
+
+# make a library with pdp in the name first
+LIB = libpdp_$(PROJNAME).$(LIB_EXT)
+
+#default: Bin
+default: optBin
+

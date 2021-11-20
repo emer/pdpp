@@ -1,0 +1,39 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - g++ (ELF)
+####################################################
+
+# this is for distributed memory (DMEM = MPI)
+# must be static to run easily across systems
+
+# always emulate basic linux
+DEFINES = -DLINUX -DDMEM_COMPILE
+
+# special includes, etc for DMEM
+#IDIRS_EXTRA = 
+LDIRS_EXTRA = -static -L/usr/X11R6/lib/ 
+
+# note that this includes gm, which is for myrinet networking -- don't include if not using
+# gm also requires -lpthread
+GENERIC_LIB = -lmpich -ldl -lgm -lpthread -lm
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /lib/cpp -D__i386__ 
+
+# *NOT* using shared libraries
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

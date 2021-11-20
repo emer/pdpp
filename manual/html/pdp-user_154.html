@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-levels-batch</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_153.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_155.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX926" HREF="pdp-user_toc.html">12.4.1  Iterating over Networks: BatchProcess</A></H3>
+<P>
+<A NAME="IDX927"></A>
+<A NAME="IDX928"></A>
+<A NAME="IDX929"></A>
+
+</P>
+<P>
+<A NAME="IDX930"></A>
+The <B>BatchProcess</B> iterates over the training of networks.  This is
+useful in determining the average learning time for a given problem with
+different random initial weights, for example.  The batch process has a
+<CODE>batch</CODE> counter object, which records the number of networks that
+have been trained so far.  The appropriate sub-process type for a batch
+process is a <B>TrainProcess</B>, though it is possible to have multiple
+batch processes before the train process, in order to have multiple
+loops of network training (presumably with some parameter manipulation
+in between).
+
+</P>
+<P>
+<A NAME="IDX931"></A>
+There is a built-in batch process type that makes it easy to perform
+simple searches of parameter space called the <B>GridSearchBatch</B>.  This
+process increments a single parameter value in step with the batch
+counter, and applies this value to any parameter of the user's choosing.
+The parameter to be modified is specified by giving a CSS-style path to
+that parameter from the common project object (see section <A HREF="pdp-user_69.html">7.2.3  Accessing Hard-Coded Objects in CSS</A>
+for details).  An example project which uses this grid search batch is
+<TT>`demo/bp/gridsearch_xor.proj.gz'</TT>, which can be consulted to see how
+it works in practice.  It also records the current value of the
+parameter to the log file.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_153.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_155.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

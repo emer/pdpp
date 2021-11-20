@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-stru-proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_9.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_11.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX15" HREF="pdp-user_toc.html">3.2.3  The Objects Involved in Processing/Scheduling</A></H3>
+<P>
+<A NAME="IDX16"></A>
+<A NAME="IDX17"></A>
+<A NAME="IDX18"></A>
+<A NAME="IDX19"></A>
+
+</P>
+<P>
+In order to make the scheduling aspect of the software reasonably
+flexible, it has itself been decomposed into a set of different object
+types.  Each of these object types plays a specific role within the
+overall task of scheduling the training and testing of a network.
+
+</P>
+<P>
+The backbone of the scheduling function is made up of a structure
+hierarchy of objects of the type <CODE>SchedProcess</CODE>
+(see section <A HREF="pdp-user_150.html">12.2  The Schedule Process (SchedProcess)</A>), which reflects the hierarchy of the different time
+grains of processing in a neural network:
+
+</P>
+<PRE>Training (loop over epochs)
+    Epoch (loop over trials)
+        Trial (present a single pattern)
+        .
+        .
+    .
+    .
+</PRE>
+
+<P>
+Thus, there is one object for every grain of processing, and each
+process essentially just loops over the next-finer grain of processing
+in the hierarchy.  Because each grain of processing is controlled by a
+separate process, it is possible to alter both the parameters and type
+of processing that takes place at each grain <EM>independently</EM>.  This
+is why this design results in great flexibility.
+
+</P>
+<P>
+Since this time grain structure forms the backbone of scheduling, all
+other aspects of scheduling, and anything that depends on time grain
+information in any way, are oriented around it.  For example, setting
+the training criteria becomes embedded in the Training level of
+processing.  The updating of displays is associated with a particular
+time grain of processing (e.g., telling the system that you want to see
+the activations updated in your view of a network after every trial
+means associating the view with the Trial grain of processing).
+Similarly, the generation of information to be logged, and the update of
+the display of this information, is tied to a particular time grain.
+
+</P>
+<P>
+The other principal type of object used for scheduling is the
+<EM>statistic</EM> (of type <CODE>Stat</CODE>, see section <A HREF="pdp-user_167.html">12.7  The Statistic Process</A>), which is
+responsible for computing (or simply recording) data of any kind that is
+either relevant for controlling scheduling (e.g., stopping criteria), or
+is to be displayed in a log at a particular time grain.  Thus,
+statistics are the source of any data that is to be logged, and provide
+a general way of specifying when to stop processing based on the values
+of computed variables (i.e., sum-squared error).  Again, because these
+statistic objects can be mixed and matched with all sorts of different
+schedule processes, this creates a high level of flexibility.
+
+</P>
+<P>
+Because they are intimately tied to the time grain of processing, and
+can directly affect its course, statistics actually "live" on schedule
+processes.  Thus, whenever a statistic is created, it is created in a
+particular process that governs a given time grain of processing.
+Furthermore, statistics can create copies of themselves that reflect
+their <EM>aggregation</EM> over higher levels of processing.  For example,
+the sum-squared error statistic (see section <A HREF="pdp-user_172.html">12.8.1  Summed-Error Statistics</A>) is created at
+the Trial level of processing, where it can actually compute the
+difference between the output and target for a given pattern right after
+it has been presented.  However, in order for these individual
+pattern-level sse values to be accumulated or aggregated over time,
+there is another sse statistic at the Epoch level of processing whose
+only job is to add up the Trial level sse values.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_9.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_11.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

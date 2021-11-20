@@ -1,0 +1,25 @@
+This is TeX, C Version 3.14t3 (format=latex 95.1.27)  9 MAY 1995 16:08
+**pdp-user.html_sub_1.ps
+(/usr/local/lib/tex/inputs/.tex
+! Interruption.
+l.1 
+    %%
+? q
+OK, entering \batchmode...
+LaTeX2e <1994/12/01> patch level 1
+ File ignored)
+! Emergency stop.
+<*> pdp-user.html_sub_1.ps
+                          
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 5 strings out of 3454
+ 56 string characters out of 49600
+ 42885 words of memory out of 262141
+ 2936 multiletter control sequences out of 9500
+ 3640 words of font info for 14 fonts, out of 72000 for 255
+ 14 hyphenation exceptions out of 607
+ 4i,0n,1p,76b,7s stack positions out of 300i,40n,60p,3000b,4000s
+No pages of output.

@@ -1,0 +1,268 @@
+
+void kwta_sort(int n, int k, float* trg, float* src, float* rest) {
+  int l,j,ir,i;
+  float rra;
+
+  for(i=0;i<k;i++)		// init to top k
+    trg[i] = src[i];
+
+  for(;i<n;i++)			// rest of the items
+    rest[i-k] = src[i];
+
+  // first heap the top k, using upside-down heap so [0] = *smallest*
+  l = (k >> 1)+1;
+  while(l>1) {
+    rra = trg[--l -1];
+    i=l;
+    j=l << 1;
+    while(j<= k) {
+      if(j<k) {
+	if(trg[j-1] > trg[j]) {
+	  j++;
+	}
+      }
+      if(rra > trg[j-1]) {
+	trg[i-1] = trg[j-1];
+	j += (i=j);
+      }
+      else j=k+1;
+    }
+    trg[i-1] = rra;
+  }
+
+  // then add in new ones
+  int nw;
+  for(nw = 0; nw < n-k; nw++) {
+    rra = rest[nw];
+    if(rra < trg[0]) continue; // skip anything smaller than current smallest!
+    i=1;
+    j=2;
+    while(j<= k) {
+      if(j<k) {
+	if(trg[j-1] > trg[j]) {
+	  j++;
+	}
+      }
+      if(rra > trg[j-1]) {
+	if(rest[nw] == rra)
+	  rest[nw] = trg[i-1];	// save the one you overwrite
+	trg[i-1] = trg[j-1];
+	j += (i=j);
+      }
+      else j=k+1;
+    }
+    if(rest[nw] == rra)		// save if not already saved
+      rest[nw] = trg[i-1];
+    trg[i-1] = rra;
+  }
+}
+
+
+void sort_n1(int n, float* ra) {
+  fstream strm;
+  strm.open("out_n1", ios::out);
+
+  int l,j,ir,i;
+  float rra;
+
+  l = (n >> 1)+1;
+  ir = n;
+  strm << "start l = " << l << ", n = " << n << "\n";
+  while(true) {
+    if(l>1) {
+      rra = ra[--l -1];
+      strm << "hiring " << rra << " from " << l << "\n";
+      i=l;
+      j=l << 1;
+      strm << "i = " << i << " j = " << j << "\n";
+      while(j<= ir) {
+	strm << "cur j = " << j << "\n";
+	if(j<ir) {
+	  if(ra[j-1] < ra[j]) {
+	    j++;
+	    strm << "second underling is better, j = " << j << "\n";
+	  }
+	}
+	if(rra < ra[j-1]) {
+	  strm << "rra " << rra << " worse than ra[j] " << ra[j-1] << " replace ra[i] " << ra[i-1] << "\n";
+	  ra[i-1] = ra[j-1];
+	  j += (i=j);
+	}
+	else j=ir+1;
+      }
+      strm << "put rra " << rra << " into ra[i] " << ra[i-1] << "\n";
+      ra[i-1] = rra;
+    }
+    else {
+      strm << "swapping ra[ir] " << ra[ir-1] << " with ra[1] " << ra[0] << "\n";
+      rra = ra[ir-1];
+      ra[ir-1] = ra[0];
+      if(--ir == 1) {
+	ra[0] = rra;
+	return;
+      }
+      i=1;
+      j=2;
+      strm << "i = " << i << " j = " << j << "\n";
+      while(j<= ir) {
+	strm << "cur j = " << j << "\n";
+	if(j<ir) {
+	  if(ra[j-1] < ra[j]) {
+	    j++;
+	    strm << "second underling is better, j = " << j << "\n";
+	  }
+	}
+	if(rra < ra[j-1]) {
+	  strm << "rra " << rra << " worse than ra[j] " << ra[j-1] << " replace ra[i] " << ra[i-1] << "\n";
+	  ra[i-1] = ra[j-1];
+	  j += (i=j);
+	}
+	else j=ir+1;
+      }
+      strm << "put rra " << rra << " into ra[i] " << ra[i-1] << "\n";
+      ra[i-1] = rra;
+    }
+  }
+  strm.close();
+}
+
+void sort_n0(int n, float* ra) {
+  int l,j,ir,i;
+  float rra;
+
+  fstream strm;
+  strm.open("out_n0", ios::out);
+
+  l = (n >> 1);
+  ir = n-1;
+  strm << "start l = " << l << ", n = " << n << "\n";
+  while(true) {
+    if(l>0) {
+      rra = ra[--l];
+      strm << "hiring " << rra << " from " << l << "\n";
+      i=l;
+      j=((l+1) << 1) -1;
+      if(j < 0) j = 0;
+      strm << "i = " << i << " j = " << j << "\n";
+      while(j<= ir) {
+	strm << "cur j = " << j << "\n";
+	if(j<ir) {
+	  if(ra[j] < ra[j+1]) {
+	    j++;
+	    strm << "second underling is better, j = " << j << "\n";
+	  }
+	}
+	if(rra < ra[j]) {
+	  strm << "rra " << rra << " worse than ra[j] " << ra[j] << " replace ra[i] " << ra[i] << "\n";
+	  ra[i] = ra[j];
+	  j += (i=j);
+	}
+	else j=ir+1;
+      }
+      strm << "put rra " << rra << " into ra[i] " << ra[i] << "\n";
+      ra[i] = rra;
+    }
+    else {
+      strm << "swapping ra[ir] " << ra[ir] << " with ra[1] " << ra[0] << "\n";
+      rra = ra[ir];
+      ra[ir] = ra[0];
+      if(--ir == 0) {
+	ra[0] = rra;
+	return;
+      }
+      i=0;
+      j=1;
+      strm << "i = " << i << " j = " << j << "\n";
+      while(j<= ir) {
+	strm << "cur j = " << j << "\n";
+	if(j<ir) {
+	  if(ra[j] < ra[j+1]) {
+	    j++;
+	    strm << "second underling is better, j = " << j << "\n";
+	  }
+	}
+	if(rra < ra[j]) {
+	  strm << "rra " << rra << " worse than ra[j] " << ra[j] << " replace ra[i] " << ra[i] << "\n";
+	  ra[i] = ra[j];
+	  j += (i=j);		// this is the trouble spot!
+	}
+	else j=ir+1;
+      }
+      strm << "put rra " << rra << " into ra[i] " << ra[i] << "\n";
+      ra[i] = rra;
+    }
+  }
+  strm.close();
+}
+
+void main() {
+  float vals[10];
+  float topk[10];
+  float rest[10];
+  int i;
+  
+  //  vals = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  //  vals = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  vals = {86, 76, 5, 96, 33, 8, 27, 7, 67, 81};
+
+//    for(i=0;i<10;i++) {
+//      vals[i] = Random::IntZeroN(100);
+//    }
+
+  for(i=0;i<10;i++) {
+    cout << vals[i] << "\t";
+  }
+  cout << "\n";
+
+//    sort_n0(10, vals);
+  //  sort_n1(10, vals);
+
+  kwta_sort(10, 5, topk, vals, rest);
+  sort_n1(10, vals);
+
+  for(i=0;i<5;i++) {
+    cout << topk[i] << "\t";
+  }
+  cout << "\n";
+
+  for(i=0;i<5;i++) {
+    cout << rest[i] << "\t";
+  }
+  cout << "\n";
+
+  for(i=0;i<10;i++) {
+    cout << vals[i] << "\t";
+  }
+  cout << "\n";
+
+  int right = 0;
+  int next_right = 0;
+  int rest_right = 0;
+  int rep;
+  for(rep=0;rep<100;rep++) {
+    for(i=0;i<10;i++)
+      vals[i] = Random::IntZeroN(100);
+    kwta_sort(10, 5, topk, vals,rest);
+    sort_n1(10, vals);
+    if(vals[5] == topk[0]) right++;
+    if((vals[6] == topk[1]) || (vals[6] == topk[2])) next_right++;
+    int x,y;
+    int fnd = 0;
+    for(x=0;x<5;x++) {		// find rest!
+      float val = vals[x];
+      for(y=0;y<5;y++) {
+	if(rest[y] == val) {
+	  fnd++;
+	  break;
+	}
+      }
+    }
+    if(fnd == 5)
+      rest_right++;
+  }
+  cout << right << "\n";
+  cout << next_right << "\n";
+  cout << rest_right << "\n";
+}
+
+main();

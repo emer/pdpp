@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_239.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_241.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1625" HREF="pdp-user_toc.html">17.5  Leabra Proceses</A></H2>
+<P>
+<A NAME="IDX1626"></A>
+<A NAME="IDX1627"></A>
+<A NAME="IDX1628"></A>
+<A NAME="IDX1629"></A>
+
+</P>
+<P>
+The core set of Leabra processes consist of a <B>LeabraTrial</B> process that
+performs the two phases of contrastive Hebbian learning (CHL), where
+each phase of settling is controlled by a <B>LeabraSettle</B> process, which in
+turn iterates over a number of individual <B>LeabraCycle</B> processing steps,
+each of which updates the activation state of the network.  These
+processes fit nicely within the standard settling and cycle processes
+(see section <A HREF="pdp-user_153.html">12.4  Schedule Processes for Different Time-Grains</A>).
+
+</P>
+<P>
+The <B>LeabraTrial</B> process iterates over two loops of settle processing,
+one for each phase.  It has the following variables:
+<DL COMPACT>
+
+<DT><CODE>Counter phase_order</CODE>
+<DD>
+<A NAME="IDX1630"></A>
+Different orders of phases can be presented, as indicated by the
+relatively self-explanatory options.  The <CODE>MINUS_PLUS_NOTHING</CODE>
+option allows the network to learn to reconstruct its input state by
+taking away any external inputs in an extra third phase, and using
+this as a minus phase relative to the immediately preceding plus
+phase.  The <CODE>MINUS_PLUS_PLUS</CODE> is used by more complex
+working-memory/context algorithms for an extra step of updating of
+context reps after the standard minus-plus learning phases.  Note that
+the <B>PhaseOrderEventSpec</B> can be used to set the phase order on a
+trial-by-trial basis.
+<DT><CODE>Counter phase_no</CODE>
+<DD>
+<A NAME="IDX1631"></A>
+The counter for this process, it goes from 0 to 1 for the two
+different phases (or 2 for more phases).
+<DT><CODE>Phase phase</CODE>
+<DD>
+<A NAME="IDX1632"></A>
+The phase the process is in, which is just a more readable
+version of the counter:  <CODE>MINUS_PHASE</CODE> and <CODE>PLUS_PHASE</CODE>.
+<DT><CODE>StateInit trial_init</CODE>
+<DD>
+<A NAME="IDX1633"></A>
+Indicates what to do at the start of each trial process.
+Typically, one wants to <CODE>DECAY_STATE</CODE>, but it is also possible to
+<CODE>INIT_NOTHING</CODE> or <CODE>DO_NOTHING</CODE>.  Decay state allows for
+working memory across trials, as needed by several modifications to
+Leabra.  The default decay parameters decay 100%, which makes it
+equivalent to INIT_STATE.
+<DT><CODE>bool no_plus_stats</CODE>
+<DD>
+<A NAME="IDX1634"></A>
+This flag means that statistics will not be recorded in the plus phase.
+This is useful because squared error, for example, is only meaningful in
+the minus phase, since the correct answer is clamped in the plus phase.
+<DT><CODE>bool no_plus_test</CODE>
+<DD>
+<A NAME="IDX1635"></A>
+This flag means that the plus phase will not be run if the epoch process
+indicates that it is in <CODE>TEST</CODE> mode (i.e., no learning is taking
+place).
+</DL>
+
+<P>
+<A NAME="IDX1636"></A>
+<A NAME="IDX1637"></A>
+<A NAME="IDX1638"></A>
+The <B>LeabraSettle</B> process iterates over cycles of settling
+(activation updating).  <CODE>min_cycles</CODE> ensures that at least this
+many cycles of processing occur.  It also contains several important
+variables that control how activations are computed during settling.
+<CODE>netin_mod</CODE> allows one to skip computing the net input every
+other cycle (or more), which can result in more efficient computation
+by allowing the membrane potentials to keep up better with netinput
+changes, but values higher than 2 are not recommended and have
+resulted in worse overall learning performance.  <CODE>send_delta</CODE>
+is <B>very important for large networks</B> -- it results in
+substantially faster processing by only sending netinput when the
+sending activation <EM>changes</EM>, instead of sending it all the
+time.  The amount of change that is required is specified in the unit
+spec <CODE>opt_thresh</CODE> params.
+
+</P>
+<P>
+<A NAME="IDX1639"></A>
+The settle process will use the <CODE>duration</CODE> field from a <B>DurEvent</B>
+to set the max number of cycles to settle on a given event.
+
+</P>
+<P>
+The <B>LeabraCycle</B> process updates the activation state of the
+network.  It has no user-settable parameters.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_239.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_241.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

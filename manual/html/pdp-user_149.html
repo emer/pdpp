@@ -1,0 +1,127 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-base</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_148.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_150.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX885" HREF="pdp-user_toc.html">12.1  The Basic Features of all Processes</A></H2>
+<P>
+<A NAME="IDX886"></A>
+<A NAME="IDX887"></A>
+
+</P>
+<P>
+The base Process class provides the following variables for controlling
+its behavior:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Enum type</CODE>
+<DD>
+<A NAME="IDX888"></A>
+This can be either <CODE>C_CODE</CODE> or <CODE>SCRIPT</CODE>, which determines if
+the Process is going to execute C code or CSS script code.  A script
+file must be attached to the process to run in <CODE>SCRIPT</CODE> mode.
+<DT><CODE>Modulo mod</CODE>
+<DD>
+<A NAME="IDX889"></A>
+This object controls how often a process is run.  It is applicable for
+processes and statistics that are placed in either the <CODE>loop_procs</CODE>
+or <CODE>loop_stats</CODE> groups of a scheduling process, and the modulo
+function is based on the counter variable of that parent process.  For
+<CODE>final_stats</CODE> and <CODE>final_procs</CODE>, the counter variable is that
+of the parent of the parent schedule process. If the <CODE>flag</CODE>
+variable of the <CODE>mod</CODE> object is not set then the process is never
+run. Otherwise the process is run if the parent's counter minus the
+<CODE>off</CODE> variable modulo the <CODE>m</CODE> variable is equal to zero (i.e.,
+it is run every <CODE>m</CODE> times, with a phase determined by the offset
+<CODE>off</CODE>).
+<DT><CODE>Network* network</CODE>
+<DD>
+<A NAME="IDX890"></A>
+This is a pointer to the Network object on which the Process is acting.
+This pointer is copied automatically from the parent process, so it
+should be changed only at the highest level of the processing hierarchy,
+which will cause it to change in all the lower-level processes.
+<DT><CODE>Environment* environment</CODE>
+<DD>
+<A NAME="IDX891"></A>
+This is a pointer the Environment in which the Process acts. Like the
+network pointer, it is automatically copied from higher-level processes,
+and should be set at the highest level.
+</DL>
+
+<P>
+The basic Process class provides the following functions for controlling
+its behavior.  Some of these are available on the <I>Control Panel</I>
+buttons that appear at the bottom of the edit dialog and the control
+panel, and others are in the <I>Actions</I> menu.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>NewInit()</CODE>
+<DD>
+<A NAME="IDX892"></A>
+Initializes the process using new random seed.  This seed is saved, and
+can be recalled using the <CODE>ReInit</CODE> function, but the previously
+saved seed is then lost.
+<DT><CODE>ReInit()</CODE>
+<DD>
+<A NAME="IDX893"></A>
+Initializes the process using the previously-saved random seed.
+<DT><CODE>Run()</CODE>
+<DD>
+<A NAME="IDX894"></A>
+This function checks which type of code the Process is supposed to
+use (C code or script) and executes the appropriate code.
+<DT><CODE>Step()</CODE>
+<DD>
+<A NAME="IDX895"></A>
+Executes one step the process.  For schedule processes, this is
+controlled by the <CODE>step</CODE> field, which specifies at what sub-level
+of the heirarchy to step (e.g., setting step.proc to the trial process
+will mean that Step executes one step of the trial process -- it
+processes one event per Step).  Schedule processes also have <B>Step
+Up</B> and <B>Step Dn</B> buttons that are useful for controlling the stepping
+level within the process hierarchy.
+<DT><CODE>Stop()</CODE>
+<DD>
+<A NAME="IDX896"></A>
+Stops the process when running.
+<DT><CODE>Step Up()</CODE>
+<DD>
+<A NAME="IDX897"></A>
+Moves the stepping level up one step in the heirarchy (e.g., from cycle
+up to settle).  Removes updating of the network by the previous stepping
+level (e.g., cycle no longer updates).  This only applies to Sched
+Processes. 
+<DT><CODE>Step Dn()</CODE>
+<DD>
+<A NAME="IDX898"></A>
+Moves the stepping level down one step in the heirarchy (e.g., from
+settle to cycle).  Adds updating of the network by the new stepping
+level (e.g., cycle now updates the network).  This only applies to Sched
+Processes.
+<DT><CODE>ControlPanel()</CODE>
+<DD>
+<A NAME="IDX899"></A>
+Brings up a small control panel dialog for running the process.
+<DT><CODE>LoadScript (char* filename)</CODE>
+<DD>
+<A NAME="IDX900"></A>
+Sets the script file to be used by the Process to <CODE>filename</CODE> and
+compiles the script for execution. This function clears any previous
+script file being used by the process. It automatically sets the
+<CODE>type</CODE> variable to <CODE>SCRIPT</CODE>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_148.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_150.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

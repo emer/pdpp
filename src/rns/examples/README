@@ -1,0 +1,6 @@
+This model implements a simple two-decision task.  There are two cells:  the correct response, and the error response.  The goal is to adjust the model parameters to fit a set of arbitrary data, so that the mean response time (RT) is 10 cycles, the standard deviation of the RT is 2 cycles, and the error rate is 10%.  
+
+Press the ReInit button on the control panel, which will randomize the model parameters.  Then press the CalcObjFunc button.  After a few moments, you will see a dialog box appear with a number, which is the value of the objective function for the given parameter set.  The smaller this number is (minimum of zero), the better the model fits the data.  
+
+Press the RunFit button.  It could take a few minutes or more, depending on the speed of your machine.  When the fitting finishes, press the CalcObjFunc again, to see how close the network got to fitting the parameters to the RT and error rate data.  
+

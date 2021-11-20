@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-environments</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_34.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_36.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.3  Making a New Environment</A></H3>
+
+<P>
+Now we can create the <B>Environment</B> and the training patterns.  Locate
+the Project window (which you'll note has been updated to reflect the
+existence of your new Network object), and select <I>.environments</I> /
+<I>New</I> / <I>Environment</I> and <I>Ok</I>.  Your <B>EnviroView</B> window will
+appear.  Then click <I>New Event</I>.  Set the number to create to 4, then
+click <I>Ok</I>.  You should see Panel buttons for all four events
+("Event_0".."Event_3").  Left-click the first one to select it for
+viewing, then extend-select (middle-click or Shift + left-click) the
+rest in order, and all of them will appear to the right of the buttons.
+They automatically have an input pattern the same size as the input
+layer and an output or target pattern the same size as the output layer,
+and all the values of all of the patterns are initialized to 0.  Both
+input and output patterns are displayed with the top four boxes of each
+event represent the output target values and the lower four boxes
+representing the input values. You can now set the 1 bits of each
+pattern by clicking on the color spot next to the value field labeled
+'1', then clicking on the appropriate elements of the pattern.  They
+will turn to the appropriate color, indicating the specified value.  You
+have to click <I>Apply</I> for the change to take effect.  Now you have
+your environment.
+
+</P>
+<P>
+You can also use this <B>EnviroView</B> window to configure the layout of
+the patterns within the events according to the <B>EventSpec</B> and
+<B>PatternSpec</B> specs.  The default layout (which works for our
+present purposes) is to have one pattern for the first layer in the
+network, which serves as an input, and another pattern for the last
+layer in the network, which serves as an output.  However, these
+defaults will not always be appropriate.  To see how to change them, hit
+the <I>Edit Specs</I> button at the top left of the window, and then after
+the display changes, hit the <I>EventSpec_0</I> button.  You will see two
+grids for the two patterns (input and output).  You can move, reshape,
+and edit these patterns if you need to.  The text within each pattern
+shows some of the critical settings in terms of whether an pattern is an
+<CODE>INPUT</CODE> or <CODE>TARGET</CODE>, what layer it goes to, etc.  We'll just
+leave everything as-is for now, but if for example you wanted to change
+the network to be a 8-3-8 encoder, then you'd need to reshape these
+patterns to be 8 units wide instead of 4.  Doing so would automatically
+stretch the corresponding events that use this spec.
+
+</P>
+<P>
+For now, just hit <I>Edit Events</I> to return to the events display, and
+iconify the window.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_34.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_36.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

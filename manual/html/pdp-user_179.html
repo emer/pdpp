@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-misc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_178.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_180.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1077" HREF="pdp-user_toc.html">12.8.8  Miscellaneous Other Stat Types</A></H3>
+
+<P>
+<A NAME="IDX1078"></A>
+The <B>CyclesToSettle</B> statistics simply records the number of cycles it
+took to settle.  It should be placed in the <CODE>loop_stats</CODE> of the
+trial process, where it will be able to grab the final counter value
+from the settle process.  This is useful to record how fast a network is
+settling, which is often used as a proxy for reaction times, etc.  See
+also the <B>ActThreshRTStat</B> section <A HREF="pdp-user_177.html">12.8.6  Reaction-time Based on Crossing an Activation Threshold</A>.
+
+</P>
+<P>
+<A NAME="IDX1079"></A>
+The <B>ScriptStat</B> is a statistic that is meant to be used with a CSS
+script.  It provides a generic group of <CODE>vals</CODE> into which the
+results of the statistic can be put, and an array of <CODE>s_args</CODE> for
+passing arguments to the script to control its behavior.  A very simple
+example script code for computing the difference between two unit
+activations is as follows:
+
+</P>
+<PRE>// this is a sample script stat script
+
+void DoStat() {
+  if(vals.size != 1) {  // first, create vals to hold results
+    // anything in vals is automatically logged, etc.
+    vals.EnforceSize(1);  // do whatever is necessary to get 1 val
+    vals[0].name = "act_diff";  // this is the header for the stat val
+  }
+  // get the first unit (note that we can access 'network'
+  // and other member variables from the ScriptStat the script is in)
+  Unit* un1 = network.layers[1].units[0];
+  // and then the second unit
+  Unit* un2 = network.layers[1].units[1];
+
+  // compute value to put in statistic
+  float diff = un1-&#62;act - un2-&#62;act;
+
+  // then store result in the val.  note you can have as many
+  // vals as you want and compute as many things as you want!
+  vals[0].val = diff;
+}
+
+// you *must* call the function so that when the script is run
+// the above function is actually run!
+DoStat();
+</PRE>
+
+<P>
+<A NAME="IDX1080"></A>
+<A NAME="IDX1081"></A>
+<A NAME="IDX1082"></A>
+The <B>CopyToEnvStat</B> takes data from another statistic and copies it
+into a data environment (just a basic environment that holds data for
+later analysis).  This is a key piece of a chain of steps involved in
+analyzing network representations, etc.  See section <A HREF="pdp-user_41.html">5.1  Questions about Processes</A> for an
+overview of how this analysis process works, and section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A> for
+the types of analyses that can be performed.  The
+<CODE>DispDataEnvProc</CODE> can automate the performance and display of
+these analysis routines (see section <A HREF="pdp-user_166.html">12.6.5  Miscellaneous other Process Types</A>).
+
+</P>
+<P>
+The key parameters on this stat are the <CODE>stat</CODE>, which points to
+the statistic to get data from, the <CODE>data_env</CODE>, which points to
+the environment to save the data in, and the <CODE>accum_scope</CODE>, which
+determines how much data to accumulate in the data env (e.g., EPOCH
+accumulates over an entire epoch, etc).
+
+</P>
+<P>
+<A NAME="IDX1083"></A>
+<A NAME="IDX1084"></A>
+The <B>ProjectionStat</B> projects data from another statistic (e.g., a
+<CODE>MonitorStat</CODE>) onto a stored vector (<CODE>prjn_vector</CODE>), and
+records the resulting scalar value in <CODE>prjn</CODE>.  A projection is
+just computing the distance between two vectors, and the various
+parameters on this stat determine the type of distance computation to
+perform.  This is useful for analyzing network representations as they
+are generated based on for example a principal components analysis
+performed on another batch of previously-generated network
+activations.  To facilitate this, the buttons <CODE>VecFmPCA</CODE> and
+<CODE>VecFmEvent</CODE> provide a way to load the prjn vector from either a
+PCA (principal components analysis) performed on a data environment
+(see section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>) or just from a stored event pattern (e.g., the
+environment can be used to draw a pattern to compare).
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_178.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_180.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

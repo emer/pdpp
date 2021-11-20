@@ -1,0 +1,251 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-processes</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_35.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_37.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.4  Setting Up Control Processes</A></H3>
+
+<P>
+While the <B>Network</B> and the <B>Environment</B> constitute the bulk of the
+custom aspects of a simulation, the way in which the network is trained
+can vary depending on what kinds of tasks you are performing, etc.  The
+training and testing of a network is determined by the processes, and
+the results of running these processes can be viewed in logs that record
+data over time.
+
+</P>
+<P>
+Processes come in hierarchies, but there are sensible defaults built
+into the program that create sensible hierarchies. We will create two
+hierarchies, one for training the network, and one for testing.  Should
+your process hierarchy become accidentally misaligned with unnecessary
+Train, Epoch and Testing processes or spurious Batch or Sequence
+processes, you may wish to start the process creation procedure over
+from scratch by choosing <I>.processes</I> / <I>Remove</I> / <I>All</I>.
+In this case, the default naming of the processes may use a different
+numbering convention than the one described below, but hopefully you
+will be able to follow along.
+
+</P>
+<P>
+To create the <B>TrainProcess</B>, select <I>.processes</I> / <I>New</I> /
+<I>TrainProcess</I> from the Project window.  A New Object Popup window
+will appear indicating that 1 Train Process should be created. In
+addition, the <I>Create Subprocs</I> toggle will be checked; leave this, it
+will do the right thing and create a subordinate Epoch and Trial process
+under the Train process for you automatically.  Use the right mouse
+button to click <I>Ok</I> so you can edit the Train process.  If you forget
+to use the right mouse button, you can edit the train process by
+selecting <I>.processes</I> / <I>Edit</I> / <I>Train_0</I>. You could at this
+point rename the train process to something more descriptive, (e.g.,
+"Training") by changing its name field, but we'll assume you stay with
+the default, which is just Train_N, where N is the index of this
+instance of a train process; if this is the first process you are
+creating, the process will be called Train_0.  One thing you can notice
+here is the max epoch value associated with the Train process.  By
+default it has value 1000, which is reasonable for many relatively small
+scale problems -- if it doesn't learn in 1000 epochs, it may not learn
+at all.  We are done with editing the Train Process at this point, so
+you should press <I>Ok</I> and dismiss the Edit Dialog.
+
+</P>
+<P>
+Now, take a look at your Project window, which shows all of the major
+objects within your project.  You should see the network and
+environment, and the three processes in the process hierarchy you just
+created.  You can automatically view or iconify the network or
+environment windows by double-clicking on their icons.  Also, you can
+see how everything is connected up through the processes by clicking on
+a process and hitting show links -- select the yellow <I>Trial_0</I> icon
+and then hit the <I>Show Links</I> button.  You should see that this
+process works on the network (solid pink line) and the environment
+(solid green line), and that it updates the network display (dashed pink
+line).  You can also see the statistics that are computed at each level
+of processing (more on this below).
+
+</P>
+<P>
+We can now edit the sub-process Epoch_0, either clicking with the right
+mouse button on the <I>Epoch_0</I> object in the project view, or by
+choosing its name from the <I>.processes</I> / <I>Edit</I> / <I>name</I>
+menu. Again, you could rename them at this point; but we'll assume you
+stay with the default name of Epoch_0.  The main reason to edit the
+Epoch process is to specify the presentation order and what mode of
+weight updating you want by setting the values of the <I>order</I> and
+<I>wt update</I> fields in the edit dialog for Epoch_0.  The defaults,
+<CODE>PERMUTED</CODE> and <CODE>ONLINE</CODE> may not be what you want
+(<CODE>SEQUENTIAL</CODE> <CODE>BATCH</CODE> is the "standard" combination).
+
+</P>
+<P>
+By default, the TrialProcess for the Bp algorithm creates a
+squared-error statistic.  You can see this statistic in the project
+view, or by pulling down the edit menu, and moving the mouse over any of
+the processes -- it shows up in a sub-menu off of the these processes.
+In general, statistics are created at the <B>TrialProcess</B> level,
+because that is the appropriate time-grain for the computation of most
+statistics.  For the squared-error, this is when an individual pattern
+has been presented, the activations propagated through the network, and
+a difference between the target and actual output values is available
+for computing the error.  However, one often wants to see an
+<I>aggregation</I> of the error (and other statistic) over higher levels of
+processing (e.g., a sum of the squared-error over an entire epoch of
+training).  This is done by creating aggregates of the statistic, and it
+is why all of the processes contain a squared-error statistic in them --
+the ones in the Epoch and Train processes are aggregations of the one
+computed in the TrialProcess.
+
+</P>
+<P>
+While you could procede to the next step now, we will make a small
+detour in order to show you how to create statistics, since you may in
+the future want to create a different type of statistic than the default
+squared-error statistic.  We will simply remove the existing statistic,
+and then perform the steps necessary to recreate it.  To remove the
+statistic, you can click on it (under the <I>Trial_0</I> process) and hit
+<I>Rmv Obj(s)</I> button in the project view, or select <I>.processes</I> /
+<I>Remove</I> / <I>Trial_0</I> / <I>sum_Trial_0_SE_Stat</I>, and confirm that it
+is <I>Ok</I> to close (remove) this item.  Note that the SE_Stat has been
+removed from all of the processes -- a statistic will always remove its
+aggregators in higher-level processes when it is removed.
+
+</P>
+<P>
+Now we will perform the steps necessary to re-create the statistic we
+just removed.  You can do this by either selecting the <I>Trial_0</I>
+object in the project view, and hitting <I>New Stat</I>, or by selecting
+<I>.processes</I> / <I>New Stat</I> / <I>SE_Stat</I> in the <B>Project</B> window
+(<I>New Stat</I> is near the bottom of the menu).  The popup that appears
+indicates the type and number; it also indicates which process the stat
+will be created in.  As mentioned above, statistics are generally
+created at the <B>TrialProcess</B> level, because that is the appropriate
+time-grain for the computation of most statistics.  Given that there is
+only one Trial process (Trial_0) at this point, the program will guess
+correctly and suggest to create the SE_Stat at this level.  The popup
+also allows you to choose where within the Trial process to create the
+statistic -- with the two options being Loop and Final.  Most statistics
+will know where to create themselves, so the <I>DEFAULT</I> selection
+should be used, which means it is up to the stat's own default where to
+go.  You'll want to create aggregates (summing over trials at the epoch
+level, and keeping track of the latest value at the overall Train
+process level), so leave the <I>Create Aggregates</I> toggle checked.
+Click <I>Ok</I>.
+
+</P>
+<P>
+Now you get to answer another question: What aggregation operator do you
+want for the next (epoch) level?  The default <CODE>LAST</CODE> (keep track of
+just the last value) is not what we need; you want to <CODE>SUM</CODE> this
+stat at the next level, so select <CODE>SUM</CODE>, and then click <I>Ok</I>.
+
+</P>
+<P>
+Note that the stat is also being aggregated at the levels above the
+epoch (i.e. the <B>Train</B> level).  It will keep track of the last value
+at the <B>Train</B> level.  Note that at each level each statistic has a
+name refelcting the process and the nature of the aggregation.  So the
+Train level stat is called "lst_sum_Train_0_SE_Stat" indicating it is
+the last value of the sum of an <B>SE_Stat</B> and that it is attached to
+the Train level.  We have now re-created the squared-error statistic.
+You could have skipped over this process, but now you know how to do
+this in the future.
+
+</P>
+<P>
+Finally, you need to set the stopping criterion for learning, which is
+not set by default.  You can do this by editing the "Train_0_SE_Stat".
+You find it by right-clicking (or selecting and hitting <I>Edit</I>) the
+object in the project view, or by doing <I>.processes</I> / <I>Edit</I> /
+<I>Train_0</I> / <I>lst_sum_Train_0_SE_Stat</I>.  Once this pops up you will
+find the <CODE>se</CODE> value of this stat near the bottom of the
+window. This field has 1 parameter <CODE>val</CODE> which indicates the
+current value of the statistic, and 4 parameters which control when the
+stopping actually occurs. To set the criteria you need to click on the
+first stopping paramater, <CODE>stopcrit</CODE> which should turn on with a
+checkmark symbol indicating that we are indeed using this statistic as a
+stopping criteria. The default relation <CODE>&#60;=</CODE> on the next parameter
+to the right is appropriate here so ther is no need to adjust its
+value. To the right of the relation parameter is the value to which the
+statistic is measured against. In our case, the <CODE>val</CODE> of this SE
+statistic is compared with this value to determine if it is less than or
+equal to it.  A reasonable value for this parameter is .04 (.01 for each
+pattern you are testing, summed over patterns). The next field labeled
+<CODE>cnt</CODE> can be used to set a stricter stopping criterion where the
+condition must be met <CODE>cnt</CODE> times in a row instead of just once.
+We will just leave the value at 1. Click <I>Ok</I> when you are done.
+
+</P>
+<P>
+You will probably also want to create a Test process hierarchy.  A test
+sweeping through all of your patterns is an <B>EpochProcess</B>.  So,
+select <I>.processes</I> / <I>New</I> / <I>EpochProcess</I>. After you click
+<I>OK</I> (use right mouse button to edit) in the popup window, go ahead
+and edit this process (if you didn't use right-click, select
+<I>.processes</I> / <I>Edit</I> / <I>Epoch_1</I>).  Set <CODE>wt_update</CODE> to
+<CODE>TEST</CODE> and <CODE>order</CODE> to <CODE>SEQUENTIAL</CODE>.  Click <I>Ok</I>.  Note
+that a default SE_Stat was automatically created for your test process.
+There is no need to set any stopping criteria.
+
+</P>
+<P>
+Now, you probably want to monitor some aspect of network function in
+your test.  Let's look at the activation of the output units.  To do
+this:
+
+</P>
+
+<IL>
+<LI>
+
+Select the units in the output layer in the <B>NetView</B> (either the whole
+layer, or all the units in the layer).
+
+<LI>
+
+Select <I>act</I> to display on the <B>NetView</B>.
+
+<LI>
+
+Click <I>Monitor Values</I> / <I>New</I> (located in the left-middle of the
+<B>NetView</B> display).
+
+<LI>
+
+In the pop-up, set the process to "Trial_1".  You'll find it under
+<I>BpTrial</I> when you click on the <CODE>In Process</CODE> value field.
+Everything else is as we want it so click <I>Ok</I>.
+</IL>
+
+<P>
+Also, it is useful to create an EpochCounterStat for the test process by
+selecting <I>.processes</I> / <I>NewStat</I> / <I>EpochCounterStat</I>, then,
+when the pop-up appears, for <I>In Process</I>, select <I>Trial_1</I>, then
+click <I>OK</I> (or select <I>loop_stats</I> under the <I>Trial_1</I> object in
+the project view, and then pick <I>EpochCounterStat</I> from the dialog).
+When the program asks you how to aggregate this statistic, it will
+remember the value you entered last time (<CODE>SUM</CODE>), but we will want
+to use <CODE>LAST</CODE> this time. This will allow you to record information
+about how many epochs the network has been trained on each time you run
+a test.
+
+</P>
+<P>
+Now, so you'll be able to run the net and test it, you can create
+control panels for training and testing.  In the project view, select
+the <I>Train_0</I> object and hit <I>Ctrl Panel</I>, and then the same for
+<I>Epoch_1</I>, or do <I>.processes</I> / <I>Control Panel</I> / <I>Train_0</I> for
+the training panel and <I>...</I> / <I>Epoch_1</I> for the testing panel.  In
+the Train_0 control panel, you might set the <CODE>step</CODE> <CODE>n</CODE> field
+to something like 30, so that when you click step it will run for 30
+epochs.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_35.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_37.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

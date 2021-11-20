@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-unit-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_125.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_127.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX680" HREF="pdp-user_toc.html">10.4.1  Implementational Details About Units</A></H3>
+
+<P>
+The base <B>UnitSpec</B> defines a standardized way of splitting up the
+computations that take place on a unit.  This allows there to be a
+single function at the level of the <B>Network</B> which iterates through
+all of the layers and they iterate through all of their units and call
+these functions.  This makes writing process code easier, and provides a
+conceptual skeleton on which to implement different algorithms.  Note
+that the unit has simple "stub" versions of these functions which simply
+call the corresponding one on the spec.  This also simplifies
+programming.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>InitState(Unit* u)</CODE>
+<DD>
+<A NAME="IDX681"></A>
+Initializes the unit's state variables, including activations, net
+input, etc.
+<DT><CODE>InitWtDelta(Unit* u)</CODE>
+<DD>
+<A NAME="IDX682"></A>
+Initializes the stored connection weight changes (i.e., changes that
+have not yet been applied to the weights).
+<DT><CODE>InitWtState(Unit* u)</CODE>
+<DD>
+<A NAME="IDX683"></A>
+Initializes the connection weight values for all of the receiving
+connections of the unit.
+<DT><CODE>Compute_Net(Unit* u)</CODE>
+<DD>
+<A NAME="IDX684"></A>
+Iterates over the receiving connections of the unit and sets the
+unit's <CODE>net</CODE> field to the summed product of the sending unit's
+activation value times the weight.
+<DT><CODE>Send_Net(Unit* u)</CODE>
+<DD>
+<A NAME="IDX685"></A>
+Iterates over the <EM>sending</EM> connections of the unit and
+increments the <CODE>net</CODE> field of the unit's it sends to.  This way of
+computing net input is useful when not all units send activation (i.e.,
+if there is a threshold for sending activation or "firing").  A given
+algorithm will either use <CODE>Compute_Net</CODE> or <CODE>Send_Net</CODE>, but not
+both.
+<DT><CODE>Compute_Act(Unit* u)</CODE>
+<DD>
+<A NAME="IDX686"></A>
+Turns the net input value into an activation value, typically by
+applying a sigmoidal activation function, but this varies depending on
+the particular algorithm used.  The version in the base <B>UnitSpec</B>
+just copies the net input into the activation (i.e., it is linear).
+<DT><CODE>Compute_dWt(Unit* u)</CODE>
+<DD>
+<A NAME="IDX687"></A>
+Iterates over the receiving connections on the unit and
+calls the <CODE>Compute_dWt</CODE> function on them, which should compute the
+amount that the weights should be changed based on the current state of
+the network, and a learning rule which translates this into weight
+changes.  It should always add an increment the current weight change
+value, so that learning can occur either pattern-by-pattern ("online"
+mode) or over multiple patterns ("batch" mode).
+<DT><CODE>UpdateWeights(Unit* u)</CODE>
+<DD>
+<A NAME="IDX688"></A>
+Actually updates the weights by adding the changes
+computed by <CODE>Compute_dWt</CODE> to the weights, applying learning rates,
+etc.  This function should always reset the weight change variable after
+it updates the weights, so that <CODE>Compute_dWt</CODE> can always increment
+weight changes.  Note that this function is called by the
+<B>EpochProcess</B>, which decides whether to perform online or batch-mode
+learning (see section <A HREF="pdp-user_156.html">12.4.3  Iterating over Trials: EpochProcess</A>). 
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_125.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_127.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

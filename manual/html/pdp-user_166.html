@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-special-misc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_165.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_167.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX988" HREF="pdp-user_toc.html">12.6.5  Miscellaneous other Process Types</A></H3>
+
+<P>
+<A NAME="IDX989"></A>
+<A NAME="IDX990"></A>
+<A NAME="IDX991"></A>
+<A NAME="IDX992"></A>
+The <B>SaveNetsProc</B> and <B>SaveWtsProc</B> will simply save the current
+network or network weights to a file which has a file name composed of
+the name of the network (from its <CODE>name</CODE> field) plus the current
+values of the epoch and, if present, the batch counters.  This can be
+placed in the <CODE>loop_procs</CODE> or <CODE>final_procs</CODE> of the
+<B>TrainProcess</B> or the <B>BatchProcess</B> to save networks during
+training or after training, respectively.  Set the mod parameters to get
+it to save at different intervals (e.g., <CODE>m = 25</CODE> saves every 25
+epochs if in the train loop procs).
+
+</P>
+<P>
+<A NAME="IDX993"></A>
+<A NAME="IDX994"></A>
+<A NAME="IDX995"></A>
+The <B>LoadWtsProc</B> will load in a set of weights from a specified
+file, which is useful for example for performing repeated lesion tests
+on a given trained network -- build the network, load the weights,
+lesion it, test it, repeat!
+
+</P>
+<P>
+<A NAME="IDX996"></A>
+<A NAME="IDX997"></A>
+<A NAME="IDX998"></A>
+The <B>InitWtsProc</B> will initialize the weights of a network.  The
+<B>TrainProcess</B> does this automatically when it is initialized, but
+there are other possible configurations of processes where you might
+need to initialize the weights at a different point.
+
+</P>
+<P>
+<A NAME="IDX999"></A>
+<A NAME="IDX1000"></A>
+<A NAME="IDX1001"></A>
+<A NAME="IDX1002"></A>
+The <B>DispDataEnvProc</B> automatically performs an analysis of a data
+environment (a data environment contains data recorded from the
+network for the purposes of analysis, by the <CODE>CopyToEnvStat</CODE> stat
+(see section <A HREF="pdp-user_179.html">12.8.8  Miscellaneous Other Stat Types</A>). See section <A HREF="pdp-user_41.html">5.1  Questions about Processes</A> for an overview of how
+this analysis process works, and section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A> for the types of
+analyses that can be performed.  The data environment to analyze is
+specified in <CODE>data_env</CODE> (the regular <CODE>environment</CODE> pointer
+points to the environment actually used by the entire process
+hierarchy, and is not used).  The type of analysis is specified in the
+<CODE>disp_type</CODE> field, and the results of the analysis are displayed
+in the log pointed to by the <CODE>disp_log</CODE> field (if this is NULL,
+or the wrong type, a new one is made).  The remaining parameters are
+used for different analysis routines, as described in greater detail
+in section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>.
+
+</P>
+<P>
+<A NAME="IDX1003"></A>
+<A NAME="IDX1004"></A>
+The <B>DispNetWeightsProc</B> automatically displays the weights between
+two layers of the <CODE>network</CODE> in a grid log.  Useful for monitoring
+the development of the entire set of weights as the network learns
+(the netview can only display the weights to one unit, whereas this
+displays the weights to all units in the layer).  This is just a call
+to the <CODE>GridViewWeights</CODE> function on the Network
+(see section <A HREF="pdp-user_113.html">10.1  The Network Object</A>).
+
+</P>
+<P>
+<A NAME="IDX1005"></A>
+<A NAME="IDX1006"></A>
+<A NAME="IDX1007"></A>
+There are a set of processes that reset other processes, stats, or
+logs -- these are usually placed at a higher level of the processing
+hierarchy in <CODE>init_procs</CODE>, to initialize things.  They are:
+<B>UnitActRFStatResetProc</B>, <B>TimeCounterStatResetProc</B>, and
+<B>ClearLogProc</B> -- their functions should be fairly obvious.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_165.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_167.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-spec</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_76.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_78.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX424" HREF="ta_css_toc.html">8.4  Specifications</A></H2>
+<P>
+<A NAME="IDX425"></A>
+<A NAME="IDX426"></A>
+
+</P>
+<P>
+One of the important design considerations for the PDP++ software was the
+idea that one should separate state variables from specifications and
+parameters (@xref{over-spec}).  The attributes of an object can often
+be divided into two types--the first type of attributes represent the
+object's state. These change over time and are usually distinct within
+each instance of an object.  The second group of attributes represent
+parameters of an object that tend to remain fixed over time, and often
+have values that are common among instances of the object class. This
+second group can be thought of as a <STRONG>specification</STRONG> for the
+object class.
+
+</P>
+<P>
+For example: The car object class might have two attributes: color, and
+current-speed. The color attribute would be set when the car was built,
+and would (hopefully) not be changing very much. It would be classified
+as a specification parameter. The current-speed attribute is likely to
+be constantly changing as the car accelerates and decelerates. It is
+representative of the car's current state and would be classified in the
+first group, the car's state space. If you took a group of cars, chances
+are that some of them would share the same color, but they would
+probably be moving around at different speeds. Rather than have each car
+carry around an attribute for its color, the specification attributes
+are split off from the car and put into a special class called a
+car-specification or carspec. In this way cars with identical colors can
+share the same specification, while still having their own state
+attributes like current-speed.  By changing the color attribute in the
+specification, all the cars sharing that specification would have their
+color changed. This allows easy access to common parameters of an object
+class in one location. Rather than individually setting the color
+parameter for each instance of a car, the attribute can be set in just
+once in the spec.
+
+</P>
+<P>
+<A NAME="IDX427"></A>
+<A NAME="IDX428"></A>
+This idea is instantiated in a particular class of objects known as
+<B>Spec</B>s.  Specs also have special "smart pointers" that objects use to
+refer to them.  These spec pointers or <B>SPtr</B> objects ensure that a
+given object always has a corresponding spec, and that this spec is of
+an appropriate type.
+
+</P>
+<P>
+While specs are basically just classes that have parameters and
+functions that control other object's behavior, there are a couple of
+special properties that specs have which make them more powerful.
+
+</P>
+<P>
+Often when one wants to use two different specs of the same type, it is
+because one spec has one parameter different than the other.  For
+example, one spec might specify a learning rate of .01, and the other a
+learning rate of .001.  However, these specs might very well share
+several other parameters.
+
+</P>
+<P>
+<A NAME="IDX429"></A>
+<A NAME="IDX430"></A>
+<A NAME="IDX431"></A>
+To simplify the ability of specs to share some parameters and not
+others, a special system of <EM>spec inheritance</EM> was developed.
+Basically, each spec has a group on it called <CODE>children</CODE>, in which
+"child" specs can be created.  These child specs inherit all of their
+parameters from the parent spec, except those specifically marked as
+unique to the child.  These fields appear with a check in the left-hand
+check-box when edited in the GUI.  Thus, whenever you change a value in
+the parent, the children automatically get this changed value, except if
+they have a unique value for this field, in which case they keep their
+current value.  For a tutorial demonstration of how this works, see
+(@xref{tut-config-running}).
+
+</P>
+<P>
+<A NAME="IDX432"></A>
+<A NAME="IDX433"></A>
+There are a couple of things to know about the "smart" spec pointers.
+These pointers have both a type field and the actual pointer to the
+spec.  When you change only the <CODE>type</CODE> field, it will automatically
+find a spec of that type, and set the pointer to that.  If one does not
+yet exist, one will be created automatically and the pointer set to it.
+If however you change the pointer directly to point to a different spec,
+and this spec is of a different type than that shown in the <CODE>type</CODE>
+field, then the type will prevail over the pointer you set.  Thus you
+have to change both the <CODE>type</CODE> and <CODE>spec</CODE> fields if you change
+the latter to point to a different type.
+
+</P>
+<P>
+The reason for this is that the spec pointer object does not know which
+field you actually changed, and for the nice automatic properties
+associated with changing the type field to work, the need to update both
+the type and the spec pointer is an unfortunate consequence.
+
+</P>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_76.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_78.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

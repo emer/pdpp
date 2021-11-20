@@ -1,0 +1,112 @@
+// generates a simple fsa as part of the init events in a script spec
+
+// the following script arguments control the behavior
+// (set these in the ScriptEnv object)
+
+int n_epochs_per_env 	= s_args[0];
+// number of epochs to go on a single set of events (2)
+int n_seq 		= s_args[1];
+// number of sequences to generate per epoch (25)
+String test_or_train 	= s_args[2];
+// whether testing or training (determines how other possible target output is
+// flagged), possible values are "test" and "train"
+
+// s_args[3] is used to record the average sequence length, if needed..
+
+real trans[5][6];		// transition matrix
+int tr_lab[5][6];		// label indicies
+// labels
+
+String lab_names[8];
+lab_names = { "none", "T", "S", "X", "V", "P", "B", "E" };
+
+            //	0   1   2   3   4   5
+trans[0] = { 	0, .5, .5,  0,  0,  0 };
+trans[1] = {	0, .5,  0, .5,  0,  0 };
+trans[2] = {	0,  0, .5,  0, .5,  0 };
+trans[3] = {	0,  0, .5,  0,  0, .5 };
+trans[4] = {	0,  0,  0, .5,  0, .5 };
+
+tr_lab[0] = {   0,  1,  5,  0,  0,  0 };
+tr_lab[1] = {	0,  2,  0,  3,  0,  0 };
+tr_lab[2] = {	0,  0,  1,  0,  4,  0 };
+tr_lab[3] = {   0,  0,  3,  0,  0,  2 };
+tr_lab[4] = {	0,  0,  0,  5,  0,  4 };
+
+void MakeEvent(Event_MGroup* gp, int prv_lab, int nxt_lab, int oth_lab,
+	       int state, int n_state) {
+  Event* ev = gp->NewEl(1);
+  ev->name = gp->name + "_" + lab_names[prv_lab] + "_" + lab_names[nxt_lab] +
+    "_" + state + "_" + n_state;
+  if(prv_lab == 6)
+    ev->patterns[0].value[0] = 1.0;
+  else
+    ev->patterns[0].value[prv_lab] = 1.0;
+  if(nxt_lab == 7)
+    ev->patterns[1].value[5] = 1.0;
+  else
+    ev->patterns[1].value[nxt_lab-1] = 1.0;
+  if((oth_lab >= 0) && (test_or_train == "test")) {
+    ev->patterns[1].value[oth_lab-1] = 1.0;
+    ev->patterns[1].flag[oth_lab-1] = PatternSpec::COMP_FLAG;
+    // sets the value for comparison but not for presenting to network..
+    // this is only done during testing
+  }
+}
+
+int GenEvent(int no) {
+  Event_MGroup* gp = events.NewGp(1);
+  gp->name = "S_" + no;
+
+  int state = 0;		// current state
+  int prv_lab = 6;		// start at initial "B"
+  int nxt_lab = 6;
+  int oth_lab = -1;
+  real tot_p;
+  real prob, state_p;
+  int n_state, next_state;
+  while(state != 5) {
+    prv_lab = nxt_lab;
+    prob = drand48();
+    tot_p = 0;
+    oth_lab = -1;
+    for(n_state = 0; n_state <= 5; n_state++) {
+      state_p = trans[state][n_state];
+      if(prob < state_p + tot_p) {
+	nxt_lab = tr_lab[state][n_state];
+	prob = 1.0;		// don't do any more
+	next_state = n_state;
+      }
+      else if(state_p > 0) {
+	oth_lab = tr_lab[state][n_state];
+      }
+      tot_p += state_p;
+    }
+    MakeEvent(gp, prv_lab, nxt_lab, oth_lab, state, next_state);
+    state = next_state;
+  }
+  MakeEvent(gp, nxt_lab, 7, -1, 5, 0);	// end event
+//  cout << gp->name << "\n";
+  return gp->size;
+}
+
+void GenEpoch() {
+  if((.networks[0].epoch % n_epochs_per_env) != 0) // only perform every other epoch..
+    return;
+
+  views[0].display_toggle = false;
+
+  events.Reset();
+
+  real avg = 0;
+  int i;
+  for(i=0; i<n_seq; i++)
+    avg += GenEvent(i);
+
+  avg /= (real)n_seq;
+  s_args[3] = avg;		// record the average sequence length..
+//  cout << n_seq << " events, avg seq len: " << avg << "\n";
+  views[0].display_toggle = true;
+}
+
+GenEpoch();

@@ -1,0 +1,202 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-env</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_135.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_137.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX758" HREF="pdp-user_toc.html">11.1  Environments</A></H2>
+
+<P>
+The <B>Environment</B> is used by the processes to present inputs to the
+<B>Network</B>, and to provide training values for the network as well.  At
+appropriate intervals, the processes will ask the environment for an
+<B>Event</B>. The event is a snapshot or instance of the environment at a
+given time. It is up to the environment to generate the appropriate
+event given an index presented by the processes. Typically, these
+events are precomputed and the environment simply iterates over the a
+list of events. Optionally, an environment can perform more complicated
+event choosing operations and can even modify or generate events on the
+fly if so desired (supported by the <B>InteractiveScriptEnv</B>,
+section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A>). 
+
+</P>
+<P>
+Sometimes the events may need to be further organized into subgroups of
+events in order to represent groups of events that belong in a
+particular sequence (see section <A HREF="pdp-user_139.html">11.3  Representing Sequences of Events</A>). Specialized processes like the
+<B>SequenceEpoch</B> and the <B>SequenceProcess</B> interact with the
+Environment by asking it for one of these subgroups of Events. The
+Sequence Epoch allows updating of weights and other operations to occur
+after the entire "batch" of events in the Event SubGroup has been
+presented (see section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).
+
+</P>
+<P>
+In summary, there are three different interfaces to the environment:
+
+</P>
+<DL COMPACT>
+
+<DT><B>1.</B>
+<DD>
+A flat list of events accessed by event index (supported by the standard
+<B>EpochProcess</B>).  <CODE>InitEvents()</CODE> is called at the start, and a
+<B>ScriptEnv</B> can render a batch of events for each epoch.
+<DT><B>2.</B>
+<DD>
+Groups of events accessed first by group index, then by index of event
+within group (supported by <B>SequenceEpoch</B> and <B>SequenceProcess</B>,
+section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>).  This allows for subsets of events to be
+grouped together as a sequence.  Again, <CODE>InitEvents()</CODE> is called
+at the start of the entire epoch.
+<DT><B>3.</B>
+<DD>
+An 'interactive' model that doesn't depend on indicies at all,
+supported by <B>InteractiveEpoch</B> (see section <A HREF="pdp-user_163.html">12.6.2  Processes for Interactive Environments</A>).  This
+allows for events to depend on what has just happened in the network.
+<CODE>InitEvents()</CODE> is called at the start of an epoch, and
+<CODE>GetNextEvent()</CODE> is called for each new event until it returns a
+NULL.  In a <B>IneractiveScriptEnv</B>, <CODE>GetNextEvent()</CODE> calls the
+script, and returns the event in the <CODE>next_event</CODE> pointer (which
+needs to be set by the script) -- see section <A HREF="pdp-user_147.html">11.11  Other Environment Types</A> for details.
+</DL>
+
+<P>
+In the generic <B>Environment</B> class there are two groups:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Event_Group events</CODE>
+<DD>
+<A NAME="IDX759"></A>
+This is where the events are stored.
+<DT><CODE>BaseSpec_Group event_specs</CODE>
+<DD>
+<A NAME="IDX760"></A>
+This is where the <B>EventSpec</B> objects are stored.  Note that event
+specs, unlike other specs, reside in the environment, and not in the
+<B>Project</B> <CODE>.specs</CODE> group.  This makes environments self-contained
+so that they can be loaded and saved independent of the project.
+</DL>
+
+<P>
+The following functions are defined on the <B>Environment</B> object.  Note
+that a given process will either use the Group model or the Event model
+of the environment.  The group model is for sequences, which are stored
+in subgroups, and the event model treats the environment just like a
+flat list of events.  These functions are on the <I>Actions</I> menu:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>InitEvents()</CODE>
+<DD>
+<A NAME="IDX761"></A>
+Initializes events for an epoch. Used for algorithmically generated
+events which are generated at the start of each epoch.  This does
+nothing in the base class, but in a <CODE>ScriptEnv</CODE> it calls the
+script, which can then generate events.
+<DT><CODE>UpdateAllEvents()</CODE>
+<DD>
+<A NAME="IDX762"></A>
+Updates all events in accordance with their corresponding event
+specs.  This should happen automatically but things can get out of
+whack and this should clean everything up.
+<DT><CODE>UpdateAllEventSpecs()</CODE>
+<DD>
+<A NAME="IDX763"></A>
+Updates all events in accordance with their corresponding event
+specs.  This should happen automatically but things can get out of
+whack and this should clean everything up.
+<DT><CODE>EventCount()</CODE>
+<DD>
+<A NAME="IDX764"></A>
+Returns the number of events in the Environment.  This is used by the
+processes to determine how long an epoch should be.
+<DT><CODE>GroupCount()</CODE>
+<DD>
+<A NAME="IDX765"></A>
+Returns the number of event groups in the Environment, for
+sequence-based processing.  This determines how many sequences go in an
+epoch. 
+<DT><CODE>GetNextEvent()</CODE>
+<DD>
+<A NAME="IDX766"></A>
+Returns the next event for processing (or NULL to signal the end of
+the epoch).  This is the interface for the interactive environment
+model (hook for generating new event based on current state).
+<DT><CODE>UnitNamesToNet(EventSpec* event_spec_with_names, Network* network)</CODE>
+<DD>
+<A NAME="IDX767"></A>
+Copies names from pattern spec <CODE>value_names</CODE> to corresponding units
+in the network.  Uses default event spec and network if NULL.  This is
+a convenient way to name units in the network -- these names are
+otherwise lost when the network is rebuilt.
+<DT><CODE>AutoNameAllEvents(float act_thresh, int max_pat_nm, int max_val_nm)</CODE>
+<DD>
+<A NAME="IDX768"></A>
+Automatically name all events based on the pattern names and value
+(unit) names for those units with activations above act_thresh, e.g.,
+<CODE>Inp:vl1_vl2,Out:vl1_vl2</CODE>.  There are also versions of this
+functionality in Events and Event specs.
+</DL>
+
+<P>
+The following functions are defined in the <I>Object</I> menu and provide
+additional input/output functionality:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>ReadText(ostream&#38; strm, EventSpec* espec, TextFmt fmt)</CODE>
+<DD>
+<A NAME="IDX769"></A>
+Reads in an Environment from a text file which is in the format from
+the old PDP software, or other formats based on the fmt parameter.
+This uses the given event spec which must correspond to the pattern
+file being read in.  See section <A HREF="pdp-user_143.html">11.7  Importing Environments from Text Files</A>.
+<DT><CODE>WriteText(istream&#38; strm, int pat_no, TextFmt fmt)</CODE>
+<DD>
+<A NAME="IDX770"></A>
+Writes an Environment to a text file in the format from the old PDP
+software, or other formats.  See section <A HREF="pdp-user_143.html">11.7  Importing Environments from Text Files</A>.
+<DT><CODE>ReadBinary(ostream&#38; strm, EventSpec* espec)</CODE>
+<DD>
+<A NAME="IDX771"></A>
+Reads in an Environment from a binary file, which must be just a
+continuous stream of floating point numbers that are applied in
+sequence to the patterns and events of the environment.  See section <A HREF="pdp-user_143.html">11.7  Importing Environments from Text Files</A>.
+<DT><CODE>WriteBinary(istreamm&#38; strm, int pat_no=-1, TextFmt fmt = NAME_FIRST)</CODE>
+<DD>
+<A NAME="IDX772"></A>
+Writes an Environment to a binary file as a continuous stream of
+floating point numbers.  See section <A HREF="pdp-user_143.html">11.7  Importing Environments from Text Files</A>.
+</DL>
+
+<P>
+The following are function interfaces used by processes to access events:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>GetEvent(int event_number)</CODE>
+<DD>
+<A NAME="IDX773"></A>
+Returns a pointer to the Event corresponding to <CODE>event_number</CODE>.
+The event number should be between 0 and <CODE>EventCount()</CODE>.
+<DT><CODE>GetGroup(int group_number)</CODE>
+<DD>
+<A NAME="IDX774"></A>
+Returns a pointer to the Event group corresponding to
+<CODE>group_number</CODE>, which should be between 0 and <CODE>GroupCount()</CODE>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_135.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_137.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

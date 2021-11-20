@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-graph-functions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_192.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_194.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H4><A NAME="IDX1159" HREF="pdp-user_toc.html">13.3.4.5  GraphLogView Functions</A></H4>
+
+<P>
+The GraphLogView provides the following functions:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>SetColorSpec(ColorScaleSpec* colors)</CODE>
+<DD>
+<A NAME="IDX1160"></A>
+Set the color spectrum to use for color-coding values (NULL = use default)
+<DT><CODE>SetBackGround(RGBA background)</CODE>
+<DD>
+<A NAME="IDX1161"></A>
+Sets the graph area's background color. When printing the graph it is 
+useful to set this color to white.
+<DT><CODE>UpdateLineFeatures()</CODE>
+<DD>
+<A NAME="IDX1162"></A>
+Update the update color, line type, point type, etc of lines in accordance with the
+current settings for the ordering of these features.  Only visible lines are updated.
+<DT><CODE>SetLineFeatures(ColorType color_type, SequenceType sequence_1, SequenceType sequence_2,  SequenceType sequence_3, bool visible_only)</CODE>
+<DD>
+<A NAME="IDX1163"></A>
+Sets the features of the all the lines or only the visible lines if
+<CODE>visible_only</CODE> is set. The lines' features are determined by
+iterating over the possible choices in sequence_1, and then when those
+choices are exhausted, incrementing sequence_2 and repeating the
+possible choices in sequence_1 again. This is likewise extended to
+sequence_3 if need be until all of the lines' features have been set.
+The <CODE>color_type</CODE> argument is used to determine the colorscale to
+sequence over for the sequence arguments which are set to <CODE>COLORS</CODE>.
+The other possible choices of sequence types are <CODE>LINES</CODE> and
+<CODE>POINTS</CODE>.
+
+<DT><CODE>SetLineWidths(float line_width)</CODE>
+<DD>
+<A NAME="IDX1164"></A>
+Set the widths of all lines in the graph to given value
+<DT><CODE>SetLineType(LineType line_type)</CODE>
+<DD>
+<A NAME="IDX1165"></A>
+Set all line types to given type
+<DT><CODE>ShareAxisAfter(GraphViewSpec* axis_var)</CODE>
+<DD>
+<A NAME="IDX1166"></A>
+Make all displayed variables after given axis_var share Y axis with axis_var
+<DT><CODE>ShareAxes()</CODE>
+<DD>
+<A NAME="IDX1167"></A>
+Make all groups of columns share the same Y axis
+<DT><CODE>SeparateAxes()</CODE>
+<DD>
+<A NAME="IDX1168"></A>
+Each column of data gets its own Y axis
+<DT><CODE>PlotRows()</CODE>
+<DD>
+<A NAME="IDX1169"></A>
+Plot the data across rows of grouped columns (x axis = column index, y
+axis = values for each column in one row) instead of down the columns
+<DT><CODE>PlotCols()</CODE>
+<DD>
+<A NAME="IDX1170"></A>
+Plot the data down columns (standard mode)
+<DT><CODE>SeparateGraphs(int x_layout, int y_layout)</CODE>
+<DD>
+<A NAME="IDX1171"></A>
+Draw each group of lines sharing the same Y axis using separate
+graphs, with the given layout of graphs in the display. Sets the
+<CODE>graph_layout</CODE> and <CODE>separate_graphs</CODE> parameters.
+<DT><CODE>OneGraph()</CODE>
+<DD>
+<A NAME="IDX1172"></A>
+Draw all data in one graph (default).
+<DT><CODE>TraceIncrement(float x_increment, float y_increment)</CODE>
+<DD>
+<A NAME="IDX1173"></A>
+Each subsequent trace of data (pass through the same X axis values) is
+incremented by given amount, producing a 3D-like effect.
+<DT><CODE>StackTraces()</CODE>
+<DD>
+<A NAME="IDX1174"></A>
+Arrange subsequent traces of data (pass through the same X axis
+values) in non-overlapping vertically-arranged stacks.
+<DT><CODE>UnStackTraces()</CODE>
+<DD>
+<A NAME="IDX1175"></A>
+Subsequent traces of data (pass through the same X axis values) are
+plotted overlapping on top of each other.
+<DT><CODE>StackSharedAxes()</CODE>
+<DD>
+<A NAME="IDX1176"></A>
+Arrange lines that share the same Y axis in non-overlapping vertically-arranged stacks.
+<DT><CODE>UnStackSharedAxes()</CODE>
+<DD>
+<A NAME="IDX1177"></A>
+Lines that share the same Y axis are plotted overlapping on top of each other.
+<DT><CODE>SpikeRaster(float thresh)</CODE>
+<DD>
+<A NAME="IDX1178"></A>
+Display spike rasters with given threshold for cutting a spike
+(<CODE>trace_incr.y = 1</CODE>, <CODE>vertical = NO_VERTICAL</CODE>,
+<CODE>line_type = TRESH_POINTS</CODE>).
+<DT><CODE>ColorRaster()</CODE>
+<DD>
+<A NAME="IDX1179"></A>
+Display values as rasters of lines colored according to the values of the lines.
+<DT><CODE>StandardLines()</CODE>
+<DD>
+<A NAME="IDX1180"></A>
+Get rid of raster-style display and return to 'standard' graph line display.
+<DT><CODE>SetXAxis (char* nm)</CODE>
+<DD>
+<A NAME="IDX1181"></A>
+Sets the <CODE>x-axis_index</CODE> of the view to the field named <CODE>nm</CODE>. If
+there is no field named <CODE>nm</CODE> then the index is unchanged.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_192.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_194.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

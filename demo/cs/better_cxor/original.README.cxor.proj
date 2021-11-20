@@ -1,0 +1,25 @@
+----- here is the README text for the original cxor.proj.gz file -----
+This example shows how a stochastic network can be trained to produce
+a target distribution of patterns over a set of visible units where
+each pattern is the input/output states of the XOR problem.  There are
+no real input units, only outputs, and only a single training event.
+
+The four patterns in the single event are put in a
+'ProbPatternSpec_Group', which allows them to be chosen with a
+specified probability to be presented as training examples to the
+network.  The network will then match this probability distribution in
+its own random generation of the output patterns based on the
+intrinsic noise that is present during settling.
+
+In this example, a TIG stat records the Total Information Gain, which
+is a measure of how far apart the actual and desired probability
+distributions are.  Also, a Targ stat records the percentage of time
+spent in one of the target patterns.  These are shown epoch-by-epoch
+on the lower left-hand graph.
+
+The basic information that these two statisitics work from is computed
+by the Dist Stat, which records the percentage of time that the network
+settles into each of the target patterns.  These percentages are
+recorded in the graph on the lower right---each of the lines should
+converge towards .25 percent, which is what the TIG stat is measuring.
+----- end original README for cxor.proj.gz file -----------------------

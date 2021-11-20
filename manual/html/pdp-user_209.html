@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - rbp-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_208.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_210.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1284" HREF="pdp-user_toc.html">14.2.2  RBp Connection Specifications</A></H3>
+<P>
+<A NAME="IDX1285"></A>
+
+</P>
+<P>
+Since the difference between recurrent backprop and standard
+feed-forward backprop is largely a matter of the process-level
+orchestration of the different phases, the connection specifications are
+identical between the two, with one small difference.  Please refer to
+section <A HREF="pdp-user_200.html">14.1.2  Bp Connection Specifications</A> for a description of the relevant parameters.
+
+</P>
+<P>
+The exception is only at the level of the equations used to compute the
+error derivative terms, which are modified to use the previous
+activation value of the sending unit, instead of the current activation,
+since the idea is to reduce the error that results at time t as a
+function of the activation states that lead up to it, those at time t-1.
+
+</P>
+<P>
+Since RBp networks are complex dynamical systems, it is often useful to
+place restrictions on the kinds of weights that can develop, in order to
+encourage certain kinds of solutions to problems.  One rather direct way
+of doing this is by simply limiting the weights to not go above or below
+certain values, or to restrict them to be symmetrical.  These can be
+accomplished by editing the <B>ConSpec</B>.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_208.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_210.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

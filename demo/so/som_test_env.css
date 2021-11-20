@@ -1,0 +1,23 @@
+// This is a script that will make an ordered set of test patterns
+// to test the receptive fields of the SOM
+
+float 	inc = s_args[0];	// arg is increment size to make the patterns
+int 	env_no = s_args[1];	// this is the environment number for the test env
+
+void MakeEnv() {
+  Environment* env = .environments[env_no];
+  env->events.Reset();
+  
+  float v1, v2;
+  for(v1 =0; v1 <= 1.0; v1 += inc) {
+    for(v2=0; v2 <= 1.0; v2 += inc) {
+      Event* ev = env->events.NewEl(1);
+      ev->patterns[0].value[0] = v1;
+      ev->patterns[0].value[1] = v2;
+      ev->name = "t_" + v1 + "_" + v2;
+    }
+  }
+}
+
+MakeEnv();
+  

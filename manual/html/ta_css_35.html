@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - prog-typea-dump</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_34.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_36.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX241" HREF="ta_css_toc.html">6.2.5  The Dump-file Format for Saving/Loading</A></H3>
+
+<P>
+The format used for dumping objects to files an loading them back in
+involves two passes.  The first pass lists all of the objects to be
+saved (i.e., the object that the <CODE>Save</CODE> function was called on, and
+any sub-objects it owns.  This is done so that during loading, all
+objects will have been created before pointers to these objects attempt
+to be cashed out.  The second pass then saves all of the values
+associated with the members in the object.  The format is a name-value
+based one, so that files can be loaded back into objects whose
+definition has changed.  It skips member names it can't find, etc, so
+you can continue to modify your software and still load old data.
+
+</P>
+<P>
+Paths (i.e., the <CODE>GetPath</CODE> function) figure heavily into the saving
+of objects, especially pointers.  Pointers are saved by giving the path
+to the object.  These saved paths are automatically corrected if the
+objects are loaded into a different location than the one they were
+saved in.  All pointers that are saved are assumed to be
+reference-counter based.  Thus, the <CODE>SetPointer</CODE> function is used
+to set the pointer.  Also note that it is impossible to save a pointer
+to a non-taBase derived object, since there is no way to get the path of
+such an object.
+
+</P>
+
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_34.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_36.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

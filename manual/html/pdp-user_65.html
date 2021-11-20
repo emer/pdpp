@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-intro</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_64.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_66.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX190" HREF="pdp-user_toc.html">7.1  Introduction to CSS</A></H2>
+
+<P>
+CSS is a "C" language interpreter and script language (C Super-Script).
+The name derives from the fact that the language is C, written in C, so
+it is C to the C, or C^c, while at the same time being an excellent,
+even superlative scripting language.  The actual syntax for CSS is
+somewhere in between C and C++, and the language is written entirely in
+C++.  The major differences between CSS and C++ are listed in
+section <A HREF="pdp-user_71.html">7.3.1  Differences Between CSS and C++</A>, and the few discrepancies between CSS and C are
+noted in section <A HREF="pdp-user_72.html">7.3.2  Differences Between CSS and ANSI C</A>.  Some of the convenient features of C++ that
+are incorporated into CSS are enumerated in section <A HREF="pdp-user_74.html">7.3.4  Features of C++ for C Programmers</A>, for
+those unfamiliar with C++.
+
+</P>
+<P>
+Being an interpreter, CSS presents the user with a prompt: <CODE>css&#62;</CODE>.
+At this prompt, the user can enter any C expression, which will be
+evaluated immediately upon pressing Return, or enter a command.  The
+commands operate much like a debugger (e.g., gdb, dbx), and allow
+control over the running, listing, and debugging of programs.  In
+addition to the default "immediate mode" behavior of the system, it
+can behave like a compiler.  For example, the command <CODE>define</CODE> will
+cause the system to enter a compiling mode (the prompt changes to
+<CODE>css\# </CODE>), where the C code that is subsequently entered is
+compiled into an intermediate machine code, but not run directly.
+Instead, it becomes a stored program that can be run many times.
+
+</P>
+<P>
+Typically, one works with a program file (use the extension .css to
+indicate a css file) that is loaded and then run, instead of manually
+typing programs into the system using define mode.  The command
+<CODE>load "filename.css"</CODE> will load a file and compile it, at which
+point it can be run.  The command <CODE>run</CODE> will run the program from
+the beginning.  <CODE>reload</CODE> will remove the existing compiled program
+and load (and re-compile) the previously loaded one from the disk file,
+which is handy when you are editing the program file and testing it out.
+
+</P>
+<P>
+One can view the source code within CSS by using the <CODE>list</CODE>
+command, which takes (optional) line number and length arguments.
+Unlike C functions, which need to be called with the usual syntax of
+parentheses around the arguments, which are themselves comma separated,
+and the whole thing is terminated by a semi-colon, the arguments to
+commands don't require the parentheses or the semi-colon, but do require
+thte commas.
+
+</P>
+<P>
+One of the principle uses of CSS is as an interface for hard-coded C/C++
+programs.  There is a "TypeAccess" program that reads the header files
+for a given application and generates type information that can be used
+by CSS to automatically interface with the objects and types in the
+hard-coded world.  CSS comes initially with some relevant hard-coded
+types from the standard C/C++ library, including a String class and the
+stream I/O classes, and various math and posix library functions.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_64.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_66.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

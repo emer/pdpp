@@ -1,0 +1,921 @@
+*** ta_string.h	Sun Apr 30 14:56:35 1995
+--- ta_string-g++-2.6.h	Sun Apr 30 12:39:30 1995
+***************
+*** 86,100 ****
+  // primitive ops on StrReps -- nearly all String fns go through these.
+  
+  StrRep*     Salloc(StrRep*, const char*, int, int);
+! StrRep*     Scopy(StrRep*, StrRep*);
+! StrRep*     Sresize(StrRep*, int);
+  StrRep*     Scat(StrRep*, const char*, int, const char*, int);
+  StrRep*     Scat(StrRep*, const char*, int,const char*,int, const char*,int);
+  StrRep*     Sprepend(StrRep*, const char*, int);
+! StrRep*     Sreverse(StrRep*, StrRep*);
+! StrRep*     Supcase(StrRep*, StrRep*);
+! StrRep*     Sdowncase(StrRep*, StrRep*);
+! StrRep*     Scapitalize(StrRep*, StrRep*);
+  
+  // These classes need to be defined in the order given
+  
+--- 86,99 ----
+  // primitive ops on StrReps -- nearly all String fns go through these.
+  
+  StrRep*     Salloc(StrRep*, const char*, int, int);
+! StrRep*     Scopy(StrRep*, const StrRep*);
+  StrRep*     Scat(StrRep*, const char*, int, const char*, int);
+  StrRep*     Scat(StrRep*, const char*, int,const char*,int, const char*,int);
+  StrRep*     Sprepend(StrRep*, const char*, int);
+! StrRep*     Sreverse(const StrRep*, StrRep*);
+! StrRep*     Supcase(const StrRep*, StrRep*);
+! StrRep*     Sdowncase(const StrRep*, StrRep*);
+! StrRep*     Scapitalize(const StrRep*, StrRep*);
+  
+  // These classes need to be defined in the order given
+  
+***************
+*** 110,117 ****
+    unsigned short    pos;      // starting position in S's rep
+    unsigned short    len;      // length of substring
+  
+!   void              assign(StrRep*, const char*, int = -1);
+!                    SubString(String& x, int p, int l);
+                      SubString(const SubString& x);
+  
+  public:
+--- 109,116 ----
+    unsigned short    pos;      // starting position in S's rep
+    unsigned short    len;      // length of substring
+  
+!   void              assign(const StrRep*, const char*, int = -1);
+!                     SubString(String& x, int p, int l);
+                      SubString(const SubString& x);
+  
+  public:
+***************
+*** 121,130 ****
+  
+                     ~SubString();
+  
+!   void              operator =  (const String&     y);
+!   void              operator =  (const SubString&  y);
+!   void              operator =  (const char* t);
+!   void              operator =  (char        c);
+  
+  // return 1 if target appears anywhere in SubString; else 0
+  
+--- 120,129 ----
+  
+                     ~SubString();
+  
+!   SubString&        operator =  (const String&     y);
+!   SubString&        operator =  (const SubString&  y);
+!   SubString&        operator =  (const char* t);
+!   SubString&        operator =  (char        c);
+  
+  // return 1 if target appears anywhere in SubString; else 0
+  
+***************
+*** 135,141 ****
+  
+  // return 1 if target matches entire SubString
+  
+- 
+  // IO 
+  
+    friend ostream&   operator<<(ostream& s, const SubString& x);
+--- 134,139 ----
+***************
+*** 144,150 ****
+  
+    unsigned int      length() const;
+    int               empty() const;
+!   const char*       chars() const;
+  
+    int               OK() const; 
+  
+--- 142,148 ----
+  
+    unsigned int      length() const;
+    int               empty() const;
+!   inline const char*       chars() const;
+  
+    int               OK() const; 
+  
+***************
+*** 181,189 ****
+                      String(int i,char* format = "%d");
+                      String(float f,char* format = "%g");
+                      String(double f,char* format = "%lg");
+-                  ~String();
+  
+!   const char*       chars() const { return &(rep->s[0]); } // get the underlying char representation
+  
+  // these are strangely missing in the original	
+    operator int()	{ return strtol(chars(), NULL, 0); }
+--- 179,186 ----
+                      String(int i,char* format = "%d");
+                      String(float f,char* format = "%g");
+                      String(double f,char* format = "%lg");
+  
+!                     ~String();
+  
+  // these are strangely missing in the original	
+    operator int()	{ return strtol(chars(), NULL, 0); }
+***************
+*** 191,211 ****
+    operator double()	{ return atof(chars()); }
+    operator char*() 	{ return (char*)chars(); }
+  
+!   void              operator =  (const String&     y);
+!   void              operator =  (const char* y);
+!   void              operator =  (char        c);
+!   void              operator =  (const SubString&  y);
+  
+  // concatenation
+  
+!   void              operator += (const String&     y); 
+!   void              operator += (const SubString&  y);
+!   void              operator += (const char* t);
+!   void              operator += (char        c);
+! 
+!  void		    operator += (const int i);
+!  void		    operator += (const float  f);
+!  void		    operator += (const double  f);
+  
+    void              prepend(const String&     y); 
+    void              prepend(const SubString&  y);
+--- 188,204 ----
+    operator double()	{ return atof(chars()); }
+    operator char*() 	{ return (char*)chars(); }
+  
+!   String&           operator =  (const String&     y);
+!   String&           operator =  (const char* y);
+!   String&           operator =  (char        c);
+!   String&           operator =  (const SubString&  y);
+  
+  // concatenation
+  
+!   String&           operator += (const String&     y); 
+!   String&           operator += (const SubString&  y);
+!   String&           operator += (const char* t);
+!   String&           operator += (char        c);
+  
+    void              prepend(const String&     y); 
+    void              prepend(const SubString&  y);
+***************
+*** 216,265 ****
+  // procedural versions:
+  // concatenate first 2 args, store result in last arg
+  
+!   inline friend void     cat(const String&, const String&, String&);
+!   inline friend void     cat(const String&, const SubString&, String&);
+!   inline friend void     cat(const String&, const char*, String&);
+!   inline friend void     cat(const String&, char, String&);
+!    
+!   inline friend void     cat(const SubString&, const String&, String&);
+!   inline friend void     cat(const SubString&, const SubString&, String&);
+!   inline friend void     cat(const SubString&, const char*, String&);
+!   inline friend void     cat(const SubString&, char, String&);
+! 
+!   inline friend void     cat(const char*, const String&, String&);
+!   inline friend void     cat(const char*, const SubString&, String&);
+!   inline friend void     cat(const char*, const char*, String&);
+!   inline friend void     cat(const char*, char, String&);
+!  
+  // double concatenation, by request. (yes, there are too many versions, 
+  // but if one is supported, then the others should be too...)
+  // Concatenate first 3 args, store in last arg
+  
+!   inline friend void     cat(const String&,const String&, const String&,String&);
+!   inline friend void     cat(const String&,const String&,const SubString&,String&);
+!   inline friend void     cat(const String&,const String&, const char*, String&);
+!   inline friend void     cat(const String&,const String&, char, String&);
+!   inline friend void     cat(const String&,const SubString&,const String&,String&);
+!   inline friend void     cat(const String&,const SubString&,const SubString&,String&);
+!   inline friend void     cat(const String&,const SubString&, const char*, String&);
+!   inline friend void     cat(const String&,const SubString&, char, String&);
+!   inline friend void     cat(const String&,const char*, const String&,    String&);
+!   inline friend void     cat(const String&,const char*, const SubString&, String&);
+!   inline friend void     cat(const String&,const char*, const char*, String&);
+!   inline friend void     cat(const String&,const char*, char, String&);
+! 
+!   inline friend void     cat(const char*, const String&, const String&,String&);
+!   inline friend void     cat(const char*,const String&,const SubString&,String&);
+!   inline friend void     cat(const char*,const String&, const char*, String&);
+!   inline friend void     cat(const char*,const String&, char, String&);
+!   inline friend void     cat(const char*,const SubString&,const String&,String&);
+!   inline friend void     cat(const char*,const SubString&,const SubString&,String&);
+!   inline friend void     cat(const char*,const SubString&, const char*, String&);
+!   inline friend void     cat(const char*,const SubString&, char, String&);
+!   inline friend void     cat(const char*,const char*, const String&,    String&);
+!   inline friend void     cat(const char*,const char*, const SubString&, String&);
+!   inline friend void     cat(const char*,const char*, const char*, String&);
+!   inline friend void     cat(const char*,const char*, char, String&);
+  
+  
+  // searching & matching
+--- 209,258 ----
+  // procedural versions:
+  // concatenate first 2 args, store result in last arg
+  
+!   friend inline void     cat(const String&, const String&, String&);
+!   friend inline void     cat(const String&, const SubString&, String&);
+!   friend inline void     cat(const String&, const char*, String&);
+!   friend inline void     cat(const String&, char, String&);
+! 
+!   friend inline void     cat(const SubString&, const String&, String&);
+!   friend inline void     cat(const SubString&, const SubString&, String&);
+!   friend inline void     cat(const SubString&, const char*, String&);
+!   friend inline void     cat(const SubString&, char, String&);
+! 
+!   friend inline void     cat(const char*, const String&, String&);
+!   friend inline void     cat(const char*, const SubString&, String&);
+!   friend inline void     cat(const char*, const char*, String&);
+!   friend inline void     cat(const char*, char, String&);
+! 
+  // double concatenation, by request. (yes, there are too many versions, 
+  // but if one is supported, then the others should be too...)
+  // Concatenate first 3 args, store in last arg
+  
+!   friend inline void     cat(const String&,const String&, const String&,String&);
+!   friend inline void     cat(const String&,const String&,const SubString&,String&);
+!   friend inline void     cat(const String&,const String&, const char*, String&);
+!   friend inline void     cat(const String&,const String&, char, String&);
+!   friend inline void     cat(const String&,const SubString&,const String&,String&);
+!   friend inline void     cat(const String&,const SubString&,const SubString&,String&);
+!   friend inline void     cat(const String&,const SubString&, const char*, String&);
+!   friend inline void     cat(const String&,const SubString&, char, String&);
+!   friend inline void     cat(const String&,const char*, const String&,    String&);
+!   friend inline void     cat(const String&,const char*, const SubString&, String&);
+!   friend inline void     cat(const String&,const char*, const char*, String&);
+!   friend inline void     cat(const String&,const char*, char, String&);
+! 
+!   friend inline void     cat(const char*, const String&, const String&,String&);
+!   friend inline void     cat(const char*,const String&,const SubString&,String&);
+!   friend inline void     cat(const char*,const String&, const char*, String&);
+!   friend inline void     cat(const char*,const String&, char, String&);
+!   friend inline void     cat(const char*,const SubString&,const String&,String&);
+!   friend inline void     cat(const char*,const SubString&,const SubString&,String&);
+!   friend inline void     cat(const char*,const SubString&, const char*, String&);
+!   friend inline void     cat(const char*,const SubString&, char, String&);
+!   friend inline void     cat(const char*,const char*, const String&,    String&);
+!   friend inline void     cat(const char*,const char*, const SubString&, String&);
+!   friend inline void     cat(const char*,const char*, const char*, String&);
+!   friend inline void     cat(const char*,const char*, char, String&);
+  
+  
+  // searching & matching
+***************
+*** 269,280 ****
+    int               index(char        c, int startpos = 0) const;      
+    int               index(const String&     y, int startpos = 0) const;      
+    int               index(const SubString&  y, int startpos = 0) const;      
+!   int               index(const char* t, int startpos = 0) const;
+! // position of target in string or -1 
+  
+  // return 1 if target appears anyhere in String; else 0
+  
+- 
+    int               contains(char        c) const;
+    int               contains(const String&     y) const;
+    int               contains(const SubString&  y) const;
+--- 262,272 ----
+    int               index(char        c, int startpos = 0) const;      
+    int               index(const String&     y, int startpos = 0) const;      
+    int               index(const SubString&  y, int startpos = 0) const;      
+!   int               index(const char* t, int startpos = 0) const;  
+! // return position of target in string or -1 for failure
+  
+  // return 1 if target appears anyhere in String; else 0
+  
+    int               contains(char        c) const;
+    int               contains(const String&     y) const;
+    int               contains(const SubString&  y) const;
+***************
+*** 285,294 ****
+    int               contains(char        c, int pos) const;
+    int               contains(const String&     y, int pos) const;
+    int               contains(const SubString&  y, int pos) const;
+!   int               contains(const char* t, int pos) const;
+! // True if target in string
+!   int               contains(const char* t) const;
+! // True if target in string
+  
+  // return 1 if target appears at position pos in String; else 0
+  
+--- 277,284 ----
+    int               contains(char        c, int pos) const;
+    int               contains(const String&     y, int pos) const;
+    int               contains(const SubString&  y, int pos) const;
+!   int               contains(const char* t, int pos=0) const;
+! // return 1 if target appears anywhere after (before if neg) position pos 
+  
+  // return 1 if target appears at position pos in String; else 0
+  
+***************
+*** 296,302 ****
+    int               matches(const String&     y, int pos = 0) const;
+    int               matches(const SubString&  y, int pos = 0) const;
+    int               matches(const char* t, int pos = 0) const;
+! // True if target is in given position
+  
+  //  return number of occurences of target in String
+  
+--- 286,292 ----
+    int               matches(const String&     y, int pos = 0) const;
+    int               matches(const SubString&  y, int pos = 0) const;
+    int               matches(const char* t, int pos = 0) const;
+! // return 1 if target appears at position pos in String; else 0
+  
+  //  return number of occurences of target in String
+  
+***************
+*** 303,309 ****
+    int               freq(char        c) const; 
+    int               freq(const String&     y) const;
+    int               freq(const SubString&  y) const;
+!   int               freq(const char* t) const; // number of targets in string
+  
+  // SubString extraction
+  
+--- 293,300 ----
+    int               freq(char        c) const; 
+    int               freq(const String&     y) const;
+    int               freq(const SubString&  y) const;
+!   int               freq(const char* t) const;
+! //  return number of occurences of target in String
+  
+  // SubString extraction
+  
+***************
+*** 313,362 ****
+  
+    SubString         operator () (int         pos, int len); // synonym for at
+  
+-   SubString         at(const char* t, int startpos = 0);
+    SubString         at(const String&     x, int startpos = 0); 
+    SubString         at(const SubString&  x, int startpos = 0); 
+    SubString         at(char        c, int startpos = 0);
+!   SubString         at(int         pos, int len); // at position for length
+  
+    SubString         before(int          pos);
+    SubString         before(const String&      x, int startpos = 0);
+    SubString         before(const SubString&   x, int startpos = 0);
+    SubString         before(char         c, int startpos = 0);
+!   SubString         before(const char*  t, int startpos = 0); // before target string
+  
+    SubString         through(int          pos);
+    SubString         through(const String&      x, int startpos = 0);
+    SubString         through(const SubString&   x, int startpos = 0);
+    SubString         through(char         c, int startpos = 0);
+!   SubString         through(const char*  t, int startpos = 0); // through targ string
+  
+    SubString         from(int          pos);
+    SubString         from(const String&      x, int startpos = 0);
+    SubString         from(const SubString&   x, int startpos = 0);
+    SubString         from(char         c, int startpos = 0);
+!   SubString         from(const char*  t, int startpos = 0); // from targ string
+  
+    SubString         after(int         pos);
+    SubString         after(const String&     x, int startpos = 0);
+    SubString         after(const SubString&  x, int startpos = 0);
+    SubString         after(char        c, int startpos = 0);
+!   SubString         after(const char* t, int startpos = 0); // after targ string
+  
+  
+  // deletion
+  
+- // delete len chars starting at pos
+  
+  // delete the first occurrence of target after startpos
+  
+-   void              del(const char* t, int startpos = 0);
+    void              del(const String&     y, int startpos = 0);
+    void              del(const SubString&  y, int startpos = 0);
+    void              del(char        c, int startpos = 0);
+!   void              del(int         pos, int len); // remove at position for len
+! 
+!   void              remove(const char* pat, int startpos = 0) { del(pat, startpos); }
+  
+  // global substitution: substitute all occurrences of pat with repl
+  
+--- 304,358 ----
+  
+    SubString         operator () (int         pos, int len); // synonym for at
+  
+    SubString         at(const String&     x, int startpos = 0); 
+    SubString         at(const SubString&  x, int startpos = 0); 
++   SubString         at(const char* t, int startpos = 0);
+    SubString         at(char        c, int startpos = 0);
+!   SubString         at(int         pos, int len);
+!   // substring at position for length
+  
+    SubString         before(int          pos);
+    SubString         before(const String&      x, int startpos = 0);
+    SubString         before(const SubString&   x, int startpos = 0);
+    SubString         before(char         c, int startpos = 0);
+!   SubString         before(const char*  t, int startpos = 0);
+!   // substring before (not including) target string
+  
+    SubString         through(int          pos);
+    SubString         through(const String&      x, int startpos = 0);
+    SubString         through(const SubString&   x, int startpos = 0);
+    SubString         through(char         c, int startpos = 0);
+!   SubString         through(const char*  t, int startpos = 0);
+!   // substring through (including) target string
+  
+    SubString         from(int          pos);
+    SubString         from(const String&      x, int startpos = 0);
+    SubString         from(const SubString&   x, int startpos = 0);
+    SubString         from(char         c, int startpos = 0);
+!   SubString         from(const char*  t, int startpos = 0);
+!   // substring from (including) target string
+  
+    SubString         after(int         pos);
+    SubString         after(const String&     x, int startpos = 0);
+    SubString         after(const SubString&  x, int startpos = 0);
+    SubString         after(char        c, int startpos = 0);
+!   SubString         after(const char* t, int startpos = 0);
+!   // substring after (not including) target string
+  
+  
+  // deletion
+  
+  
+  // delete the first occurrence of target after startpos
+  
+    void              del(const String&     y, int startpos = 0);
+    void              del(const SubString&  y, int startpos = 0);
++   void              del(const char* t, int startpos = 0);
+    void              del(char        c, int startpos = 0);
+!   void              del(int         pos, int len);
+! // delete len chars starting at pos
+!   void              remove(const char* t, int startpos = 0) { del(t, startpos); }
+! // remove target string from string
+  
+  // global substitution: substitute all occurrences of pat with repl
+  
+***************
+*** 363,369 ****
+    int               gsub(const String&     pat, const String&     repl);
+    int               gsub(const SubString&  pat, const String&     repl);
+    int               gsub(const char* pat, const String&     repl);
+!   int               gsub(const char* pat, const char* repl); // global substitution
+  
+  // friends & utilities
+  
+--- 359,366 ----
+    int               gsub(const String&     pat, const String&     repl);
+    int               gsub(const SubString&  pat, const String&     repl);
+    int               gsub(const char* pat, const String&     repl);
+!   int               gsub(const char* pat, const char* repl);
+! // global substitution: substitute all occurrences of pat with repl
+  
+  // friends & utilities
+  
+***************
+*** 382,414 ****
+  
+  // simple builtin transformations
+  
+!   friend String     reverse(const String& x);
+!   friend String     upcase(const String& x);
+!   friend String     downcase(const String& x);
+!   friend String     capitalize(const String& x);
+  
+  // in-place versions of above
+  
+!   void              reverse();
+!   void              upcase();
+!   void              downcase();
+    void              capitalize(); // capitalize the first letter of each word
+  
+  // element extraction
+  
+    char&             operator [] (int i);
+!   char              elem(int i) const;	// get the character at index
+    char              firstchar() const; // get the first character
+!   char              lastchar() const; // get the last character
+  
+  // conversion
+  
+                      operator const char*() const;
+  
+  
+  // IO
+  
+!   friend ostream&   operator<<(ostream& s, const String& x);
+    friend ostream&   operator<<(ostream& s, const SubString& x);
+    friend istream&   operator>>(istream& s, String& x);
+  
+--- 379,413 ----
+  
+  // simple builtin transformations
+  
+!   friend inline String     reverse(const String& x);
+!   friend inline String     upcase(const String& x);
+!   friend inline String     downcase(const String& x);
+!   friend inline String     capitalize(const String& x);
+  
+  // in-place versions of above
+  
+!   void              reverse();	// reverse order of string
+!   void              upcase();	// convert all letters to upper case
+!   void              downcase();	// convert all letters to lower case
+    void              capitalize(); // capitalize the first letter of each word
+  
+  // element extraction
+  
+    char&             operator [] (int i);
+!   const char&       operator [] (int i) const;
+!   char              elem(int i) const; // get the character at index i
+    char              firstchar() const; // get the first character
+!   char              lastchar() const;  // get the last character
+  
+  // conversion
+  
+                      operator const char*() const;
++   const char* 	    chars() const { return &(rep->s[0]); }
+  
+  
+  // IO
+  
+!   friend inline ostream&   operator<<(ostream& s, const String& x);
+    friend ostream&   operator<<(ostream& s, const SubString& x);
+    friend istream&   operator>>(istream& s, String& x);
+  
+***************
+*** 418,434 ****
+  
+  // status
+  
+!   unsigned int      length() const;
+!   int               empty() const; // True if string is empty
+  
+-   void              alloc(int newsize); // preallocate some space for String
+  
+  
+-   int               allocation() const; // report current allocation (not length!)
+  
+    void     error(const char* msg) const;
+  
+!   int               OK() const;	// check if the string is Ok 
+  };
+  
+  //typedef String StrTmp; // for backward compatibility
+--- 417,436 ----
+  
+  // status
+  
+!   unsigned int      length() const; // how many characters in the string
+!   int               empty() const;  // true if the string is empty
+! 
+!   void              alloc(int newsize);
+! // preallocate some space for String
+  
+  
++   int               allocation() const;
++ // report current allocation (not length!)
+  
+  
+    void     error(const char* msg) const;
+  
+!   int               OK() const;	// check if the string is allocated properly, etc.
+  };
+  
+  //typedef String StrTmp; // for backward compatibility
+***************
+*** 446,514 ****
+  extern StrRep  _nilStrRep;
+  extern String _nilString;
+  
+- // other inlines
+- 
+- inline String operator + (const String& x, const String& y);
+- inline String operator + (const String& x, const SubString& y);
+- inline String operator + (const String& x, const char* y);
+- inline String operator + (const String& x, char y);
+- 
+- inline String operator + (const String& x, const int i);
+- inline String operator + (const String& x, const float  f);
+- inline String operator + (const String& x, const double  f);
+- 
+- inline String operator + (const SubString& x, const String& y);
+- inline String operator + (const SubString& x, const SubString& y);
+- inline String operator + (const SubString& x, const char* y);
+- inline String operator + (const SubString& x, char y);
+- inline String operator + (const char* x, const String& y);
+- inline String operator + (const char* x, const SubString& y);
+- 
+- inline int operator==(const String& x, const String& y); 
+- inline int operator!=(const String& x, const String& y);
+- inline int operator> (const String& x, const String& y);
+- inline int operator>=(const String& x, const String& y);
+- inline int operator< (const String& x, const String& y);
+- inline int operator<=(const String& x, const String& y);
+- inline int operator==(const String& x, const SubString&  y);
+- inline int operator!=(const String& x, const SubString&  y);
+- inline int operator> (const String& x, const SubString&  y);
+- inline int operator>=(const String& x, const SubString&  y);
+- inline int operator< (const String& x, const SubString&  y);
+- inline int operator<=(const String& x, const SubString&  y);
+- inline int operator==(const String& x, const char* t);
+- inline int operator!=(const String& x, const char* t);
+- inline int operator> (const String& x, const char* t);
+- inline int operator>=(const String& x, const char* t);
+- inline int operator< (const String& x, const char* t);
+- inline int operator<=(const String& x, const char* t);
+- inline int operator==(const SubString& x, const String& y);
+- inline int operator!=(const SubString& x, const String& y);
+- inline int operator> (const SubString& x, const String& y);
+- inline int operator>=(const SubString& x, const String& y);
+- inline int operator< (const SubString& x, const String& y);
+- inline int operator<=(const SubString& x, const String& y);
+- inline int operator==(const SubString& x, const SubString&  y);
+- inline int operator!=(const SubString& x, const SubString&  y);
+- inline int operator> (const SubString& x, const SubString&  y);
+- inline int operator>=(const SubString& x, const SubString&  y);
+- inline int operator< (const SubString& x, const SubString&  y);
+- inline int operator<=(const SubString& x, const SubString&  y);
+- inline int operator==(const SubString& x, const char* t);
+- inline int operator!=(const SubString& x, const char* t);
+- inline int operator> (const SubString& x, const char* t);
+- inline int operator>=(const SubString& x, const char* t);
+- inline int operator< (const SubString& x, const char* t);
+- inline int operator<=(const SubString& x, const char* t);
+- 
+- 
+  // status reports, needed before defining other things
+  
+  inline unsigned int String::length() const {  return rep->len; }
+  inline int         String::empty() const { return rep->len == 0; }
+- // inline const char* String::chars() const { return &(rep->s[0]); }
+  inline int         String::allocation() const { return rep->sz; }
+- inline void        String::alloc(int newsize) { rep = Sresize(rep, newsize); }
+  
+  inline unsigned int SubString::length() const { return len; }
+  inline int         SubString::empty() const { return len == 0; }
+--- 448,458 ----
+***************
+*** 541,585 ****
+  
+  // assignment
+  
+! inline void String::operator =  (const String& y)
+  { 
+    rep = Scopy(rep, y.rep);
+  }
+  
+! inline void String::operator=(const char* t)
+  {
+!   rep = Salloc(rep, t, -1, -1); 
+  }
+  
+! inline void String::operator=(const SubString&  y)
+  {
+    rep = Salloc(rep, y.chars(), y.length(), y.length());
+  }
+  
+! inline void String::operator=(char c)
+  {
+!   rep = Salloc(rep, &c, 1, 1); 
+  }
+  
+  
+! inline void SubString::operator = (const char* ys)
+  {
+    assign(0, ys);
+  }
+  
+! inline void SubString::operator = (char ch)
+  {
+    assign(0, &ch, 1);
+  }
+  
+! inline void SubString::operator = (const String& y)
+  {
+    assign(y.rep, y.chars(), y.length());
+  }
+  
+! inline void SubString::operator = (const SubString& y)
+  {
+    assign(y.S.rep, y.chars(), y.length());
+  }
+  
+  // Zillions of cats...
+--- 485,537 ----
+  
+  // assignment
+  
+! inline String& String::operator =  (const String& y)
+  { 
+    rep = Scopy(rep, y.rep);
++   return *this;
+  }
+  
+! inline String& String::operator=(const char* t)
+  {
+!   rep = Salloc(rep, t, -1, -1);
+!   return *this;
+  }
+  
+! inline String& String::operator=(const SubString&  y)
+  {
+    rep = Salloc(rep, y.chars(), y.length(), y.length());
++   return *this;
+  }
+  
+! inline String& String::operator=(char c)
+  {
+!   rep = Salloc(rep, &c, 1, 1);
+!   return *this;
+  }
+  
+  
+! inline SubString& SubString::operator = (const char* ys)
+  {
+    assign(0, ys);
++   return *this;
+  }
+  
+! inline SubString& SubString::operator = (char ch)
+  {
+    assign(0, &ch, 1);
++   return *this;
+  }
+  
+! inline SubString& SubString::operator = (const String& y)
+  {
+    assign(y.rep, y.chars(), y.length());
++   return *this;
+  }
+  
+! inline SubString& SubString::operator = (const SubString& y)
+  {
+    assign(y.S.rep, y.chars(), y.length());
++   return *this;
+  }
+  
+  // Zillions of cats...
+***************
+*** 768,833 ****
+  
+  // operator versions
+  
+! 
+! // added to support floats, ints, etc
+! 
+! inline void String::operator +=(const int i)
+! {
+!   cat(*this, String(i), *this);
+! }
+! inline void String::operator +=(const float f)
+! {
+!   cat(*this, String(f), *this);
+! }
+! inline void String::operator +=(const double f)
+! {
+!   cat(*this, String(f), *this);
+! }
+! 
+!   
+! inline void String::operator +=(const String& y)
+  {
+    cat(*this, y, *this);
+  }
+  
+! inline void String::operator +=(const SubString& y)
+  {
+    cat(*this, y, *this);
+  }
+  
+! inline void String::operator += (const char* y)
+  {
+    cat(*this, y, *this);
+  }
+  
+! inline void String:: operator +=(char y)
+  {
+    cat(*this, y, *this);
+  }
+  
+- 
+  // constructive concatenation
+  
+! 
+! // conversions
+! 
+! inline String operator + (const String& x, const int i)
+! {
+!   String r;  cat(x, String(i), r);  return r;
+! }
+! inline String operator + (const String& x, const float f)
+! {
+!   String r;  cat(x, String(f), r);  return r;
+! }
+! inline String operator + (const String& x, const double f)
+! {
+!   String r;  cat(x, String(f), r);  return r;
+! }
+! 
+  
+- 
+- #if defined(__GNUG__) && !defined(NO_NRV)
+- 
+  inline String operator + (const String& x, const String& y) return r;
+  {
+    cat(x, y, r);
+--- 720,753 ----
+  
+  // operator versions
+  
+! inline String& String::operator +=(const String& y)
+  {
+    cat(*this, y, *this);
++   return *this;
+  }
+  
+! inline String& String::operator +=(const SubString& y)
+  {
+    cat(*this, y, *this);
++   return *this;
+  }
+  
+! inline String& String::operator += (const char* y)
+  {
+    cat(*this, y, *this);
++   return *this;
+  }
+  
+! inline String& String:: operator +=(char y)
+  {
+    cat(*this, y, *this);
++   return *this;
+  }
+  
+  // constructive concatenation
+  
+! #if defined(__GNUG__) && !defined(_G_NO_NRV)
+  
+  inline String operator + (const String& x, const String& y) return r;
+  {
+    cat(x, y, r);
+***************
+*** 1028,1033 ****
+--- 948,959 ----
+    return rep->s[i];
+  }
+  
++ inline const char&  String::operator [] (int i) const
++ { 
++   if (((unsigned)i) >= length()) error("invalid index");
++   return rep->s[i];
++ }
++ 
+  inline char  String::elem (int i) const
+  { 
+    if (((unsigned)i) >= length()) error("invalid index");
+***************
+*** 1071,1081 ****
+    return search(0, length(), c) >= 0;
+  }
+  
+- inline int String::contains(const char* t) const
+- {   
+-   return search(0, length(), t) >= 0;
+- }
+- 
+  inline int String::contains(const String& y) const
+  {   
+    return search(0, length(), y.chars(), y.length()) >= 0;
+--- 997,1002 ----
+***************
+*** 1106,1111 ****
+--- 1027,1033 ----
+    return match(p, length(), 0, y.chars(), y.length()) >= 0;
+  }
+  
++ 
+  inline int String::matches(const SubString& y, int p) const
+  {
+    return match(p, length(), 1, y.chars(), y.length()) >= 0;
+***************
+*** 1126,1131 ****
+--- 1048,1054 ----
+    return match(p, length(), 1, &c, 1) >= 0;
+  }
+  
++ 
+  inline int SubString::contains(const char* t) const
+  {   
+    return S.search(pos, pos+len, t) >= 0;
+***************
+*** 1145,1150 ****
+--- 1068,1074 ----
+  {
+    return S.search(pos, pos+len, c) >= 0;
+  }
++ 
+  
+  inline int String::gsub(const String& pat, const String& r)
+  {

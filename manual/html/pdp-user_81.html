@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - css-commands</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_80.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_82.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX213" HREF="pdp-user_toc.html">7.4.6  CSS Commands</A></H3>
+<P>
+<A NAME="IDX214"></A>
+
+</P>
+<P>
+The following are the commands available in CSS.  Commands are a little
+bit "special" in that they are typically executed immediately, they can
+be called with arguments without using the parentheses required in
+normal C functions (though they can be used if desired), and they do not
+need to be terminated with a semicolon (note that this also means that
+commands cannot extend across more than one line).  Also, they do not
+generate return values.  In general, commands provide debugging and
+program management (loading, listing, etc) kinds of facilities.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>alias &#60;cmd&#62; &#60;new_nm&#62;</CODE>
+<DD>
+<A NAME="IDX215"></A>
+Gives a new name to an existing command.  This is useful for defining
+shortcuts (e.g., <CODE>alias list ls</CODE>), but does not allow more complex
+functionality.  For that, either define a new function, or use a
+pre-processor <CODE>#define</CODE> macro.
+<DT><CODE>chsh &#60;script_path&#62;</CODE>
+<DD>
+<A NAME="IDX216"></A>
+Switches the CSS interface to access the CSS script object pointed to by
+the given path.  This is for hard-coded objects that have CSS script
+objects in them (of type <CODE>cssProgSpace</CODE>).
+<DT><CODE>clearall</CODE>
+<DD>
+<A NAME="IDX217"></A>
+Clears out everything from the current program space.  This is like
+restarting the CSS shell, compared to <CODE>reset</CODE> which does not remove
+any variables defined at the top-level.
+<DT><CODE>commands</CODE>
+<DD>
+<A NAME="IDX218"></A>
+Shows a list of the currently available commands (including any aliases
+that have been defined, which will appear at the end of the list).
+<DT><CODE>constants</CODE>
+<DD>
+<A NAME="IDX219"></A>
+Shows a list of the pre-defined constants that have been defined in CSS.
+These are just like globally-defined <CODE>Int</CODE> and <CODE>Real</CODE> values,
+and thus they can be assigned to different values (though this is
+obviously not recommended).
+<DT><CODE>cont</CODE>
+<DD>
+<A NAME="IDX220"></A>
+Continues the execution of a program that was stopped either by a
+breakpoint or by single-stepping.  To continue at a particular line in
+the code, use the <CODE>goto</CODE> command.
+<DT><CODE>debug &#60;level&#62;</CODE>
+<DD>
+<A NAME="IDX221"></A>
+Sets the debug level.  Level 1 provides a trace of the source lines
+executed.  Level 2 provides a more detailed, machine-level trace, and
+causes <CODE>list</CODE> to show the program at the machine level instead of
+at the usual source level. Levels greater than 2 provide increasing
+amounts of detail about the inner workings of CSS, which should not be
+relevant to most users.
+<DT><CODE>define</CODE>
+<DD>
+<A NAME="IDX222"></A>
+Toggles the mode where statements that are typed in become part of the
+current program to be executed later (define mode), as opposed the
+default (run mode) where statements are executed immediately after entering
+them.
+<DT><CODE>defines</CODE>
+<DD>
+<A NAME="IDX223"></A>
+Shows a list of all of the current <CODE>#define</CODE> pre-processor macros.
+<DT><CODE>edit &#60;object&#62; [&#60;wait&#62;]</CODE>
+<DD>
+<A NAME="IDX224"></A>
+If the GUI (graphical user interface) is active (i.e., by using
+<CODE>-gui</CODE> to start up CSS), <CODE>edit</CODE> will bring up a graphical edit
+dialog for the given object, which must be either a script-defined or
+hard-coded <CODE>class</CODE> object.  The optional second argument, if
+<CODE>true</CODE>, will cause the system to wait for the user to close the
+edit dialog before continuing execution of the script.
+<DT><CODE>enums</CODE>
+<DD>
+<A NAME="IDX225"></A>
+Shows a list of all the current <CODE>enum</CODE> types.  Note that most
+<CODE>enum</CODE> types are defined within a <CODE>class</CODE> scope, and can be
+found there by using the <CODE>type</CODE> command on the class type.
+<DT><CODE>exit</CODE>
+<DD>
+<A NAME="IDX226"></A>
+Exits from the program (CSS), or from another program space if
+<CODE>chsh</CODE> (or its GUI equivalent) was called.
+<DT><CODE>frame [&#60;back&#62;]</CODE>
+<DD>
+<A NAME="IDX227"></A>
+Shows the variables and their values associated with the current block
+or frame of processing.  The optional argument gives the number of
+frames back from the current one to display.  This is most relevant for
+debugging at a breakpoint, since otherwise there will only be a single,
+top-level frame to display.
+<DT><CODE>functions</CODE>
+<DD>
+<A NAME="IDX228"></A>
+Shows a list of all of the currently defined functions.
+<DT><CODE>globals</CODE>
+<DD>
+<A NAME="IDX229"></A>
+Shows a list of all of the currently defined global variables, including
+those in the script and hard-coded ones.
+<DT><CODE>goto &#60;src_ln&#62;</CODE>
+<DD>
+<A NAME="IDX230"></A>
+Continues execution at the given source line.  
+<DT><CODE>help [&#60;expr&#62;]</CODE>
+<DD>
+<A NAME="IDX231"></A>
+Shows a short help message, including lists of commands and functions
+available.  When passed argument (command, function, class, etc),
+provides help information for it.
+<DT><CODE>inherit &#60;object_type&#62;</CODE>
+<DD>
+<A NAME="IDX232"></A>
+Shows the inheritance path for the given object type.
+<DT><CODE>list [&#60;start_ln&#62; [&#60;n_lns&#62;]] [&#60;function&#62;]</CODE>
+<DD>
+<A NAME="IDX233"></A>
+Lists the program source (or machine code, if <CODE>debug</CODE> is 2 or
+greater), optionally starting at the given source line number, and
+continuing for either 20 lines (the initial default) or the number given
+by the second argument (which then becomes the new default).
+Alternatively, a function name can be given, which will start the
+listing at the beginning of that function (even if the function is
+<CODE>extern</CODE>al and does not appear in a line-number based list).
+<CODE>list</CODE> with no arguments will resume where the last one left off.
+<DT><CODE>load &#60;program_file&#62;</CODE>
+<DD>
+<A NAME="IDX234"></A>
+Loads and compiles a new program from the given file.
+<DT><CODE>mallinfo</CODE>
+<DD>
+<A NAME="IDX235"></A>
+Generates a listing of the current <CODE>malloc</CODE> memory allocation
+statistics, including changes from the last time the command was called.
+<DT><CODE>print &#60;expr&#62;</CODE>
+<DD>
+<A NAME="IDX236"></A>
+Prints the results of the given expression (which can be any valid CSS
+expression), giving some type information and following with a new line
+(<CODE>\n</CODE>).  This is useful for debugging, but not for printing values
+as part of an executing program.
+<DT><CODE>printr &#60;object&#62;</CODE>
+<DD>
+<A NAME="IDX237"></A>
+Prints an object and any of its sub-objects in a indented style
+output.  This can be very long for objects near the top of the object
+hierarchy (i.e., the root object), so be careful!
+<DT><CODE>reload</CODE>
+<DD>
+<A NAME="IDX238"></A>
+Reloads the current program from the last file that was <CODE>load</CODE>ed.
+This is useful because you do not have to specify the program file when
+making a series of changes to a program.
+<DT><CODE>remove &#60;var_name&#62;</CODE>
+<DD>
+<A NAME="IDX239"></A>
+Removes given variable from whatever space it was defined in.  This can
+be useful if a variable was defined accidentally or given the wrong name
+during interactive use.
+<DT><CODE>reset</CODE>
+<DD>
+<A NAME="IDX240"></A>
+Reset is like <CODE>clearall</CODE>, except that it does not remove any
+top-level variables that might have been defined.  Neither of these
+commands will remove anything declared <CODE>extern</CODE>.
+<DT><CODE>restart</CODE>
+<DD>
+<A NAME="IDX241"></A>
+Resets the script to start at the beginning.  This is useful if you want
+to stop execution of the program after a break point.
+<DT><CODE>run</CODE>
+<DD>
+<A NAME="IDX242"></A>
+Runs the script from the start (as opposed to <CODE>cont</CODE> which
+continues execution from the current location).
+<DT><CODE>setbp &#60;src_ln&#62;</CODE>
+<DD>
+<A NAME="IDX243"></A>
+Sets a breakpoint at the given source-code line.  Execution of the
+program will break when it gets to that line, and you will be able to
+examine variables, etc.
+<DT><CODE>setout &#60;ostream&#62;</CODE>
+<DD>
+<A NAME="IDX244"></A>
+Sets the default output of CSS commands to the given stream.  This can
+be used to redirect listings or program tracing output to a file.
+<DT><CODE>settings</CODE>
+<DD>
+<A NAME="IDX245"></A>
+Shows the current values of various system-level settings or parameters.
+These settings are all static members of the class <CODE>ta_Misc</CODE>, and
+can be set by using the scoped member name, for example:
+<CODE>ta_Misc::display_width = 90;</CODE>
+<DT><CODE>shell &#60;"shell_cmd"&#62;</CODE>
+<DD>
+<A NAME="IDX246"></A>
+Executes the given Unix shell command (i.e., <CODE>shell "ls -lt"</CODE>).
+<DT><CODE>showbp</CODE>
+<DD>
+<A NAME="IDX247"></A>
+Shows a list of all currently defined breakpoints, and the source code
+line they point to.
+<DT><CODE>source &#60;cmd_file&#62;</CODE>
+<DD>
+<A NAME="IDX248"></A>
+Loads a file which contains a series of commands or statements, which
+are executed exactly as if they were entered from the keyboard.  Note
+that this is different than <CODE>load</CODE>ing a program, which merely
+compiles the program but does not execute it immediately thereafter.
+<CODE>source</CODE> uses run mode, while <CODE>load</CODE> uses define mode.
+<DT><CODE>stack</CODE>
+<DD>
+<A NAME="IDX249"></A>
+Displays the current contents of the stack.  This can be useful for
+debugging.
+<DT><CODE>status</CODE>
+<DD>
+<A NAME="IDX250"></A>
+Displays a brief listing of various status parameters, such as current
+source line, depth, etc.
+<DT><CODE>step &#60;step_n&#62;</CODE>
+<DD>
+<A NAME="IDX251"></A>
+Sets the single-step mode for program execution.  The parameter is the
+number of lines to step through before pausing.  A value of 0 turns off
+single stepping.
+<DT><CODE>tokens &#60;obj_type&#62;</CODE>
+<DD>
+<A NAME="IDX252"></A>
+Lists the instances of the given object type which are known to have
+been created.  Many object types do not register tokens, which will be
+indicated in the results of this command if applicable.  It is possible
+to refer to the objects by their position in this list with the
+<CODE>Token</CODE> function, which can be a useful shortcut to using the
+object's path.
+<DT><CODE>trace [&#60;level&#62;]</CODE>
+<DD>
+<A NAME="IDX253"></A>
+Displays a trace of the functions called up to the current one (i.e., as
+called from within a breakpoint). A trace level of 0 (the default) just
+gives function names, line numbers, and the source code for the
+function call, while level 1 adds stack information, level 2 adds
+stack and auto variable state information, and level 3 gives a complete
+dump of all available information.
+<DT><CODE>type &#60;type_name&#62;</CODE>
+<DD>
+<A NAME="IDX254"></A>
+Gives type information about the given type.  This includes full
+information about classes (both hard-coded and script-defined),
+including members, functions, scoped types (enums), etc.
+<DT><CODE>undo</CODE>
+<DD>
+<A NAME="IDX255"></A>
+This undoes the previous statement, when in <CODE>define</CODE> mode.
+<DT><CODE>unsetbp &#60;src_ln&#62;</CODE>
+<DD>
+<A NAME="IDX256"></A>
+Removes a breakpoint associated with the given source-code line number.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_80.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_82.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

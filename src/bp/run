@@ -1,0 +1,3 @@
+#!/bin/csh
+echo Running $CPU/bp on $HOST
+$CPU/bp $*

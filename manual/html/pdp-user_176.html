@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-actrf</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_175.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_177.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1067" HREF="pdp-user_toc.html">12.8.5  Activity-based Receptive Fields</A></H3>
+<P>
+<A NAME="IDX1068"></A>
+<A NAME="IDX1069"></A>
+
+</P>
+<P>
+The <B>UnitActRFStat</B> computes an effective receptive field for units
+based on their activation values when inputs are presented.  The idea is
+to present a wide range of inputs to the network while performing a
+weighted average over these input patterns as a function of the unit's
+activation for each.  When you do this averaging, all the things that
+the unit does not care about wash out, leaving an image of those things
+that reliably activate the unit.  Assuming that the inputs span a large
+enough space and provide for sufficient averaging, the resulting
+receptive field can be much more informative than just looking at the
+weights, since it takes into account any network dynamics, etc., and can
+be computed on units any number of layers removed from the inputs.
+Finally, the "input" that you average over need not literally be the
+input layer to the network -- it could be the output, or an
+intermediate hidden layer (or all of these at once).
+
+</P>
+<P>
+This stat requires a stable database for accumulating the averaged
+receptive fields -- an <B>Environment</B> is used for this purpose.  Note
+that you have to do an <CODE>InitRFVals</CODE> in order to initialize this
+environment before you start collecting the stats.  The statistics
+collect until <CODE>InitRFVals</CODE> is run again.
+
+</P>
+<P>
+<CODE>InitRFVals</CODE> can be performed automatically via a
+<B>UnitActRFStatResetProc</B>, which can be put in the <CODE>init_procs</CODE>
+of a higher processing level in the hierarchy.
+
+</P>
+<P>
+This stat has the following parameters:
+<DL COMPACT>
+
+<DT><CODE>layer</CODE>
+<DD>
+<A NAME="IDX1070"></A>
+Set this to point to the units that you want to record the receptive
+fields for.
+<DT><CODE>rf_layers</CODE>
+<DD>
+<A NAME="IDX1071"></A>
+This contains the layer(s) that you want to perform the averaging over
+(the input in the above description).
+<DT><CODE>data_env</CODE>
+<DD>
+<A NAME="IDX1072"></A>
+This points to the <B>Environment</B> that contains the resulting receptive
+fields, with one <B>Event</B> per unit.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_175.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_177.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

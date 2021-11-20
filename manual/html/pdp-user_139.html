@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-seq</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_138.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_140.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX799" HREF="pdp-user_toc.html">11.3  Representing Sequences of Events</A></H2>
+
+<P>
+Sequences of events are represented in PDP++ by creating subgroups
+within the main <CODE>.events</CODE> group of an environment.  Each sub group
+should contain a set of events that define one discrete sequence of
+related events.  If the appropriate <B>SequenceEpoch</B> and <B>Sequence</B>
+processes are used, they will access the <CODE>GroupCount</CODE> and
+<CODE>GetGroup</CODE> functions on the environment (see section <A HREF="pdp-user_136.html">11.1  Environments</A>), which
+will allow the epoch-level process to iterate over the groups
+(sequences) in the environment, while the sequence process iterates over
+the events within each group.  The sequence-based processes are
+discussed in section <A HREF="pdp-user_162.html">12.6.1  Processes for Sequences of Events</A>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_138.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_140.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

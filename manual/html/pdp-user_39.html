@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-config-running</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_38.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_40.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.3.7  Training and Testing Your Network</A></H3>
+
+<P>
+Finally, you are ready to run your project.
+
+</P>
+<P>
+Now you can run through a Test -- just hit <I>Run</I> in the Epoch_1
+control panel.  You will see the four patterns flicker through the
+<B>NetView</B>, and you will see them logged in the <B>GridLogView</B>.  The
+outputs all look pretty much the same, at this point.  But now you can
+start to train the network.  Click on <I>Step</I> or <I>Run</I> in the Train
+control panel, and you are off and running.
+
+</P>
+<P>
+You can play around with parameters, etc. as described in the previous
+tutorial on running XOR.
+
+</P>
+<P>
+There is one very important aspect of PDP++ which has not yet been
+demonstrated in the tutorial, which we can step through at this point.
+This is the ability to apply different parameters to different parts of
+the network.  For the purposes of demonstration, we will assume that we
+want to have one learning rate for the input-to-hidden weights, and
+another learning rate for the hidden-to-output weights.  The basic idea
+about how to do this is to create two different <B>ConSpec</B> objects, one
+of which applies to the input-to-hidden weights, and another of which
+applies to the hidden-to-output weights.  An important facility in PDP++
+is the ability to create a <EM>child</EM> spec that automatically inherits
+a set of parameters from a <EM>parent</EM> spec, and has a set of unique
+parameters.  Thus, for the present example, we would want to create a
+child ConSpec that inherits everything from the parent except for the
+learning rate, which will be unique to it.  Thus, we will have two
+conspecs that are identical except for the learning rate.   The
+advantage of this setup is that if you should decide to manipulate other
+parameters such as momentum, weight decay, etc, the two specs will
+automatically get the same values of these changed parameters.
+
+</P>
+<P>
+To create the new child ConSpec, locate the Project window, and do
+<I>.specs</I> / <I>New Child</I> / <I>BpConSpec_0</I> (note that <I>New Child</I> is
+at the bottom of the menu).  This will bring up a New object dialog,
+specifying that the new BpConSpec will be created as a child of the
+existing one.  Select <I>Ok</I> with the right mouse button, so that the
+new child will be edited.  Then, click the mouse into the <I>lrate</I>
+field, and enter a new learning rate parameter (e.g., .01).  Notice that
+the little check-box next to this field was checked when we clicked in
+lrate.  This indicates that this is a <EM>unique</EM> parameter, while the
+other, non-checked boxes are <EM>inherited</EM> parameters.  To see how
+this works, let's edit the parent spec.  At the top of the edit dialog,
+select <I>Actions</I> / <I>Find Parent</I>, which will bring up the edit
+dialog for the parent con spec.  Notice that the parent does not have
+any of the unique check boxes, since it does not inherit from anything
+else.  Now, change another parameter, like <I>momentum</I>, in the
+parent dialog, and press <I>Apply</I>.  The <I>Revert</I> button on the child
+spec is highlighted, so press it.  Notice that the child dialog displays
+the new (changed) momentum value, but retains the unique learning rate
+parameter entered before.  Elaborate hierarchies of specs can be
+created, and the patterns of inheritence and unique parameters provides
+a very clear indication what is specialized about specific spec relative
+to the others, and what it has in common.
+
+</P>
+<P>
+Before closing the edit dialogs, it is a good idea to label them with
+mnemonic names -- call the parent "input-to-hidden cons" and the child
+"hidden-to-output cons", for example.  Then click <I>Ok</I> on both edit
+dialogs.
+
+</P>
+<P>
+Having created the specs with different learning rates, we now need to
+specify that one spec applies to one set of connections, and another
+applies to the other set.  As it is now, the parent spec applies to all
+projections, since it is the default that was created automatically when
+the connections were created.  The best way to set specs is using the
+NetView, which has a <I>Selections</I> menu that operates on selected items
+in the NetView (it is on the view half (right side) of the window, since
+it operates on the items selected in a particular view).  Thus, make
+sure you are in <I>Select</I> mode, and select the projection arrow that
+goes from the hidden to the output layer.  Then, select <I>Selections</I> /
+<I>Set Con Spec</I>.  This will bring up a popup dialog, where you should
+select <I>BpConSpec</I> / <I>hidden-to-output cons</I>, and click <I>Ok</I>.
+This has now set the selected projection to use this con spec instead of
+the default.  To verify the status of the network, click in the
+backround of the NetView to unselect everything, and then choose
+<I>Selections</I> / <I>Show Con Spec</I>.  In the dialog, select
+<I>hidden-to-output cons</I>, and click <I>Ok</I>.  The correct projection
+arrow will be selected in the NetView, indicating that it is using that
+con spec.  You can repeat this to verify that the other projection is
+still using "input-to-hidden cons".  Thus, the <I>Selections</I> menu
+allows you to both set and verify which objects in the network are using
+which specs.  Notice that you can set many other properties using this
+menu much in the same way we just did for ConSpecs on projections.
+
+</P>
+<P>
+At this point, you might want to look at some of the other demo projects
+available.  These are located in the <TT>`demo'</TT> directory where the XOR
+example project was.  Check out the <TT>`README'</TT> files for further
+information.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_38.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_40.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

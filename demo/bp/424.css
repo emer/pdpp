@@ -1,0 +1,129 @@
+.projects[0].networks->New(1, Network);
+.projects[0].networks[0].layers->New(3, Layer);
+.projects[0].networks[0].layers[0].geom = "{x=4: y=1: z=1: }";
+.projects[0].networks[0].layers[0].UpdateAfterEdit();
+.projects[0].networks[0].layers[1].geom = "{x=2: y=1: z=1: }";
+.projects[0].networks[0].layers[1].UpdateAfterEdit();
+.projects[0].networks[0].layers[2].geom = "{x=4: y=1: z=1: }";
+.projects[0].networks[0].layers[2].UpdateAfterEdit();
+.projects[0].networks[0].Build();
+.projects[0].networks[0].layers[1].pos = "{x=1: y=0: z=1: }";
+.projects[0].networks[0].layers[1].UpdateAfterEdit();
+.projects[0].networks[0].views[0].ResetDisplay();
+.projects[0].networks[0].layers[1].projections.New(1);
+.projects[0].networks[0].layers[1].projections[0].from_type = Projection::CUSTOM;
+.projects[0].networks[0].layers[1].projections[0].from = .projects[0].networks[0].layers[0];
+.projects[0].networks[0].layers[2].projections.New(1);
+.projects[0].networks[0].layers[2].projections[0].from_type = Projection::CUSTOM;
+.projects[0].networks[0].layers[2].projections[0].from = .projects[0].networks[0].layers[1];
+.projects[0].networks[0].Connect();
+.projects[0].environments->New(1, Environment);
+.projects[0].environments[0].events->New(4, Event);
+.projects[0].environments[0].views[0].Revert();
+.projects[0].environments[0].views[0].Apply();
+.projects[0].environments[0].views[0].Apply();
+{ float_RArray* ths = .projects[0].environments[0].events[0].patterns[0]->value;
+  ths = "{1,0,0,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[0].patterns[1]->value;
+  ths = "{1,0,0,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[1].patterns[0]->value;
+  ths = "{0,1,0,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[1].patterns[1]->value;
+  ths = "{0,1,0,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[2].patterns[0]->value;
+  ths = "{0,0,1,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[2].patterns[1]->value;
+  ths = "{0,0,1,0,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[3].patterns[0]->value;
+  ths = "{0,0,0,1,}";
+}
+{ float_RArray* ths = .projects[0].environments[0].events[3].patterns[1]->value;
+  ths = "{0,0,0,1,}";
+}
+.projects[0].environments[0].views[0].Iconify();
+.projects[0].processes->New(1, TrainProcess);
+.projects[0].processes[0].CreateSubProcs();
+{ TrainProcess* ths = .projects[0].processes[0];
+  ths->epoch = "{name=\"epoch\": val=0: max=1000: }";
+}
+.projects[0].processes[2].final_stats->RemoveEl(.projects[0].processes[2].final_stats[0]);
+.projects[0].processes[2].final_stats->New(1, SE_Stat);
+.projects[0].processes[2].final_stats[0].CreateAggregates(1);
+{ SE_Stat* ths = .projects[0].processes[0].loop_stats[0];
+  ths->se = "{name=\"lst_sum_se\": disp_opts=\" MIN=0, TEXT, \": is_string=false: vec_n=0: val=0: str_val=\"\": stopcrit={flag=true: rel=LESSTHANOREQUAL: val=0.04: cnt=1: n_met=0: }: }";
+}
+.projects[0].processes->New(1, EpochProcess);
+.projects[0].processes[3].CreateSubProcs();
+{ EpochProcess* ths = .projects[0].processes[3];
+  ths->order = "SEQUENTIAL";
+  ths->wt_update = "TEST";
+}
+{ MonitorStat* ths = .projects[0].processes[4].final_stats.NewEl(1,MonitorStat);
+  ths->variable = "act";
+  ths->net_agg.op = "COPY";
+  ths->objects.LinkUnique(.projects[0].networks[0].layers[2]);
+  ths->UpdateAfterEdit();
+}
+.projects[0].processes[4].final_stats->New(1, EpochCounterStat);
+.projects[0].processes[4].final_stats[2].CreateAggregates(0);
+.projects[0].processes[0]->ControlPanel();
+.projects[0].processes[3]->ControlPanel();
+{ SchedProcess* ths = .projects[0].processes[0];
+  ths->step = "{proc=.projects[0].processes[1]: n=30: }";
+}
+.projects[0].logs->New(1, GraphLog);
+.projects[0].logs[0].AddUpdater(.projects[0].processes[1]);
+.projects[0].logs->New(1, GridLog);
+.projects[0].logs[1].AddUpdater(.projects[0].processes[4]);
+{ MonitorStat* ths = .projects[0].processes[3].final_stats.NewEl(1,MonitorStat);
+  ths->variable = "r.wt";
+  ths->net_agg.op = "COPY";
+  ths->objects.LinkUnique(.projects[0].networks[0].layers[2].projections[0]);
+  ths->UpdateAfterEdit();
+}
+{ MonitorStat* ths = .projects[0].processes[3].final_stats.NewEl(1,MonitorStat);
+  ths->variable = "r.wt";
+  ths->net_agg.op = "COPY";
+  ths->objects.LinkUnique(.projects[0].networks[0].layers[1].projections[0]);
+  ths->UpdateAfterEdit();
+}
+.projects[0].logs->New(1, GridLog);
+.projects[0].logs[2].AddUpdater(.projects[0].processes[3]);
+.projects[0].logs[2].views[0].UpdateGridLayout(0);
+{ DT_GridViewSpec* ths = .projects[0].logs[2].views[0].viewspecs.gp[0].gp[0];
+  ths->geom = "{x=4: y=2: z=0: }";
+}
+.projects[0].logs[2].views[0].viewspecs.gp[0].gp[0].UpdateLayout(3);
+{ DT_GridViewSpec* ths = .projects[0].logs[2].views[0].viewspecs.gp[0].gp[1];
+  ths->pos = "{x=2: y=3: z=0: }";
+  ths->geom = "{x=4: y=2: z=0: }";
+}
+.projects[0].logs[2].views[0].viewspecs.gp[0].gp[1].UpdateLayout(1);
+.projects[0].specs[1].children->New(1, BpConSpec);
+{ BpConSpec* ths = .projects[0].specs[1].children[0];
+  ths->SetUnique("lrate", true);
+  ths->lrate = "0.1";
+  ths->decay_fun = "NULL";
+}
+.projects[0].specs[1].children[0].FindParent();
+{ BpConSpec* ths = .projects[0].specs[1];
+  ths->momentum = "0.5";
+  ths->decay_fun = "NULL";
+}
+{ taNBase* ths = .projects[0].specs[1];
+  ths->name = "input-to-hidden cons";
+  ths->decay_fun = "NULL";
+}
+{ taNBase* ths = .projects[0].specs[1].children[0];
+  ths->name = "hidden-to-output cons";
+  ths->decay_fun = "NULL";
+}
+.projects[0].networks[0].views[0].SetConSpec(.projects[0].specs[1].children[0]);
+.projects[0].networks[0].views[0].ShowConSpec(.projects[0].specs[1].children[0]);
+.projects[0].networks[0].views[0].ShowConSpec(.projects[0].specs[1]);

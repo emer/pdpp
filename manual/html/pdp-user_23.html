@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-hierarchy</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_22.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_24.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.3  Object Hierarchy: The Root Object and the Project</A></H3>
+
+<P>
+As a result of loading the "xor.proj" file, we created a number of
+objects, all of which can be thought of as organized into a hierarchical
+tree, with Root at the top of the tree.  The Root window is associated
+with the Root object, which is a generic object that basically just
+serves as a place holder for other objects.  We opened the XOR project
+in Root, and so an object representing the entire XOR project has been
+created as a child of Root.  The <B>Project</B> window is associated with
+this project; in fact we could create a second project under root, and
+if we did a second project window would be created.  Typically, though,
+we just have one project.  Within this project, we have both a network
+and an environment, as well as some other things we will consider later
+in this tutorial.  Within the network we have layers of units; within
+the units we have projections from other layers, which contain
+connections.
+
+</P>
+<P>
+Each object can be identified by a string that specifies its location in
+the object hierarchy.  Root sits at the top of the object hierarchy; our
+project is a 'child' of root.  It's identifier string is
+<CODE>.projects[0]</CODE>.  In general, the identifier string for an object
+specifies its location in the object hierarchy as a pathway
+specification that begins with a '.', followed by fields separated by
+dots.  Each field contains a type-name and an index.  One can trace the
+pathway to a particular object down from Root (implicit in the first
+dot) through intermediate fields separated by dots, ending with the
+field specifying the type and token number of the object itself.  The
+path for the project is short since it is the first (and only) project
+that is a child of Root.  This is all exactly like a directory
+hierarchy, except we have objects instead of files and the separator is
+'.' instead of '/'.
+
+</P>
+<P>
+Objects can have proper names as well as type names and indices; these
+names can be used to access the object directly and to give it a
+mnemonic label that can be used in referring to it.  The windows you see
+give the full identifier string and if a name has been assigned, they
+give the name as well in parentheses.
+
+</P>
+<P>
+Within the Project window, we have several menus accessible.  As before,
+one of these menus refers to the Project Object itself (the <I>Object</I>
+menu).  The other menus refer to the children of the project,
+which are again organized into several types.  The main ones we will
+care about are the networks, the environments, the processes, and the
+logs.  The defaults, specs, and scripts are for customizations that we
+will not consider for the moment.  We could access the network through
+the <I>.networks</I> menu, but we already have a window up on the screen
+that gives us access to the network, called the <B>NetView</B>.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_22.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_24.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

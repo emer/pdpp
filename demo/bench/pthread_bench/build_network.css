@@ -1,0 +1,10 @@
+// for use in an auto-load script that builds and connects the network
+
+// only do it if it is not already built!
+if(.networks[0].layers[0].units.leaves == 0) {
+  //  cout << "Building Network...";
+  .networks[0].Build();
+  .networks[0].Connect();
+  //  .processes.TrainProcess.ReInit();		// does wt init too
+  //cout << "Done\n";
+}

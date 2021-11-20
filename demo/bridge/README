@@ -1,0 +1,56 @@
+demo/bridge:
+
+	bridge.proj.gz		bridge-process demo (use bp++ to run)
+
+
+This example shows how to use the BridgeProcess to link together two
+different networks.  In principle, this could be used to train hybrid
+networks that have some units learning by one algorithm and another
+set of units learning by a different algorithm, and this is its main
+purpose.  However, doing so requires compiling an executable that has
+two different algorithms present, which is not included in the
+standard distribution, so this example simply connects up two bp
+networks. 
+
+The two networks are in a master-slave relationship, so that the
+first network (Network_0) is the master and its hidden units,
+which learn to perform an auto-encoding of the input to the output,
+are the inputs to the second network (Network_1).  Since both networks
+are coupled on a trial-by-trial basis, a SyncEpochProcess was used,
+which synchronously runs two trial processes with the same event.
+This means that the same event is being applied to both networks, so
+each network has "dummy layers" for the layers from the other network
+that are not relevant to it.  This is just so the event won't complain
+about not finding those layers.
+
+There are two environments, 'Hard_to_Easy' and 'Easy_to_Hard'.  The
+first one has the master network learning a hard task, where there are
+four different output unit states (a standard 4-2-4 encoder problem),
+and the slave network learning an easy task, where there are only 2
+different output states.  Thus, the slave network, which uses the
+hidden units from Network_0 as its input, should be able to learn the
+easy task with these hidden representations quite easily.  Indeed, if
+you look at the error curves, it learns its task faster than the
+master network.
+
+By switching the environment on the Control Panel for the Train_0
+process to Easy_to_Hard, you can see what happens when the master
+network has only an easy task to learn, and the poor slave network is
+stuck with these lazy hidden unit representations to solve its
+difficult task...  
+
+Note that you have to manually Init_Weights on the second network,
+since the training process does not know about it and will not init
+its weights when ReInit or NewInit are used.
+
+Note that the 'BridgeProcess' is located in the loop_procs of the
+first trial process, which is the one that runs the first network.
+Thus, it gets called after the first network has updated itself, but
+before the second one is run, which is just what you want.  In order
+to combine two different types of algorithms, one would just use
+different kinds of trial processes for each, with both sharing a
+parent SyncEpochProcess.
+
+Alternatively, if the linking is more coarse-grained, one can use fork
+processes to split the stream at a higher level of processing, or link
+in one process branch as a loop_process of the other one.

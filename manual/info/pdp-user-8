@@ -1,0 +1,1223 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: obj-group-functions,  Next: obj-group-edit,  Prev: obj-group-variables,  Up: obj-group
+
+Group Functions
+---------------
+
+   Groups have many functions for operating on the elements of the
+group.
+
+   These functions return an element of the group. The element is an
+instance of the group's element type.
+
+
+`El (int i)'
+     Returns the element of the group at index `i'. If the index is
+     out of range, an out of rangeerror is reported, and `NULL' is
+     returned.
+
+`DefaultEl()'
+     Returns the element indexed by the `default_el' variable of the
+     group.
+
+`Leaf (int n)'
+     Performs a depth first search to find the nth leaf of the group
+     tree.
+
+`FirstEl()'
+     Utilizes sets the internal leaf index to zero and return the
+     first leaf.
+
+`NextEl();'
+     Increments the internal leaf index and returns the leaf of that
+     index.
+
+`Pop()'
+     Returns the last element of the group, and removes it from the
+     group as well.
+
+`Peek()'
+     This function is similar to the `Pop()' function, but it does not
+     remove the element.
+
+   These functions return an integer indicating the index of the
+element in the group. In all these functions if no match is found, a
+value of "-1" is returned.
+
+
+`FindEl (inst el)'
+     Returns the index of the element of the group which matches `el'.
+
+`FindName (char* name)'
+     Returns the index of the element which has a name field which
+     matches `name'.
+
+`Find (TypeDef t)'
+     Returns the index of the first element of type `T'.
+
+`FindLeaf (char* name)'
+     Returns the leaf index of the leaf element which has a name
+     field which matches `name'.
+
+`FindLeafEl (inst el)'
+     Returns the leaf index of the leaf element which matches `el'.
+
+   These functions are used to add elements to the group.
+
+`AddEl (inst el)'
+     Adds element `el' to the group
+
+`AddUniqueName (inst el)'
+     Adds an element `el' to the group and adds an instance index to
+     its name if another element in the group has the same name.
+
+`Push (inst el)'
+     Adds element `el' to the end of the group.
+
+`PushUnique (inst el)'
+     Adds element `el' to the end of group only if it is not in the
+     group already.
+
+`PushUniqueName (inst el)'
+     Adds element `el' to the end of the group only if there are no
+     other elements of the group with the same name.
+
+`Insert (inst el, int i)'
+     Inserts element `el' at position `i' in the group.  If the
+     position `i' is out of range, it is added to the beginning or
+     end of the group accordingly.
+
+`Replace (int i ,inst el)'
+     Replaces the element at location `i' with the element `el'.
+
+`ReplaceEl (inst rel, inst el)'
+     Replaces the element `rel' of the group with element `el'. If no
+     match is found, the element `el' is not inserted.
+
+`ReplaceName (char* name, inst el)'
+     Replaces the element with the name `name' with the element `el'.
+     If no match is found, the element `el' is not inserted.
+
+`Transfer (inst el)'
+     Removes `el' from the group or owner it is currently in and adds
+     it to this group.
+
+`Link (inst el)'
+     Adds a link to the object `el' to this group.  There are also
+     corresponding functions (InsertLink, ReplaceLink, etc) which
+     perform as the do the Add functions except they link instead of
+     add (*note obj-group::).
+
+`New (int i, typedef t)'
+     Creates `i' new objects of type `t' in the group.
+
+   These functions are used for removing elements from the group.
+
+
+`Remove (int i)'
+     Removes the element at position i. If the element is owned by
+     the group it deletes the element. If the element is a linked
+     element, it deletes the link.
+
+`Move (int from, int to)'
+     Removes an element from position `from' and inserts at position
+     `to'.
+
+`RemoveName (char* name)'
+     Removes the element with a name matching `name'.
+
+`RemoveLeafName (char* name)'
+     Removes the leaf with a name matching `name'.
+
+`RemoveAll()'
+     Removes all the elements of the group.
+
+   These functions return a subgroup of the group.
+
+
+`Gp (int i)'
+     Returns the subgroup at index(i)
+
+`LeafGp (int n)'
+     Returns the nth subgroup which contains leaves.
+
+`FirstGp()'
+     Sets the group index to zero and returns the first subgroup with
+     leaf elements.
+
+`NextGp()'
+     Increments the group index and return the corresponding subgroup
+     with leaf elements.
+
+
+File: pdp-user,  Node: obj-group-edit,  Prev: obj-group-functions,  Up: obj-group
+
+Group Edit Dialog
+-----------------
+
+   The group edit dialog (GED) is in many ways like the the Edit
+dialog for other objects (*note gui-edit::). In the GED however, all
+the elements of the group are editable at one time. The elements are
+represented in a horizontal scrollbox. If there are more elements
+than can be represented in the dialog, dragging the scrollbar under
+the scrollbox will allow access to the other members. The members are
+ordered sequentially from left to right.
+
+   In some cases the elements of the groups may be of different
+types. When this occurs, all the members of all the element types are
+listed in the member names section of the dialog. Elements which do
+not contain a certain member in the member names section will have a
+blank field where the edit field of that member would normally
+appear. The dialog buttons (Ok, Apply, Revert, Cancel) apply to all
+the elements of the group.
+
+   In addition to the standard editing control keys in the Edit
+Dialog, the following keys are are mapped to special functions.
+
+     Meta-f moves the Ibeam forward to the same field in the next
+     group member
+
+     Meta-b moves the Ibeam backward to the same field in the previous
+     group member
+
+   Many of the functions described in the previous section (*note
+obj-group-functions::) are available in the menus of the group edit
+dialog.  Note that if you want to operate on the subgroups (e.g., to
+move them around), you can do EditSubGps which will pull up a dialog
+of these subgroups where the move and other actions apply to them.
+
+
+File: pdp-user,  Node: obj-array,  Next: obj-spec,  Prev: obj-group,  Up: obj
+
+Arrays
+======
+
+   Arrays are the data objects for related sequences of simple data
+structures like integers, floating point numbers, or strings. Each of
+these types has its own corresponding array type (ex. floating point
+numbers (floats) are arranged in a float_Array). All array types
+however have the the same structure of variables and access functions.
+
+   The following sections document the various operations and
+variables of the array type. These are probably of most interest to
+users who will be manipulating arrays in the CSS language, or in
+programming in PDP++.  However, some of the array functions are
+available in the Actions menu in the gui, and their function might
+not be fully clear from their name and arguments.
+
+* Menu:
+
+* obj-array-var::               Array Variables
+* obj-array-func::              Array Functions
+* obj-array-edit::              Array Editing
+
+
+File: pdp-user,  Node: obj-array-var,  Next: obj-array-func,  Prev: obj-array,  Up: obj-array
+
+Array Variables
+---------------
+
+   The array classes have two important variables:
+
+
+`int size'
+     Indicates the number of elements in the array. Although the array
+     may have allocated additional space, this is the number of
+     elements in use.
+
+`item err'
+     Indicates the value to return when the array is accessed out of
+     range.(ex. If the array had a size of 5 and was asked for
+     element 6 or element -1 then the err value would be returned).
+
+
+File: pdp-user,  Node: obj-array-func,  Next: obj-array-edit,  Prev: obj-array-var,  Up: obj-array
+
+Array Functions
+---------------
+
+`Alloc (int x)'
+     Allocates an array with space for x items.
+
+`Reset()'
+     Sets the size of the array to zero, but does not change or free
+     the amount to allocated space.
+
+`Remove(int x)'
+     Removes the array element at index `x'.
+
+`Permute()'
+     Permutes the elements of the array into a random order.
+
+`Sort()'
+     Sorts the array in ascending order.
+
+`ShiftLeft (int x)'
+     Shifts all the elements in the array `x' positions to the left.
+
+`ShiftLeftPct (float f)'
+     Shifts the array to the left by `f' percent.
+
+`El (int x)'
+     Returns the element at index `x', or err if out of range.
+     Indexing starts at zero, therefore an array with five elements
+     would have valid indices for zero to four.
+
+`FastEl (int x)'
+     Fast element return. Returns the element at index `x' with no
+     error checking. Caution: PDP++ may behave unexpectedly if this
+     function is called with an index that is out of range.
+
+`Pop()'
+     Returns and removes the last element in the array.
+
+`Peek()'
+     Returns the last element in the array without removing it.
+
+`Add (item i)'
+     Adds `i' to the array.
+
+`Push (item i)'
+     Pushes (adds) `i' to the the end of the array
+
+`Insert (item i, int num, int loc)'
+     Inserts `num' copies of item `i' at location `loc' in the array.
+
+`Find (item i, int loc)'
+     Returns the index of the first element in the array matching item
+     `i' starting at location `loc'.
+
+`RemoveEl (item i)'
+     Removes the first element matching item `i'. Returns `TRUE' if a
+     match is found and `FALSE' otherwise.
+
+
+File: pdp-user,  Node: obj-array-edit,  Prev: obj-array-func,  Up: obj-array
+
+Array Editing
+-------------
+
+   Arrays are editing using an enhanced version of the standard Edit
+Dialog *Note The Edit Dialog: gui-edit. The Array Edit Dialog
+arranges all of the elements of the array horizontally and allows the
+user to scroll though the array elements using a horizontal scroll
+bar at the bottom of the dialog. In addition, number arrays (floats,
+ints, etc..) can be edited using a Color Array Edit Dialog which is
+similar in layout to the Array Edit Dialog, but adds a color palette
+for painting the values *Note gui-colors::.
+
+
+File: pdp-user,  Node: obj-spec,  Next: obj-random,  Prev: obj-array,  Up: obj
+
+Specifications
+==============
+
+   One of the important design considerations for the PDP++ software
+was the idea that one should separate state variables from
+specifications and parameters (*note over-spec::).  The attributes of
+an object can often be divided into two types-the first type of
+attributes represent the object's state. These change over time and
+are usually distinct within each instance of an object.  The second
+group of attributes represent parameters of an object that tend to
+remain fixed over time, and often have values that are common among
+instances of the object class. This second group can be thought of as
+a *specification* for the object class.
+
+   For example: The car object class might have two attributes:
+color, and current-speed. The color attribute would be set when the
+car was built, and would (hopefully) not be changing very much. It
+would be classified as a specification parameter. The current-speed
+attribute is likely to be constantly changing as the car accelerates
+and decelerates. It is representative of the car's current state and
+would be classified in the first group, the car's state space. If you
+took a group of cars, chances are that some of them would share the
+same color, but they would probably be moving around at different
+speeds. Rather than have each car carry around an attribute for its
+color, the specification attributes are split off from the car and
+put into a special class called a car-specification or carspec. In
+this way cars with identical colors can share the same specification,
+while still having their own state attributes like current-speed.  By
+changing the color attribute in the specification, all the cars
+sharing that specification would have their color changed. This
+allows easy access to common parameters of an object class in one
+location. Rather than individually setting the color parameter for
+each instance of a car, the attribute can be set in just once in the
+spec.
+
+   This idea is instantiated in a particular class of objects known as
+Specs.  Specs also have special "smart pointers" that objects use to
+refer to them.  These spec pointers or SPtr objects ensure that a
+given object always has a corresponding spec, and that this spec is of
+an appropriate type.
+
+   While specs are basically just classes that have parameters and
+functions that control other object's behavior, there are a couple of
+special properties that specs have which make them more powerful.
+
+   Often when one wants to use two different specs of the same type,
+it is because one spec has one parameter different than the other.
+For example, one spec might specify a learning rate of .01, and the
+other a learning rate of .001.  However, these specs might very well
+share several other parameters.
+
+   To simplify the ability of specs to share some parameters and not
+others, a special system of _spec inheritance_ was developed.
+Basically, each spec has a group on it called `children', in which
+"child" specs can be created.  These child specs inherit all of their
+parameters from the parent spec, except those specifically marked as
+unique to the child.  These fields appear with a check in the
+left-hand check-box when edited in the GUI.  Thus, whenever you
+change a value in the parent, the children automatically get this
+changed value, except if they have a unique value for this field, in
+which case they keep their current value.  For a tutorial
+demonstration of how this works, see (*note tut-config-running::).
+
+   There are a couple of things to know about the "smart" spec
+pointers.  These pointers have both a type field and the actual
+pointer to the spec.  When you change only the `type' field, it will
+automatically find a spec of that type, and set the pointer to that.
+If one does not yet exist, one will be created automatically and the
+pointer set to it.  If however you change the pointer directly to
+point to a different spec, and this spec is of a different type than
+that shown in the `type' field, then the type will prevail over the
+pointer you set.  Thus you have to change both the `type' and `spec'
+fields if you change the latter to point to a different type.
+
+   The reason for this is that the spec pointer object does not know
+which field you actually changed, and for the nice automatic
+properties associated with changing the type field to work, the need
+to update both the type and the spec pointer is an unfortunate
+consequence.
+
+
+File: pdp-user,  Node: obj-random,  Prev: obj-spec,  Up: obj
+
+Random Distributions
+====================
+
+   Random distributions in PDP++ are handled by an instance of the
+class Random. This class has a number of functions which return a
+random number from the distribution named by the function.
+Alternately the distribution can be specified in the object itself in
+which case the `Gen()' function returns a value from the specified
+distribution. Many of the distributions require parameters which are
+again either passed to the specific functions or set on the Random
+object itself.
+
+   Random class Variables:
+
+`Type type'
+     Indicates the type of random variable to generate when the
+     `Gen()' function is called. It can have one of the following
+     values:
+    `UNIFORM'
+          A uniform distribution with `var' = half-range
+
+    `BINOMIAL'
+          A binomial distribution with `var' = p, `par' = n
+
+    `POISSON'
+          A Poisson distribution with `var' = lambda
+
+    `GAMMA'
+          A gamma distribution with `var' and `par' = stages
+
+    `GAUSSIAN'
+          A normal gaussian distribution with `var'
+
+    `NONE'
+          Returns the `mean' value
+
+`float mean'
+     The mean of a random distribution
+
+`float var'
+     The "variance" or rough equivalent (half-range)
+
+`float par'
+     An extra parameter used for some distributions
+
+   Random Class Functions
+
+`float ZeroOne()'
+     Returns a uniform random number between zero and one
+
+`float Range(float rng)'
+     Returns a uniform random number with a given range centered at 0
+
+`float Uniform(float half_rng)'
+     Returns a uniform random number with given half-range centered
+     at 0
+
+`float Binom(int n, float p)'
+     Returns a random number from a binomial distribution with `n'
+     trials each of probability `p'
+
+`float Poisson(float l)'
+     Returns a random number from a Poisson distribution with
+     parameter `l'
+
+`float Gamma(float var, int j)'
+     Returns a random number from a Gamma distribution with variance
+     `var' and `par' number of exponential stages
+
+`float Gauss(float var)'
+     Returns a gaussian (normal) random number with a variance `var'
+
+`float Gen()'
+     Returns a random number using the distributions type `type' and
+     the `mean', `var', and `par' variables on the Random object
+     itself.
+
+
+File: pdp-user,  Node: proj,  Next: net,  Prev: obj,  Up: Top
+
+Projects (and Defaults, Scripts)
+********************************
+
+   Projects hold all the components of a PDP simulation. Projects are
+essentially just an object with groups for the networks, the
+environments which provide the patterns, the processes to control the
+simulation, and the logs of the statistical data. Typically a user
+will load and save the project as whole, since the project represents
+the conceptual experiment or simulation.  Also, the first action a
+new user must perform is to create a new project to hold the various
+components that will be created thereafter.
+
+   This chapter describes operations and features of the project that
+affect the project as a whole.  This includes the following:
+
+Basic Project Management
+     There are a number of different kinds of things one needs to do
+     with a simulation as a whole, like saving and loading it,
+     recording what parameters were used, etc.  This section gives
+     some tips on these tasks.
+
+The Project Viewer
+     The project window contains an interactive project viewer
+     program that enables users to conveniently view and manipulate
+     many aspects of the project.  This is especially useful for
+     configuring processes, because they link together all the
+     different elements of a project to actually achieve various
+     processing goals.  In addition, specs can all be viewed together
+     in the project viewer, making it easier to manage complex sets
+     of specs.
+
+Startup Arguments and Controlling PDP++ with Signals
+     These sections describe how to affect how PDP++ runs (e.g.,
+     turing off the graphical user interface and running it in the
+     background).  If a process is running in the background, it can
+     be controlled by sending it signals.
+
+Customization Through Defaults and Settings
+     There are several levels of defaults and settings that can be
+     modified in the PDP++ environment to get things to work just the
+     way you like them.  In addition to XWindow defaults, there are
+     some global parameters, and a specialized set of object-specific
+     defaults that are actually stored on the project itself (in the
+     `defaults' group).
+
+Scripts
+     These allow the user to add all kinds of different functionality
+     to the software by creating objects that hold different CSS
+     scripts.  These script objects are saved with the project, and
+     can be run from a simple pull-down menu.
+
+Select Edits
+     These are special edit dialogs that allow the user to edit
+     selected fields on any other object, all within one edit dialog.
+     Thus, you can select the key parameters you are playing with an
+     put them all into one SelectEdit.
+
+* Menu:
+
+* proj-basics::                 Basic Project Management
+* proj-viewer::                 The Project Viewer
+* proj-startup::                Startup Arguments to PDP++
+* proj-signals::                Signals to Control a PDP++ Process
+* proj-defaults::               Customization Through Defaults and Settings
+* proj-scripts::                Project Scripts
+* proj-seledit::                Select Edit Dialogs
+
+
+File: pdp-user,  Node: proj-basics,  Next: proj-viewer,  Prev: proj,  Up: proj
+
+Basic Project Management
+========================
+
+   Every object in PDP++ can be saved to a file, and loaded back in
+later from that file (*note obj-basics-files::).  Typically, a user
+will simply save and load the project object, since it contains all
+the other objects of interest, which will be saved and loaded along
+with it.  However, it is often a good idea to save parts of the
+project, particularly environments, since that makes it possible to
+load these parts into other projects.
+
+   A saved project file is actually human readable (once it is
+uncompressed), and you can pull it up in your favorite text editor (if
+its not too big for it), and see exactly what parameters were used,
+etc.  This is much easier to do if you just save all of your specs,
+which contain most of the interesting parameters in the project.
+Thus, saved files serve as records of exactly how your simulation was
+configured.
+
+   It is recommended that you save your project frequently, in the
+unlikely event of a program crash.  However, even if you have not
+saved the project and it does crash, a recover file is automatically
+created.
+
+   These recover files are named `PDP++Recover.#.proj.gz', where the
+number # of the saved file will increment to be unique in the
+directory.  You can typically load this file back in and resume where
+you left off.  Always check the loaded project to ensure that it
+looks reasonable - sometimes the crash will cause the project file to
+be corrupted, though this is relatively rare.  Any reliable crash
+should be reported to the developers, along with a project file and
+steps to reproduce the crash.  *Note intro::.
+
+   There is now an option to record an entry in a SimLog file every
+time you do `Save As' on your project file.  This SimLog file records
+the user, date, current and previous project file names, together
+with comments that the user can enter as they save the project (e.g.,
+what parameters were manipulated, etc).  This is strongly
+recommended, as it is often quite difficult to remember what was
+going on with a project when one comes back to it, even after just a
+few weeks away!  If you decide not to use it, you can click the
+`use_sim_log' flag off on the little dialog that comes up as you are
+saving.
+
+
+File: pdp-user,  Node: proj-viewer,  Next: proj-startup,  Prev: proj-basics,  Up: proj
+
+The Project Viewer
+==================
+
+   Figure of: <The Project Viewer> here
+
+   In its default mode, the project viewer displays all the networks,
+environments, processes, and logs in your project using colored icons
+for each.  By pressing the `View Specs' button, it will switch to
+viewing the specs for this project, and then `View Project' will
+switch back.  We begin by describing project mode, and then spec mode.
+
+Project View Mode
+-----------------
+
+   In project mode, the following are the default colors:
+
+Pink
+     Networks
+
+Green
+     Environments
+
+Yellow
+     Schedule processes
+
+Light Blue
+     Group of statistics within a schedule process
+
+Slate Blue
+     The statistics themselves - the lighter-colored stats are
+     directly computing values while the darker ones are aggregators
+     of others.  If you click `Show Aggs' then the set of linked
+     aggregators is displayed in aquamarine.
+
+Red
+     Statistics with a stopping criterion set
+
+Wheat
+     Group of processes within a schedule process
+
+Gold
+     The sub-processes within a schedule process
+
+Brown
+     Logs
+
+   Non-obvious actions you can perform on icons:
+Single-click with left-mouse-button (LMB)
+     Will select or deselect item, and update the action buttons at
+     the left of the display.
+
+Double-click with LMB
+     On objects with windows (networks, environments, logs), will
+     iconify or view the object.  On processes, will iconify or
+     de-iconify the object (an iconified process is collapsed so that
+     you can't see all the sub-processes below it).  Iconifying
+     processes is important if you have many process hierarchies -
+     they will not all fit in the display at once.  Iconified
+     processes are identifiable as being not colored.
+
+Single-click with right-mouse-button (RMB)
+     Will bring up the edit dialog for that object.
+
+Shift-LMB or middle-mouse-button
+     Extends the selection to include multiple items.
+
+   Note that because much of what happens in the project view concerns
+processes, you may need to read *Note proc:: to understand everything
+that goes on in this view.
+
+   Effects of action buttons on left side of display are (note that
+where multiple are listed, the same button does different things
+depending on what is selected - they are described in order from
+left-right, top-bottom).
+
+Minimize
+     Shrinks the display to the smallest vertical size.  Note that at
+     this size, you can re-expand the display later by hitting the
+     top of the maximize button, which will be just visible at the
+     bottom of the window.
+
+Maximize
+     Expands the display vertically to fit all of the items in the
+     display.
+
+View Specs
+     Switches the display to viewing specs (mode described below).
+
+Select
+     This is the standard mode - causes mouse clicks to select
+     objects.
+
+Move
+     When in this mode, the mouse will move objects to different
+     positions within their respective groups (does not work for
+     schedule processes).  For example, you can rearrange the order
+     of statistics within a schedule process by moving them.
+
+Edit
+     Pulls up an Edit Dialog for selected object(s).
+
+Init
+     Initializes the display (this is rarely necessary, as the
+     display is usually automatically updated when needed).
+
+Iconify, DeIconify, Iconify All
+     Controls the iconification of windows or processes.
+
+Show Links, No Links
+     Either shows or turns off showing the links between a selected
+     item and other objects - the links show you how everything is
+     connected up in the project.  Links are drawn as solid lines for
+     cases where a process uses the object for processing (e.g., The
+     network used by the train process is shown as a pink solid
+     line).  Dashed lines indicate that the process updates the given
+     object (e.g., the Trial process typically has a dashed line to
+     the network, indicating that it updates it).
+
+Change Type, Rmv Updater, Add Updater
+     If one object is selected, Change Type will allow you to change
+     the type of that object.  If an object that can be updated
+     (e.g., a network) and a process object are selected, then it
+     will allow you to either add or remove an updating link between
+     these objects.
+
+New Stat, Set Agg, Set Agg Link
+     If a schedule process is selected, New Stat will allow creating
+     a new statistic in this object - you will be prompted for
+     whether to make it in the loop or final stats group.  Note that
+     if you know where you want to put the new stat, and that stat
+     group (loop_stats or final_stats) already appears in the view
+     (because it has other stats in it), then you can just click
+     right on the stat group and hit New Stat from there.
+
+     If a statistic is selected, Set Agg will allow you to set the
+     kind of aggregation this statistic should use.
+
+     If two statistics are selected, Set Agg Link will set one
+     statistic to aggregate from the other (order can be selected in
+     a subsequent dialog).
+
+Ctrl Panel
+     If a schedule process is selected, this will bring up its
+     control panel.
+
+New Process, New Agg, Transfer Obj
+     If a schedule process is selected, this will allow you to create
+     a new process in a process group (init_procs, loop_procs,
+     final_procs) that is not currently shown in the display.  Note
+     that if the group you want is already shown in the display, then
+     just click on it and do New Process from there.  If a stat is
+     selected, New Agg will create a new aggregator of that
+     statistic.  If a stat or non-schedule process together with a
+     stat or process subgroup is selected, Transfer Obj will transfer
+     the stat/process to the group.  If a stat/process is selected
+     together with a schedule process, Transfer Obj will bring up a
+     dialog asking for which subgroup of that schedule process to
+     transfer into.
+
+New Scd Proc, New Process, New Stat, New Sub/Super, New Link, Transfer Obj
+     Transfer Obj on Project Viewer If nothing is selected, New Scd
+     Proc will create a new schedule process.
+
+     If a stat group (loop_stats, final_stats) is selected, New Stat
+     will create a new statistic in it.
+
+     If a process group (init_procs, loop_procs, final_procs) is
+     selected, New Process will create a new process in it.
+
+     If one schedule process is selected, this New Sub/Super will
+     prompt for creating a new schedule process above (super) or
+     below (sub) the selected one in the process hierarchy.
+
+     If two schedule processes are selected, New Link will prompt for
+     linking one process into a process group (init_procs,
+     loop_procs, final_procs) of the other (direction is determined
+     by a dialog, but default is that to to-be-linked process is
+     first selected).  Also see next case:
+
+     If a schedule process and a process group (init_procs,
+     loop_procs, final_procs) on another schedule process are
+     selected, then the schedule process will be linked into the
+     process group with a New Link.
+
+     If a group and a non-schedule process object are selected, then
+     Transfer Obj will transfer the object into the group.
+
+New Proc Gp, Remove Obj(s), Remove Link
+     If nothing is selected, New Proc Gp will create a new process
+     group for organizing schedule processes into groups.
+
+     Will remove object(s) that are selected, or if two objects are
+     selected and they are linked, the link will be severed.
+
+   In summary, it should be clear that the project viewer enables you
+to establish linkages between different objects, and to perform
+detailed configuration of the process hierarchy.
+
+Spec View Mode
+--------------
+
+   Spec view mode shares much in common with project view mode.
+Specs are arranged in the order they appear in the .specs menu,
+left-to-right and then top-to-bottom.  The default colors are:
+
+Violet
+     Unit Spec
+
+Green
+     Con Spec
+
+Orange
+     Projection Spec
+
+Purple
+     Layer Spec
+
+   Many of the the action buttons are similar to those in the project
+view mode, with the following special actions:
+
+Edit
+
+Set Spec
+     Brings up the view of the default network in the .networks
+     group, and applies the selected spec to whatever objects are
+     selected in the network view.  This is equivalent to performing
+     Selections/Set XX Spec in the NetView (see *Note net-build:: for
+     more details) where XX is the type of Spec that was selected.
+     This provides a convenient way of applying a given spec to
+     selected parts of the network.
+
+Show Spec
+     This is like the inverse of Set Spec - it selects whatever
+     objects in the network are currently using the selected spec.
+
+New Child
+     On either a spec or the `children' group of a spec, will prompt
+     for creating a new child spec of the selected item.
+
+New Spec
+     Allows one to create a new spec.
+
+New Spec Gp
+     Allows one to create a new spec group for organizing specs into
+     groups.
+
+
+File: pdp-user,  Node: proj-startup,  Next: proj-signals,  Prev: proj-viewer,  Up: proj
+
+Startup Arguments to PDP++
+==========================
+
+   PDP++ interprets a large number of startup arguments.  It looks
+for any of the arguments that can be passed to CSS (*note
+css-startup::), which includes a script file that can be used to
+automate a set of actions to be taken in the simulator.  This is
+particularly useful for running simulations in the background.  The
+file `css/include/startup.css' provides an example of a startup file
+that loads in a saved project, sets some log files to record, and
+then runs the training or batch process.  After the process is
+completed, the program will quit (unless the CSS argument -i was
+given).
+
+   The following arguments are PDP++ specific:
+`-nogui'
+     This specifies that the graphical user interface (GUI) should
+     not be started (only the CSS interface will be present).
+
+`-p <project_file>'
+     This specifies a project file to be loaded upon startup.  Note
+     that any argument within the first two args containing ".proj"
+     will be interpreted as a startup project to run.  Thus, one can
+     type `bp++ xor.proj.gz', and it will automatically load the
+     project.
+
+`-d <default_file>'
+     This specifies that the given default file should be used.  If
+     this parameter is not given, then a default file based on the
+     name of the executable (e.g., bp.def for bp++) will be used.
+     One can also write a `.pdpinitrc' file containing CSS code that
+     sets the default file with the following kind of statement:
+     `root->default_file = "default_file"'.  This can be based on the
+     executable name by examining `argv[0]', which contains the name
+     of the executable being run.
+
+   In addition to the CSS arguments, PDP++ interprets all of the
+arguments for controlling the InterViews graphical user interface.
+These arguments allow one to select a different "look and feel" from
+the default one, which is an enhanced version of the Motif style:
+
+`-openlook'
+     The Sun OpenLook look.
+
+`-motif'
+     A standard Motif look.  Note that the default is an enhanced SGI
+     version of Motif, not this one.
+
+`-monochrome'
+     A Motif-like monochrome mode.  It is the default if you have a
+     monochrome monitor.
+
+   If you are logging in remotely or are somehow restricted to a non
+XWindows environment, you have to use the `-nogui' argument.  This
+turns off the graphical user interface completely, and leaves you with
+the CSS interface.
+
+   Note that when you run simulations in the background, you will
+want to use `-nogui'.
+
+   Finally, there are some other InterViews arguments that might be
+useful:
+
+`-nodbuf'
+     This turns off double-buffering, which is on by default and
+     results in smoother, flicker-free window updating, but also
+     consumes much more display RAM from your XWindows server.  Users
+     of XTerminals in particular might want to use this option.
+
+`-visual <dpy type>'
+     By using this option and passing your default visual class (use
+     `xdpyinfo' to obtain the visual class(es) supported by your x
+     display) (e.g., PseudoColor for standard 8 bit (256 color) X
+     displays), you can obtain a private color map for the PDP++
+     session.  This can be useful if you are running out of colors in
+     your shared colormap (e.g., because Netscape is such a color
+     hog!).
+
+
+File: pdp-user,  Node: proj-signals,  Next: proj-defaults,  Prev: proj-startup,  Up: proj
+
+Signals to Control a PDP++ Process
+==================================
+
+   When a PDP++ process is running in the background (see previous
+section for instructions on how to do this), it is no longer possible
+to gain control of it through either the script or graphical
+interface.  However, the process will respond to a number of signals
+which allow one to save the state of the process to a file.  The
+saved file can then be pulled up in the interface and the state of
+the simulation examined.
+
+   Signals can be sent to a process using the unix `kill' command,
+with two arguments: the signal type and the process id.  There are two
+signal types that are "user defined", `USR1' and `USR2'.  We have
+defined `USR1' to save any networks in the process to file(s) named
+`PDP++NetSave.#.net.gz', and `USR2' to save any projects to file(s)
+named `PDP++Project.#.proj.gz'.  The `ALRM' (alarm) signal will also
+save project files.
+
+   Any of the "lethal" signals like `SEGV' and `BUS' which cause the
+process to crash result in an attempt to save the current state of
+any open projects in `PDP++Recover.#.proj.gz' files.  Thus, the user
+will not typically lose any work even when (or if) the software
+crashes.  Note that the number # of the saved file will increment to
+be unique in the directory.
+
+   To kill a process without getting one of these recover files, use
+the strongest kill signal, `KILL' (signal number 9), which will bypass
+the saving of a recover file.
+
+
+File: pdp-user,  Node: proj-defaults,  Next: proj-scripts,  Prev: proj-signals,  Up: proj
+
+Customization Through Defaults and Settings
+===========================================
+
+   The different kinds of defaults and settings that can be used to
+customize the behavior of PDP++ are covered in this section.  In
+addition to these defaults, there are some XWindow resources that can
+be set in the user's `.Xdefaults' file, which are covered in *Note
+gui-settings-xdef::.
+
+* Menu:
+
+* proj-settings::               Settings and the .pdpinitrc and .cssinitrc Files
+* proj-objdef::                 Project Object Defaults (TypeDefaults)
+
+
+File: pdp-user,  Node: proj-settings,  Next: proj-objdef,  Prev: proj-defaults,  Up: proj-defaults
+
+Settings and the .pdpinitrc and .cssinitrc Files
+------------------------------------------------
+
+   Every time the PDP++ software starts up, it looks for a
+`.cssinitrc' and a `.pdpinitrc' file in the user's home directory.
+These files contain CSS script code that can set various default
+settings, set aliases for CSS commands, etc (see also *Note
+css-startup::).  A list of the different settings that can be put
+into the `.pdpinitrc' file is given in *Note gui-settings::.  These
+settings are actually "static" members located in the taMisc object,
+and are set in CSS as in the following example:
+
+     taMisc::display_width = 90;
+
+   Another thing that you might want to put in the `.pdpinitrc' is
+your default color specification:
+
+     .colorspecs.SetDefaultElName("C_ColdHot");
+
+   Finally, if you have put a set of PDP++ files (like the defaults
+files described in the next section, for example) in a directory
+somewhere, you can add this directory to the list of those
+automatically searched when loading CSS script files and defaults
+files.  This is done with the `include_paths' member of the taMisc
+object that holds all of the other settings parameters.  It is an
+array of strings, and you simply add a new string to it to add a new
+path:
+
+     taMisc::include_paths.AddUnique("/home/mach/me/pdp++/defaults");
+
+   Note that the environmental variable `PDPDIR' should be set to the
+directory in which PDP++ was installed in order to have the default
+include paths be correct.  If `PDPDIR' is not set, the default is
+`/usr/local/pdp++'.
+
+
+File: pdp-user,  Node: proj-objdef,  Prev: proj-settings,  Up: proj-defaults
+
+Project Object Defaults (TypeDefaults)
+--------------------------------------
+
+   The `.defaults' group on the Project object contains a number of
+objects called TypeDefaults.  These objects can represent the default
+values of fields within a whole range of possible objects that could
+be created in the project.  These defaults are used to make sure that
+the appropriate types of objects are created for particular
+algorithms.  This is done through the use of default files, which are
+saved groups of TypeDefault objects.
+
+   There are a number of different default files saved in the
+`defaults' directory, one of which is automatically loaded into the
+`.defaults' group of the project when it is created.  Which one is
+used is based on the name of the PDP++ executable (i.e., bp.def for
+bp++).  When PDP++ starts, it checks the name of the executable, and
+puts the appropriate defaults file name in the `default_file' field
+of the PDPRoot object.  Changing this field will change the default
+file that will be used when a new project is created.
+
+   The user can create their own defaults files, to have things come
+up just the way they like them.  It is recommended that you start
+with the basic defaults appropriate to a given algorithm that you will
+be using.  Simply edit an existing or create a new TypeDefault object
+in the `.defaults' group of a project that has the right initial
+defaults in it.  There is one TypeDefault object for each different
+type or class of object whose default values are being set.  Derived
+classes (*note obj-basics-obj::) automatically inherit default values
+set on parent classes.
+
+   The TypeDefault object has the following members:
+
+`TypeDef* default_type'
+     This is where you pick the type of object you want to set the
+     default values of.  Note that many types are descended from
+     taNBase, so look in its submenu.  Be sure to press Apply after
+     selecting a type, so that the object knows what type of `token'
+     to make.
+
+`TAPtr token'
+     This field contains a token of the type selected in
+     `default_type' (remember to hit Apply first before editing
+     this!).  Default values are set by simply editing this object
+     and setting the values of the fields as you want them to be by
+     default.  Only those fields that have a check in the leftmost
+     checkbox next to the field will have default values saved.
+     Thus, make sure that box is checked when you make changes to the
+     fields.  Then, Ok the dialog, and be sure to hit Apply on the
+     TypeDefault object itself.  This causes the specific changes you
+     specified to be registered in the `active_membs' group, which
+     only records the values of those members that were checked.
+
+`taBase_Group active_membs'
+     The type default values are actually saved as name-value pairs
+     (using the NameValue object), where the name is the name of the
+     member, and the value is a string representation of its value.
+     This is a group of such name-value pairs for the checked fields.
+     While you can enter things directly in here, it is recommended
+     that you use the `token' to do it instead.
+
+   When you have created a set of defaults, save them using the Save
+As/All menu item in the `.defaults' group.  If you have the
+appropriate permissions, it is easier to put the defaults file in the
+global `/usr/local/pdp++/defaults' directory.  However, it is cleaner
+to keep your defaults in your own directory.  Since your home
+directory is searched automatically for default files, you could put
+the default files there.  A better solution is to create a special
+directory to hold your defaults, and add this directory to your
+`include_path' in your `.pdpinitrc' file (*note proj-settings::).
+
+
+File: pdp-user,  Node: proj-scripts,  Next: proj-seledit,  Prev: proj-defaults,  Up: proj
+
+Project Scripts
+===============
+
+   Scripts are an important component of a simulation, especially when
+things get a bit more complicated than a simple XOR example.  They
+allow you to perform routine actions automatically, which can save a
+lot of mouse clicks, and makes some things possible that would be
+prohibitively time-consuming to do by hand (e.g., switching one's
+environment to use -1 to +1 values instead of 0 to 1 values).  Since
+scripts can be created just by recording actions taken in the GUI, it
+is relatively easy to get started with them.
+
+   A PDP++ Project contains a special place to put different scripts
+that are associated with a given project.  Thus, there is a Script
+object, which has a corresponding script file that contains CSS script
+code (*note css::).  These Script objects provide a way of managing
+and running multiple different CSS script files, whereas the script
+window that is present at startup can only hold one script file at a
+time.
+
+   The script objects are found in the `.scripts' group on the
+project.  Editing a Script object results in a little "control panel"
+with several buttons that manipulate the script in different ways.
+An existing script can also be run directly by selecting that script
+from the Run menu of `.scripts'.
+
+   The Script object has the following member fields:
+
+`taFile script_file'
+     This contains the name of the script file to associate with this
+     object.  The name field of the object will automatically reflect
+     the name of the script file selected (minus the .css extension).
+     Note that the script file can be edited by using the Edit menu
+     option, which pulls up the editor given by the `EDITOR'
+     environmental variable.
+
+`String script_string'
+     You can enter an entire script in this string field, and run it
+     instead of reading the script from the `script_file'.  If
+     `script_string' is non-empty, it is used instead of the file,
+     even if the file is open.
+
+`bool auto_run'
+     Check this option if you want the script to be run automatically
+     when the project is loaded.  This is can be used for example to
+     automatically build and connect a large network which is saved
+     without units or connections to make things faster and the file
+     smaller.  An example script which builds the network is
+     `css/include/build_network.css'.
+
+     If you startup the pdp++ program with the project name on the
+     command line, then the project will load over and over again if
+     there is an error with a script that is set to run upon loading
+     the project using `auto_run'.  The solution is to load the
+     project from the Root menu, and to immediately move the mouse
+     over the xterminal window, and type a Return into that window
+     when the error occurs.  Then, you can debug the problem with the
+     script at the point where the error occurred.
+
+`String_Array s_args'
+     These are arguments that the script file can access.  The
+     argument values can be set in the script object, and used to
+     modify the way the script behaves, etc.  Scripts that use these
+     arguments should have the meaning of the arguments documented
+     near the top of the script file.
+
+   The following button actions are available in the edit dialog of
+the Script object:
+
+`Run()'
+     This runs the script.  A script must already be loaded and
+     compiled.
+
+`Record()'
+     This causes future GUI actions to be recorded to this script.
+     Thus, one can construct a script record of a series of gui
+     actions, and play them back by compiling the resulting script,
+     and running it.  The script file can be edited and, for example,
+     a `for' loop wrapped around a set of actions to perform them
+     multiple times, etc.
+
+`StopRecording() (StopRec)'
+     This stops the recording of GUI actions to this script.  Only
+     one script can record at a time, so if you press `Record' on a
+     script, then all others will automatically stop recording.
+
+`Interact()'
+     This allows you to interact with the script through the CSS
+     shell window (the one you started the PDP++ program from).  The
+     prompt will change to the name of the script you are working
+     with.  All of the CSS commands can then be used to debug and run
+     the script (*note css::).  Note that to exit out of this css
+     shell, you do a `quit' in CSS, which will bring you back to the
+     initial PDP++ executable prompt.
+
+`Clear()'
+     This clears (empties out) the script file.  This cannot be
+     undone, so make sure you are ok losing all of the stuff in the
+     script file!  It is primarily used when recording scripts, when
+     you want to start over from the beginning.
+
+`Compile()'
+     This will re-compile the script file.  Any time you make changes
+     to the .css file associated with the Script object, these
+     changes need to be re-interpreted by CSS into something that can
+     actually be run (*note css-tut-run::).
+
+   There are a number of useful script files in the `css/include'
+directory of the PDP++ distribution.  These files contain
+documentation as to what they do.
+
+
+File: pdp-user,  Node: proj-seledit,  Prev: proj-scripts,  Up: proj
+
+Select Edit Dialogs
+===================
+
+   The SelectEdit object consolidates multiple different fields and
+functions from different objects into one edit dialog.  Typically, one
+selects the fields by editing the object in question, and using the
+Object/SelectForEdit menu option to select the field to be edited, or
+Object/SelectFunForEdit to select a function to be accessible from
+the select edit dialog.
+
+   The select edit dialog always has as its first line a `config'
+field, which contains configuration information for the select edit
+dialog itself.  The `auto_edit' toggle specifies whether the select
+edit dialog is opened automatically whenever the project is opened.
+The `mbr_labels' contains extra user-specified labels to append
+before the field member names, to specify which object they came
+from.  The `meth_labels' contains similar such labels for methods
+(functions).
+
+   The `SelectEdit' menu on the edit dialog contains functions for
+Removing and Moving fields and functions within the edit dialog.  The
+`New Edit' function closes the current edit dialog and re-opens it.
+Use this if you have edited member or method labels, and want to see
+them reflected in the edit dialog.
+

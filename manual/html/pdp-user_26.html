@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-processes</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_25.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_27.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.6  Processes</A></H3>
+
+<P>
+Since everything has been properly initialized, and the various displays
+are all laid out for our use, we are ready to try to teach the network
+the XOR function.  We train networks, and test them, by running
+<B>Process</B> objects that operate on them.
+
+</P>
+<P>
+<B>Process</B> objects are described at length in section <A HREF="pdp-user_148.html">12  Processes and Statistics</A>.  We will only
+say enough about them here to give you a general sense of what they are
+and what they do.  You can think of processes as objects that consist of
+several parts: an initialization part, a loop part, and a finishing-up
+part.  When a process is run, it first carries out its initialization
+process; then it loops for a specified number of iterations or until
+some performance criterion is met, and then it finishes up and exits.
+For many processes, the loop consists of simply calling the process's
+sub-process over and over again.  At the bottom of the process tree, we
+call routines that actually interact with the network.  Processes also
+spawn sub-processes that calculate statistics, such as the sum of
+squares statistic that measures how well the network has solved the
+learning problem that has been posed to it.  Some statistics, called
+<CODE>loop_stats</CODE>, are calculated at the end of each step in the process
+loop; others are calculated only when finishing up.
+
+</P>
+<P>
+In the case of backpropagation, we have a three-level process hierarchy.
+At the bottom of the hierarchy is the <B>TrialProcess</B>.  This process
+takes an event, consisting of an input pattern and a target pattern,
+from the <B>Environment</B>, and then carries out the three phase process
+described previously (see section <A HREF="pdp-user_15.html">4.1  Backpropagation and XOR</A>).  The processing is actually
+implemented by looping through the <B>Layer</B>s in ascending numerical
+order; then looping, within each layer, through the <B>Unit</B>s, and
+calling functions associated with each unit to compute the quantities as
+previously described.  All of the variables mentioned there are
+explicitly stored in each unit, and can be inspected once they have been
+computed by selecting the appropriate button in the <B>NetView</B>.  At the
+end of the trial, the sum of squares statistic is calculated; in this
+case it isn't much of a sum since there is just one output unit.
+
+</P>
+<P>
+The Trial process is actually called as a sub-process of the
+<B>EpochProcess</B>.  All the Epoch process does is loop through the set of
+pattern pairs in the <B>Environment</B>, calling the trial process to
+process each pattern pair.  Before it starts, it initializes its
+statistic, the sum of the trial-wise sum-squared-error
+(<CODE>sum_sum_SE_Stat</CODE>), to 0. As it loops, it computes the
+<CODE>sum_sum_SE_Stat</CODE> by aggregating the <CODE>sum_SE_Stat</CODE> statistic
+over each of the training trails, so that at the end of the epoch, it
+reflects the sum over all of the trials in the epoch.  At the end of the
+epoch, it passes the <CODE>sum_sum_SE_Stat</CODE> up to the training process.
+
+</P>
+<P>
+The Epoch process is called by the <B>TrainProcess</B>.  This process
+initializes the epoch counter before it starts.  It stops when the
+counter reaches a specified maximum value, or when the latest (or last)
+sum-squared-error value (<CODE>lst_sum_SE_Stat</CODE>) falls below its
+stopping criterion.  The stopping criterion is actually a property of
+the Train process's <B>SE_Stat</B> statistic, <CODE>lst_sum_SE_Stat</CODE>.  This
+statistic simply copies the last <CODE>sum_sum_SE_Stat</CODE> from the epoch
+process, and compares it to the criterion, passing a special return
+value to the Train process when the criterion is met.  If so, the
+process exits from the loop at that point, and training is stopped.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_25.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_27.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

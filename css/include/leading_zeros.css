@@ -1,0 +1,16 @@
+// this function converts the given number into a string, and pads the
+// string with zeros up to length len
+
+String LeadingZeros(int num, int len) {
+  String rval = num;
+  int rval_len = rval.length();
+  String lead_zeros;
+  int i;
+  for(i=len; i>=1; i--) {
+    if(i > rval_len)
+      lead_zeros += "0";
+    else
+      break;
+  }
+  return lead_zeros + rval;
+}

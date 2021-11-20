@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-spec</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_10.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_12.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX19" HREF="pdp-user_toc.html">3.3  Separation of State from Specification Variables</A></H2>
+<P>
+<A NAME="IDX20"></A>
+<A NAME="IDX21"></A>
+<A NAME="IDX22"></A>
+
+</P>
+<P>
+Another major distinction that is made in the software reflects the
+separation of <EM>state</EM> variables (e.g., the current activation of a
+unit) from <EM>specification</EM> variables (e.g., the activation function
+to be used in computing activation states, and its associated
+parameters).  This distinction is made because it is often desirable to
+have many objects use the same specifications, while each retain a
+distinct set of state variables.  For example, all of the units in one
+layer might use a particular learning rate, while units in another layer
+have a different one.  By separating these specifications from the state
+variables, it is easy to accomplish this.
+
+</P>
+<P>
+Thus, associated with many different kinds of objects is a corresponding
+<CODE>Spec</CODE> object (e.g., a <CODE>UnitSpec</CODE> for <CODE>Unit</CODE> objects,
+etc).  While this separation does sometimes make it a little more
+difficult to find the parameters which are controlling a given object's
+behavior, it makes the software much more flexible.  Furthermore, we
+have put most of the specification objects (specs) in one place, so it
+should soon become second nature to look in this place to set or change
+parameters.  For more information about specs, see section <A HREF="pdp-user_100.html">8.4  Specifications</A>.
+
+</P>
+<P>
+Specs are also used to control the layout of events and patterns in the
+environment (throught the use of <CODE>EventSpec</CODE> and <CODE>PatternSpec</CODE>
+objects).  Thus, one first configures these specs, and then creates
+events according to them.  A new interface makes configuring these specs
+much easier than before.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_10.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_12.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

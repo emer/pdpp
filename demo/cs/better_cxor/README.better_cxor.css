@@ -1,0 +1,458 @@
+[this demo could be put in the $PDPDIR/demo/cs directory]:
+
+File list and explanations:
+  better_cxor.css	    css setup script for a stochastic completion xor
+  better_cxor.proj.gz       saved version of the project set up by the script
+
+  cs_sigmoid_prob-env.def   defaults for using SigmoidUnitSpec units
+  cs_boltz_prob-env.def	    defaults for using BoltzUnitSpec units
+  README.*.def              short READMEs for these defaults files
+
+  *.prob_pat		    files specifying target joint distributions
+
+  README.CsTIGStat-bugfix   bug report and easy fix needed for this demo
+
+  orig.README.cxor.proj     original README for cxor.proj demo, for reference
+
+
+better_cxor.css is a css script which will set up a project based on
+the cxor.proj.gz demo included with PDP++ versions 1.2 and earlier. This
+version of a stochastic constraint-satisfaction xor demo improves on that
+demo in a number of ways. It actually serves as a general purpose project
+for basic stochastic constraint satisfaction networks. It uses a single
+visible layer and a single hidden layer, fully connected. Generalizing
+to a network that splits the visible units up into input and output units
+would be easy.
+
+Features (and improvements over the original cxor.proj.gz demo):
+----------------------------------------------------------------
+(1) Rather than being packaged as a saved project file, this demo is
+    distributed as a css script that will set up the project when run.
+    This makes it a lot easier to see what the css code necessary to
+    perform certain tasks is. You can just look at the script (it is well
+    commented). Should you desire a saved project file, you can make one
+    at any time by simply saving the project after running the script.
+    A saved project file is also included for convenience. Going from
+    saved project files to css scripts that will set them up correctly
+    can be a very hard process. Thus, the setup script is a significant
+    added value. I hope that the PDP++ team will provide more demos as
+    css scripts rather than saved project files, and I encourage them to
+    convert as many of the existing saved project file demos as possible
+    to corresponding css scripts that will set up the demos.
+
+(2) A test process hierarchy has been added for testing the network
+    without causing any training (weight updates). Associated logs
+    are created for displaying various statistics obtained during
+    testing. A separate test environment is used allowing easy
+    configuraiton of testing. One can test the full distribution encoded
+    by the network, or clamp any subset of visible units to particular
+    values and observe the conditional distribution that results.
+    Keeping the testing and training objects separate allows easy switching
+    back and forth between training and testing without having to change
+    a lot of parameters that should be set differently during testing.
+
+(3) A text log has been created from which one can directly read off
+    probabilities of different patterns or subpatterns over the visible
+    units (instead of just looking at the graph). If that didn't make
+    sense to you, here is a more detailed explanation: The weights of
+    the network represent a certain probability distribution over the
+    possible vectors of values of all visible units. Learning causes
+    this joint distribution to come to match the target distribution
+    exhibited by the training examples.  During testing, one can
+    leave all visible units unclamped and read off the overall joint
+    distribution, or clamp some units to certain values and read
+    off the conditional distribution of the remaining units given
+    the clamped values. In either case, the probability distribution
+    is determined by averaging statistics from repeated settlings.
+    See Movelland and McClelland, 1994 (reference citation below).
+    Rather than only supplying graphs as in the original cxor.proj.gz,
+    these actual probability estimates are reported numerically in
+    this text log, as well as the TIGStat that measures the relative entropy
+    (difference) between the learned and target distributions.
+
+(4) The test objects are linked into the training process in such a way that
+    one epoch of testing is performed automatically after every n epochs
+    of training. Due to the stochastic nature of the networks, the numbers
+    reported during training fluxuate significantly. The testing objects
+    can be (and are by default) configured to accumulate more precise
+    statistics, by averaging over longer runs. To increase the length of
+    the runs of each training epoch to the same level would significantly
+    slow down training, but by doing testing infrequently we can periodically
+    get more precise reports on how the network is doing as training
+    progresses without significantly slowing the training process.
+
+(5) The exact patterns to be learned and their associated probabilities
+    are now read in from text files (the simple format of which is
+    described below). Also, the number of visible and hidden units are
+    parameters specified in the script file. Thus, this doesn't have to
+    be an xor demo, but can be viewed as general PDP++ code for setting
+    up a trainable/testable all-purpose 2-layer (visible + hidden)
+    binary stochastic constraint-satisfaction network. Phew.
+    Thus, perhaps the file would be more aptly named something like
+    2-layer_stoch_cs_setup.css.
+
+(6) Rather than just using SigmoidUnitSpec units as in the cxor.proj.gz
+    demo, one can select between CsUnitSpec, SigmoidUnitSpec and
+    BoltzUnitSpec units, and configure -1/1 or 0/1 activation ranges. (Note:
+    the script was tested most extensively with BoltzUnitSpecs.)
+
+(7) Training is stopped automatically with a stopping criterion based on
+    the CsTIGStat of the TESTING processes (which is more precise).
+
+The instructions below are quite long and detailed precisely so that this
+demo is as EASY to use and understand as possible. It's all pretty simple
+really, and explained thoroughly.
+
+
+Starting up
+-----------
+  Using the setup script is simple.
+    - Change directory to the directory with better_cxor.css in it.
+    - [Optional: edit the top of the .css file to change settings.]
+    - At the Unix prompt, type:	cs++
+    - At the css prompt, type:	load "better_cxor.css"
+    - At the css prompt, type:	run
+  This will set up everything and you will be ready to train or test
+  with a few clicks in the GUI. Note that the *.def files (if not
+  using the default CsUnitSpec units) and the *.prob_pat files need
+  to be present in the same directory or you will have to change the
+  references to them at the top of the script file.
+
+  The cxor.*.prob_pat files are example files for specifying a target
+  probability distribution. They specify a distribution for the patterns
+  of xor, all with equal (0.25) probability as in the original cxor demo.
+  The format of these files is simple. Each line specifies a white-space
+  separated list of values (either 1 or -1 for -1/1 activations or 1 or
+  0 for 0/1 activations). The number of values must match the number of
+  visible units specified in the better_cxor.css file. The last value is
+  followed by white-space and then the probability for that pattern. Any
+  number of patterns (one per line) can be specified, but it is up to
+  the user to ensure that the sum of the probabilities equals 1.
+
+  The simple.*.prob_pat files set up a simplers examples for a
+  2-visible-unit network. They specify non-equal probabilities for the
+  different patterns, which is more interesting for testing conditional
+  distributions when clamping different units to different values (an
+  exercise for which xor is less interesting because of its symmetries).
+
+
+GUI settings
+------------
+  Unfortunately, there are a few display settings that cannot be set up
+  in advance from the script because the css language doesn't know how
+  to change them. You might want to change them before interacting with the
+  project through the GUI. These changes were made before saving the saved
+  project version, so those that are preserved through saves and reloading
+  will already be changed, but not everything is preserved through a save
+  and reload in PDP++.
+
+  - In each environment view, click on the event so that it is displayed.
+    If the event isn't listed in the lower left under events (this is
+    usually the case for the testing environment), select "Update All Views"
+    from the Object menu of the window. Also if using units with -1/1
+    activations, then in each environment window, in the lower left
+    hand corner change the low value of the range to -1. (This will make
+    the colors-value associations in both environment views agree with
+    that in the network view.)
+
+  - In the Environment_0 window, change the Pat Head (in the upper left)
+    to ProbPattern:prob to see the probabilities of each pattern.
+
+  - In the network viewer, click the Init button, followed by the act
+    button. Then with the middle mouse button, click the ext button and
+    then the targ button. Now each unit will display its activation, and
+    above that its external input, and above that its target input.
+
+  - In the Sample_1_GraphLog (testing graph) window, with the middle
+    mouse button, click on the Epoch button in the lower left part of
+    the window's list of graphed values. This will change the x-axis
+    of the testing graph to be the training epoch number instead of the
+    testing epoch number, so that as the testing epochs are run every n
+    training epochs, the graph will display how the network is progressing
+    with training.
+
+
+Training
+--------
+  Simple training: (this is much the same as the original cxor.proj demo)
+    Once the GUI is set up the way you like it, simple training is easy.
+    Start the Train_0 control panel (.processes->Control Panel...->Train_0)
+    and click Run. Standard PDP GUI stuff: Stop stops training. Run
+    resumes again. ReInit reinitializes the weights to their pre-training
+    values. NewInit reinitializes them to a new set of random initial values.
+    You can read off the number of patterns trained on so far in the epoch
+    field, since only one pattern is presented per epoch here.
+
+    You should see lots of flickering in the network window as the units
+    change activations rapidly. One thing to notice is that the Targ field
+    of the visible units changes as different patterns are presented but
+    the Targ field of the hidden units remains 0 as it should since they
+    are never clamped to values.
+
+    The 2 windows to really watch are the graph window and the textlog
+    window. As in the original cxor.proj demo the graph displays the TIG
+    error measure, which should go down as training progresses, and the
+    percentage of time spent in each pattern, which should converge to
+    the target probability for that pattern. Also shown is the total
+    proportion of time spent in any of the target patterns. This will
+    usually be close to 1 if all possible binary patterns are specified
+    in the .prob_pat file. It might not be exactly 1 if using CsUnitSpec
+    or SigmoidUnitSpec units (which have real-valued activations) since
+    only values close enough to the edges of the activation range are
+    considered valid (specified by the clipping_tolerance variable). If
+    not 1, it should converge towards 1 during training.
+
+    The textlog window displays these values numerically, along with the
+    epoch counter. Again, the numbers for each pattern should converge
+    to their target probabilities in the .prob_pat file. Note that do to the
+    stochastic nature of the network, the values displayed, which are sample
+    averages from a small number of samples, will not converge to many digits
+    of precision.
+
+    Of course, you can control training at finer levels of granularity by
+    using the other control panels (epoch, sample, trial, settle, cycle) as
+    well.
+
+    Note that the saved project is already trained (to a certain level) so
+    that you can jump right into testing a trained network if you don't want
+    to spend the time training it yourself. It was trained by simply loading
+    the project and hitting Run int the Train_0 control panel, and letting
+    this run till the stopping criteria stopped it automatically.
+
+  Settings to play with:
+    There are a number of GUI settings to play with to notice different
+    things. If you uncheck the display checkbox in the network window,
+    training will progress much faster. If you add Cycle_0 as an updater of
+    the network window (View:Object->Add Updater->CsCycle->Cycle_0) you'll be
+    able to see the different phases of the contrastive Hebbian learning
+    process. In the minus phase you'll notice the visible layer settling, but
+    in the plus phase you'll see the Act and Targ fields of each visible unit
+    will be the same (they will reflect the pattern being presented on that
+    epoch) and the Net field will be 0. In the graph window, you can turn
+    display of individual lines on or off and rescale the axes of any of the
+    lines you like (right-click on the button for that line and manipulate
+    the min_mode, max_mode and range fields).
+
+    There are also a number of network settings to play with that alter the
+    training or operation of the network itself. Most of these are standard.
+    For example, the learning rate and momentum are controlled by editing the
+    ConSpec. Of particular interest besides these are the number of samples
+    to average over in the Sample_0 process and the number of cycles to
+    settle for (cycle field) and the cycle number on which to start
+    collecting statistics during each settle (start stats field) in the
+    Settle_0 process. Smaller learning rates and larger numbers of samples or
+    cycles will allow better averaging out of noise and thus lead to less
+    fluctuation during training, but will also cause slower training. More on
+    this below.
+
+  Better convergence:
+    If you look at the graph or textlog windows you'll notice that the values
+    fluctuate fairly significantly from one epoch to the next. This is due to
+    the stochastic nature of the network together with the stochastic pattern
+    presentation. To a great extent the severity of all this noise is
+    controlled by the settings described above. (In addition, for CsUnitSpec
+    and SigmoidUnitSpec units, the amount of noise introduced into each unit
+    is controlled by settings in the UnitSpec.) The more noise there is, the
+    more wildly the network will fluctuate around the target distribution
+    as training continues after convergence to the right approximate values.
+    In a real application, we wouldn't know the actual joint distribution
+    the network was learning to approximate, but we would have to base
+    predictions at any time on the current set of weights (or possibly stop
+    training altogether at some point and use those weights from there on).
+    The learned distribution could, due to these fluctuations be quite
+    different from the underlying environment's true distribution. The degree
+    of difference will obviously depend on the size of the fluctuations and
+    on luck.
+
+    We can reduce the size of the fluctuations by increasing the number
+    of cycles to average statistics over (or by decreasing the noise in
+    the units for CsUnitSpec and SigmoidUnitSpec units). This can be done by
+    increasing the number of cycles per settle that we collect statistics, or
+    by increasing the number of different settles (samples) to use per
+    pattern. In addition, decreasing the learning rate will effectively
+    increase the number of cycles worth of statistics used per unit distance
+    in weight space travelled. Thus, tighter convergence can be had at the
+    expense of extra computational cost.
+
+    Near the beginning of training however, even inaccurate statistics are
+    helpful for converging to a reasonable approximation. Thus, we can
+    achieve faster convergence by modifying these noise-related parameters
+    according to a schedule as training progresses (in much the same way
+    that annealling or sharpening schedules can be used to speed settling
+    itself in a stochastic network). Starting with an initially high
+    learning rate and low number of samples, and slowing lowering the
+    learning rate or noise parameters and/or increasing the number of
+    samples seems to work well. Experiment with these settings and attempt
+    to get tighter convergence yourself. (Note, it is probably best to leave
+    the number of cycles to settle and the cycle number to start averaging
+    stats over constant. To the extent to which these values are not high
+    enough to ensure convergence to thermal equilibrium, changing these
+    values could have a dramatic effect on which parts of activation space
+    the network ends up in, and one can think of the weights as having
+    learned with respect to these cycle values.)
+
+    See Stark and McClelland, 1994 for a more detailed discussion of
+    some of these issues and the results of a number of experiments along
+    these lines.
+
+Testing
+-------
+    We can also run the network in testing mode, in which the weights are
+    held fixed.  For testing, a completely different environment, set of
+    process objects and associated control panels, and set of statistics,
+    graphs, and logs are used.  The many different ways you might want
+    to test the network are all described below.
+
+    The typical things one might want to accomplish with testing are:
+    (1) to determine the overall joint distribution encoded by the
+    network more accurately than is done each epoch during training,
+    which is done by taking more samples, (2) to use the network to do
+    statistical inference, by clamping certain visible units to particular
+    values and observing the conditional distribution over the remaining
+    visible units, or the marginal conditional distribution over a subset of
+    the remaining visible units that happens to be of interest.
+    Unfortunately, due to the way that CsDistStat statistics are collected in
+    PDP++ and how this depends on what ProbPatterns are in the environment,
+    only the full joint over these patterns can be read off and the user must
+    calculate the marginal distributions for him- or herself. (3) A variant
+    on (1) is that you could stop training every so often and run 1 test
+    epoch with many samples to get a better idea of how training is going.
+    This is set up by default.
+
+  Free running (unclamped):
+    Basic testing is just as easy as basic training. Just pull up the
+    TestNEpoch_0 control panel and click run. This will run 1 epoch
+    of testing. To run multiple epochs of testing in a row, set the epc_ctr
+    field's max field to something more than 1. (But you'll probably want to
+    set it back to 1 before doing more training.) Each
+    epoch's statistics are collected from multiple sample runs, the results
+    are printed to the testing graph and testing text log window. Running
+    multiple epochs isn't that useful since the network doesn't change from
+    one to the next, but it is useful to see how much variation there is in
+    the collected statistics for each different epoch when you know that the
+    weights aren't changing. So for example, you can compare how wildly the
+    graph for testing fluctuates with how wildly the graph for training
+    fluctuates when the number of samples used (in the sample and settle
+    process objects) are set the same to gain an understanding of how much of
+    the fluctuation from epoch to epoch during training is caused by noise in
+    the statistics and how much is caused by jumping about in weight space.
+    (Note that the x-axis of the test graph has to be set to epc_ctr not
+    Epoch for this.)
+
+    The other useful mode to do free running in is to run a single epoch with
+    a very large number of samples (edit the testSample_1 object), one or
+    two orders of magnitude more than you would use during training. This
+    gives you a much less noisy estimate of the actual joint distribution
+    that the network weights currently encode. To do variant (3) mentioned
+    above, simply run one epoch of testing like this every n epochs of
+    training. Then to see a graph of the less noisy training performance over
+    time, change the x-axis of the testing graph to use Epoch instead of
+    epc_ctr. (The former is the training epoch counter, the latter is the
+    testing epoch counter.) This is now set up by default.
+
+  Clamping observed inputs:
+    To test the network under the conditions that certain visible units are
+    clamped to particular values requires a tiny bit of work. PDP++'s
+    interface wasn't set up to handle this task particularly well.
+    
+    Find the Environment_1 window. First, choose which visible units you
+    would like to clamp to particular values. In the PatBlock menu near the
+    upper left of the window, select PatternFlags->PatExtFlag. Change the
+    flags for all patterns for the chosen units from 0 to 1 (and make sure
+    any other units are set to 0).  Then in the PatBlock menu, select
+    PatternFlags->PatExtValueFlag and do the same thing. Now re-display
+    the normal values by selecting PatternValues from the PatBlock menu.
+    Now in the PatHead menu, select ProbPattern:prob. The probabilities
+    assigned to the different patterns will be shown in a list above the
+    patterns themselves. Decide what values you would like to clamp the
+    clamped units to. Change the probabilities associated with the different
+    patterns so that only the patterns consistent with your chosen clamped
+    values have non-zero probability. One easy way to do this is to give all
+    the probability (1.0) to any pattern fully consistent with the value
+    assignments you want for the clamped units, and 0 probabilty to the other
+    patterns. Note, do not change the values of the patterns themselves, only
+    the probabilities. If you set the probabilities to the correct
+    conditional target distribution, the TIG stat will go to zero as the
+    network comes closer to getting the conditional distribution correct.
+    Now, run a test epoch. Read the probabilities of the various patterns
+    from the Sample_1_Textlog. From the distribution shown there you should
+    be able to calculate the distribution of any subset of the unclamped
+    visible units. You can change what values the clamped units are clamped
+    to by just changing which patters have non-zero probability.  To change
+    which units are clamped you will have to change the flags again.
+
+    Note that clamping units in a network that has learned xor or any
+    n-bit parity function isn't that interesting since the conditional
+    distribution given any set of clamped units is just another smaller
+    parity function, and it doesn't even depend on which values are
+    actually clamped.
+
+    You can check that the conditional distributions you observe when
+    clamping roughly match what you would expect given the whole joint
+    using a little math. Another check that it is interesting to make
+    is to set all the Ext and ExtValue flags to on for all units in all
+    patterns, then set the probabilities for each pattern to their target
+    values and run a few epochs of testing with different numbers of
+    samples set. Since all values should be clamped, the statistics will
+    just measure the patterns generated according to the actual target
+    distribution being used. Note that the observed sample distribution
+    won't match exactly do to the randomness of the sampling, but it
+    should regress to the target distribution as the number of samples
+    goes up. It is interesting to observe how far off it is as a function
+    of how many samples are averaged over.
+
+    Examples: For the simple3.0_1.prob_pat, the  target distribution is
+    (0.1, 0.5, 0.3, 0.1) for the patterns (00, 01, 10, 11). With the left
+    unit clamped to 1, a reasonably well trained network should approximate
+    the conditional distribution (0, 0, 0.75, 0.25). With the left unit
+    clamped to 0, the conditional dist should be (0.17, 0.83, 0, 0). With the
+    right unit clamped to 1: (0, 0.83, 0, 0.17), and with the right unit
+    clamped to 0: (0.25, 0, 0.75, 0). If you don't understand conditional
+    probability distributions, see a good textbook on probability.
+
+    Extra complexity for CsUnitSpecs and SigmoidUnitSpecs: By default, with
+    the continuous activation unit types, the clamping of units is "noisy" in
+    that the normal noise distribution present in the unit spec is applied to
+    the clamped unit to perturb the clamped value. If this is okay with you,
+    then you don't need to do any extra work, but if you want to clamp the
+    precise desired value, you will have to set up a new unitspec child to
+    inherit all of the parameters from the default unitspec and then override
+    just the noise field, setting the noise to 0. Then in the netview, set
+    all clamped units to use the new unitspec. This will remove the noise
+    from their clamping. Then you have to remember to set the unitspecs
+    correctly any time you change which units are clamped (unclamped units
+    use the normal one, clamped units use the noiseless one).
+
+
+Problems / Still To Do
+----------------------
+    Note that at the moment, this script doesn't automatically put all
+    2^n possible binary patterns into the testing environment. Instead
+    it only puts in those patterns in the prob_pat file. Thus, it is
+    best to specify all possible patterns in this file if you want to
+    observe the full joint when testing. Thus, just add all the missing
+    patterns but specify 0 probability for them. (Unfortunately, there
+    is a minor bug in PDP++ at the time of this writing that breaks the
+    TIG stat when you have any 0 probability patterns. Luckily, this is
+    an easy 1-line fix. See the README.CsTIGStat-bugfix file for details.)
+
+    Lastly, changing the learning rate and/or number of samples to use
+    according to a schedule as a function of epoch number would be great,
+    to achieve finer/faster convergence (as with simulated annealing).
+
+
+References
+----------
+
+Movellan, J.R. and McClelland, J.L., 1994. "Learning continuous probability
+distributions with symmetric diffusion networks", _Cognitive Science_,
+vol.17 no.4 p.463-496.
+
+Stark, C. and McClelland, J.L., 1994. "Tractable learning of probability
+distributions using the contrastive Hebbian algorithm", in _Proceedings of
+CogSci94_, p.818-823.
+
+
+----------------------------------------------------------------------------
+Karl Pfleger   kpfleger@cs.stanford.edu   http://www.stanford.edu/~kpfleger/
+----------------------------------------------------------------------------

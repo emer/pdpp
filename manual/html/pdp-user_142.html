@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - env-view-specs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_141.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_143.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX819" HREF="pdp-user_toc.html">11.6  Edit Specs in the EnviroView</A></H2>
+
+<IMG SRC="pics/xor.enviroview.specs.gif" ALIGN="MIDDLE" ALT="The Environment Viewer -- Specs">
+<P>
+<B> Figure: </B> The Environment Viewer -- Specs
+<P>
+
+<P>
+Non-obvious actions you can perform on objects in the EnviroView in this
+mode are:
+<DL COMPACT>
+
+<DT><B>Single-click with left-mouse-button (LMB) on EventSpec Button</B>
+<DD>
+Will select event spec for display in the view area to the right.
+<DT><B>Single-click with right-mouse-button (RMB) on EventSpec Button</B>
+<DD>
+Will bring up the edit dialog for the EventSpec.
+<DT><B>Shift-LMB or middle-mouse-button (MMB) on EventSpec Button</B>
+<DD>
+Extends the selection to include multiple event specs, and can remove an
+event spec from the display if performed on an already-selected event
+spec.
+<DT><B>RMB on text in the view area</B>
+<DD>
+Will bring up an edit dialog for that text.
+</DL>
+
+<P>
+As in the "Edit Events" mode, the "Edit Specs" mode displays event specs
+in a scroll box along the bottom left-hand side of the window.  It
+differs in having a variety of different action buttons above that, and
+in the way that the event specs and pattern specs are displayed.
+
+</P>
+<P>
+When you click on an event spec, the event spec is displayed in
+"skeleton" format in the viewer area.  By default, if there is only one
+event spec, it is automatically selected.  The overall event spec is
+represented by a box, within which there are one or more pattern specs,
+represented by a grid of pattern elements.  At the lower-left of the
+pattern spec is a display of four critical pieces of information about
+how that pattern is to be presented to the network (type, to_layer,
+layer_name, and layer_num, see see section <A HREF="pdp-user_137.html">11.2  Events, Patterns and their Specs</A> for details).  The
+total number of values in a pattern is indicated by a grey square with
+the "n_vals" label on it and a number indicating the number of values.
+This can be moved to change the total number of values within the
+constraints of the overall pattern geometry.
+
+</P>
+<P>
+There are four mutually-exclusive tool selection buttons at the top of
+the action area, which operate much like their counterparts in the
+NetView:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Select</CODE>
+<DD>
+<A NAME="IDX820"></A>
+Select mode makes clicking in the view area act to select items.  In
+select mode, the entire event spec is selected upon the first click, and
+then the patternspec under the mouse is selected on the next click, and
+then any further sub-level of text is after that.   Some of the other
+action buttons will update based on what is currently selected.
+<DT><CODE>Move</CODE>
+<DD>
+<A NAME="IDX821"></A>
+Move mode enables moving of PatternSpecs within the event.  The patterns
+will be directly selected upon first mouse click, so just click and
+drag.  You can also determine the total number of values in an event
+by moving the grey square that has the "n_vals" label on it, which
+typically is located in the upper-right corner of each pattern spec.
+You can also move the entire display by clicking on the background and
+dragging it around.
+<DT><CODE>ReShape</CODE>
+<DD>
+<A NAME="IDX822"></A>
+This allows you to reshape the geometry of the PatternSpecs.  Simply
+click and drag to reshape the patternspec geometry.
+<DT><CODE>ReScale</CODE>
+<DD>
+<A NAME="IDX823"></A>
+This only works on the background, and serves to rescale the size of the
+entire display. 
+</DL>
+
+<P>
+Below that are four buttons that change character depending on what is
+selected:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>New Spec, New Pattern, Set To Layer</CODE>
+<DD>
+<A NAME="IDX824"></A>
+If nothing is selected, New Spec will allow you to create a new Event
+Spec (if one is selected, use Dupe Spec to get a new one).  If an
+EventSpec is selected, New Pattern will allow you to create a new
+PatternSpec within that EventSpec.  If a PatternSpec is selected, Set To
+Layer will prompt you for the name of a network Layer, and will
+configure the pattern to fit the geometry, etc of this layer (it will
+ensure that this pattern fits that layer and will be send to that layer
+when presented).  <B>Set To Layer is the easiest and safest way to
+configure a pattern for a given network layer (see also Updt Fm
+Events)!</B>.
+<DT><CODE>Rmv Spec(s), Pat(s)</CODE>
+<DD>
+<A NAME="IDX825"></A>
+Will remove (delete) selected EventSpecs or PatternSpecs.
+<DT><CODE>New Child, Edit Names</CODE>
+<DD>
+<A NAME="IDX826"></A>
+New Child makes a child spec of selected EventSpec -- a child spec
+inherits all the properties of the parent, except those checked as
+being unique.  The only way to mark features as unique is to edit the
+pattern spec.  Edit Names of a selected Pattern Spec will pull up an
+editor for the <CODE>value_names</CODE> that label values with names.
+<DT><CODE>Layout/Updt</CODE>
+<DD>
+<A NAME="IDX827"></A>
+Pops up a dialog for selecting one of two actions: <B>Linear Layout</B>
+will arrange patterns in a line with a single space between them --
+useful for quickly arranging patterns that might be spread out.  <B>Updt
+Fm Layers</B> will go through each pattern and perform Set To Layer on that
+pattern, based on the current layer that each pattern is associated
+with.  This is a quick way to update the environment to any changes you
+have made to your network.
+<DT><CODE>Copy Fm Spec</CODE>
+<DD>
+<A NAME="IDX828"></A>
+Allows you to copy parameters from another event spec to selected one.
+<DT><CODE>Dupe Spec</CODE>
+<DD>
+<A NAME="IDX829"></A>
+Duplicates currently selected event spec.
+<DT><CODE>Edit Spec(s), Pat(s)</CODE>
+<DD>
+<A NAME="IDX830"></A>
+Will bring up an edit dialog for selected objects (note: can also use RMB).
+<DT><CODE>Init</CODE>
+<DD>
+<A NAME="IDX831"></A>
+Rebuilds the display -- should not generally be necessary but use if you
+suspect display is not up-to-date.
+</DL>
+
+<P>
+So, a typical session starting from scratch would be to do New Spec,
+then click on each pattern spec in turn and do Set To Layer and select
+the layer these patterns will go to.  Then, the patterns may have to be
+moved around a bit, or new patterns created if there are more than two
+that receive environmental input (or one removed, etc).  In general,
+everything should be managable within the interface.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_141.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_143.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

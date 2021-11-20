@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - prog-coding</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_260.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_262.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1733" HREF="pdp-user_toc.html">18.4  Coding Conventions and Standards</A></H2>
+
+<P>
+This section describes the steps that need to be taken to define a new
+class.  Every class based on the <B>taBase</B> type (i.e., all classes in
+the PDP++ software) needs to have a set of standard methods (member
+functions) that allow it to interface with the rest of the software.
+Also, many commonly occurring data types and tasks that a class needs to
+perform have been dealt with in a standardized way.  This chapter
+familiarizes the programmer with these standards and interfaces.
+
+</P>
+<P>
+Defining a new class is typically the first step a user will take in
+programming with the PDP++ software.  This is because the software is
+designed to be extended, not revised, by the user.  Fortunately, most
+everything that is done by the PDP++ library code can be overwritten by
+defining a new class that does something differently, or simply by
+adding on to what the existing code does.  Both of these approaches
+require the definition of a new class.
+
+</P>
+<P>
+The first step in defining a new class is figuring out which existing
+class to base the new one on.  This requires a knowledge of the existing
+class structure, which is covered in this manual.  Once this has been
+decided, the guidelines in this section should be followed as closely as
+possible.  It is assumed that the reader knows C++ and the basic ideas
+about constructors, destructors, virtual vs. non-virtual functions, etc.
+
+</P>
+
+<UL>
+<LI><A HREF="pdp-user_262.html">1                Naming Conventions</A>
+<LI><A HREF="pdp-user_263.html">2                 Basic Functions</A>
+</UL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_260.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_262.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

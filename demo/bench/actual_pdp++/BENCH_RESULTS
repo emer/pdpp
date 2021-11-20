@@ -1,0 +1,188 @@
+This file contains the results from some different benchmarks for
+pdp++ performance.
+
+===========
+Benchmarks:
+===========
+
+1) The first test is bp_bench (.css, .proj.gz), which is a bp++
+project with 2 networks (and enviros, procs, etc), one 100x100x100
+three-layer backprop net trained on 100 random input/output patterns,
+and another 10x10x10 network trained on 10 random input/output
+patterns.  The larger net is trained for 25 epochs, and the smaller
+25000 epochs.  The larger net emphasizes the peak floating point
+capacity of the system, while the smaller emphasizes the integer
+(network traversal) aspects. On-line (per-pattern) weight updating is
+used, making for 3 passes through the connections for each pattern (1
+for act, 1 for dwt, and one for wt updt).  The specs for these nets
+are as follows:
+
+100x100x100:    weights: 20000  pats: 2500     con_trav: 150000000
+10x10x10:       weights: 200    pats: 250000   con_trav: 150000000
+
+2) The second test is pdp++bench (.cc, .h, .CPU), which is a version
+of the entire pdp++ network computation code extracted from all the
+other stuff in pdp++ (gui, input/output, etc).  This enables different
+compiler flags and coding choices to be easily explored.  It is
+configured to run the same exact test as bp_bench, plus a 500x500x500
+net for 100 patterns
+
+3) The third test is a simple pointer-based weight updating benchmark
+called 'ptest', which is contained in the aptest directory (and
+aptest.shar file, for convenient distribution).  This benchmark is
+roughly correlated with performance in pdp++.
+
+4) The fourth test uses the LEABRA algorithm developed by O'Reilly
+(PhD thesis, 1996), which uses a more complicated interactive
+activation function, and a number of acceleration techniques like
+sender-based netinput updating with activation thresholds, etc.  It
+tends to emphasize the integer performance more, as a result.  The
+network tested is 100x100x100 with the same patterns as the bp_bench,
+with settling for 30 cycles in each phase.
+
+Leabra:        weights: 20000  pats: 500       con_trav: 6.2e+08
+
+5) The fifth test is a comparison with the old pdp software, contained
+in the opdp_bp_bench* files, which runs the same thing as bp_bench.
+The array-based weights of this system are faster than the
+pointer-based pdp++ weights, resulting in faster performance.  The
+additional factors like weight limits, decay and different kinds of
+momentum computations available in pdp++ are factored out in detailed
+cases of the pdp++bench benchmark, allowing the pure computational
+efficiency to be compared.
+
+=========
+Systems:
+=========
+
+Sparc_10/40: Sparc 10/40, SunOs 4.1.3
+	g++ -O
+
+HP735_100: 735/100 Mhz, HPUx 9.01, newer C++/cc optimizer
+	CC +T +a1 +O2 +e0/1
+
+K6_200@225: AMD K6-200 overclocked? to 225Mhz running Debian Linux
+	g++ -O2
+
+K6_200:      AMD K6-200 Running Debian Linux (Bios Optimized)
+        g++ -O2
+
+PentPro_200: PentiumPro 200Mhz, 256K l2, Red Hat Linux 4.1
+	g++ -O2
+
+PII_266: Pentium II 266Mhz, Red Hat Linux 4.2
+	g++ -O2
+
+PII_300: Pentium II 300Mhz, Red Hat Linux 4.2, dual proc
+	g++ -O2
+
+SGI4K_150: R4400, 75/150 Mhz, Irix 5.3
+	OCC +a1 -O2
+
+IBMSP_reg: SP2 regular node, AIX v 4.1.4
+	xlC -+ -O2 -qfloat=hsflt -qarch=pwr2
+
+IBMSP_wide: SP2 fast node (sp1), AIX v 4.1.4
+	xlC -+ -O2 -qfloat=hsflt -qarch=pwr2
+
+HP8K_180: PA8000, 180Mhz, HPUx 10.2x 
+	CC +T +a1 +O2 +e0/1
+
+SGI_10K_180: SGI Origin200 R10K 180mhz, IRIX 6.4
+    CC -Ofast -n32 -mips4
+
+
+================
+Results Summary:
+================
+	
+		bp_bench	pdp++bench	ptest		leabra		
+		-------------	-------------------------------	---------------	
+system		secs	M con/	secs	M con/	ptest	pdp++/	secs	M con/ 
+		100/10	sec	100/10	sec	med/sm	ptest	100/500	sec    
+===============================================================================
+Sparc_10/40	249.66	0.60	264.65	 0.57
+			0.35	308.83	 0.48
+			       			
+HP735_100	112.73	1.33	139.13	 1.08
+			0.91	127.50	 1.17
+			       			
+SGI4K_150	 82.67	1.81     91.23	 1.64
+		 	0.86	109.01	 1.37
+			       			
+PentPro_200	 65.90	2.28     64.44	 2.33			 77.60	 7.99	100
+		 65.97	2.27     47.36	 3.29			 56.75	 5.46	500
+								 65.10	 6.09	400
+								 64.71	 6.17	400x2
+			       			
+PII_266		 52.26	2.87					 75.49	 8.21
+		 49.93	3.00	
+			       			
+IBMSP_reg	 48.19  3.11	 43.1	 3.48
+			1.15	 88.35	 1.70
+			       			
+K6_200@225			 41.75	 3.56
+				 56.64	 2.64
+
+K6_200				 45.38	 3.31
+				 63.59	 2.35				 
+
+PII_300		 52.26	2.87	 41.1	 3.62			 56.44	10.98	100
+		 49.93	3.00	 36.21	 4.14			 45.68	 6.78	500
+								 53.18	 7.46	400
+								 63.15	 6.13	400x2
+			       			
+IBMSP_wide	 42.28	3.55	 38.46	 3.90
+			1.33	 78.23	 1.92
+			       			
+HP8K_180	 31.84	4.71	 36.07	 4.16
+		 81.35	1.84	 65.43	 2.29
+			       			
+SGI_R10K_180	 27.6	5.43	 29.41	 5.10			 61.5	10.1
+		 59.4	2.52     38.49	 3.90			 
+
+
+===================
+benchmark details:
+===================
+(for pdp++bench details, see pdp++bench/CURRENT_RESULTS)
+
+======================================================================
+======					100   	Mcon/	10	Mcon/
+HP735_100				secs	sec 	secs  	sec
+----------------------------------------------------------------------
+bp_bench
+-------------
+CC +T +a1 +O2			       112.73	1.33	 65.71	0.91
+CC +O2 +Z			       120.26	1.24	110.19  0.54
+CC +T +a1 +02 +Z		       112.75   1.33	107.8   0.55
+
+leabra_bench
+-------------
+CC +T +a1 +O2			       190.91	3.25	181.46	3.42
+CC +T +a1 +02 +Z		       195.41	3.17	186.14	3.33
+
+======================================================================
+======					100   	Mcon/	10	Mcon/
+IBMSP_wide				secs	sec 	secs  	sec
+----------------------------------------------------------------------
+bp_bench:
+---------
+xlC -O3 -qstrict			42.28   3.55	45.26   1.33
+xlC -O2					43.83   3.42	48.17   1.25
+xlC -O2 -qfloat=hsflt -qarch=pwr2	41.52   3.61	45.49   1.32
+
+========
+Old PDP:
+========
+
+Time to run 100x100x100 and 10x10x10 cases.
+
+time:	old pdp pdp++	old/    
+	100/10  100/10	pdp++   
+=============================
+SGI4K_150	36.71	78.44	 47 % 
+	22.04	62.72	 35 %
+
+old pdp++ is much faster, at least on the SGI4K_150.  it would be
+interesting to compare this on different platforms..

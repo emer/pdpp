@@ -1,0 +1,456 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - leabra-unit</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_237.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_239.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1493" HREF="pdp-user_toc.html">17.3  Leabra Unit Specifications</A></H2>
+<P>
+<A NAME="IDX1494"></A>
+<A NAME="IDX1495"></A>
+<A NAME="IDX1496"></A>
+
+</P>
+<P>
+The parameters for the <B>LeabraUnit</B> unit object are as follows:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>spec</CODE>
+<DD>
+<A NAME="IDX1497"></A>
+Determines the spec that controls this unit (not in NetView).
+
+<DT><CODE>pos</CODE>
+<DD>
+<A NAME="IDX1498"></A>
+Determines location of unit within layer (not in NetView).
+
+<DT><CODE>ext_flag</CODE>
+<DD>
+<A NAME="IDX1499"></A>
+Reflects type of external input to unit (not in NetView)
+
+<DT><CODE>targ</CODE>
+<DD>
+<A NAME="IDX1500"></A>
+Target activity value (provided by external input from event).
+
+<DT><CODE>ext</CODE>
+<DD>
+<A NAME="IDX1501"></A>
+External activation value when clamped (provided by external
+  input from event).
+
+<DT><CODE>act</CODE>
+<DD>
+<A NAME="IDX1502"></A>
+Activation value (what is sent to other units, y_j).
+
+<DT><CODE>net</CODE>
+<DD>
+<A NAME="IDX1503"></A>
+Net input value (eta_j) computed as normalized weights
+  times activations -- excitation only, inhibition is computed
+  separately as g_i <CODE>gc.i</CODE> either by kWTA or directly by unit
+  inhib.
+
+<DT><CODE>bias</CODE>
+<DD>
+<A NAME="IDX1504"></A>
+The bias weight is a LeabraCon object hanging
+  off of the unit -- it is managed by its own LeabraBiasSpec in the
+  LeabraUnitSpec.
+
+<DT><CODE>act_eq</CODE>
+<DD>
+<A NAME="IDX1505"></A>
+Rate-code equivalent activity value
+  (time-averaged spikes when using discrete spiking activation, or
+  just a copy of <CODE>act</CODE> when already using rate code activation).
+
+<DT><CODE>act_avg</CODE>
+<DD>
+<A NAME="IDX1506"></A>
+Average activation over long time intervals,
+  as integrated by time constant in <CODE>adapt_thr</CODE> (see LeabraUnitSpec).
+  Useful to see which units are dominating, and to adapt their
+  thresholds if that is enabled.
+
+<DT><CODE>act_m</CODE>
+<DD>
+<A NAME="IDX1507"></A>
+Minus phase activation value, set after settling in
+  minus phase and used for learning.
+<DT><CODE>act_p</CODE>
+<DD>
+<A NAME="IDX1508"></A>
+Plus phase activation value, set after settling in
+  plus phase and used for learning.
+
+<DT><CODE>act_dif</CODE>
+<DD>
+<A NAME="IDX1509"></A>
+Difference between plus and minus phase activations
+  -- equivalent to the error contribution for unit (delta_j).
+
+<DT><CODE>da</CODE>
+<DD>
+<A NAME="IDX1510"></A>
+Delta activation: change in activation from one
+    cycle to the next, used for determining when to stop settling.
+
+<DT><CODE>vcb</CODE>
+<DD>
+<A NAME="IDX1511"></A>
+Voltage-gated channel basis variables that
+    integrate activation over time to determine if channels should be
+    open or closed (channels are not active by default) -- there are
+    two types: hyst and acc, described next, followed by the
+    parameters common to both.
+
+<DT><CODE>hyst</CODE>
+<DD>
+<A NAME="IDX1512"></A>
+Hysteresis channel (excitatory) basis
+  variable -- typically hysteresis is triggered after unit achieves
+  brief sustained level of excitation as reflected in this basis
+  variable.
+
+<DT><CODE>acc</CODE>
+<DD>
+<A NAME="IDX1513"></A>
+Accommodation channel (inhibitory) basis
+  variable -- typically accommodation (fatigue) is triggered after
+  unit is active for a relatively long time period as reflected in
+  this more slowly-integrating basis variable.
+
+<DL COMPACT>
+
+<DT><CODE>gc</CODE>
+<DD>
+<A NAME="IDX1514"></A>
+Channel conductances for the different input channel
+  types except excitatory input (which is in <CODE>net</CODE>).
+<DT><CODE>l</CODE>
+<DD>
+<A NAME="IDX1515"></A>
+Leak channel conductance (a constant, not visible in NetView).
+<DT><CODE>i</CODE>
+<DD>
+<A NAME="IDX1516"></A>
+Inhibition channel conductance, computed by kWTA or direct unit inhibition.
+<DT><CODE>h</CODE>
+<DD>
+<A NAME="IDX1517"></A>
+Hysteresis (voltage-gated excitation) channel conductance.
+<DT><CODE>a</CODE>
+<DD>
+<A NAME="IDX1518"></A>
+Accommodation (voltage-gated inhibition) channel conductance.
+</DL>
+
+<DT><CODE>I_net</CODE>
+<DD>
+<A NAME="IDX1519"></A>
+Net current produced by all channels: what drives the changes in membrane potential.
+<DT><CODE>v_m</CODE>
+<DD>
+<A NAME="IDX1520"></A>
+The membrane potential, integrates over time
+  weighted-average inputs across different channels, provides basis
+  for activation output via thresholded, saturating nonlinear
+  function.
+
+<DT><CODE>i_thr</CODE>
+<DD>
+<A NAME="IDX1521"></A>
+Inhibitory threshold value used in computing kWTA (g_i_Theta).
+<DT><CODE>spk_amp</CODE>
+<DD>
+<A NAME="IDX1522"></A>
+Amplitude of spiking output (for depressing synapse activation function)
+</DL>
+
+<P>
+The <B>LeabraUnitSpec</B> unit-level specifications:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>act_range</CODE>
+<DD>
+<A NAME="IDX1523"></A>
+Range of activation for units: Leabra units
+  are bounded between 0 (<CODE>min</CODE>) and 1 (<CODE>max</CODE>).
+
+<DT><CODE>bias_con_type</CODE>
+<DD>
+<A NAME="IDX1524"></A>
+Type of bias connection to make: almost always LeabraCon.
+
+<DT><CODE>bias_spec</CODE>
+<DD>
+<A NAME="IDX1525"></A>
+The LeabraBiasSpec that controls the bias connection on the unit.
+
+<DT><CODE>act_fun</CODE>
+<DD>
+<A NAME="IDX1526"></A>
+The activation function to use:
+    NOISY_XX1 (default), XX1 (not convolved with noise), LINEAR (<CODE>act</CODE>
+    is linear function of <CODE>v_m</CODE> above threshold (0 below threshold)),
+  SPIKE (discrete spiking).
+
+<DT><CODE>act</CODE>
+<DD>
+<A NAME="IDX1527"></A>
+Specifications for the activation function:
+
+<DL COMPACT>
+
+<DT><CODE>thr</CODE>
+<DD>
+<A NAME="IDX1528"></A>
+The threshold value Theta in: y_j = (gamma [V_m - Theta]_+) / (gamma
+  [V_m - Theta]_+ + 1).
+<DT><CODE>gain</CODE>
+<DD>
+<A NAME="IDX1529"></A>
+Gain of the activation function (gamma in: y_j = (gamma [V_m - Theta]_+)(gamma
+  [V_m - Theta]_+ + 1). 
+<DT><CODE>nvar</CODE>
+<DD>
+<A NAME="IDX1530"></A>
+Variance of the Gaussian noise kernel for convolving with XX1 function in NOISY_XX1.
+</DL>
+
+<DT><CODE>spike</CODE>
+<DD>
+<A NAME="IDX1531"></A>
+Specifications for the discrete spiking activation function (SPIKE):
+
+<DL COMPACT>
+
+<DT><CODE>dur</CODE>
+<DD>
+<A NAME="IDX1532"></A>
+Spike duration in cycles -- models
+  extended duration of effect on postsynaptic neuron via opened
+  channels, etc.
+<DT><CODE>v_m_r</CODE>
+<DD>
+<A NAME="IDX1533"></A>
+Post-spiking membrane potential to
+  reset to, produces a refractory effect and controls overall rate of
+  firing (0 std).
+<DT><CODE>eq_gain</CODE>
+<DD>
+<A NAME="IDX1534"></A>
+Gain for computing <CODE>act_eq</CODE>
+  relative to actual time-average spiking rate (gamma_eq in: y_j^eq = gamma_eq
+  (N_spikes)(N_cycles)).
+<DT><CODE>ext_gain</CODE>
+<DD>
+<A NAME="IDX1535"></A>
+Gain for clamped external inputs,
+  multiplies the <CODE>ext</CODE> value before clamping, needed because
+  constant external inputs otherwise have too much influence compared to
+  spiking ones. 
+</DL>
+
+<DT><CODE>act_reg</CODE>
+<DD>
+<A NAME="IDX1536"></A>
+Activity regulation via global weight scaling specifications (not used by default):
+<DL COMPACT>
+
+<DT><CODE>on</CODE>
+<DD>
+<A NAME="IDX1537"></A>
+whether to activity regulation is on (active) or not
+<DT><CODE>min</CODE>
+<DD>
+<A NAME="IDX1538"></A>
+Increase weights for units below this level of average activation
+<DT><CODE>max</CODE>
+<DD>
+<A NAME="IDX1539"></A>
+Decrease weights for units above this level of average activation 
+<DT><CODE>wt_dt</CODE>
+<DD>
+<A NAME="IDX1540"></A>
+rate constant for making weight changes to rectify over-activation (dwt ~= wt_dt * wt)
+</DL>
+
+<DT><CODE>opt_thresh</CODE>
+<DD>
+<A NAME="IDX1541"></A>
+Optimization thresholds for speeding up computation: 
+
+<DL COMPACT>
+
+<DT><CODE>send</CODE>
+<DD>
+<A NAME="IDX1542"></A>
+Don't send activation when act &#60;= send.
+<DT><CODE>learn</CODE>
+<DD>
+<A NAME="IDX1543"></A>
+Don't learn on recv unit weights when both phase acts &#60;= learn.
+<DT><CODE>updt_wts</CODE>
+<DD>
+<A NAME="IDX1544"></A>
+Whether to apply <CODE>learn</CODE> threshold to updating weights (otherwise always update).
+<DT><CODE>phase_dif</CODE>
+<DD>
+<A NAME="IDX1545"></A>
+Don't learn when +/- phase
+    difference ratio (- / +) &#60; phase_dif.  This is off (0) by
+    default, but can be useful if network is failing to activate
+    output (e.g., in a deep network) on minus phase of some trials ---
+    learning in this case is just massive increase in all weights, and
+    tends to produce "hog" units for all the active units.  To use,
+    set to .8 as a good initial value.
+</DL>
+
+<DT><CODE>clamp_range</CODE>
+<DD>
+<A NAME="IDX1546"></A>
+Range of clamped (external)
+    activation values (<CODE>min, max</CODE>) -- Don't clamp to 1 because
+    NOISY_XX1 activations can't reach that value, so use .95 as max.
+
+<DT><CODE>vm_range</CODE>
+<DD>
+<A NAME="IDX1547"></A>
+Membrane potential range (<CODE>min, max</CODE>), 0-1 for normalized, -90-50 for bio-based.
+
+<DT><CODE>v_m_init</CODE>
+<DD>
+<A NAME="IDX1548"></A>
+Random distribution for initializing the membrane potential (constant by default). 
+
+<DT><CODE>dt</CODE>
+<DD>
+<A NAME="IDX1549"></A>
+Time constants for integrating values over time:
+<DT><CODE>vm</CODE>
+<DD>
+<A NAME="IDX1550"></A>
+Membrane potential <CODE>v_m</CODE> time constant: dt_vm in: V_m(t+1) = V_m(t) + dt_vm I_net-.
+<DT><CODE>net</CODE>
+<DD>
+<A NAME="IDX1551"></A>
+Net input <CODE>net</CODE> time constant: dt_net
+  in: g_e(t) = (1 - dt_net) g_e(t-1) + dt_net ( 1/n_p sum_k g_e_k +
+  1 / (beta/N)).
+
+<DT><CODE>g_bar</CODE>
+<DD>
+<A NAME="IDX1552"></A>
+Maximal conductances for channels:
+
+<DL COMPACT>
+
+<DT><CODE>e</CODE>
+<DD>
+<A NAME="IDX1553"></A>
+Excitatory (glutamatergic synaptic sodium (Na) channel).
+<DT><CODE>l</CODE>
+<DD>
+<A NAME="IDX1554"></A>
+Constant leak (potassium, K+) channel.
+<DT><CODE>i</CODE>
+<DD>
+<A NAME="IDX1555"></A>
+Inhibitory GABA-ergic channel (computed by kWTA or directly).
+<DT><CODE>h</CODE>
+<DD>
+<A NAME="IDX1556"></A>
+Hysteresis (excitation) voltage-gated channel (Ca++).
+<DT><CODE>a</CODE>
+<DD>
+<A NAME="IDX1557"></A>
+Accommodation (fatigue, inhibition) voltage-gated channel (K+).
+<DT><CODE>e_rev</CODE>
+<DD>
+<A NAME="IDX1558"></A>
+Reversal potentials for each channel (see above, defaults: 1, .15, .15, 1, 0).
+</DL>
+
+<DT><CODE>hyst</CODE>
+<DD>
+<A NAME="IDX1559"></A>
+Hysteresis (excitation) voltage-gated channel
+  specs, see accommodation (<CODE>acc</CODE>) for details, defaults are:
+  false, .05, .8, .7, .1 and true).
+
+<DT><CODE>acc</CODE>
+<DD>
+<A NAME="IDX1560"></A>
+Accommodation (fatigue, inhibition) voltage-gated channel:
+<DL COMPACT>
+
+<DT><CODE>on</CODE>
+<DD>
+<A NAME="IDX1561"></A>
+ Activate use of channel if true.
+<DT><CODE>b_dt</CODE>
+<DD>
+<A NAME="IDX1562"></A>
+Time constant for integrating basis variable,
+  dt_b_a in: b_a(t) = b_a(t-1) +  dt_b_a (y_j(t) - b_a(t-1)).
+<DT><CODE>a_thr</CODE>
+<DD>
+<A NAME="IDX1563"></A>
+Activation threshold for basis variable, when
+  exceeded opens the channel, aka Theta_a.
+<DT><CODE>d_thr</CODE>
+<DD>
+<A NAME="IDX1564"></A>
+Deactivation threshold for basis
+  variable, when less than closes channel (after having been opened),
+  aka Theta_d.
+<DT><CODE>g_dt</CODE>
+<DD>
+<A NAME="IDX1565"></A>
+Time constant for changing conductance when
+  activating or deactivating, aka dt_g_a
+<DT><CODE>init</CODE>
+<DD>
+<A NAME="IDX1566"></A>
+If true, initialize basis variables when state is initialized (else with weights).
+</DL>
+
+<DT><CODE>noise_type</CODE>
+<DD>
+<A NAME="IDX1567"></A>
+Where to add noise in the processing (if at all): NO_NOISE (default) =
+no noise, VM_NOISE = add to <CODE>v_m</CODE> (most commonly used),
+NETIN_NOISE = add to <CODE>net</CODE>, ACT_NOISE = add to activation
+<CODE>act</CODE>.
+ 
+<DT><CODE>noise</CODE>
+<DD>
+<A NAME="IDX1568"></A>
+Distribution parameters for random added
+  noise, default = GAUSSIAN, mean = 0, var = .001.
+<DT><CODE>noise_sched</CODE>
+<DD>
+<A NAME="IDX1569"></A>
+Schedule of noise variance over
+  settling cycles, can be used to make an <EM>annealing</EM> schedule
+  (rarely needed), use same logic as <CODE>lrate_sched</CODE> described in
+  LeabraConSpec.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_237.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_239.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

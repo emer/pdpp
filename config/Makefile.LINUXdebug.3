@@ -1,0 +1,44 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - g++ (ELF) g++ 3.x
+####################################################
+
+# IMPORTANT: this is for gcc 3.x compiliers: use .2 versions for
+# 2.9x version compilers.
+
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DLINUX
+
+# always debug, all the time
+OPT_FLAG = -g -Wall -Wunused -Wunused-parameter
+DEBUG_FLAG = -g -Wall -Wunused -Wunused-parameter
+
+# use debug interviews!
+#IV_LIB = -lIVd
+
+# IDIRS_EXTRA =
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+# define this to be where the libg++ (stream classes) headers are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux
+
+# needs libg++ includes
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+IOS_INCLUDES = g++-3.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /lib/cpp -D__i386__ 
+
+# NOT - doesn't link properly for debugging purposes!
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+# no libg++ for binaries 
+#BIN_CXX = $(CC)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+TAR = tar

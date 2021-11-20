@@ -1,0 +1,24 @@
+// dumps data to a file in one big column..
+
+void DumpEnvData(Environment* env) {
+  String fname = env->name + ".txt_dump";
+  fstream fh;
+  fh.open(fname, ios::out);
+  int j;
+  for(j=0; j<env->events.leaves; j++) {
+    Event* ev = env->events.Leaf(j);
+    fh << ev->name << "\t";
+    int i;
+    for(i=0; i<ev->patterns.leaves; i++) {
+      Pattern* pat = ev->patterns.Leaf(i);
+      int k;
+      for(k=0; k<pat->value.size; k++)
+	fh << pat->value[k] << "\t";
+    }
+    fh << "\n";
+  }
+  fh.close();
+}
+
+DumpEnvData(.environments[s_args[0]]);
+

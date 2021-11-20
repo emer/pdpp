@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - tut-using-network</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_23.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_25.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX28" HREF="pdp-user_toc.html">4.2.4  Network and NetView Window</A></H3>
+
+<P>
+The <B>NetView</B> window (see section <A HREF="pdp-user_129.html">10.6  Network Viewer</A>) is an essential window for us
+since it provides us with access to the network that we have created for
+learning the XOR problem.  The <B>NetView</B> window has two sets of menus
+along with lots of pushbuttons and a display area containing a graphical
+display of the network. Lets take a look at the menus first.  The left
+hand set of menus relate to the <B>Network</B> itself.  The right hand set
+of menus relate to the <B>NetView</B>.  The <B>NetView</B> is an object,
+actually a child of the <B>Network</B>, that provides a view of the
+Network.  We can operate on either one, and we have two separate sets of
+menus.
+
+</P>
+<P>
+The left hand menus allow access to the <B>Network</B> itself and the
+Networks' children: its <I>.views</I> and its <I>.layers</I>.  Most of these
+menus have the same basic structure as we have already seen, but there
+is one new menu, namely the <I>Actions</I> menu.  This menu allows us to
+perform actions on the network itself, such as removing things from it,
+initializing it, etc.  Some of the other actions we can perform are
+accessible through the buttons to which we will turn in the next
+paragraph.  The right hand menus allow us to access the <B>NetView</B>.
+This is indicated by the label <I>View:</I> on this set of menus.  These
+menus operate on the visual display of the network, or any operation
+that interacts with the visual display (e.g., the <I>Selections</I> menu
+operates on things that are selected in the visual display).
+
+</P>
+<P>
+The <B>NetView</B> itself, the main body of the NetView window, provides a
+graphical depiction of our network.  You can think of the layers of the
+network arranged vertically, with the units within each layer laid out
+on a two-dimensional sheet.  The input layer is located at the bottom of
+the netview, with the two input units arranged side by side.  In
+networks with many units per layer the units can be laid out in an X by
+Y array.  The hidden layer is next above the input layer, and we can see
+the two hidden units, again laid out side by side.  The output layer,
+above the hidden layer, contains just a single unit, aligned to the left
+of the netview.  At present, each unit is displaying its activation, as
+indicated by the depressed appearance of the <CODE>act</CODE> button, together
+with the yellow highlight.  The activation is shown in color in
+accordance with the color bar shown at the right of the NetView, and by
+the numeric value printed on it.  Either way we see that the activation
+of all of the units is 0.
+
+</P>
+<P>
+The <B>Network</B> has been initialized so that each unit has a random bias
+weight and so that there are random weights on the connections between
+the units.  We can examine these biases and weights by displaying them
+on the netview.  First, to look at the bias weights, we can click on the
+<I>bias.wt</I> button.  Once we do this, the units will assume colors
+corresponding to their bias weights.  The biases on the input units are
+not used and can be ignored.
+
+</P>
+<P>
+We can also view weights either coming into or going out of a selected
+unit.  The former are called 'receiving weights'.  To view the receiving
+weights of the left hidden unit we first click on the button labeled
+<I>r.wt</I>.  This activates the <I>View</I> button, and turns the cursor into
+a little hand, indicating that we may now pick a unit to view its
+receiving weights.  We can now click on the left hidden unit, and its
+receiving or incoming weights are displayed on the units from which they
+originate; the selected receiving unit is highlighted.  We see that this
+unit receives incoming weights only from the two input units, both
+somewhat positive.  We can proceed to click on other units to view their
+incoming weights as well.  Note that the input units have no incoming
+weights.  To see the outgoing or 'sending' weights from a unit, we
+simply click the <I>s.wt</I> button, then click the unit whose sending
+weights we wish to view.  You can verify that the values of the sending
+weight from the left input unit to the right hidden unit is the same
+value as the receiving weight to the right hidden unit.
+
+</P>
+<P>
+Since all we've done so far is initialize the network's weights there
+isn't that much else we can look at at this point.  However, if we click
+on the <I>act</I> button, the network will be set to display the
+activations of units later when we actually start to run the network.
+Do this now.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_23.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_25.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,48 @@
+// computes the distance matrix between events
+
+#include "leading_zeros.css"
+
+void DistMatrix(Environment* env, int patno) {
+  int j;
+  for(j=0; j<env->events.leaves; j++) {
+    Pattern* trg_pat = env->events.Leaf(j)->patterns[patno];
+    cout << j << "\t";
+    int i;
+    for(i=0; i<j; i++) {
+      Pattern* pat = env->events.Leaf(i)->patterns[patno];
+      float dst = trg_pat->value.Dist(pat->value, 0, float_RArray::HAMMING);
+      cout << LeadingZeros(dst, 2) << " ";
+    }
+    cout << "\n";
+  }
+}
+
+void DistMatrixNames(Environment* env, int patno) {
+  int j;
+  for(j=0; j<env->events.leaves; j++) {
+    Pattern* trg_pat = env->events.Leaf(j)->patterns[patno];
+    cout << env->events[j]->name << "\t";
+    int i;
+    for(i=0; i<j; i++) {
+      Pattern* pat = env->events.Leaf(i)->patterns[patno];
+      float dst = trg_pat->value.Dist(pat->value, 0, float_RArray::HAMMING);
+      cout << LeadingZeros(dst, 2) << " ";
+    }
+    cout << "\n";
+  }
+}
+
+void CorrelMatrixNames(Environment* env, int patno) {
+  int j;
+  for(j=0; j<env->events.leaves; j++) {
+    Pattern* trg_pat = env->events.Leaf(j)->patterns[patno];
+    cout << env->events[j]->name << "\t";
+    int i;
+    for(i=0; i<j; i++) {
+      Pattern* pat = env->events.Leaf(i)->patterns[patno];
+      float dst = trg_pat->value.Correl(pat->value);
+      cout << LeadingZeros(dst,2) << " ";
+    }
+    cout << "\n";
+  }
+}

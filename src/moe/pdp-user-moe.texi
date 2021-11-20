@@ -1,0 +1,154 @@
+@c uncomment the following two lines for 'update every node' command
+@c @node  moe
+@c @chapter Mixtures of Experts
+
+@cindex Mixtures of Experts
+
+Review of mixtures of experts algorithm here.
+
+@menu
+* moe-over::                     Overview of the Moe Implementation
+* moe-unit::                     Moe Unit Specifications
+* moe-proc::                     The Moe Trial Process
+* moe-impl::                     Moe Implementation Details
+@end menu
+
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  moe-over, moe-con, moe, moe
+@subsection Overview of the Moe Implementation
+@cindex Mixtures-of-Experts, Implementation
+@cindex Implementation, Mixtures-of-Experts
+
+
+Configuration of the network:
+
+Note that (T) layers require target value to be present.  Thus, same
+target value must be provided both to summary linear output unit and to
+each of the MoeOutputLayer units (w=1 means that the weights for these
+cons should be mean=1,var=0, with no learning).
+
+@example
+@group
+(T) BpLinearUnit: prediction output, summarizes everything
+       / (full w=1) \
+(T)  MoeOutputLayer: units for each expt output
+   / (1-1 (w=1))  \ (1-1 (w=1))
+Experts        MoeGateLayer: units for each gate
+   \             /
+     Input Units
+@end group        
+@end example
+
+MoeOutputLayer and Units: units must have only two recv projections: 0
+is from output of expert, 1 is from gating layer, both of which must be
+one-to-one (i.e., using @b{OneToOnePrjnSpec}).
+
+MoeGateLayer and Units: These provide normalized-to-one gating for the
+experts.  As a consequence of the above, the units need a send prjn to
+the corresp output unit as send.gp[0].
+
+The CSS script @file{moe_create.cc} will create a set of specs and a
+network in the above configuration.
+
+Configuration of the Environment: As noted above, Moe requires that the
+environment be configured to provide target signals to @e{both} the
+final output units and the MoeOutputLayer units.  
+
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  moe-unit, moe-proc, moe-con, moe-ff
+@subsection Moe Unit Specifications
+@cindex Units, Mixtures-of-Experts
+@tindex MoeUnit
+@tindex MoeUnitSpec
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  moe-proc, moe-impl, moe-unit, moe-ff
+@subsection The Moe Trial Process
+@cindex Process, Mixtures-of-Experts Trial
+@tindex MoeTrial
+
+The E-M form of learning used in Moe can use multiple maximization (M)
+steps within a single event presentation.  Thus, the @b{MoeTrial}
+process has a sub-process called a @b{MoeMStep} process, which can be
+called multiple times to maximize the weight values for a given
+estimation (E) step (which is performed only once at the start of the
+trial processing).
+
+If multiple M steps are being performed, learning must necessarily be
+on-line (per event).  However, even if only one M step is being taken,
+the E-M framework assumes that the weights are being updated in the
+maximization step.  Nevertheless, it would be technically possible to
+perform batch-mode weight updating if only one M step is taken per
+event.  Thus, we allow this to happen.  As a result, the @b{MoeTrial}
+process operates in effectively two different modes, one that holds when
+the counter that controls the iteration over M steps (@code{m_step}) has
+a maximum of 1, and another that holds when this is larger than 1.  In
+the former case, the trial process does not call the @b{MoeMStep}
+sub-process, and behaves just like a @b{BpTrial} process.  However, when
+multiple M steps are being taken, then the weight updating takes place
+within the @b{MoeMStep} sub process.  However, since the EpochProcess
+will automatically perform the UpdateWeights function after each trial
+process in ON_LINE mode, which is redundant with the MoeMStep weight
+updates, it is reccomended for speed that the epoch process be set to
+perform BATCH mode weight updating.  This extra BATCH weight update at
+the end of the epoch will not actually have any effect, because the
+delta-weight change terms will still be zeroed from the final
+UpdateWeights call from the MoeMStep process.
+
+
+@c ======================================
+@c    <node>, <next>, <prev>, <up>
+@node  moe-impl, moe-srn, moe-proc, moe-ff
+@subsection Moe Implementation Details
+
+The following is a chart describing the flow of processing in the Moe
+algorithm, starting with the epoch process, since higher levels do not
+interact with the details of particular algorithms:
+
+@example
+@group
+EpochProcess: @{
+  Init: @{
+    environment->InitEvents();          // init events (if dynamic)
+    event_list.Add() 0 to environment->EventCount(); // get list of events
+    if(order == PERMUTE) event_list.Permute();       // permute if necessary
+    GetCurEvent();                      // get pointer to current event
+  @}
+  Loop (trial): @{                      // loop over trials
+    BpTrial: @{                         // trial process (one event)
+      Init: @{                          // at start of trial
+        cur_event = epoch_proc->cur_event; // get cur event from epoch
+      @}
+      Loop (once): @{                   // only process this once per trial
+        network->InitExterns();         // init external inputs to units
+        cur_event->ApplyPatterns(network); // apply patterns to network
+        Compute_Act(): @{               // compute the activations
+          network->layers: @{           // loop over layers
+            if(!layer->ext_flag & Unit::EXT) // don't compute net for clamped
+              layer->Compute_Net();     // compute net inputs
+            layer->Compute_Act();       // compute activations from net in
+          @}
+        @}
+        Compute_dEdA_dEdNet(): @{       // backpropagate error terms
+          network->layers (backwards): @{ // loop over layers backwards
+            units->Compute_dEdA();   // get error from other units or targets
+            units->Compute_dEdNet(); // add my unit error derivative
+          @}
+        @}
+        network->Compute_dWt();         // compute weight changes from error
+      @}
+    @}
+    if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+      network->UpdateWeights(); // after trial, update weights if necc
+    GetCurEvent();              // get next event
+  @}
+  Final:
+    if(wt_update == BATCH)  network->UpdateWeights(); // batch weight updates
+@}
+@end group
+@end example

@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-proc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_201.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_203.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1233" HREF="pdp-user_toc.html">14.1.4  The Bp Trial Process</A></H3>
+<P>
+<A NAME="IDX1234"></A>
+<A NAME="IDX1235"></A>
+
+</P>
+<P>
+The <B>BpTrial</B> process is the only Bp-specific process type needed
+to perform simple feed-forward backprop.  The <CODE>Loop</CODE> function of
+this process simply propagates activation forwards through the network,
+and then propagates the error backwards.  This assumes that the layers
+are ordered sequentially in a feed-forward manner.  Note that the
+process does not actually "loop" over anything, so it has no counter.
+See section <A HREF="pdp-user_158.html">12.5.1  Presenting a Single Event: TrialProcess</A> for more information on the trial process
+type. 
+
+</P>
+<P>
+The following functions are defined on the trial process, each of which
+performs one step of the backpropagation computations:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Compute_Act()</CODE>
+<DD>
+<A NAME="IDX1236"></A>
+Goes layer-by-layer and computes the net input and the activation of the
+units in the layer.
+<DT><CODE>Compute_Error()</CODE>
+<DD>
+<A NAME="IDX1237"></A>
+Computes the error on the output units, which is only done during
+testing, and not training.
+<DT><CODE>Compute_dEdA_dEdNet()</CODE>
+<DD>
+<A NAME="IDX1238"></A>
+Computes the derivative of the error with respect to the activation and
+then with respect to the net inputs.  This goes in reverse order
+through the layers of the network.
+<DT><CODE>Compute_dWt()</CODE>
+<DD>
+<A NAME="IDX1239"></A>
+Computes the dEdW for all the weights in the network.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_201.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_203.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

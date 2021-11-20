@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-sched-vars</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_150.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_152.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX902" HREF="pdp-user_toc.html">12.2.1  Variables and Functions used in a SchedProcess</A></H3>
+
+<P>
+The SchedProcess provides the following variables and functions (in
+addition to the ones already provided by the basic Process):
+
+</P>
+
+<H2>12.3  Variables</H2>
+
+<DL COMPACT>
+
+<DT><CODE>bool can_stop</CODE>
+<DD>
+<A NAME="IDX903"></A>
+This variable is a flag that controls whether the SchedProcess can be
+interrupted during execution.  This also determines if GUI events are
+being processed.  Things can be speeded up a bit if this flag is turned
+off for low-level processes like the <CODE>CycleProcess</CODE>.
+<DT><CODE>TypeDef sub_proc_type</CODE>
+<DD>
+<A NAME="IDX904"></A>
+This is type of process the <CODE>sub_proc</CODE> should be. If the
+<CODE>sub_proc</CODE> type does not inherit from this type then a new
+<CODE>sub_proc</CODE> is created of the correct type.
+<DT><CODE>SchedProcess* sub_proc</CODE>
+<DD>
+<A NAME="IDX905"></A>
+This is a pointer to the child Process (if it exists) of this
+SchedProcess.  This is the sub process that the process iterates over.
+<DT><CODE>StepParams step</CODE>
+<DD>
+<A NAME="IDX906"></A>
+It is possible to single-step (or multiple step) through processing, and
+this controls how the <I>Step</I> function behaves. The <CODE>step</CODE>
+variable contains a pointer to the sub-process under the current one
+that represents the time-grain at which stepping should occur.  The
+number of times this step process is iterated per each <I>Step</I> (i.e.,
+each time the user hits the <I>Step</I> button) is determined by the
+<CODE>n</CODE> parameter.
+<DT><CODE>Stat_Group loop_stats</CODE>
+<DD>
+<A NAME="IDX907"></A>
+This is a group that contains the Statistic processes that will be
+executed within the loop of the schedule process (i.e., called by
+<CODE>LoopStats()</CODE> in the loop code shown above).  Thus, for a epoch
+process, these stats will be computed after every trial, since the epoch
+process loops over trials.  These are typically aggregation stats, which
+are adding up values computed in the trial process.  For example the
+epoch sum of squares error would be aggregated in the epoch loop stats.
+<DT><CODE>Stat_Group final_stats</CODE>
+<DD>
+<A NAME="IDX908"></A>
+This is a group that contains the Statistic processes that will be
+executed at the end of the loop for this process.  This is typically
+where statistics go which are computed for the first time (i.e., not
+those that are simply aggregating values computed lower down in the
+hierarchy).
+<DT><CODE>Process_Group init_procs</CODE>
+<DD>
+<A NAME="IDX909"></A>
+This contains miscellaneous processes that get executed when the process
+is initialized.  Note that these are run only when the process is
+actually running, <EM>not</EM> when the <I>ReInit</I> or <I>NewInit</I> buttons
+are hit.  Thus, if you hit one of these buttons, and then do a <I>Run</I>,
+the first thing that will happen when the process is run is that the
+init_procs will be executed.
+<DT><CODE>Process_Group loop_procs</CODE>
+<DD>
+<A NAME="IDX910"></A>
+These are miscellaneous processes that get executed inside the loop of
+the process.  For example, it is possible to link in a testing epoch
+process into the <CODE>loop_procs</CODE> of a training <B>TrainProcess</B>, with
+a mod value set to 10, for example, which will result in the network
+being tested after every 10 epochs of training.
+<DT><CODE>Process_Group final_procs</CODE>
+<DD>
+<A NAME="IDX911"></A>
+These are miscellaneous processes that get executed after the loop of
+the process, just before the final stats are computed.
+<DT><CODE>bool log_loop</CODE>
+<DD>
+<A NAME="IDX912"></A>
+Either the process sends its data at the end of its processing loop,
+which is the "natural" (and default) way to do things, since it
+corresponds with the name of the process (the end of the epoch process
+means once every epoch, while the loop of the epoch process is actually
+the end of every trial!), or it sends its data inside the loop, which
+can be useful to see the aggregation of the <CODE>loop_stats</CODE> statistics
+over time.  This flag, if checked, means that it logs inside the loop.
+<DT><CODE>bool log_counter</CODE>
+<DD>
+<A NAME="IDX913"></A>
+This flag determines if the counter associated with this process (e.g.,
+the epoch counter in the <B>TrainProcess</B>) is logged along with all the
+other data that is logged.
+</DL>
+
+<P>
+Many of the core functions on the schedule process object were
+documented in the main loop code shown previously.  In addition to the
+functions on the process object, the following functions are available
+in a schedule process (most can be found in the <I>Actions</I> menu of the
+edit dialog or control panel).
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>InitMyLogs()</CODE>
+<DD>
+<A NAME="IDX914"></A>
+Clear all logs that this process updates.
+<DT><CODE>InitAllLogs()</CODE>
+<DD>
+<A NAME="IDX915"></A>
+Clear all logs that exist in the Project that this SchedProcess is in.
+<DT><CODE>InitNetwork()</CODE>
+<DD>
+<A NAME="IDX916"></A>
+Initialize the weights in the network associated with this process
+(calls <CODE>InitWtState()</CODE> on the network).
+<DT><CODE>InitAll();</CODE>
+<DD>
+<A NAME="IDX917"></A>
+Initialize the process, network weights, and logs.
+<DT><CODE>RemoveFromLogs();</CODE>
+<DD>
+<A NAME="IDX918"></A>
+Remove this SchedProcess from all the logs in the <CODE>logs</CODE> group and
+clear out the <CODE>logs</CODE> group.
+<DT><CODE>RemoveFromDisplays();</CODE>
+<DD>
+<A NAME="IDX919"></A>
+Remove this SchedProcess from all the displays in the <CODE>displays</CODE>
+group and clear out the <CODE>displays</CODE> group.
+<DT><CODE>CheckAllTypes();</CODE>
+<DD>
+<A NAME="IDX920"></A>
+This goes through all the objects in the network and makes sure that
+they are all of the minimum type necessary for all of the processes
+statistics being computed by this processing hierarchy.  This is done
+automatically whenever the training process is initialized, but it can
+be done manually just to make sure.  This check is useful, especially if
+you are experiencing unexplained crashing, because many process objects
+assume that the objects in the network are of the appropriate type.
+</DL>
+
+<P>
+The following are a set of functions that are particularly useful for
+configuring the processing hierarchy, and appear in the <I>Structure</I>
+menu of a SchedProc.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>MoveToSubGp(const char* gp_name)</CODE>
+<DD>
+<A NAME="IDX921"></A>
+This moves the current process and all of its sub-processes to a new
+sub-group within the <CODE>.processes</CODE> group of the project.  Run this
+on the top-level process in a process hierarchy.  This is useful for
+organizing the menu when several processing hierarchies are present in
+the same project.
+<DT><CODE>ChangeNameSuffix(const char* new_name_sufx)</CODE>
+<DD>
+<A NAME="IDX922"></A>
+This changes the portion of the sched process names after the underbar
+(_) to the new specified name.  This is the preferred way to give a
+whole hierarchy of sched procs the same semantically meaningful tag
+(e.g., a suffix of "Trn" for training processes, and "Tst" for testing
+processes.)  Run this on the top level process, as it works on all
+sub-processes.
+<DT><CODE>AddSuperProc(TypeDef* type)</CODE>
+<DD>
+<A NAME="IDX923"></A>
+This will add a new schedule process above this one, of the given type,
+while preserving as much of the existing structure as possible.  Thus,
+any aggregated stats will be aggregated through the new super proc, and
+it is inserted so that any previous super proc is now the super proc to
+the new super proc, etc.
+<DT><CODE>AddSubProc(TypeDef* type)</CODE>
+<DD>
+<A NAME="IDX924"></A>
+Like AddSuperProc, but adds a new process below this one.
+<DT><CODE>RemoveSuperProc(TypeDef* type)</CODE>
+<DD>
+<A NAME="IDX925"></A>
+This is effectively the inverse of AddSuperProc -- removes parent
+process and closes up any existing aggregation links, etc.
+<DT><CODE>RemoveSubProc(TypeDef* type)</CODE>
+<DD>
+<A NAME="IDX926"></A>
+This is effectively the inverse of AddSubProc -- removes sub
+process and closes up any existing aggregation links, etc.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_150.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_152.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,204 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - log-views-logview</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_184.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_186.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1103" HREF="pdp-user_toc.html">13.3.1  The LogView Class</A></H3>
+<P>
+<A NAME="IDX1104"></A>
+
+</P>
+<P>
+The LogView class provides the general variables, functions, and
+interface components for all the LogView subclasses. Visually all
+LogView objects have a common interface at the top of the LogView
+window. In the top middle of each LogView widow is a set of four
+buttons used for scrolling the visible region of the LogView throughout
+the data and data logfile: 
+
+</P>
+<DL COMPACT>
+
+<DT>|&#60; Full Rewind
+<DD>
+Load the first <CODE>data_bufsz</CODE> lines of data from the file.
+<DT>&#60;  Rewind
+<DD>
+Move back <CODE>data_shift</CODE> lines in the datatable.
+<DT>&#62;  Forward
+<DD>
+Move forward <CODE>data_shift</CODE> lines in the datatable.
+<DT>&#62;| Full Forward
+<DD>
+Load the last <CODE>data_bufsz</CODE> lines of data from the file.
+</DL>
+
+<P>
+To the left of the scroll buttons is a toggle switch which sets the
+LogView's updating on or off. To the right of the scroll buttons are
+the Update, Init, and Clear buttons. The Update button is the most
+benign. Its action merely refreshes the display. The Init button is
+does a bit more by rescaling, recentering and recreating the graphical
+representation of the LogView based on the settings of the ViewSpecs
+and the LogView object. The Clear button destructively removes all the
+data from the log and re-initializes the display. It is useful if you
+are restarting your Training for example and want to clear out the
+statistics gathered for the last Training run. The Clear button does
+not affect the log files.
+
+</P>
+<P>
+All LogViews have the following functions in their <B>View:Object</B> menu:
+<DL COMPACT>
+
+<DT><CODE>AddUpdater(SchedProcess* proc)</CODE>
+<DD>
+<A NAME="IDX1105"></A>
+Adds the given process as an updater of this log (i.e., it sends data
+to this log).
+<DT><CODE>RemoveUpdater(SchedProcess* proc)</CODE>
+<DD>
+<A NAME="IDX1106"></A>
+Removes the given process as a sender of data to this log.  This
+function can also be used check what process(es) are updating this log.
+</DL>
+
+<P>
+All LogViews have the following functions in their <B>Actions</B> menu:
+<DL COMPACT>
+
+<DT><CODE>StartAnimCapture(img_fmt, img_ctr, sub_dir)</CODE>
+<DD>
+<A NAME="IDX1107"></A>
+Starts automatic capturing of window updates to files of given format
+saved in given sub directory, with increasing counter extensions
+starting with img_ctr.  These images can then be processed to create an
+animation of what was displayed in the view.
+<DT><CODE>StopAnimCapture()</CODE>
+<DD>
+<A NAME="IDX1108"></A>
+Stops the automatic capturing of window updates to files.
+<DT><CODE>EditViewSpec(ViewSpec* column)</CODE>
+<DD>
+<A NAME="IDX1109"></A>
+Brings up an edit dialog for parameters that control the display of given column or
+group of data.
+<DT><CODE>SetVisibility(ViewSpec* column, bool vis)</CODE>
+<DD>
+<A NAME="IDX1110"></A>
+Determines whether a given column of data is visible (displayed) in
+the log view or not.
+<DT><CODE>SetLogging(ViewSpec* column, bool log_data, bool also_chg_vis)</CODE>
+<DD>
+<A NAME="IDX1111"></A>
+Determines whether a given column of data is logged to the log file,
+and, if also_chg_vis is set, it also similarly affects whether the
+column is visible (displayed) in the log view or not.  The logging
+flag (<CODE>save_to_file</CODE>) is actually stored in the <CODE>data</CODE>
+structure on the log object itself, and is thus shared by all views of
+this log.
+<DT><CODE>UpdateDispLabels()</CODE>
+<DD>
+<A NAME="IDX1112"></A>
+Copies display_labels from the log object to the labels used to display 
+data in the log view.  These display_labels are not used by default.
+</DL>
+
+<P>
+Furthermore, LogViews have an <B>Analyze</B> menu that allows one to
+analyze columns of data in the log.  This actually occurs by copying
+the data to an environment object, and then running analysis routines
+on that environment.  See the environment documentation
+(see section <A HREF="pdp-user_145.html">11.9  Environment Analysis Functions</A>) to see what other functions are available, and
+for greater explanation of these analysis functions.
+<DL COMPACT>
+
+<DT><CODE>CopyToEnv(TAPtr data, TAPtr labels, Environment* env)</CODE>
+<DD>
+<A NAME="IDX1113"></A>
+Outputs data column (must be group) with labels to environment env
+(WARNING: reformats env to fit data!)  Further analysis and
+transformations can be performed within the environment.
+<DT><CODE>DistMatrixGrid(TAPtr data, TAPtr labels, GridLog* disp_log, DistMetric metric,  bool norm, float tol)</CODE>
+<DD>
+<A NAME="IDX1114"></A>
+Computes and displays in a grid log (NULL = make a new one) the distance
+matrix for data (must be group of data) with labels (typically event names). 
+<DT><CODE>ClusterPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, bool graphic, DistMetric metric, bool norm, float tol);</CODE>
+<DD>
+<A NAME="IDX1115"></A>
+Produces a cluster plot (in graph log, NULL = make a new one) of the
+given data (with labels). 
+<DT><CODE>CorrelMatrixGrid(TAPtr data, TAPtr labels, GraphLog* disp_log);</CODE>
+<DD>
+<A NAME="IDX1116"></A>
+Produces a correlation matrix of the given data -- how each column of
+values correlates with the other columns across the rows of different
+values, and plots this in a grid log.
+<DT><CODE>PCAEigenGrid(TAPtr data, TAPtr labels, GraphLog* disp_log);</CODE>
+<DD>
+<A NAME="IDX1117"></A>
+Computes principal components (eigenvectors) of the correlation matrix
+of column values across rows of data, and plots these eigenvectors in
+a grid log.
+<DT><CODE>PCAPrjnPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, int x_axis_component, y_axis_component);</CODE>
+<DD>
+<A NAME="IDX1118"></A>
+Computes principal components (eigenvectors) of the correlation matrix
+of column values across rows of data, and plots the projection of each
+row of data against two of these principal components.  This produces a 
+simplified two-dimensional representation of the similarity structure
+of the data.
+<DT><CODE>MDSPrjnPlot(TAPtr data, TAPtr labels, GraphLog* disp_log, int x_axis_component, y_axis_component);</CODE>
+<DD>
+<A NAME="IDX1119"></A>
+Computes multidimensional scaling (MDS) on the distance matrix of rows
+of data, and then plots a projection of each row onto two components
+-- this also provides simplified two-dimensional representation of the
+similarity structure of the data.
+</DL>
+
+<P>
+And as mentioned above, all LogViews have the following Variables:
+<DL COMPACT>
+
+<DT><CODE>bool display_toggle</CODE>
+<DD>
+<A NAME="IDX1120"></A>
+Determines if screen updates from the Update Processes
+will affect the display or not. It is sometimes useful to turn off the
+complex display updating of the LogView to speed up the Processes. This
+variable does not affect the recording of the Log information. Thus if
+the <CODE>display_toggle</CODE> is toggled off while a Process is running, and
+then toggled back on, the LogView display will reflect all of the data
+received when the LogView display was turned off.
+<DT><CODE>int view_bufsz</CODE>
+<DD>
+<A NAME="IDX1121"></A>
+The maximum number of lines of Log data visible in the Display.
+<DT><CODE>float view_shift</CODE>
+<DD>
+<A NAME="IDX1122"></A>
+The percentage of <CODE>view_bufsz</CODE> to shift when the data exceeds the
+<CODE>view_range</CODE>
+<DT><CODE>MinMax view_range</CODE>
+<DD>
+<A NAME="IDX1123"></A>
+The range of currently visible data lines.
+<DT><CODE>DT_ViewSpec viewspec</CODE>
+<DD>
+<A NAME="IDX1124"></A>
+This DataTable View specification is the place holder for all the
+ViewSpecs for the individual columns of data in the log -- edit this
+to get at all of the parameters that control the view display.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_184.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_186.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

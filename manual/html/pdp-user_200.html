@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-con</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_199.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_201.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1212" HREF="pdp-user_toc.html">14.1.2  Bp Connection Specifications</A></H3>
+<P>
+<A NAME="IDX1213"></A>
+<A NAME="IDX1214"></A>
+<A NAME="IDX1215"></A>
+
+</P>
+<P>
+In addition to the weight itself, the connection type in Bp,
+<B>BpCon</B>, has two additional variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>float dwt</CODE>
+<DD>
+<A NAME="IDX1216"></A>
+The most recently computed change in the weight term.  It is
+computed in the <CODE>UpdateWeights</CODE> function.
+<DT><CODE>float dEdW</CODE>
+<DD>
+<A NAME="IDX1217"></A>
+The accumulating derivative of the error with respect to the
+weights.  It is computed in the <CODE>Compute_dWt</CODE> function.  It will
+accumulate until the <CODE>UpdateWeights</CODE> function is called, which will
+either be on a trial-by-trial or epoch-wise (batch mode) basis.
+</DL>
+
+<P>
+The connection specifications control the behavior and updating of
+connections (see section <A HREF="pdp-user_127.html">10.5  Connections</A>).  Thus, in Bp, this is where you will
+find thinks like the learning rate and momentum parameters.  A detailed
+description of the parameters is given below:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>float lrate</CODE>
+<DD>
+<A NAME="IDX1218"></A>
+The learning rate parameter.  It controls how fast the weights
+are updated along the computed error gradient.  It should generally be
+less than 1 and harder problems will require smaller learning rates.
+<DT><CODE>float momentum</CODE>
+<DD>
+<A NAME="IDX1219"></A>
+The momentum parameter determines how much of the previous weight change
+will be retained in the present weight change computation.  Thus,
+weight changes can build up momentum over time if they all head in the
+same direction, which can speed up learning.  Typical values are from .5
+to .9, with anything much lower than .5 making little difference.
+<DT><CODE>MomentumType momentum_type</CODE>
+<DD>
+<A NAME="IDX1220"></A>
+There are a couple of different ways of thinking about how momentum
+should be applied, and this variable controls which one is used.
+According to <CODE>AFTER_LRATE</CODE>, momentum is added to the weight
+change <EM>after</EM> the learning rate has been applied:
+<PRE>  cn-&#62;dwt = lrate * cn-&#62;dEdW + momentum * cn-&#62;dwt;
+  cn-&#62;wt += cn-&#62;dwt;
+</PRE>
+
+This was used in the original pdp software.  The <CODE>BEFORE_LRATE</CODE>
+model holds that momentum is something to be applied to the gradient
+computation itself, not to the actual weight changes made.  Thus,
+momentum is computed <EM>before</EM> the learning rate is applied to the
+weight gradient:
+<PRE>  cn-&#62;dwt = cn-&#62;dEdW + momentum * cn-&#62;dwt;
+  cn-&#62;wt += lrate * cn-&#62;dwt;
+</PRE>
+
+Finally, both of the previous forms of momentum introduce a learning
+rate confound since higher momentum values result in larger effective
+weight changes when the previous weight change points in the same
+direction as the current one.  This is controlled for in the
+<CODE>NORMALIZED</CODE> momentum update, which normalizes the total
+contribution of the previous and current weight changes (it also uses
+the <CODE>BEFORE_LRATE</CODE> model of when momentum should be applied):
+<PRE>  cn-&#62;dwt = (1.0 - momentum) * cn-&#62;dEdW + momentum * cn-&#62;dwt;
+  cn-&#62;wt += lrate * cn-&#62;dwt;
+</PRE>
+
+Note that normalized actually uses a variable called <CODE>momentum_c</CODE>
+which is pre-computed to be 1.0 - momentum, so that this extra
+computation is not incurred needlessly during actual weight updates.
+<DT><CODE>float decay</CODE>
+<DD>
+<A NAME="IDX1221"></A>
+Controls the magnitude of weight decay, if any.  If the
+corresponding <CODE>decay_fun</CODE> is <CODE>NULL</CODE> weight decay is not
+performed.  However, if it is set, then the weight decay will be scaled
+by this parameter.  Note that weight decay is applied <EM>before</EM>
+either momentum or the learning rate is applied, so that its effects are
+relatively invariant with respect to manipulations of these other
+parameters.
+<DT><CODE>decay_fun</CODE>
+<DD>
+<A NAME="IDX1222"></A>
+The decay function to be used in computing weight decay.  This is a
+pointer to a function, which means that the user can add additional
+decay functions as they wish.  However, the default ones are
+<CODE>Bp_Simple_WtDecay</CODE>, which simply subtracts a fraction of the
+current weight value, and <CODE>Bp_WtElim_WtDecay</CODE>, which uses the
+"weight elimination" procedure of <CITE>Weigand, Rumelhart, and
+Huberman, 1991</CITE>.  This procedure allows large weights to avoid a strong
+decay pressure, but small weights are encouraged to be eliminated:
+<PRE>  float denom = 1.0 + (cn-&#62;wt * cn-&#62;wt);	
+  cn-&#62;dEdW -= spec-&#62;decay * ((2 * cn-&#62;wt) / (denom * denom);
+</PRE>
+
+The ratio of the weight to the <CODE>denom</CODE> value is roughly
+proportional to the weight itself for small weights, and is constant for
+weights larger than 1.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_199.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_201.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

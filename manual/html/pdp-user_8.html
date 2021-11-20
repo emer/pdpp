@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - over-stru-net</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_7.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_9.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX10" HREF="pdp-user_toc.html">3.2.1  The Objects in Networks</A></H3>
+<P>
+<A NAME="IDX11"></A>
+<A NAME="IDX12"></A>
+
+</P>
+<P>
+For the most part, the objects that make up a network are fairly
+intuitive, consisting of Layers (see section <A HREF="pdp-user_115.html">10.2  Layers and Unit Groups</A>), Units
+(see section <A HREF="pdp-user_125.html">10.4  Units</A>), and Connections (see section <A HREF="pdp-user_127.html">10.5  Connections</A>).  However,
+there is an additional type of object which describes the pattern of
+connectivity between all of the units in one layer to those in another
+layer, which is called a Projection (see section <A HREF="pdp-user_116.html">10.3  Projections</A>).  The
+Projection is very useful because it allows one to specify connectivity
+at a broad level, instead of individually connecting each unit with
+other units.  It also seems to be a conceptually real entity--one often
+thinks about the connectivity in terms like, "the hidden layer is fully
+connected to the input layer."
+
+</P>
+<P>
+The use of Projection objects is illustrative of a general principle
+regarding network structure, which is that the larger-scale objects
+(Layers and Projections) contain <EM>parameters</EM> for how to construct
+the smaller-scale objects (Units and Connections).  This allows one to
+create Layers and Projections, fill in some parameters regarding the
+type of connectivity and number and type of units, and execute
+general-purpose <CODE>Build</CODE> and <CODE>Connect</CODE> (see section <A HREF="pdp-user_113.html">10.1  The Network Object</A>)
+functions which translate the parameters into an actual network with
+interconnected units.
+
+</P>
+<P>
+While it is possible to manually build a network unit-by-unit and
+connection-by-connection, it is usually much easier to use the
+parameters-and-build/connect method.  However, some people find the
+distinction between specifying and actually building difficult to work
+with, in part because only after you execute <CODE>Build</CODE> and
+<CODE>Connect</CODE> does your actual network reflect the parameters you have
+entered.  We have tried to lessen these difficulties by providing
+graphical representations of the parameters, so that you can see what
+you are specifying at the time you do it, not only after you have built
+the network.
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_7.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_9.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

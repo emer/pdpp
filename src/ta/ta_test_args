@@ -1,0 +1,1 @@
+"-cpp=/lib/cpp -D__i386__  -I/usr/include/linux" -v6 -hx -css -I/usr/local/pdp++/src/ta/ios-g++-2.8.1 -DLINUXdebug -DLINUX  -I/usr/include/g++ -I./src_include -I./src_include/ta -I/usr/local/pdp++/include/LINUXdebug -I/usr/local/interviews/include -f ta_test_files ta_test >&xxx.out

@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-stats-ctrs</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_177.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_179.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1074" HREF="pdp-user_toc.html">12.8.7  Statistics that Provide Counters (Time, Epoch, etc)</A></H3>
+
+<P>
+The following statistics all provide counter data, which are useful
+for providing X-axes for graphing and other data analysis.
+
+</P>
+<P>
+<A NAME="IDX1075"></A>
+The <B>EpochCounterStat</B> records the current epoch number from the
+network.  This is useful for testing process hierarchies which start at
+the epoch level and thus do not have an epoch counter from the training
+process.
+
+</P>
+<P>
+<A NAME="IDX1076"></A>
+The <B>ProcCounterStat</B> grabs a whole set of counters off of another
+process.  It is used for the same reason an epoch counter stat is used,
+except it also gives one access to batch counters and any other counters
+that might be present on the training process hierarchy.
+
+</P>
+<P>
+<A NAME="IDX1077"></A>
+The <B>TimeCounterStat</B> simply increments its counter every time it is
+run, providing an ever-incrementing time count that spans across
+multiple loops through a given level of the process hierarchy.  Use
+the <B>TimeCounterResetProc</B> to automatically reset this time counter
+at some higher level of the process hierarchy (e.g., at the start of
+training, in the <CODE>TrainProcess</CODE> <CODE>init_procs</CODE>).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_177.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_179.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,42 @@
+#! /bin/csh -f
+
+# LINUX
+
+# optimal CC setting
+set CC = "gcc -O2"
+
+#set CC = "gcc -O"
+#set CC = "gcc -O2"
+#set CC = "gcc -O3"
+#set CC = "gcc -O2 -ffast-math"
+#set CC = "gcc -O2 -fomit-frame-pointer"
+#set CC = "gcc -O2 -funroll-loops"
+#set CC = "gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+echo $CC >results
+
+$CC -DSIZE=1000 atest.c -o atest
+$CC -DSIZE=1000 ptest.c -o ptest
+echo "Large Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Large Network ptest:" >> results
+(time ./ptest) >>& results
+echo " " >> results
+$CC -DSIZE=100 atest.c -o atest
+$CC -DSIZE=100 ptest.c -o ptest
+echo "Medium Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Medium Network ptest:" >> results
+(time ./ptest) >>& results
+echo " " >> results
+$CC -DSIZE=10 atest.c -o atest
+$CC -DSIZE=10 ptest.c -o ptest
+echo "Small Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Small Network ptest:" >> results
+(time ./ptest) >>& results
+
+cat results

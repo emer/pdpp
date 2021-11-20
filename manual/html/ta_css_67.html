@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../ta_css.texi on 2 May 2003 -->
+
+<TITLE>The TypeAccess/CSS Manual - obj-basics-files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_66.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_68.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX348" HREF="ta_css_toc.html">8.1.3  Saving and Loading Objects</A></H3>
+<P>
+<A NAME="IDX349"></A>
+<A NAME="IDX350"></A>
+<A NAME="IDX351"></A>
+<A NAME="IDX352"></A>
+
+</P>
+<P>
+All PDP++ objects can also be saved to a file and loaded back in from
+that file.  Note that when you save an object that has sub-objects in it
+(i.e. a Layer, which has Units in it), those sub-objects are also saved
+in the file, and loaded back in as well.  Thus, to save all the elements
+of a project, one only has to save the project object, which will
+automatically save all of its sub-objects.
+
+</P>
+<P>
+There are two ways in which objects can be loaded back in: in one case,
+you load the file <EM>over</EM> an existing object.  This corresponds to
+the <I>Load Over</I> menu item that you will frequently see in PDP++.  This
+will simply replace the values of the existing object with those saved
+in the file.  This also applies to any sub-objects. Note if the existing
+object has <EM>fewer</EM> of some kind of sub-object than the saved file,
+new sub-objects will be created as needed.  However, the same is not
+also true if the existing object has <EM>more</EM> of these
+sub-objects--they are not removed to make the existing object exactly
+the same as that which was saved in the file.  If you want to make sure
+the object is exactly as it was saved, open a new one, do not open over
+an existing one.
+
+</P>
+<P>
+To open a new object from a saved file, use the <I>Open in</I> menu item
+(instead of <I>Load Over</I>).  This is equivalent to opening a new item
+into a parent group object.  For example, the project has a group that
+contains its networks.  If you open a saved network file in this group,
+as opposed to over an existing network in the group, a new network will
+automatically be created (along with all of its saved substructure).
+
+</P>
+<P>
+Some types of objects have default "extensions" that are automatically
+added on to the file name to identify the type of file.  For example,
+projects are saved with a <TT>`.proj'</TT> extension.  Further, some objects
+automatically compress the file after saving, (and automatically
+uncompress it before loading) in order to save disk space.  This is
+because the file format objects are saved in is actually text-based and
+human readable.  Thus, it is much more efficient to save large files in
+a compressed form.  These files automatically get the compression suffix
+associated with the type of compression used (.gz for gzip, which is the
+default).
+
+</P>
+<P><HR><P>
+<A HREF="ta_css_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="ta_css_66.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="ta_css_68.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="ta_css_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="ta_css_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

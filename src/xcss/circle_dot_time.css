@@ -1,0 +1,370 @@
+// this is a sample experiment script file to run under xcss++
+// it is run by first running xcss++, and then doing load "circle_dot_time.css" 
+// and then typing run.  a control panel will come up with all the experimental
+// parameters.
+
+const int max_dot = 100;
+
+class CircleDot {
+  // circle-dot experiment
+public:
+  int	t_prompt;		// how long to prompt with fixation (in ms)
+  int	t_present;		// how long to present (in ms)
+  int	n_delay;		// number of delays
+  int 	t_delay[5];		// how long to delay (in ms)
+  int 	t_resp;			// how long to respond
+  int	t_feedback;		// how long for feedback
+  int	t_iti;			// inter-trial-interval
+  int	n_practice;		// number of practice trials
+  bool	move_resp;		// move circle randomly for response?
+  float	move_amt;		// amount to move (in normalized units)
+  float	size;			// how big of a circle
+  float	ln_width;		// how thick of a line
+
+  float radius;			// #HIDDEN
+  float ctr_x;			// #HIDDEN
+  float ctr_y;			// #HIDDEN
+  bool	practice;		// #HIDDEN only practicing
+  fstream subj_file;		// #HIDDEN output file
+  int 	block;			// #HIDDEN block
+  int	trial;			// #HIDDEN
+  bool	abort;			// #HIDDEN quit if true
+
+  int	n_dots;			// #HIDDEN total number of dots
+  float	dot_rad[max_dot];	// #HIDDEN radial distance of dots
+  float	dot_ang[max_dot];	// #HIDDEN radial distance of dots
+  int_Array* order;		// #HIDDEN order in which to present
+
+  void	Run(String subject_file); // #BUTTON run experiment
+  void	Abort();		// #BUTTON abort current run
+
+  void	Init();			// initialize display
+  void	Practice();		// practice trials
+  void	Block();		// run block of trials
+
+  void	Trial();		// one trial
+  void	TestDots();		// test all dots
+
+  void	Instr();		// standard then dual
+
+  void	Normalize(float x, float y, float cx, float cy, float& nx, float& ny); // #HIDDEN
+  String Output(float val);	// #HIDDEN
+  void	DotAt(float x, float y); // #HIDDEN render a dot
+  void	InitDots();		// #HIDDEN initialize random dots
+  bool	WaitKey(String prompt = "");	// #HIDDEN wait for keypress for given time
+
+  CircleDot();
+  ~CircleDot();
+};
+
+CircleDot::CircleDot() {
+  t_prompt = 2000;
+  t_present = 1000;
+  n_delay = 3;
+  t_delay[0] = 0;
+  t_delay[1] = 5000;
+  t_delay[2] = 10000;
+  t_resp = 10000;
+  t_feedback = 2000;
+  t_iti = 2000;
+  n_practice = 5;
+  move_resp = true;
+  move_amt = .2;
+  //  radius = 260;	// a constant (doesn't work)!
+  size = .7;			// for 21'' = .5, 17'' = .7, 15'' = .8
+  ln_width = 2;
+  abort = false;
+
+  practice = true;
+
+  n_dots = 40;
+  order = new int_Array;
+
+  Init();
+}
+
+CircleDot::~CircleDot() {
+  delete order;
+}
+
+void CircleDot::Abort() {
+  abort = true;
+  root.UnBlankPointer();
+  root.TextCenter("ABORTING", ctr_x, root.Height() - 20);
+}
+
+void CircleDot::InitDots() {
+  float angs[5];
+  angs = {8, 26.5, 45, 63.5, 82};
+  float rads[4];
+  rads = {.3, .5, .7, .9};
+  int cnt = 0;
+  int quad;
+  for(quad = 0; quad < 4; quad++) {
+    float ang_off = (float)quad * 90.0;
+    int ang;
+    for(ang =0; ang < 5; ang++) {
+      int rad;
+      for(rad=0; rad<2; rad++) { // only inner 2 rads
+	dot_rad[cnt] = rads[rad];
+	dot_ang[cnt] = ang_off + angs[ang];
+	cnt++;
+      }
+    }
+  }
+  order.Reset();
+  int i;
+  for(i=0;i<n_dots * n_delay;i++)
+    order.Add(i);
+}
+
+void CircleDot::Init() {
+  abort = false;
+  root.FillColorName("white");
+  root.PenColorName("black");
+  root.FillWindow();
+  root.BrushWidth(ln_width);
+
+  radius = root.Height() * size * .5;
+  ctr_x = root.Width()/2.0;
+  ctr_y = root.Height()/2.0;
+  InitDots();
+  RndSeed* seed = new RndSeed;
+  seed.NewSeed();
+  delete seed;
+}
+
+bool CircleDot::WaitKey(String prompt) {
+  if(!prompt.empty())
+    prompt += ": ";
+  prompt += "PRESS ANY KEY WHEN READY";
+  root.TextCenter(prompt, ctr_x, 100);
+  root.ev_filter |= XCss::KEY;
+  root.WaitEvent();
+  root.ev_filter = 0;
+  if(root.events.size == 0)
+    return false;
+  root.events.Reset();
+  return true;
+}
+
+void CircleDot::Run(String subject_file) {
+  Init();
+  Instr();
+  if(abort) { abort = false; return; }
+  block = 0;
+  Practice();
+  if(abort) { abort = false; return; }
+  subj_file.open(subject_file, ios::out);
+  practice = false;
+  Block();
+  subj_file.close();
+  root.FillWindow();
+  root.TextCenter("EXPERIMENT OVER", ctr_x, ctr_y);
+  taivMisc::RunIVPending();
+}
+
+void CircleDot::Block() {
+  int n_tot = n_dots * n_delay;
+  order.Permute();		// new random order each time
+  if(!WaitKey("EXPERIMENT"))
+    return;
+  if(abort) return;
+  for(trial=0;trial<n_tot/2; trial++) {
+    Trial();
+    if(abort) return;
+  }
+  if(!WaitKey("BREAK"))
+    return;
+  if(abort) return;
+  for(;trial<n_tot; trial++) {
+    Trial();
+    if(abort) return;
+  }
+  root.UnBlankPointer();
+}
+
+void CircleDot::Practice() {
+  practice = true;
+  root.FillWindow();
+  if(!WaitKey("PRACTICE"))
+    return;
+  for(trial=0;trial<n_practice; trial++) {
+    if(abort) return;
+    Trial();
+  }
+  root.UnBlankPointer();
+  root.FillWindow();
+  root.TextCenter("PRACTICE OVER", ctr_x, ctr_y);
+  practice = false;
+}
+
+void CircleDot::Normalize(float x, float y, float cx, float cy, float& rad, float& ang) {
+  float nx = x - cx;
+  float ny = y - cy;
+  nx /= radius;
+  ny /= radius;
+  rad = sqrt(nx * nx + ny * ny);
+  ang = atan2(ny, nx);
+  if(ang < 0)
+    ang = PI + PI + ang;
+  ang *= 180.0f / PI;
+}
+
+String CircleDot::Output(float val) {
+  String rval = val;
+  if(rval.length() > 7)
+    rval = rval.at(0,7);
+  return rval;
+}
+
+void CircleDot::DotAt(float x, float y) {
+  float dv = ln_width * .5;
+  root.Rect(x- dv, y-dv, x+dv, y+dv);
+  //    root.Circle(pt_x, pt_y, dv);
+}
+
+void CircleDot::Trial() {
+  root.FillWindow();
+  root.BlankPointer();
+
+  int dotpos = order[trial] % n_dots;
+  int delno = order[trial] / n_dots;
+  if(practice)
+    delno = Random::IntZeroN(n_delay);
+
+  root.Circle(ctr_x, ctr_y, radius);
+
+  root.WaitTime(t_prompt);
+  if(abort) { return; }
+
+  float pt_rad, pt_ang;
+  if(practice) {
+    pt_rad = drand48();
+    pt_ang = 360.0 * drand48();
+  }
+  else {
+    pt_rad = dot_rad[dotpos];
+    pt_ang = dot_ang[dotpos];
+  }
+
+  float pt_angr = pt_ang * PI / 180.0;
+  float pt_r = radius * pt_rad;
+  float pt_x = ctr_x + pt_r * cos(pt_angr);
+  float pt_y = ctr_y + pt_r * sin(pt_angr);
+
+  DotAt(pt_x, pt_y);
+
+  root.WaitTime(t_present);
+  if(abort) { return; }
+
+  root.FillWindow();
+
+  int del_act = t_delay[delno];
+  root.WaitTime(del_act);
+  if(abort) { return; }
+
+  root.Beep();
+
+  float cp_x = ctr_x;
+  float cp_y = ctr_y;
+  if(move_resp) {
+    cp_x += 2.0 * radius * move_amt * (drand48() - .5);
+    cp_y += 2.0 * radius * move_amt * (drand48() - .5);
+  }
+
+  root.Circle(cp_x, cp_y, radius);
+  root.UnBlankPointer();
+
+  root.ev_filter |= XCss::PRESS;
+  int start = root.TimeMs();
+  root.WaitEventTime(t_resp);
+  root.ev_filter = 0;
+  if(abort) { return; }
+
+  float cp_rad, cp_ang;
+  Normalize(cp_x, cp_y, ctr_x, ctr_y, cp_rad, cp_ang);
+
+  float rs_rad, rs_ang;
+  float dot_rt = 0;
+  if(root.events.size == 1) {
+    XCssEvent* ev = root.events.Pop();
+    Normalize(ev.pointer.x, ev.pointer.y, cp_x, cp_y, rs_rad, rs_ang);
+    dot_rt = ev.time - start;
+  }
+
+  bool cor = false;
+  float grid_rt = 0;
+  bool flip = false;
+
+  // analyze dot
+  float del_rad = rs_rad - pt_rad;
+  int norm_ang = (int)pt_ang % 90;
+
+  // correct for wrap-around at 360
+  if((rs_ang < 45) && (pt_ang > 315))
+    rs_ang += 360;
+  if((pt_ang < 45) && (rs_ang > 315))
+    pt_ang += 360;
+  float del_ang = rs_ang - pt_ang;
+
+  ostream& strm;
+  if(!practice)
+    strm = subj_file;
+  else
+    strm = cerr;
+
+  strm << block << "\t" << trial << "\t" << dot_rt << "\t" << norm_ang
+       << "\t" << Output(pt_rad) << "\t" << Output(pt_ang)
+       << "\t" << Output(rs_rad) << "\t" << Output(rs_ang)
+       << "\t" << Output(del_rad) << "\t" << Output(del_ang)
+       << "\t" << Output(cp_rad) << "\t" << Output(cp_ang)
+       << "\t" << del_act << "\n";
+
+  root.events.Reset();
+
+  root.FillWindow();
+  root.BlankPointer();
+  root.WaitTime(t_iti);
+}
+
+void CircleDot::TestDots() {
+  root.FillWindow();
+  root.Circle(ctr_x, ctr_y, radius);
+  for(trial=0;trial<n_dots;trial++) {
+    float pt_rad = dot_rad[trial];
+    float pt_ang = dot_ang[trial];
+
+    float pt_angr = pt_ang * PI / 180.0;
+    float pt_r = radius * pt_rad;
+    float pt_x = ctr_x + pt_r * cos(pt_angr);
+    float pt_y = ctr_y + pt_r * sin(pt_angr);
+
+    DotAt(pt_x, pt_y);
+
+    cerr << trial << "\t" << pt_rad << "\t" << pt_ang << "\n";
+  }
+}
+
+void CircleDot::Instr() {
+  root.FillWindow();
+  float y = root.Height() - 50;
+  float x = 50;
+
+  String str = 
+"Circle-Dot Task Instructions:\n\n\
+On each of the following trials, you will first see a large circle,\n\
+and then a dot will appear inside the circle.  The circle and the\n\
+dot will then disappear, and after a varying delay, the circle will\n\
+reappear (possibly in a new location). Your task is to move the\n\
+mouse and click in the location corresponding to where the dot was\n\
+(relative to the circle) in the previous display.\n\n\
+We will begin with 5 practice trials.  The actual testing phase\n\
+should last approximately 10 minutes, with a break half way through.";
+
+  root.TextLeft(str, x, y);
+  WaitKey();
+}
+
+CircleDot circle_dot;
+EditObj(circle_dot);

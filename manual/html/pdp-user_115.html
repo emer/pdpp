@@ -1,0 +1,195 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - net-layer</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_114.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_116.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX582" HREF="pdp-user_toc.html">10.2  Layers and Unit Groups</A></H2>
+<P>
+<A NAME="IDX583"></A>
+<A NAME="IDX584"></A>
+
+</P>
+<P>
+Layers are basically just groups of units, but they also constitute the
+basic elements of connectivity as specified by the projections
+(see section <A HREF="pdp-user_116.html">10.3  Projections</A>).  Thus, one can specify that a whole group of units
+should be connected in a particular fashion to another whole group of
+units, instead of going one-by-one through the units and telling each
+one individually how to connect to other units.  Note that the model
+used in PDP++ is the <EM>receiver</EM> model -- a layer contains the
+projections it <EM>receives</EM> from other layers, not the ones it sends
+to them.
+
+</P>
+<P>
+Further, in certain kinds of learning algorithms, particularly those
+with a self-organizing character, the Layer plays a computational role
+in that it implements competition among units, for example (see section <A HREF="pdp-user_229.html">16  Self-organizing Learning</A>).
+In these algorithms, the <B>Layer</B> will have an accompanying
+<B>LayerSpec</B> that contains the parameters governing the computation
+that occurs in the layer.  However, in standard backpropagation and
+constraint satisfaction algorithms (section <A HREF="pdp-user_197.html">14  Backpropagation</A>, section <A HREF="pdp-user_217.html">15  Constraint Satisfaction</A>), the LayerSpec
+is not used.
+
+</P>
+<P>
+Layers have the following variables:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>int n_units</CODE>
+<DD>
+<A NAME="IDX585"></A>
+Number of units to create with Build command.  Entering a value of 0
+will cause the n_units to be computed based on the current geometry
+(i.e., n_units = x * y).
+<DT><CODE>Geometry geom</CODE>
+<DD>
+<A NAME="IDX586"></A>
+Specifies the layer's 3D geometry for its units. It is used for display
+purposes, and for computing a default <CODE>n_units</CODE>.  Note that a
+<CODE>z</CODE> value of greater than 1 means that multiple sub-groups of units
+will be created in the layer, each of which having x * y units (by
+default).
+<DT><CODE>Geometry pos</CODE>
+<DD>
+<A NAME="IDX587"></A>
+Specifies the layer's 3D position relative to the network. Used for
+display purposes and potentially for algorithms that depend on physical
+distance information.
+<DT><CODE>Geometry gp_geom</CODE>
+<DD>
+<A NAME="IDX588"></A>
+This is the geometry of the sub-groups of units within a layer (only
+applicable if <CODE>geom.z &#62; 1</CODE>).  Groups will be arranged in the
+x,y geometry given by this parameter (i.e.,  <CODE>x * y</CODE> should be &#62;=
+<CODE>geom.z</CODE>).
+<DT><CODE>Projection_Group projections</CODE>
+<DD>
+<A NAME="IDX589"></A>
+The group of projections which specify the connections that this layer
+receives from other layers.
+<DT><CODE>Unit_Group units</CODE>
+<DD>
+<A NAME="IDX590"></A>
+The group of units within the layer.  The type of units which are
+created is determined by the <CODE>el_typ</CODE> on this group
+(see section <A HREF="pdp-user_93.html">8.2.2  Group Variables</A>).  Note that sub-groups of units can be
+created, as given by the <CODE>geom.z</CODE> parameter, and as described
+in greater detail below.
+<DT><CODE>UnitSpec_SPtr unit_spec</CODE>
+<DD>
+<A NAME="IDX591"></A>
+The default unit specification for units created in this layer.  This is
+applied whenever the Build function is performed.
+<DT><CODE>bool lesion</CODE>
+<DD>
+<A NAME="IDX592"></A>
+When set to <CODE>true</CODE>, this layer is inactivated from all processing,
+as if it was not there in the first place.  This makes it possible to
+selectively pre-train certain layers within the network, for example.
+<DT><CODE>Unit:ExtType ext_flag</CODE>
+<DD>
+<A NAME="IDX593"></A>
+Indicates which kind of external input the layer last received.
+Whenever input is applied to the network from an environment, the
+affected layer's flag is set, so that when it comes time to clear the
+unit flags, or perform any other input-specific processing, only
+relevant layers need to be processed.
+</DL>
+
+<P>
+The following layer functions are available, either in the layer edit
+dialog or in the CSS script language:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Build()</CODE>
+<DD>
+<A NAME="IDX594"></A>
+Create <CODE>n_units</CODE> in the layer and arrange them according to the
+<CODE>geometry</CODE>.   If units already exist, they are enforced to be of
+the type of the unit group.  Thus, the best way to change the type of
+units in the layer is to change the <CODE>el_typ</CODE> of the units group and
+then do a Build() (see also section <A HREF="pdp-user_113.html">10.1  The Network Object</A>).
+<DT><CODE>Connect()</CODE>
+<DD>
+<A NAME="IDX595"></A>
+Actually creates the connections into each of the units in the layer
+according to the projections on this layer.  Note that any existing
+connections are removed before connecting.
+<DT><CODE>RemoveCons()</CODE>
+<DD>
+<A NAME="IDX596"></A>
+Removes any existing connections into units in the layer.
+<DT><CODE>DisConnect()</CODE>
+<DD>
+<A NAME="IDX597"></A>
+This removes all the projections (and connections) that this layer
+receives from other layers, and all the projections that other layers
+receive from this layer.  Thus, it is stronger than <CODE>RemoveCons</CODE> in
+that it removes the projections as well as the connections.
+<DT><CODE>Copy_Weights(Layer *)</CODE>
+<DD>
+<A NAME="IDX598"></A>
+Copies the weights from the other layer including unit bias weights.
+<DT><CODE>SetLayerSpec(LayerSpec *)</CODE>
+<DD>
+<A NAME="IDX599"></A>
+Sets the layer specification for this layer to be the given one.
+<DT><CODE>SetUnitSpec(UnitSpec *)</CODE>
+<DD>
+<A NAME="IDX600"></A>
+Sets the unit specification of all units in the layer to be the given
+one, and makes that the default unit spec for any new units that would
+be created in the layer.
+<DT><CODE>SetConSpec(ConSpec *)</CODE>
+<DD>
+<A NAME="IDX601"></A>
+Sets the connection specification of all projections in the layer to be
+the given one.
+</DL>
+
+<P>
+Note that the layer also has instances of other functions that are
+present on the network, such as <CODE>InitWtState</CODE> and <CODE>InitState</CODE>.
+
+</P>
+<P>
+<A NAME="IDX602"></A>
+<A NAME="IDX603"></A>
+The <B>Unit_Group</B> provides another level of organization between the
+layer and the units within the layer.  This can be useful for cases
+where different groups of units play specialized roles, but have
+otherwise the same connectivity to other layers (which is what makes
+them part of the same layer instead of being different layers).  This
+level of organization has been used to implement independent sub-pools
+of activation competition within a larger layer, for example.
+
+</P>
+<P>
+<A NAME="IDX604"></A>
+<A NAME="IDX605"></A>
+<A NAME="IDX606"></A>
+Unit groups are created as sub-groups within the <CODE>units</CODE> member of
+the layer.  The <CODE>z</CODE> value of the layer's geometry specification
+indicates how many groups to create, and each of them has <CODE>n_units</CODE>
+units arranged in the <CODE>geom.x, geom.y</CODE> geometry as specified in the
+layer.  However, once created, the unit groups can be individually
+re-sized, and they have their own <CODE>n_units</CODE>, <CODE>geom</CODE>, and
+<CODE>pos</CODE> variables.  To have a unit group always use the settings on
+the layer, the <CODE>n_units</CODE> should be set to 0.
+
+</P>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_114.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_116.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

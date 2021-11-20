@@ -1,0 +1,974 @@
+This is pdp-user, produced by makeinfo version 4.1 from pdp-user.texi.
+
+
+File: pdp-user,  Node: bp-srn,  Next: bp-defs,  Prev: bp-vari,  Up: bp-ff
+
+Simple Recurrent Networks in Bp
+-------------------------------
+
+   Simple recurrent networks (SRN) `Elman, 1988' involve the use of a
+special set of context units which copy their values from the hidden
+units, and from which the hidden units receive inputs.  Thus, it
+provides a simple form of recurrence that can be used to train
+networks to perform sequential tasks over time.  New for 3.0: the
+BpWizard has a `Network/SRNContext' function that will automatically
+build an SRN context layer as described below.
+
+   The implementation of SRN's in PDP++ uses a special version of the
+BpUnitSpec called the BpContextSpec.  This spec overloads the
+activation function to simply copy from a corresponding hidden unit.
+The correspondence between hidden and context units is established by
+creating a single one-to-one projection into the context units from
+the hidden units.  The context units look for the sending unit on the
+other side of their first connection in their first connection group
+for the activation to copy.  This kind of connection should be
+created with a OneToOnePrjnSpec (*note net-prjn-spec::).
+
+   *Important:* The context units should be in a layer that _follows_
+the hidden units they copy from.  This is because the context units
+should provide input to the hidden units before copying their
+activation values.  This means that the hidden units should update
+themselves first.
+
+   The context units do not have to simply copy the activations
+directly from the hidden units.  Instead, they can perform a
+time-averaging of information through the use of an updating equation
+as described below.  The parameters of the context spec are as
+follows:
+
+`float hysteresis'
+     Controls the rate at which information is accumulated by the
+     context units.  A larger hysteresis value makes the context
+     units more sluggish and resistant to change; a smaller value
+     makes them incorporate information more quickly, but hold onto
+     it for a shorter period of time:
+            u->act = (1.0 - hysteresis) * hu->act + hysteresis * u->act;
+
+`Random initial_act'
+     These parameters determine the initial activation of the context
+     units.  Unlike other units in a standard Bp network, the initial
+     state of the context units is actually important since it
+     provides the initial input to the hidden units from the context.
+
+   Note that the SRN typically requires a sequence model of the
+environment, which means using the sequence processes (*note
+proc-special-seq::).  Typically, the activations are initialized at
+the start of a sequence (including the context units), and then a
+sequence of related events are presented to the network, which can
+then build up a context representation over time since the
+activations are not initialized between each event trial.
+
+   The defaults file `bp_seq.def' contains a set of defaults for Bp
+that will create sequence processes by default (*note bp-defs::).
+
+   The demo project `demo/bp_srn/srn_fsa.proj.gz' is an example of a
+SRN network that uses the sequence processes.  It also illustrates the
+use of a ScriptEnv where a CSS script is used to dynamically create
+new events that are generated at random from a finite state automaton.
+
+
+File: pdp-user,  Node: bp-defs,  Next: bp-impl,  Prev: bp-srn,  Up: bp-ff
+
+Bp Defaults
+-----------
+
+   The following default files (*note proj-defaults::) are available
+for configuring different versions of the Bp objects:
+
+`bp.def'
+     This is the standard defaults file, for standard feedforward
+     backpropagation with sigmoidal units.
+
+`bp_seq.def'
+     This is for doing simple recurrent networks (*note bp-srn::) in
+     Bp.  It creates SequenceEpoch and SequenceProc processes instead
+     of a standard EpochProcess.
+
+`bp_dbd.def'
+     This creates delta-bar-delta connections by default (including
+     bias connections).
+
+
+File: pdp-user,  Node: bp-impl,  Prev: bp-defs,  Up: bp-ff
+
+Bp Implementation Details
+-------------------------
+
+   Many of the relevant details are discussed above in the context of
+the descriptions of the basic Bp classes.  This section provides a
+little more detail that might be useful to someone who wanted to
+define their own versions of Bp classes, for example.
+
+   Support for the activation updating phase of Bp is present in the
+basic structure of the PDP++ *Note net-unit:: and *Note net-con::
+types, specifically in the `Compute_Net' and `Compute_Act' functions.
+We overload `Compute_Act' to implement the sigmoidal activation
+function.
+
+   The error backpropagation phase is implemented with three new
+functions at both the unit and connection level.  The unit spec
+functions are:
+
+`Compute_dEdA(BpUnit* u)'
+     Computes the derivative of the error with respect to the
+     activation.  If the unit is an output unit (i.e., it has the
+     `ext_flag' `TARG' set), then it just calls the error function to
+     get the difference between the target and actual output
+     activation.  If it is not an output unit, then it iterates
+     through the sending connection groups (i.e., through the
+     connections to units that this one sends activation to), and
+     accumulates its `dEdA' as a function of the connection weight
+     times the other unit's `dEdNet'.  This is done by calling the
+     function `Compute_dEdA' on the sending connection groups, which
+     calls this function on the BpConSpec, which is described below.
+
+`Compute_dEdNet(BpUnit* u)'
+     Simply applies the derivative of the activation function to the
+     already-computed `dEdA' to get the derivative with respect to the
+     net input.
+
+`Compute_Error(BpUnit* u)'
+     This function is not used in the standard training mode of Bp,
+     but is defined so that the error can be computed when a network
+     is being tested, but not trained.
+
+`Compute_dWt(Unit* u)'
+     Computes the derivative of the error with respect to the weight
+     (`dEdW') for all of the unit's connections.  This is a function
+     of the `dEdNet' of the unit, and the sending unit's activation.
+     This function is defined as part of the standard UnitSpec
+     interface, and it simply calls the corresponding `Compute_dWt'
+     function on the `ConSpec' for all of the receiving connection
+     groups.  In Bp, it also calls `Compute_dWt' on for the bias
+     weight.
+
+`UpdateWeights(Unit* u)'
+     Updates the weights of the unit's connections based on the
+     previously computed `dEdW'.  Like `Compute_dWt', this function
+     is defined to call the corresponding one on connection specs.
+     Also, it updates the bias weights.  Note that this function is
+     called by the EpochProcess, and not by the algorithm-specific
+     BpTrial directly.
+
+   The corresponding connection spec functions are as follows.  Note
+that, as described in *Note net-con::, there are two versions of every
+function defined in the ConSpec.  The one with a `C_' prefix operates
+on an individual Connection, while the other one iterates through a
+group of connections and calls the connection-specific one.
+
+`float C_Compute_dEdA(BpCon* cn, BpUnit* ru, BpUnit* su)'
+
+`float Compute_dEdA(BpCon_Group* cg, BpUnit* su)'
+     These accumulate the derivative of the error with respect to the
+     weights and return that value, which is used by the unit to
+     increment its corresponding variable.  Note that this is being
+     called on the _sending_ connection groups of a given unit, which
+     is passed as an argument to the functions.  The computation for
+     each connection is simply the `dEdNet' of the unit that receives
+     from the sending unit times the weight in between them.
+
+`float C_Compute_dWt(BpCon* cn, BpUnit* ru, BpUnit* su)'
+
+`float Compute_dWt(Con_Group* cg, Unit* ru)'
+     These increment the `dEdW' variable on the receiving connections
+     by multiplying the sending unit's activation value times the
+     receiving unit's `dEdNet'.
+
+`float B_Compute_dWt(BpCon* cn, BpUnit* ru)'
+     The bias-weight version of this function.  It does not multiply
+     times the sender's activation value (since there isn't one!).
+
+`float C_Compute_WtDecay(BpCon* cn, BpUnit* ru, BpUnit* su)'
+     This calls the weight decay function on the given connection, if
+     it is not NULL.  It is meant to be called as part of a
+     `C_UpdateWeights' function.
+
+`float C_BEF_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)'
+
+`float C_AFT_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)'
+
+`float C_NRM_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)'
+
+`float UpdateWeights(Con_Group* cg, Unit* ru)'
+     These are the functions that update the weights based on the
+     accumulated `dEdW'. There is a different version of the
+     connection-specific code for each of the different
+     `momentum_type' values, and the group-level function has a
+     separate loop for each type, which is more efficient that
+     checking the type at each connection.
+
+`float B_UpdateWeights(BpCon* cn, Unit* ru)'
+     The bias-weight version of the function, which checks the
+     `momentum_type' variable and calls the appropriate `C_' function.
+
+   The following is a chart describing the flow of processing in the
+Bp algorithm, starting with the epoch process, since higher levels do
+not interact with the details of particular algorithms:
+
+     EpochProcess: {
+       Init: {
+         environment->InitEvents();          // init events (if dynamic)
+         event_list.Add() 0 to environment->EventCount(); // get list of events
+         if(order == PERMUTE) event_list.Permute();       // permute if necessary
+         GetCurEvent();                      // get pointer to current event
+       }
+       Loop (trial): {                      // loop over trials
+         BpTrial: {                         // trial process (one event)
+           Init: {                          // at start of trial
+             cur_event = epoch_proc->cur_event; // get cur event from epoch
+           }
+           Loop (once): {                   // only process this once per trial
+             network->InitExterns();         // init external inputs to units
+             cur_event->ApplyPatterns(network); // apply patterns to network
+             Compute_Act(): {               // compute the activations
+               network->layers: {           // loop over layers
+                 if(!layer->ext_flag & Unit::EXT) // don't compute net for clamped
+                   layer->Compute_Net();     // compute net inputs
+                 layer->Compute_Act();       // compute activations from net in
+               }
+             }
+             Compute_dEdA_dEdNet(): {       // backpropagate error terms
+               network->layers (backwards): { // loop over layers backwards
+                 units->Compute_dEdA();   // get error from other units or targets
+                 units->Compute_dEdNet(); // add my unit error derivative
+               }
+             }
+             network->Compute_dWt();         // compute weight changes from error
+           }
+         }
+         if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+           network->UpdateWeights(); // after trial, update weights if necc
+         GetCurEvent();              // get next event
+       }
+       Final:
+         if(wt_update == BATCH)  network->UpdateWeights(); // batch weight updates
+     }
+
+
+File: pdp-user,  Node: rbp,  Prev: bp-ff,  Up: bp
+
+Recurrent Backpropagation
+=========================
+
+   Recurrent backpropagation (RBp) extends the basic functionality of
+feed-forward backprop to networks with recurrently interconnected
+units, which can exhibit interesting dynamical properties as
+activation propagates through the network over time.
+
+* Menu:
+
+* rbp-over::                    Overview of the RBp Implementation
+* rbp-con::                     RBp Connection Specifications
+* rbp-unit::                    RBp Unit Specifications
+* rbp-trial::                   The RBp Trial Process
+* rbp-seq::                     RBp Sequence Processes and TimeEvents
+* rbp-vari::                    Variations Available in RBp
+* rbp-ap::                      The Almeida-Pineda Algorithm in RBp
+* rbp-defs::                    RBp Defaults
+* rbp-impl::                    RBp Implementation Details
+
+
+File: pdp-user,  Node: rbp-over,  Next: rbp-con,  Prev: rbp,  Up: rbp
+
+Overview of the RBp Implementation
+----------------------------------
+
+   The recurrent backprop implementation (RBp) defines a new set of
+types that are derived from the corresponding Bp versions: RBpConSpec,
+RBpUnit, RBpUnitSpec, RBpTrial, RBpSequence.  Note that RBp uses the
+same Connection type as Bp.  In addition, support for the
+Almeida-Pineda algorithm is made possible by the following set of
+process types, which control the activation and backpropagation
+phases of that algorithm, which otherwise uses the same basic types
+as RBp: APBpCycle, APBpSettle, APBpTrial, APBpMaxDa_De.
+
+   There are a couple of general features of the version of recurrent
+backprop implemented in PDP++ that the user should be aware of.  First
+of all, the model used is that of a discrete approximation to a
+continuous dynamic system, which is defined by the sigmoidal
+activation of the net input to the units.  The granularity of the
+discrete approximation is controlled by the `dt' parameter, which
+should be in the range between 0 and 1, with smaller values
+corresponding to a finer, closer to continuous approximation.  Thus,
+the behavior of the network should be roughly similar for different
+`dt' values, with the main effect of `dt' being to make updating
+smoother or rougher.
+
+   Also, there are two ways in which the units can settle, one
+involves making incremental changes to the activation values of
+units, and the other involves making incremental changes to the net
+inputs.  The latter is generally preferred since it allows networks
+with large weights to update activations quickly compared to
+activation-based updates, which have a strict ceiling on the update
+rate since the maximum activation value is 1, while the maximum net
+input value is unbounded.
+
+   As in standard backpropagation, recurrent backprop operates in two
+phases: activation propagation and error backpropagation.  The
+difference in recurrent backprop is that both of these phases extend
+over time.  Thus, the network is run for some number of activation
+update cycles, during which a record of the activation states is kept
+by each unit, and then a backpropagation is performed that goes all
+the way back in time through the record of these activation states.
+The backpropagation happens between the receiving units at time t and
+the sending units at the previous time step, time t-1.  Another way of
+thinking about this process is to unfold the network in time, which
+would result in a large network with a new set of layers for each time
+step, but with the same set of weights used repeatedly for each time
+step unfolding.  Doing this, it is clear that the sending units are in
+the previous time step relative to the receiving units.
+
+   The exact length of the activation propagation phase and the
+timing and frequency of the backpropagation phases can be controlled
+in different ways that are appropriate for different kinds of tasks.
+In cases where there is a clearly-defined notion of a set of distinct
+temporal sequences, one can propagate activation all the way through
+each sequence, and then backpropagate at the end of the sequence.
+This is the default mode of operation for the processes.
+
+   There are other kinds of environments where there is no clear
+boundary between one sequence and the next.  This is known as "real
+time" mode, and it works by periodically performing a backpropagation
+operation after some number of activation updates have been
+performed.  Thus, there is a notion of a "time window" over which the
+network will be sensitive to temporal contingencies through the
+weight updates driven by a single backpropagation operation.  In
+addition, these backpropagations can occur with a period that is less
+than the length of the time window, so that there is some overlap in
+the events covered by successive backpropagation operations.  This
+can enable longer-range temporal contingencies to be bootstrapped
+from a series of overlapping backpropagations, each with a smaller
+time window.
+
+   There is a simpler variation of a recurrent backpropagation
+algorithm that was invented by Almeida and Pineda, and is named after
+them.  In this algorithm, the activation updating phase proceeds
+iteratively until the maximum change between the previous and the
+current activation values over all units is below some criterion.
+Thus, the network settles into a stable attractor state.  Then, the
+backpropagation phase is performed repeatedly until it too settles on
+a stable set of error derivative terms (i.e., the maximum difference
+between the derivative of the error for each unit and the previously
+computed such derivative is below some threshold).  These asymptotic
+error derivatives are then used to update the weights.  Note that the
+backpropagation operates repeatedly on the asymptotic or stable
+activation values computed during the first stage of settling, and
+not on the trajectory of these activation states as in the "standard"
+version of RBp.  The Almeida-Pineda form of the algorithm is enabled
+by using the APBp processes, which compute the two phases of settling
+over cycles of either activation propagation or error backpropagation.
+
+
+File: pdp-user,  Node: rbp-con,  Next: rbp-unit,  Prev: rbp-over,  Up: rbp
+
+RBp Connection Specifications
+-----------------------------
+
+   Since the difference between recurrent backprop and standard
+feed-forward backprop is largely a matter of the process-level
+orchestration of the different phases, the connection specifications
+are identical between the two, with one small difference.  Please
+refer to *Note bp-con:: for a description of the relevant parameters.
+
+   The exception is only at the level of the equations used to
+compute the error derivative terms, which are modified to use the
+previous activation value of the sending unit, instead of the current
+activation, since the idea is to reduce the error that results at
+time t as a function of the activation states that lead up to it,
+those at time t-1.
+
+   Since RBp networks are complex dynamical systems, it is often
+useful to place restrictions on the kinds of weights that can
+develop, in order to encourage certain kinds of solutions to
+problems.  One rather direct way of doing this is by simply limiting
+the weights to not go above or below certain values, or to restrict
+them to be symmetrical.  These can be accomplished by editing the
+ConSpec.
+
+
+File: pdp-user,  Node: rbp-unit,  Next: rbp-trial,  Prev: rbp-con,  Up: rbp
+
+RBp Unit Specifications
+-----------------------
+
+   The unit-level specifications contain most of the RBp-specific
+parameters, although some important ones are also present in the
+RBpTrial process.  Note that the `dt' parameter should be the same
+for all unit specs used in a given network.  Also, this parameter is
+copied automatically to the RBpTrial process, which also needs to
+know the value of this parameter.  Thus, the unit spec is the place to
+change `dt', not the trial process.
+
+   The unit object in RBp is essentially the same as the BpUnit,
+except for the addition of variables to hold the previous values of
+all the state variables, and special circular buffers to hold the
+entire record of activation state variables over the update
+trajectory.  These are described in greater detail in *Note
+rbp-impl::.
+
+`float dt'
+     Controls the time-grain of activation settling and error
+     backpropagation as described above.  In `ACTIVATION' mode, the
+     activations are updated towards the raw activation value
+     computed as a sigmoid function of the current net input by an
+     amount proportional to `dt':
+              u->da = dt * (u->act_raw - u->prv_act);
+              u->act = u->prv_act + u->da;
+     Similarly, in `NET_INPUT' mode, the net-inputs are moved towards
+     the current raw net input proportional to the size of `dt':
+              u->da = dt * (u->net - u->prv_net);
+              u->net = u->prv_net + u->da;
+
+`TimeAvgType time_avg'
+     Controls the type of time-averaging to be performed.
+     `ACTIVATION' based time-averaging, as shown above, adapts the
+     current activations towards the raw activation based on the
+     current net input, while `NET_INPUT' based time-averaging, also
+     shown above, adapts the net input towards the current raw value.
+     The latter is generally preferred since it allows networks with
+     large weights to update activations quickly compared to
+     activation-based updates, which have a strict ceiling on the
+     update rate since the maximum activation value is 1, while the
+     maximum net input value is unbounded.
+
+`bool soft_clamp'
+     Soft clamping refers to the application of an environmental
+     input to the network as simply an additional term in the unit's
+     net input, as opposed to a hard-clamped pre-determined
+     activation value.  Soft clamping allows input units to behave a
+     little more like hidden units, in that raw inputs are only one
+     source of influence on their activation values.
+
+`float soft_clamp_gain'
+     A strength multiplier that can be used to set the level of
+     influence that the inputs have in soft-clamp mode.  This allows
+     the user to use the same environments for hard and soft
+     clamping, while still giving the soft-clamp values stronger
+     influence on the net input than would be the case if only 0-1
+     values were being contributed by the external input.
+
+`bool teacher_force'
+     A modification of the RBp algorithm where the activation values
+     are "forced" to be as given by the teaching (target) values.
+     Given that the error is backpropagated over a long series of
+     time steps, this can help error on previous time steps be
+     computed as if the later time steps were actually correct, which
+     might help in the bootstrapping of representations that will be
+     appropriate when the network actually is performing correctly.
+
+`bool store_states'
+     This flag determines if activity states are stored over time for
+     use in performing a backpropagation through them later.  This
+     usually must be true, except in the Almeida-Pineda algorithm, or
+     when just testing the network.
+
+`Random initial_act'
+     Sets the parameters for the initialization of activation states
+     at the beginning of a sequence.  This state forms the 0th
+     element of the sequence of activations.
+
+
+File: pdp-user,  Node: rbp-trial,  Next: rbp-seq,  Prev: rbp-unit,  Up: rbp
+
+The RBp Trial Process
+---------------------
+
+   In order to accommodate both the real-time and discrete
+sequence-based processing modes of RBp, the lowest level of
+processing in RBp is still the Trial, just as in regular Bp.  Thus,
+each cycle of activation update is performed by the trial.  In
+addition, the trial process looks at the number of stored activation
+states that have been accumulated in the network's units, and if this
+is equal to the time-window over which backprop is supposed to occur,
+the trial process will then perform a backpropagation through all of
+these stored activation states.  Thus, the scheduling of
+backpropagations is fairly autonomous, which makes real-time mode
+work well.  When not operating in real-time mode, the time-window for
+error backpropagation is automatically set to be the total duration
+of the current sequence.  This makes it easy to use variable length
+sequences, etc.
+
+   The distinction between whether the network is trained in
+real-time or sequence-based mode is based on the kinds of processes
+that are created above the level of the RBpTrial process, and on the
+setting of the `real_time' flag on the RBpTrial process itself.  If
+using the sequence-based mode, where backpropagations are performed
+at the end of discrete sequences of events, then the user should
+create a Sequence-based process hierarchy, which includes a
+SequenceEpoch, an RBpSequence process, and finally a RBpTrial
+process.  If one is using real-time mode, only a regular EpochProcess
+and a RBpTrial process need to be used.
+
+   The following parameters are available on the RBpTrial.  Note that
+all of the parameters are expressed in terms of the abstract time
+units, and not in terms of the specific ticks of the discrete clock
+on which the actual events are presented to the network, activations
+are updated, etc.  This makes the parameters invariant with respect
+to changes in `dt', which controls the size of a tick of discrete
+time.
+
+`float time'
+     The current time, relative to the start of the most recent
+     sequence, or since the units were last initialized if in
+     real-time mode.  It is a read-only variable.
+
+`float dt'
+     The delta-time increment, which is copied automatically from the
+     units in the network.  It is used in updating the time in the
+     trial process.
+
+`float time_window'
+     Determines the time window over which error backpropagation will
+     be performed.  Thus, units will hold their activation states for
+     this long before a backpropagation will occur.
+
+`float bp_gap'
+     The time to wait in between successive backpropagations after an
+     initial activation settling time of `time_window' in duration.
+     This is used primarily in real-time mode, and controls the
+     amount of overlap between successive backpropagations.  For
+     example, a `time_window' of 4 and a `bp_gap' of 2 would result
+     in the following schedule of backpropagations:
+          time:   0 1 2 3 4 5 6 7 8
+          bp:           x   x   x
+     where each backprop goes back 4 time steps, resulting in an
+     overlap of 2 time steps for each backprop.
+
+`bool real_time'
+     Checking this flag will cause the network to shift the activation
+     buffers after each backpropagation, so that the appropriate
+     amount of activation state information will be available for the
+     next backpropagation (i.e., it shifts them by the size of
+     `bp_gap').  Not checking this flag will cause the `time_window'
+     to be automatically set to the length of the current sequence.
+
+
+File: pdp-user,  Node: rbp-seq,  Next: rbp-vari,  Prev: rbp-trial,  Up: rbp
+
+RBp Sequence Processes and TimeEvents
+-------------------------------------
+
+   The RBpSequence process is a special SequenceProcess that knows
+how to appropriately treat sequences of events that have time values
+associated with them.  The classes TimeEnvironment, TimeEvent_MGroup,
+and TimeEvent together define an environment which consists of
+sequences (groups) of events where each event is specified to occur
+at a particular time.  Furthermore, the environment defines certain
+simple forms of interpolation, which allows trajectories to be formed
+by specifying crucial points on the trajectory, but not everything in
+between.  Also, the RBpSequence process uses the `end_time' of the
+TimeEvent_MGroup to set the `time_window' of the trial process, so
+that exactly one backprop phase will happen per sequence.
+
+   If a TimeEnvironment is not being used, a RBpSequence will simply
+run the sequence of events in each event group, one by one, through
+the trial process.  This would make each event in the sequence appear
+at tick-wise intervals (i.e., every `dt').  In contrast, the
+TimeEnvironment based events have the benefit of making the
+environment invariant with respect to changes in `dt', which can be
+very useful when `dt' is changed during training, etc.
+
+   A TimeEnvironment, aside from setting the default types of events
+and event groups to also be time-based ones, has a default
+interpolation parameter:
+
+`Interpolate interpolate'
+     The following forms of interpolation are defined:
+    `PUNCTATE'
+          Each event appears for the single slice of time that it has
+          specified.
+
+    `CONSTANT'
+          Events persist with the same activations from the time on
+          the event until the next event comes along.
+
+    `LINEAR'
+          Performs linear interpolation from one event to the next.
+
+   As with all sequence-based environments (*note env-seq::), a
+sequence of events is defined by putting all the events in a subgroup.
+TimeEvents should be put in subgroups of type TimeEvent_MGroup, which
+is where the specific form of interpolation to be used for this
+particular sequence, and the total duration of the sequence, are
+specified:
+
+`Interpolate interpolate'
+     This is just like the interpolation variable on the environment,
+     except it includes the `USE_ENVIRO' option, which uses whatever
+     is set on the environment object.  Thus, one can have different
+     sequences use different kinds of interpolation, or they can
+     defer to the environment.
+
+`float end_time'
+     The total duration of the sequence.  It is automatically set to
+     be as long as the latest event in the group, but you can set it
+     to be longer to cause a `CONSTANT' interpolation to hold onto
+     the event until `end_time' has been reached.
+
+   The time event object is just like a regular event except that it
+adds a time field, which specifies when this event is to first be
+presented to the network.  How long it is presented depends on the
+interpolation scheme and how soon another event follows it.
+
+
+File: pdp-user,  Node: rbp-vari,  Next: rbp-ap,  Prev: rbp-seq,  Up: rbp
+
+Variations Available in RBp
+---------------------------
+
+   NoisyRBpUnitSpec adds noise into the activation states of the RBp
+unit.  The type and parameters of the noise are defined by the
+`noise' settings.
+
+
+File: pdp-user,  Node: rbp-ap,  Next: rbp-defs,  Prev: rbp-vari,  Up: rbp
+
+The Almeida-Pineda Algorithm in RBp
+-----------------------------------
+
+   The Almeida-Pineda backprop (APBp) algorithm is a lot like the
+recurrent backpropagation algorithm just described, except that
+instead of recording the activation trajectory over time, and the
+backpropagating back through it, this algorithm performs activation
+propagation until the change in activation goes below some threshold,
+and then it performs backpropagation repeatedly until the change in
+error derivatives also goes below threshold.
+
+   This algorithm is implemented by using the standard RBp unit and
+connection types, even though APBp doesn't require the activation
+trace that is kept by these units.  Indeed, you should set the
+`store_states' flag on the RBpUnitSpec to `false' when using APBp.
+
+   The only thing that is needed is a set of processes to implement
+the settling process over cycles of activation and error propagation.
+Thus, three new processes were implemented, including a cycle process
+(*note proc-levels-cycle::) to perform one cycle of activation or
+error propagation, a settle process (*note proc-levels-settle::) to
+iterate over cycles, and a train process (*note proc-levels-train::)
+to iterate over two phases of settling (activation and
+backpropagation).
+
+   The APBpCycle and APBpSettle processes don't have any
+user-settable parameters.  The APBpTrial adds a couple of options to
+control settling:
+
+`Counter phase_no'
+     The counter that controls what phase the process is in.
+
+`Phase phase'
+     The phase, which is either `ACT_PHASE' or `BP_PHASE'.  It is
+     essentially just a more readable version of the phase_no counter.
+
+`StateInit trial_init'
+     Determines what to do at the start of settling.  One can either
+     `DO_NOTHING' or `INIT_STATE', which initializes the unit
+     activation state variables, and is the default thing to do.
+
+`bool no_bp_stats'
+     This flag, if set, does not collect any statistics during the Bp
+     phase of settling.
+
+`bool no_bp_test'
+     This flag, if set, means that no backpropagation settling phase
+     will be computed if the epoch process is in `TEST' `wt_update'
+     mode.
+
+   The threshold that determines when the settling is cut off is
+determined by a APBpMaxDa_De statistic object, which measures the
+maximum change in activation or the maximum change in error
+derivative.  The stopping criterion (*note proc-stat-crit::) of this
+stat determines the cutoff threshold.  It assumes that the same
+threshold is used for activation as is used for error, which seems to
+be reasonable in practice.
+
+
+File: pdp-user,  Node: rbp-defs,  Next: rbp-impl,  Prev: rbp-ap,  Up: rbp
+
+RBp Defaults
+------------
+
+   The following default files (*note proj-defaults::) are available
+for configuring different versions of the RBp objects:
+
+`rbp.def'
+     This is the standard defaults file.
+
+`rbp_ap.def'
+     This is for doing Almeida-Pineda (*note rbp-ap::) in RBp.
+
+
+File: pdp-user,  Node: rbp-impl,  Prev: rbp-defs,  Up: rbp
+
+RBp Implementation Details
+--------------------------
+
+   An attempt was made to make the implementation of RBp very
+flexible, modular, and robust.  Thus, units keep track of their own
+sense of time and record their own history of activations.  This is
+done with a CircBuffer object, which is derived from an Array type
+(*note obj-array::).  Values in this buffer can wrap-around, and can
+be shifted without performing any memory copying.  Thus, the unit
+activation records can be quickly shifted after performing a
+backpropagation enough to make room for new states to be recorded.
+The trial process will shift the buffers just enough so that they
+will be full again the next time a backpropagation will occur (i.e.,
+they are shifted by the `bp_gap' value converted into tick units).
+
+   However, the buffers are robust in the sense that if the bp_gap
+parameter is changed during processing, they will simply add new
+states and dynamically increase the size of the buffer if it is
+already full.  Indeed, when a unit first starts processing, the
+buffer is automatically added to by the same mechanism-it is always
+full until some number of values have been shifted off the end.
+
+   The units only record their activation values in the buffers.
+Thus, there is a `StoreState' function which takes a snapshot of the
+current activation state.  It is called at the end of the
+`Compute_Act' function.  During backpropagation, the `StepBack'
+function is called, which will take one step back in time.  The
+activation state recorded in the `prv_' version of the unit variables
+are copied into the current variables, and the new previous values
+are loaded from the buffers at the given tick.
+
+   The backpropagation loop looks as follows:
+
+     PerformBP(): {
+       InitForBP();                  // clear current and prev error vals
+       int buf_sz = GetUnitBufSize(); // get unit buffer size (states in units)
+       for(i=buf_sz-2; i>=0; i--) { // loop backwards through unit states
+         Compute_dEdA_dEdNet();      // backpropagate based on current state
+         Compute_dWt();              // compute weight changes from error
+         if(i > 0)                   // if not all the way back yet
+           StepBack(i-1);		// step back to previous time
+       }
+       RestoreState(buf_sz-1);	// restore activations to end values
+       if(real_time)
+         ShiftBuffers();		// don't shift unless real time
+     }
+
+   Thus, error derivatives are computed on the current and `prv_'
+activation state variables, and then these are shifted backwards one
+step, and this continues for the entire length of stored activation
+values.  The above routine is called by the trial process whenever the
+buffer size of the units is equal to or greater than the bp time
+window.
+
+   During backpropagation, the `prv_dEdA' and `prv_dEdNet' values are
+kept, and are used to time-average the computations of these values,
+much in the same way the activations or net inputs are time averaged
+during the activation computation phase.
+
+   The following is a chart describing the flow of processing in the
+RBp algorithm, starting with the epoch process, since higher levels
+do not interact with the details of particular algorithms, and
+assuming sequences are being used:
+
+     SequenceEpoch: {
+       Init: {                              // at start of epoch
+         environment->InitEvents();          // init events (if dynamic)
+         event_list.Add() 0 to environment->GroupCount(); // get list of groups
+         if(order == PERMUTE) event_list.Permute(); // permute list if necessary
+         GetCurEvent();                      // get pointer to current group
+       }
+       Loop (trial): {                      // loop over trials
+         SequenceProcess: {                 // sequence process (one sequence)
+           Init: {                          // at start of sequence
+             tick.max = cur_event_gp->EventCount(); // set max no of ticks
+             event_list.Add() 0 to tick.max; // get list of events from group
+             if(order == PERMUTE) event_list.Permute(); // permute if necessary
+             GetCurEvent();                  // get pointer to current event
+             InitNetState() {               // initialize net state at start
+               if(sequence_init == INIT_STATE) network->InitState();
+             }
+           }
+           Loop (tick): {                   // loop over ticks (sequence events)
+             RBpTrial: {                    // trial process (one event)
+               Init: {                      // at start of trial
+                 cur_event = epoch_proc->cur_event; // get event from sequence
+               }
+               Loop (once): {               // process this once per trial
+                 network->InitExterns();     // init external input to units
+                 cur_event->ApplyPatterns(network); // apply patterns from event
+                 if(unit buffer size == 0) { // units were just reset, time starting
+                   time = 0;                 // reset time
+                   StoreState();             // store initial state at t = 0
+                 }
+                 Compute_Act(): {           // compute acts (synchronous)
+                   network->Compute_Net();   // first get net inputs
+                   network->Compute_Act();   // then update acts based on nets
+                 }
+                 if(unit buffer size > time_win_ticks) // if act state buffers full
+                   PerformBP();              // backpropagate through states
+                 time += dt;                 // time has advanced..
+               }
+             }
+             if(wt_update == ON_LINE) network->UpdateWeights(); // after trial
+           }
+         }
+         if(wt_update == SMALL_BATCH)        // end of sequence
+           network->UpdateWeights();         // update weights after sequence
+         GetCurEvent();                      // get next event group
+       }
+       Final:                                // at end of epoch
+         if(wt_update == BATCH)  network->UpdateWeights(); // batch mode updt
+     }
+
+
+File: pdp-user,  Node: cs,  Next: so,  Prev: bp,  Up: Top
+
+Constraint Satisfaction
+***********************
+
+   Constraint satisfaction is an emergent computational property of
+neural networks that have recurrent connectivity, where activation
+states are mutually influenced by each other, and settling over time
+leads to states that satisfy the constraints built into the weights
+of the network, and those that impinge through external inputs.
+
+   Constraint satisfaction can solve complicated computational
+problems where the interdependencies among different possible
+solutions and high-dimensional state spaces make searching or other
+techniques computationally intractable.  The extent to which a
+network is satisfying its constraints can be measured by a global
+energy or "goodness" function.  Proofs regarding the stability of
+equilibrium states of these networks and derivations of learning
+rules have been made based on these energy functions.
+
+   In the PDP++ software, a collection of constraint satisfaction
+style algorithms have been implemented under a common framework.
+These algorithms include the binary and continuous Hopfield style
+networks `Hopfield, 1982, 1984', the closely related Boltzmann Machine
+networks `Ackley, Hinton and Sejnowski, 1985', the interactive
+activation and competition (IAC) algorithm `McClelland and Rumelhart,
+1981', and GRAIN networks `Movellan and McClelland, 1994'.
+
+   In addition to recurrent activation propagation and settling over
+time, these algorithms feature the important role that noise can play
+in avoiding sub-optimal activation states.  The work with the GRAIN
+algorithm extends the role of noise by showing that the network can
+learn to settle into different distributions of activation states in a
+probabilistic manner.  Thus, one can teach a network to go to one
+state roughly 70 percent of the time, and another state roughly 30
+percent of the time.  These distributions of possible target states
+can be specified by using a probability environment, which is
+described in a subsequent section.
+
+   Also, learning takes place in these networks through a more local
+form of learning rule than error backpropagation.  This learning rule,
+developed for the Boltzmann machine, has been shown to work in a wide
+variety of activation frameworks, including deterministic networks.
+This rule can be described as a "contrastive Hebbian learning" (CHL)
+function, since it involves the subtraction of two simple Hebbian
+terms computed when the network is in two different "phases" of
+settling.
+
+   The two phases of settling required for learning are known as the
+minus (negative) and plus (positive) phase.  The minus phase is the
+state of the network when only inputs are presented to the network.
+The plus phase is the state of the network when both inputs and
+desired outputs are presented.  The CHL function states that the
+weights should be updated in proportion to the difference of the
+coproduct of the activations in the plus and minus phases:
+
+       cn->dwt = lrate * (ru->act_p * su->act_p - ru->act_m * su->act_m)
+
+   where `ru' is the receiving unit and `su' is the sending unit
+across the connection `cn', and `act_m' is the activation in the
+minus phase, and `act_p' is the activation in the plus phase.
+
+   It turns out that in order to learn distributions of activation
+states, one needs to collect many samples of activation states in a
+stochastic network, and update the weights with the expected values
+of the coproducts of the activations, but the general idea is the
+same.  This learning rule can be shown to be minimizing the
+cross-entropy between the distributions of the activations in the
+minus and plus phases, which is the basis of the Boltzmann machine
+derivation of the learning rule.
+
+   The PDP++ implementation allows you to perform learning in both the
+stochastic mode, and with deterministic networks using the same basic
+code.  Also, there is support for annealing and sharpening schedules,
+which adapt the noise and gain parameters (respectively) over the
+settling trajectory.  Using these schedules can result in better
+avoidance of sub-optimal activation states.
+
+* Menu:
+
+* cs-over::                     Overview of the Cs Implementation
+* cs-con::                      Cs Connection Specifications
+* cs-unit::                     Cs Unit Specifications
+* cs-proc::                     Cs Processes
+* cs-stats::                    Cs Statistics
+* cs-defs::                     Cs Defaults
+* cs-prob-env::                 The Probability Environment and Cs
+* cs-impl::                     Cs Implementation Details
+
+
+File: pdp-user,  Node: cs-over,  Next: cs-con,  Prev: cs,  Up: cs
+
+Overview of the Cs Implementation
+=================================
+
+   The Cs implementation defines a type of connection and connection
+spec that is used by all flavors of Cs networks.  There is a basic
+CsUnit which is also common to all algorithms, but each different
+type of activation function defines its own version of the basic
+CsUnitSpec.  Thus, to switch activation functions, one needs only to
+point one's units at a new unit spec type.
+
+   The new schedule process objects consist of three essential levels
+of processing, starting at the trial level and moving down through
+settling to the cycle, which implements one activation update of the
+network.  Thus, the CsTrial process loops over the plus and minus
+phases of settling in the CsSettle process, which in turn iterates
+over cycles of the CsCycle process, which updates the activations of
+the units in the network.  There is an optional level of processing
+which involves sampling over repeated settlings of the same pattern.
+This repeated sampling is used for learning to obtain reliable
+statistical estimates of the probabilities of certain activation
+states, and is thus used when learning to match a propability
+distribution over the output layer (*note cs-prob-env::).  This
+CsSample process loops over samples of the CsTrial process.
+
+   There are several specialized statistic objects that compute the
+global goodness or energy function of the network (CsGoodStat), and
+record its probability of being in one of a number of desired
+activation states (CsDistStat), and the extent to which the
+probabilities of these states match their desired probabilities
+(CsTIGstat, CsTargStat).
+
+
+File: pdp-user,  Node: cs-con,  Next: cs-unit,  Prev: cs-over,  Up: cs
+
+Cs Connection Specifications
+============================
+
+   The Cs connection type contains a computed change in weight term
+`dwt', a previous change in weight term `pdw', and a change in weight
+term that is used in aggregating weight change statistics over time,
+`dwt_agg'.  The previous change in weight term enables momentum-based
+learning to be performed.
+
+   The Cs connection specification type contains the following
+parameters:
+
+`float lrate'
+     Controls the rate of learning.  It simply multiplies the CHL
+     learning term.
+
+`float momentum'
+     The momentum, which includes a weighted average (weighted by the
+     `momentum' parameter) of prior weight changes in the current
+     weight change term.
+
+`float decay'
+     The rate of weight decay, if a weight decay function is being
+     used.
+
+`decay_fun'
+     There are two weight decay functions defined by default, but
+     others can be added.  These two are `Cs_Simple_WtDecay', and
+     `Cs_WtElim_WtDecay', which are just like their counterparts in
+     the Bp algorithm, to which you are referred for more details, see
+     *Note bp-con::.
+

@@ -1,0 +1,22 @@
+#Layer Input Layer
+#Unit 
+0.000000
+#Unit 
+0.000000
+#Layer Hidden Layer
+#Unit hid_1
+-0.276589
+#Con_Group 0
+0.432171
+0.448781
+#Unit hid_2
+-0.402498
+#Con_Group 0
+-0.038413
+0.036489
+#Layer Output Layer
+#Unit output
+0.279299
+#Con_Group 0
+0.272080
+0.081714

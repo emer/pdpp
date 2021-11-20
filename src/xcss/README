@@ -1,0 +1,12 @@
+PDPDIR/src/xcss
+
+This is a simple psychological "xperiment" program, which basically
+just puts up a graphical window and then has simple commands to render
+graphics into that window, collect reaction times, etc.  It is
+essentially a ta/css friendly front-end to a the InterViews Canvas and
+Event classes.
+
+Aside from its own potential value, it serves as a useful
+demonstration of how to write a ta/css based application that is not
+PDP++.
+

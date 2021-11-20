@@ -1,0 +1,15 @@
+####################################################
+# machine-dependent stuff and overrides of std defs
+# HP8000 - g++
+
+# this is pretty sparse because Makefile.defs is set up for g++
+
+#include x libs
+LDIRS_EXTRA = -L/usr/lib/X11R5
+
+# doesn't need ranlib
+RANLIB = ls
+
+# use debug version of IV library
+IV_LIB = -lIVd
+

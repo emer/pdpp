@@ -1,0 +1,440 @@
+######################################################################
+# ta/css/pdp++: Standard Definitions for the makefile (Makefile.defs)
+#
+
+# default make target is specified in Makefile.in
+all:	default
+
+#####################################################################
+#			GLOBAL PATHS 				    #
+#####################################################################
+
+# it is assumed that most things are installed under LOCAL
+LOCAL = /usr/local
+
+# PDPDIR is the path where the distribution is located.  If you change this
+# here, ***BE SURE TO CHANGE IT IN THE TOP-LEVEL 'Makefile'***
+# (i.e., PDPDIR/Makefile)
+PDPDIR = $(LOCAL)/pdp++
+
+# top can be defined to be in a user's home directory: it is where the source is
+TOP = $(PDPDIR)/src
+
+# this is where the distribution version of interviews is located (for include
+# file paths) this directory should have an "include" subdirectory
+IV = $(LOCAL)/interviews
+
+# LOC_OBJS is a directory physically local to each machine where the 
+# object files/libraries, etc are put to speed compliation in a distributed
+# environment, this directory must be created in advance, and must be given
+# read/write permission to whoever will be compiling the software..
+LOC_OBJS = /usr/user/pdp++
+
+# standard definitions for path-type variables
+# the PROJDIR is the directory the 'project' is in.  This is assumed to be under
+# the TOP directory
+PROJDIR = $(PROJNAME)
+VPATH = $(TOP)/$(PROJDIR)
+
+#####################################################################
+#			EXTERNAL LIBRARIES			    #
+#####################################################################
+
+EXTERNAL_LIBS = $(LIBS)
+
+# g++ needs a stream library (don't use all of libg++!)
+IOS_LIB = -liostream
+
+# if not using g++, need to use 'myiberty' which has alloca, xmalloc
+IBERTY_LIB = -liberty
+# IBERTY_LIB = -lmyiberty
+
+# any other misc libs that need to be included
+GENERIC_LIB = -lm
+
+#default InterViews Library
+IV_LIB = -lIV
+
+#default X11 library
+X11_LIB = -lX11
+
+# this must correspond with the version of the iostream library used
+# its for ta which scans modified versions of these include files
+# either Cfront or g++ are supported (and the corresponding files
+# are found in the src/ta directory.  Note that the CC (cfront) ones are
+# symbolic links to /usr/include/CC, and the g++ ones are just copied
+# from the 2.6.2 libg++ distribution.
+# IOS_INCLUDES = CC-3.1
+# IOS_INCLUDES = g++-2.6
+# IOS_INCLUDES = g++-2.7.1
+IOS_INCLUDES = g++-2.8.1
+
+# these are -I flags for additional include directories
+IDIRS_EXTRA =
+# these are -L flags for additional library directories
+LDIRS_EXTRA =
+
+#####################################################################
+#			COMPILER SETTINGS			    #
+#####################################################################
+
+# make sure the shared library has the right setting (HP uses sl)
+LIB_EXT_NONSHARED = a
+LIB_EXT_SHARED = so
+
+# MSDOS requires a .exe extension on executables..
+EXE_EXT =
+
+# basic compiling command for shared and non-shared making
+# (definitely need PIC or its equivalent for a large GOT)
+# -fno-exceptions is essential -- it is deadly slow and can't really
+# compile with exceptions (takes >512mb of ram for rbp.cc)
+# -fno-rtti saves a bit of disk space, but has no performance conseq.
+# but the code doesn't use it, so might as well save.
+CC_NONSHARED = gcc -nostdinc
+CXX_NONSHARED = g++ -fno-implicit-templates -fno-exceptions -fno-rtti
+CC_SHARED = gcc -nostdinc -fPIC
+CXX_SHARED = g++ -fPIC -fno-implicit-templates -fno-exceptions -fno-rtti
+
+# extra flags for compiling, must correspond with appropriate defns
+# for interviews include/Dispatch/dispatcher.h
+MACH_FLAGS = -DHAVE_POSIX_SIGNALS=1 -DRETSIGTYPE=void
+# these are special flags for compiling the huge xxx_TA.cc files
+MACH_TA_CCFLAGS = $(MACH_FLAGS)
+
+# for making libraries
+AR = ar rc
+RANLIB = ranlib
+# command to actually use when making a library
+AR_PRE_CMD_NONSHARED = echo
+AR_CMD_NONSHARED = $(AR)
+RANLIB_CMD_NONSHARED = $(RANLIB)
+
+AR_PRE_CMD_SHARED = echo 
+AR_CMD_SHARED = $(CXX_SHARED) -shared -o 
+RANLIB_CMD_SHARED = echo
+
+# second pass comand for libs
+LIB_PASS2_CMD = echo
+EXTERNAL_LIBS = $(LIBS)
+
+# this is the GNU preprocessor, which always works
+# though it is not standardly installed in /usr/local/bin, so do it yourself
+cppC = /usr/local/bin/cccp -lang-c++
+
+# the following four settings determine if shared or non-shared is default
+# use noshared as a default, since that will always work
+# CC is the C compiler
+CC = $(CC_NONSHARED)
+# CXX is the C++ compiler
+CXX = $(CXX_NONSHARED)
+# this is used to create the binary (linking)
+BIN_CXX = $(CXX)
+# these are used to create the dependency info (-M is added automatically)
+DEP_CC = $(CC)
+DEP_CXX = $(CXX)
+# this is the extension of the library file
+LIB_EXT = $(LIB_EXT_NONSHARED)
+AR_PRE_CMD = $(AR_PRE_CMD_NONSHARED)
+AR_CMD = $(AR_CMD_NONSHARED)
+RANLIB_CMD = $(RANLIB_CMD_NONSHARED)
+
+# if using shared libs and it costs alot in performance, don't do it
+# for the core simulation code (pdp,bp,cs,so,bpso)
+# so define these to be non-shared compile flags and archiving, etc
+# however, if doing shared and its ok to do shared for all, set to shared.
+# they are set to nonshared by default because the default overall is nonshared
+SIM_NONSHARED_CXX = $(CXX_NONSHARED)
+SIM_NONSHARED_AR_CMD = $(AR_CMD_NONSHARED)
+SIM_NONSHARED_LIB_EXT = $(LIB_EXT_NONSHARED)
+
+DEBUG_FLAG = -g -Wall -Winline
+# debug flags that can be used with optimization
+DEBUG_OPT_FLAG = 
+# -g tends to eat up a huge amount of space..
+#DEBUG_OPT_FLAG = -g -Wall -Winline
+# -O2 is very slow in compiling, and is less than 2% faster runtime
+OPT_FLAG = -O -Wall -Winline
+# get compiler to produce dependencies
+DEP_FLAG = -M -E
+
+# controls the instantiation of virtual tables (cfront)
+# instantiate vtable flag (e.g. +e1 for cfront)
+VT_INST_FLAG = +e1 
+# instantiate vtable file
+VT_INST_FILE = $(PROJNAME)_vt
+# to actually include the vtable file in executable (cfront only)
+#VT_INST_SRC = $(VT_INST_FILE).cc
+#VT_INST_OBJ = $(VT_INST_FILE).o
+#VT_INST_DEP = $(VT_INST_FILE).d
+VT_INST_SRC = 
+VT_INST_OBJ = 
+VT_INST_DEP = 
+
+# controlls the instantiation of templates (g++)
+# instantiate templates flag (maybe not necessary)
+TI_INST_FLAG =
+# instantiate templates file
+TI_INST_FILE = $(PROJNAME)_ti
+# to actually include the template file in executable (g++ only)
+#TI_INST_SRC = $(TI_INST_FILE).cc
+#TI_INST_OBJ = $(TI_INST_FILE).o
+#TI_INST_DEP = $(TI_INST_FILE).d
+TI_INST_SRC = 
+TI_INST_OBJ = 
+TI_INST_DEP = 
+
+################################
+# less-important compiler stuff
+
+# pipe tends to take too much ram...
+#PIPEFLAG = -pipe
+PIPEFLAG = 
+
+# these defines are passed to every compile stage
+DEFINES =
+DEFINES_XX = -D$(CPU) $(DEFINES)
+
+# these are the basic flags for compiling C++
+CCFLAGS_XX = $(FLAGS) $(IN_FLAGS) $(MACH_FLAGS) $(PIPEFLAG) $(DEFINES_XX)
+# and for regular C
+CFLAGS_XX =  $(MACH_FLAGS) $(PIPEFLAG) $(DEFINES_XX)
+
+DEBUG_FLAGS = $(DEBUG_FLAG)
+OPT_FLAGS = $(DEBUG_OPT_FLAG) $(OPT_FLAG)
+
+# this is the one to set to control optimization vs. debugging
+OPT_DEBUG = $(DEBUG_FLAGS)
+
+# these are actually used during compilation
+CCFLAGS = $(OPT_DEBUG) $(CCFLAGS_XX)
+CFLAGS = $(OPT_DEBUG) $(CFLAGS_XX)
+
+# this is for compiling the _TA.cc file, which is huge..
+TA_CCFLAGS_XX = $(FLAGS) $(IN_FLAGS) $(MACH_TA_CCFLAGS) $(DEFINES_XX)
+
+# if you need to debug it..
+#TA_CCFLAGS = -g $(TA_CCFLAGS_XX)
+TA_CCFLAGS = $(TA_CCFLAGS_XX)
+
+
+#####################################################################
+#			LOCAL PATHS, NAMES			    #
+#####################################################################
+
+# src_include is a hack to make local files in the compilation directory
+# includeable with the <PROJDIR/xxx.h> syntax.  it is a directory with a
+# symbolic link with the name PROJDIR to its parent directory (../)
+# it is automatically made by make cpu_dir
+SRC_INC = src_include/$(PROJDIR)
+
+# basic include directories
+IDIRS_XX = -I./src_include -I./src_include/$(PROJDIR) -I$(PDPDIR)/include/$(CPU)\
+	-I/usr/local/include -I$(IV)/include 
+
+# basic library directories
+LDIRS_XX = -L$(PDPDIR)/lib/$(CPU) -L$(LOCAL)/lib -L$(IV)/lib/$(CPU)
+
+# this is what is actually used when compiling
+IDIRS = $(IDIRS_EXTRA) $(IDIRS_XX) 
+LDIRS = $(LDIRS_EXTRA) $(LDIRS_XX) 
+
+# the name of the executable made in this directory
+EXE = $(PROJNAME)++$(EXE_EXT)
+# this is the 'distribution' executable (i.e. the one that works, not the latest)
+DIST_EXE = $(PROJNAME)++$(EXE_EXT)
+
+# this is the name of the library made in this directory
+LIB = lib$(PROJNAME).$(LIB_EXT)
+
+# extra dependencies for the executable
+EXE_DEPENDS =
+
+# these are the basic dependencies 
+DEPS_XX = $(DEPS) $(VT_INST_DEP) $(TI_INST_DEP)
+
+# path to the 'maketa' type scanning program
+MAKETA = $(PDPDIR)/bin/$(CPU)/maketa
+
+MAKETA_FLAGS_XX = "-cpp=$(cppC)" $(MAKETA_FLAGS_CPU) $(MAKETA_FLAGS) -I$(PDPDIR)/src/ta/ios-$(IOS_INCLUDES) $(FLAGS) $(IN_FLAGS) $(DEFINES_XX) 
+
+# extra '.hx' file that needs to be copied to the CPU directory  from
+# the proj directory  when the cpu_dir is made (typically from a .y
+# file, 'maketa' files are handled automatically already).
+# DON'T ADD THE .hx HERE!
+
+EXTRA_HX_FILE =
+
+# extra general file that needs to be copied to the CPU directory  from
+# the proj directory  when the cpu_dir is made 
+
+EXTRA_CPU_FILE =
+
+# If your compiler generates a .u file when given the -M flag
+# set  change the following to
+# MAKEDEP_TMP_FILE = /dev/null
+# in your Makefile.CPU file
+
+MAKEDEP_TMP_FILE = `echo $@ | $(SED) 's/\.d/.u/g'`
+
+#####################################################################
+#			STANDARD DEFINES			    #
+#####################################################################
+
+# basic unix commands for manipulating files..
+YACC = bison
+YFLAGS = -dtvy
+
+MAKE = make
+
+RM = rm -f
+MV = mv -f
+CP = /bin/cp
+LN = ln -s
+CAT = cat
+CD = cd
+MKDIR = mkdir
+CMP = cmp -s
+ED = ed
+SED = sed
+TOUCH = touch -c
+COMPRESS = gzip -f
+NICE = nice +10 
+PROOF = proof
+TAR = gnutar
+####################################################
+# machine-dependent stuff and overrides of std defs
+# LINUX - g++ (ELF)
+####################################################
+
+# always debug, all the time
+#OPT_FLAG = -O -g
+#DEBUG_FLAG = -O -g -Wall -Winline
+OPT_FLAG = -g -Wall -Winline
+DEBUG_FLAG = -g -Wall -Winline
+
+# also define the standard (non-debug) case, which is what is looked
+# for in various files..
+DEFINES = -DLINUX
+
+# define this to be where the libg++ (stream classes) headers
+# are found
+LIBG++_INCLUDE_DIR = -I/usr/include/linux -I/usr/include/g++-2
+
+MACH_FLAGS = -DHAVE_POSIX_SIGNALS=1 -DRETSIGTYPE=void
+MACH_TA_CCFLAGS = $(MACH_FLAGS)
+MAKETA_FLAGS = -hx -css -instances $(LIBG++_INCLUDE_DIR)
+
+# use debug interviews!
+IV_LIB = -lIVd
+
+IOS_LIB = 
+IBERTY_LIB =
+
+# needs template instantiation files..
+TI_INST_SRC = $(TI_INST_FILE).cc
+TI_INST_OBJ = $(TI_INST_FILE).o
+TI_INST_DEP = $(TI_INST_FILE).d
+
+IOS_INCLUDES = g++-2.8.1
+
+# /usr/include headerfiles of LINUX expect __i386__ to be defined
+cppC = /lib/cpp -D__i386__ 
+
+# LINUX mallocinfo from ta requires mstats from libg.a
+# disabled for now
+#GENERIC_LIB = -lm -lg
+GENERIC_LIB = -lm
+
+IDIRS_EXTRA = -I/usr/include/g++-2
+LDIRS_EXTRA = -L/usr/X11R6/lib/
+
+AR_CMD_SHARED = g++ -shared -Wl,-soname,$@ -o
+
+# NOT - doesn't link properly for debugging purposes!
+#CC = $(CC_SHARED)
+#CXX = $(CXX_SHARED)
+# no libg++ for binaries 
+#BIN_CXX = $(CC)
+#LIB_EXT = $(LIB_EXT_SHARED)
+#AR_PRE_CMD = $(AR_PRE_CMD_SHARED)
+#AR_CMD = $(AR_CMD_SHARED)
+#RANLIB_CMD = $(RANLIB_CMD_SHARED)
+
+# optimization is compatible with shared
+#SIM_NONSHARED_CXX = $(CXX_SHARED)
+#SIM_NONSHARED_AR_CMD = $(AR_CMD_SHARED)
+#SIM_NONSHARED_LIB_EXT = $(LIB_EXT_SHARED)
+
+TAR = tar
+# no .user makefile
+#####################################################
+#
+#  Hardcode CSS Makefile
+#	    
+
+# INSTRUCTIONS: to compile a .css file into binary format, you can use
+# this Makefile together with the libtypea_min and libhard_css
+# libraries.  The steps are as follows:
+# 
+# 1. Make the libraries from the PDPDIR, doing 'make lib_min' and 'make hard_css'
+#    after having done regular compiles.  lib_min will clean out the current make
+#    in the src/ta directory because the same files need to be recompiled with 
+#    a different set of flags.
+#
+# 2. Make sure the definitions of PDPDIR and TOP in this file are correctly set.
+#
+# 3. Copy this file into the compile directory, AS TWO FILES: Makefile.in 
+#    and Makefile.  Then, type 'make init_makefile' to make the actual
+#    initial Makefile, by composing from all the standard makefiles.
+#
+# 4. If your config requires the VT (virtual table) files, then copy
+#    PDPDIR/config/hard_of_css_vt.cc to your compile directory as well.
+# 
+# 5. You should then be able to make an executable from your .css file by
+#    typing 'make fname' where fname is the name of the file (WITHOUT the
+#    .css extension).  You might have to create a link to the .css file 
+#    using a more standard extension if the c++ compiler complains.
+#    For example: ln -s fname.css fname.cc
+# 
+# 6. For a working example, see PDPDIR/src/hard_of_css..
+
+# this must be set to point to the location where pdp++ was actually
+# installed!!
+PDPDIR = /usr/local/pdp++
+
+# this must be set to point to the location where this file is actually
+# located.  
+TOP = $(PDPDIR)/src
+
+# use this command first to actually make the makefile!
+init_makefile:	   InitMakefile
+
+InitMakefile:
+	-@ cp Makefile Makefile.bak;\
+	cat $(PDPDIR)/config/Makefile.defs \
+	$(PDPDIR)/config/Makefile.$(CPU) \
+	$(TOP)/Makefile.user Makefile.in >Makefile
+
+# this is for any _vt or _ti files that might be needed..
+PROJNAME = hard_of_css
+
+LIBS = -lhard_css -ltypea_min -ltastring $(IOS_LIB) $(IBERTY_LIB) $(GENERIC_LIB)
+
+# usually compiling optimized..
+OPT_DEBUG = $(OPT_FLAGS)
+
+% : %.c
+	$(CC) -o $@ $(CFLAGS) $(LDIRS) $(IDIRS) $<  $(LIBS)
+
+% : %.cc 
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.css
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+% : %.o
+	$(CXX) -o $@ $(VT_INST_FLAG) $(CCFLAGS) $(LDIRS) $(IDIRS) $< $(LIBS)
+
+.cc.o:
+	$(CXX) -o $@ $(VT_INST_FLAG) $(IDIRS) $(CCFLAGS) -c $< 

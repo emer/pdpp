@@ -1,0 +1,214 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - gui-settings-tamisc</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_58.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_60.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX156" HREF="pdp-user_toc.html">6.17.1  Settings in taMisc</A></H3>
+
+<P>
+The following parameters can be set:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>int display_width</CODE>
+<DD>
+<A NAME="IDX157"></A>
+Width of the shell display in characters.
+<DT><CODE>int sep_tabs</CODE>
+<DD>
+<A NAME="IDX158"></A>
+Number of tabs to separate items by in listings.
+<DT><CODE>int max_menu</CODE>
+<DD>
+<A NAME="IDX159"></A>
+The maximum number of elements in a menu -- if there are more than this
+number of instances (tokens) of a given type of object, then the menu
+for that type of object will say "&#60;Over max, Select&#62;", meaning that each
+item could not be listed separately in the menu, so you select this
+option to pull up a object chooser (see section <A HREF="pdp-user_63.html">6.20  Object Chooser</A>), which
+allows you to choose the object from a longer list.
+<DT><CODE>int search_depth</CODE>
+<DD>
+<A NAME="IDX160"></A>
+The recursive depth at which css stops searching for an object's path.
+<DT><CODE>int color_scale_size</CODE>
+<DD>
+<A NAME="IDX161"></A>
+This determines how many colors are in a color scale for a color monitor
+(see section <A HREF="pdp-user_61.html">6.18  Color Scale Specifications</A>).
+<DT><CODE>int mono_scale_size</CODE>
+<DD>
+<A NAME="IDX162"></A>
+This determines how many colors are in a color scale for a monochrome monitor
+(see section <A HREF="pdp-user_61.html">6.18  Color Scale Specifications</A>).
+<DT><CODE>ShowMembs show</CODE>
+<DD>
+<A NAME="IDX163"></A>
+Type of members to show in css.
+<DT><CODE>ShowMembs show_iv</CODE>
+<DD>
+<A NAME="IDX164"></A>
+Type of members to show in edit dialogs
+The previous two variables can have one of four "ShowMembs" values:
+<DL COMPACT>
+
+<DT><CODE>ALL_MEMBS</CODE>
+<DD>
+Shows all members. 
+<DT><CODE>NO_READ_ONLY</CODE>
+<DD>
+Shows all but read_only members -- stuff that can't be changed.
+<DT><CODE>NO_HIDDEN</CODE>
+<DD>
+Shows all but hidden members -- stuff that is hidden because it is not
+typically relevant.
+<DT><CODE>NO_HID_RO</CODE>
+<DD>
+Shows all but hidden and r/o members. 
+<DT><CODE>NO_DETAIL</CODE>
+<DD>
+Shows all but "detail" members -- stuff that might be relevant, but is
+not often accessed.
+<DT><CODE>NO_HID_DET, etc.</CODE>
+<DD>
+Further combinations of RO, HID, and DET options.
+</DL>
+The default is <CODE>NO_HID_RO_DET</CODE>.
+<DT><CODE>TypeInfo type_info</CODE>
+<DD>
+<A NAME="IDX165"></A>
+The amount of information about a class type that is reported when
+the "type" command is used in CSS.
+Type_info has one of the following values:
+<DL COMPACT>
+
+<DT><CODE>MEMB_OFFSETS</CODE>
+<DD>
+Shows the byte offset of members.
+<DT><CODE>All_INFO</CODE>
+<DD>
+Shows all type info except memb_offsets
+<DT><CODE>NO_OPTIONS</CODE>
+<DD>
+Shows all info except type options
+<DT><CODE>NO_LISTS</CODE>
+<DD>
+Shows all info but lists
+<DT><CODE>NO_OPTIONS_LISTS</CODE>
+<DD>
+Shows all info but options and lists
+</DL>
+The default is <CODE>NO_OPTIONS_LISTS</CODE>
+<DT><CODE>KeepTokens keep_tok</CODE>
+<DD>
+<A NAME="IDX166"></A>
+This sets the Default for keeping tokens (lists of members) for object types.
+This can have one of three "KeepTokens" values:
+<DL COMPACT>
+
+<DT><CODE>Tokens</CODE>
+<DD>
+Keep tokens as specified in the type.
+<DT><CODE>NoTokens</CODE>
+<DD>
+Do not keep any tokens lists.
+<DT><CODE>ForceTokens</CODE>
+<DD>
+Force the keeping of all tokens lists.
+</DL>
+The default is <CODE>Tokens</CODE>.
+<DT><CODE>verbose_load</CODE>
+<DD>
+<A NAME="IDX167"></A>
+Indicates the amount of information reported in the shell window
+when objects are loaded
+<DT><CODE>iv_verbose_load</CODE>
+<DD>
+<A NAME="IDX168"></A>
+Indicate the amount of information reported in the Loading window
+when objects are loaded
+The previous two members may have one of the following values:
+<DL COMPACT>
+
+<DT><CODE>QUIET</CODE>
+<DD>
+No information is given
+<DT><CODE>MESSAGES</CODE>
+<DD>
+General messages are reported for each object
+<DT><CODE>TRACE</CODE>
+<DD>
+Each line of the file is printed as it is loaded
+<DT><CODE>SOURCE</CODE>
+<DD>
+Intricate debugging details are reported
+</DL>
+<DT><CODE>bool auto_edit</CODE>
+<DD>
+<A NAME="IDX169"></A>
+If this value is on, an edit dialog will appear each time an object is created
+with the New dialog. (see section <A HREF="pdp-user_53.html">6.5  The SubGroup Menu(s)</A>).
+<DT><CODE>AutoRevert auto_revert</CODE>
+<DD>
+<A NAME="IDX170"></A>
+In some cases a dialog may be reverted to its old values by a PDP++ process.
+This variable controls the behavior of the edit dialog when this situation
+occurs. The behavior is determined by one of three values:
+<DL COMPACT>
+
+<DT><CODE>Auto_Apply</CODE>
+<DD>
+Automatically apply changes before auto-reverting
+<DT><CODE>Auto_Revert</CODE>
+<DD>
+Automatically revert the edit dialog loosing changes
+<DT><CODE>Confirm_Revert</CODE>
+<DD>
+Popup a confirmation dialog to okay reverting
+</DL>
+<DT><CODE>String include_paths</CODE>
+<DD>
+<A NAME="IDX171"></A>
+Directory Paths used for finding files.  This is an array of string
+values that represent paths to find CSS, defaults files, and Help files
+in (see section <A HREF="pdp-user_83.html">7.4.8  Parameters affecting CSS Behavior</A>, see section <A HREF="pdp-user_108.html">9.5.1  Settings and the .pdpinitrc and .cssinitrc Files</A>, see section <A HREF="pdp-user_109.html">9.5.2  Project Object Defaults (TypeDefaults)</A>).
+<DT><CODE>String tmp_dir</CODE>
+<DD>
+<A NAME="IDX172"></A>
+The directory to use for temporary files
+<DT><CODE>String compress_cmd</CODE>
+<DD>
+<A NAME="IDX173"></A>
+Command to use for compressing files
+<DT><CODE>String uncompress_cmd</CODE>
+<DD>
+<A NAME="IDX174"></A>
+Command to use for uncompressing files
+<DT><CODE>String compress_sfx</CODE>
+<DD>
+<A NAME="IDX175"></A>
+Suffix to append to filenames when compressed
+<DT><CODE>String help_file_tmplt</CODE>
+<DD>
+<A NAME="IDX176"></A>
+Template for converting the type name of an object into a help file --
+%t is replaced with the type name.  Include any leading paths to help
+files relative to the basic root paths listed on include_paths.
+<DT><CODE>String help_cmd</CODE>
+<DD>
+<A NAME="IDX177"></A>
+Comand for bringing up a help browser to read help file (typically html,
+netscape by default).  %s is subsituted with the help file produced from
+<CODE>help_file_tmplt</CODE>.
+</DL>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_58.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_60.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

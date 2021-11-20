@@ -1,0 +1,17 @@
+#!/bin/csh
+# script to change various bools to true and false
+
+foreach i ($*)
+	echo $i
+	set ext=$i:e
+	if($ext == "gz") then
+		set fl=$i:r
+		gunzip $fl
+		sed -f "/usr/local/pdp++/bin/fixtruefalse.sed" $fl >tmp.xxx
+		mv tmp.xxx $fl
+		gzip $fl
+	else
+		sed -f "/usr/local/pdp++/bin/fixtruefalse.sed" $i >tmp.xxx
+		mv tmp.xxx $i
+	endif
+end

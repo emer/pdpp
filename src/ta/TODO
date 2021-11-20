@@ -1,0 +1,23 @@
+todo list for ta:
+
+- possibility of splitting _TA.cc[x] file into several parts, as given
+	by a parameter to maketa.  this would help the hp, and make
+	compilation go a bit faster..
+
+- fix css calling so that all member funs don't need to be recreated for
+	multiple inheritance (i.e., casting of the base should use
+	smart parent_off type things)
+ 
+- tolerate initializer exprs in constructors
+
+- sub-classes don't get members/methods..
+	- need to make a concatenated name or something like that
+
+- variable (not just default) args are not flagged appropriately
+
+- ta_ListItr types are not being assigned values in the non-const ref arg
+	for FirstEl, NextEl, etc.
+	- need to understand ta_ListItr as a castable type
+	- (can't all class simply be copied with an equals sign?
+	   and we could have a comment directive for non-copieable types).
+

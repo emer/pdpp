@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - so-over</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_229.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_231.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A NAME="IDX1411" HREF="pdp-user_toc.html">16.1  Overview of the So Implementation</A></H2>
+
+<P>
+The So implementation is designed to be used in a mix-and-match fashion.
+Thus, there are a number of different learning algorithms, and several
+different activation functions, each of which can be used with the
+other.  The learning algorithms are implemented as different connection
+specs derived from a basic <B>SoConSpec</B> type.  They all use the same
+<B>SoCon</B> connection type object.
+
+</P>
+<P>
+Unlike the other algorithms in the PDP++ distribution (Bp and Cs), the
+So implementation uses <B>LayerSpec</B> objects extensively.  These layer
+specifications implement competition among units in the same layer,
+which is central to the self-organizing algorithms.  Thus, there are
+three different layer specs all derived from a common <B>SoLayerSpec</B>
+which implement hard competitive learning (<B>Cl</B>), soft competitive
+learning (<B>SoftCl</B>), and the self-organizing map (<B>Som</B>) activation
+functions.
+
+</P>
+<P>
+There are no new statistics defined for self-organizing learning, and
+only one process object, which performs a simple feed-forward processing
+trial (all of the So algorithms are feed-forward).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_229.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_231.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

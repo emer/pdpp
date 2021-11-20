@@ -1,0 +1,69 @@
+###########################################################
+# ta/css/pdp++ makefile: set up the lib file links
+# be sure to run make Makefiles in the top level directory
+# first, since this is just a stub makefile
+#
+
+# myiberty is always non-shared..
+
+LIB_DIRS = ta_string/$(CPU)/lib_include/libtastring.$(LIB_EXT) \
+	../lib/myiberty_$(CPU)/libmyiberty.a \
+	iv_misc/$(CPU)/lib_include/libivmisc.$(LIB_EXT) \
+	ta/$(CPU)/lib_include/libtypea.$(LIB_EXT) \
+	ta_lib_min/$(CPU)/lib_include/libtypea_min.$(LIB_EXT) \
+	css/$(CPU)/lib_include/libcss.$(LIB_EXT) \
+	css/$(CPU)/lib_include/libhard_css.$(LIB_EXT) \
+	iv_graphic/$(CPU)/lib_include/libivgraphic.$(LIB_EXT) \
+	ta_misc/$(CPU)/lib_include/libtamisc.$(LIB_EXT) \
+	pdp/$(CPU)/lib_include/libpdp.$(LIB_EXT) \
+	bp/$(CPU)/lib_include/libpdp_bp.$(LIB_EXT) \
+	cs/$(CPU)/lib_include/libpdp_cs.$(LIB_EXT) \
+	so/$(CPU)/lib_include/libpdp_so.$(LIB_EXT) \
+	leabra/$(CPU)/lib_include/libpdp_leabra.$(LIB_EXT) \
+	oldlba/$(CPU)/lib_include/libpdp_oldlba.$(LIB_EXT)
+
+default: libs
+
+-lmyiberty:
+	@if [ ! -f myiberty_$(CPU) ];\
+	then (echo "Creating Directory myiberty_$(CPU)";\
+	mkdir myiberty_$(CPU))\
+	fi;\
+	$(CD) myiberty_$(CPU);\
+	if [ ! -f alloca.o ]; \
+	then (echo " ";\
+	echo "**** NOTICE ****";\
+	echo "Need to copy alloca.o and xmalloc.o from the gnu libiberty";\
+	echo "library distribution, which is distributed with many gnu";\
+	echo "programs, including gdb and binutils, into the";\
+	echo "myiberty_$(CPU) directory in order to make 'myiberty' lib";\
+	echo "****************";\
+	echo " ")\
+	else (\
+	$(AR) libmyiberty.a *.o;\
+	$(RANLIB) libmyiberty.a;\
+	$(CD) .. );\
+	fi;
+
+-liberty:
+myiberty: -lmyiberty
+iberty: -liberty
+
+# iberty is no longer needed -- modern readline versions
+# no longer require it, and it is not used by pdp++ natively
+# so we can get rid of the dependence on $(IBERTY_LIB)
+libs:
+	-@$(MKDIR) $(CPU)
+	-$(CD) $(CPU);\
+	$(RM) *;\
+	for i in $(LIB_DIRS);\
+	  do $(LN) $(TOP)/$$i .;\
+	done
+
+# libs:	$(IBERTY_LIB)
+# 	-@$(MKDIR) $(CPU)
+# 	-$(CD) $(CPU);\
+# 	$(RM) *;\
+# 	for i in $(LIB_DIRS);\
+# 	  do $(LN) $(TOP)/$$i .;\
+# 	done

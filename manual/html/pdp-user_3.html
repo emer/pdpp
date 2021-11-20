@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - inst-users</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_2.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_4.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H2><A HREF="pdp-user_toc.html">2.1  Installing the End User's Version</A></H2>
+
+<P>
+After downloading the two tar files, <TT>`pdp++_version_bin_CPU.tar.gz'</TT>
+and <TT>`pdp++_version_ext.tar.gz'</TT>, you need to decide where to locate
+the files.  It is recommended that you put them in
+<TT>`/usr/local/pdp++'</TT>, but they can be put anywhere.  However, the
+<CODE>PDPDIR</CODE> environmental variable must then be set for all users to
+the location it is actually installed in.  In addition if your CPU
+supports shared libraries (all unix versions, including LINUX, IBMaix,
+SUN4, HP800, SGI, but not DARWIN), you will need to insure that the
+<CODE>LD_LIBRARY_PATH</CODE> environment variable includes the path
+<CODE>PDPDIR/lib/CPU</CODE> where PDPDIR is the location of the pdp++
+distribution, and CPU is your system type as described above (more
+details on this below).  The following will assume that you are
+installing in <TT>`/usr/local/pdp++'</TT>.
+
+</P>
+<P>
+Note: all of the PDP++ software is distributed in the gnu <TT>`gzip'</TT>
+format, and it also uses gzip to automatically compress and decompress
+the network, project, and environment files so that they take up less
+space on your disk.  Thus, your system must have <TT>`gzip'</TT> installed
+before proceeding.  It can be obtained from the GNU ftp server
+(<TT>`gnudist.gnu.org'</TT>) or one of its mirrors, and is typically
+installed on most modern systems anyway.
+
+</P>
+<P>
+Go to the <TT>`/usr/local'</TT> directory, and issue the following command:
+<PRE>  gzip -dc &#60;tarfile&#62; | tar -xf -
+</PRE>
+
+<P>
+or, on Linux or other systems having a gnutar program
+<PRE>  tar -xzf &#60;tarfile&#62;
+</PRE>
+
+<P>
+where <VAR>&#60;tarfile&#62;</VAR> is the name of the tar archive file.  Note that
+the tar files will create the pdp++ directory, or load into it if it
+already exists.  Thus, if you have an old version of the software, be
+sure to rename its directory something else before loading the new
+files.
+
+</P>
+<P>
+<B>LINUX users:</B> There is a special <TT>`.rpm'</TT> file that will install
+the LINUX binaries and ext tar contents, including making links to the
+binaries in /usr/local/bin, and installing the libIV.so library (and
+links) in /usr/local/lib, and all of the ext-tra stuff in
+/usr/local/pdp++.  To install this file, you need to be super-user, and
+then execute the following command:
+<PRE>  rpm -Uvh pdp++-binext-VERSION.i386.rpm
+</PRE>
+
+<P>
+Note that the PDP++ specific libraires are still installed in
+PDPDIR/lib/LINUX, so you still need to set the LD_LIBRARY_PATH to
+include this path.
+
+</P>
+<P>
+<B>Windows users (CYGWIN)</B>: There is a special <TT>`.exe'</TT> file that is
+an auto-installing executable distribution of both the bin and ext tar
+files described above.  This should be used to install under windows.
+If you should install it in a location other than the default
+<TT>`C:\PDP++'</TT> directory, you should add a <CODE>set PDPDIR=path</CODE> in
+the <TT>`C:\autoexec.bat'</TT> file.
+
+</P>
+<P>
+<B>OS-X users</B>: There is a special <TT>`.pkg.sit'</TT> file that is
+an auto-installing package file distribution of both the bin and ext tar
+files described above.
+
+</P>
+<P>
+All further references to file names, unless otherwise stated, assume
+that you are in the PDPDIR directory (e.g., <TT>`/usr/local/pdp++'</TT>).
+
+</P>
+<P>
+The files will get loaded into the following directories:
+
+</P>
+<DL COMPACT>
+
+<DT><TT>`bin'</TT>
+<DD>
+binaries (executable files) go here
+<DT><TT>`config'</TT>
+<DD>
+configuration (for Makefile) and some standard init files are found here
+<DT><TT>`css'</TT>
+<DD>
+contains include files for commonly-used css scripts and some additional
+documentation, plus some demo script files
+<DT><TT>`defaults'</TT>
+<DD>
+contains default configuration files for the various executables (see
+the manual for more information).
+<DT><TT>`demo'</TT>
+<DD>
+contains demonstrations of various aspects of the PDP++ software.
+<DT><TT>`manual'</TT>
+<DD>
+contains the manual, which is in texinfo format	and has been made into a
+.ps, emacs .info, and html files.
+<DT><TT>`src'</TT>
+<DD>
+contains the source code for the software.
+<DT><TT>`lib'</TT>
+<DD>
+libraries (for dynamically linked executables) go here
+<DT><TT>`interviews/lib'</TT>
+<DD>
+InterViews toolkit libraries (for dynamically linked executables) go
+here.
+</DL>
+
+<P>
+The binaries will get unloaded into <TT>`bin/CPU'</TT>, where <CODE>CPU</CODE> is
+the system name as described above.  The binaries are:
+
+</P>
+<DL COMPACT>
+
+<DT><TT>`bp++'</TT>
+<DD>
+The backpropagation executable (see section <A HREF="pdp-user_197.html">14  Backpropagation</A>).
+<DT><TT>`cs++'</TT>
+<DD>
+The constraint satisfaction executable (see section <A HREF="pdp-user_217.html">15  Constraint Satisfaction</A>).
+<DT><TT>`so++'</TT>
+<DD>
+The self-organizing learning executable (see section <A HREF="pdp-user_229.html">16  Self-organizing Learning</A>).
+<DT><TT>`bpso++'</TT>
+<DD>
+A combination of backpropagation and self-organization algorithms, so
+hybrid networks can be built.
+<DT><TT>`leabra++'</TT>
+<DD>
+The Leabra algorithm developed by O'Reilly, which incorporates Hebbian
+and error-driven learning, together with a k-Winners-Take-All
+competitive activation function, into a single coherent framework, which
+is biologically based.  See "Computational Explorations in Cognitive
+Neuroscience: Understanding the Mind by Simulating the Brain", by
+O'Reilly and Munakata, MIT Press, 2000 (September) and associated
+simulations section <A HREF="pdp-user_1.html">1  Introduction to the PDP++ Software</A> for details.
+<DT><TT>`lstm++'</TT>
+<DD>
+The long-short-term-memory algorithm by Hochreiter, Schmidhuber et al.
+<DT><TT>`rns++'</TT>
+<DD>
+The real-time neural simultation program developed by Josh Brown.
+<DT><TT>`maketa'</TT>
+<DD>
+The type-scanner used for programming the software.  You can
+read about it in section <A HREF="pdp-user_247.html">18  Programming in PDP++</A>.
+<DT><TT>`css'</TT>
+<DD>
+A stand-alone version of the CSS script language system.  It can
+be used as an interpreted C++ language system for any number of tasks.
+</DL>
+
+<P>
+You should either add the path to these binaries to your standard path,
+or make symbolic links to these files in <TT>`/usr/local/bin'</TT> or some
+similar place which most user's will have on their path already.  For
+example, in a csh-like shell (e.g., in the <TT>`~/.cshrc'</TT> file that
+initializes this shell), add (for the LINUX CPU):
+<PRE>set path = (/usr/local/pdp++/bin/LINUX $path)
+</PRE>
+
+<P>
+or to make the symbolic links, do:
+<PRE>cd /usr/local/bin
+ln -s /usr/local/pdp++/bin/LINUX/* .
+</PRE>
+
+
+<H2>2.2  Configuring the Libraries</H2>
+
+<P>
+<B>IMPORTANT:</B> Most of the binaries are dynamically linked, which means
+that the <TT>`pdp++_version_bin_CPU.tar.gz'</TT> file installed some dynamic
+libraries in the <TT>`PDPDIR/lib/CPU'</TT> directory and in the
+<TT>`PDPDIR/interviews/lib/CPU'</TT> directory.  When one of the PDP++
+programs is run, it will need to know where to find these dynamic
+libraries.  Thus you must set the <CODE>LD_LIBRARY_PATH</CODE> environmental
+variable (using <CODE>setenv</CODE> under csh/tcsh) to point to both of these
+locations.  For example, under LINUX with the standard PDPDIR:
+<PRE>setenv LD_LIBRARY_PATH /usr/local/pdp++/lib/LINUX:/usr/local/pdp++/interviews/lib/LINUX
+</PRE>
+
+<P>
+It is a good idea to put this setting in your initialization
+file for your shell (i.e. <TT>`~/.cshrc'</TT>).
+
+</P>
+<P>
+It might be easier, especially if you want to use idraw or other
+programs available under interviews, to copy the
+<TT>`PDPDIR/interviews/lib/CPU/libIVhines.so*'</TT> (or .sl for HP800) file into
+your <TT>`/usr/local/lib'</TT> or somewhere else that is already on your
+dynamic linker's path.
+
+</P>
+<P>
+<B>ADDITIONAL STEPS FOR libIV:</B> First, note that we are now using (as
+of version 3.0) the version of InterViews maintained by Michael Hines
+as part of the NEURON detailed neural simulation package.  This
+library is now called <TT>`libIVhines'</TT>.  The latest version should
+always be available at <TT>`ftp://www.neuron.yale.edu/neuron/unix/'</TT>,
+with the current version being <TT>`iv-15.tar.gz'</TT> (also available on the
+PDP++ ftp sites).
+
+</P>
+<P>
+The interviews library in <TT>`PDPDIR/interviews/lib/CPU'</TT> is called
+libIVhines.so.3.0.3 (or possibly other numbers instead of 3.0.3), but
+on several unix systems (including LINUX, SGI, SUN4) the linker also
+wants to see a libIVhines.so.3 and a libIVhines.so as different names
+for this same file.  Therefore, you need to do the following in
+whatever directory you end up installing libIVhines.so.3.0.3 (even if
+you keep it in the original location, you need to do this extra step):
+<PRE>ln -s libIVhines.so.3.0.3 libIVhines.so.3
+ln -s libIVhines.so.3.0.3 libIVhines.so
+</PRE>
+
+<P>
+(replace 3.0.3 and .3 with the appropriate numbers for the libIVhines
+file you actually have).  Note that the .rpm install under LINUX does
+this automatically.
+
+</P>
+
+<H2>2.3  Manual</H2>
+
+<P>
+The manual is distributed in several versions, including a postscript
+file that can be printed out for hard-copy, a set of "info" files that
+can be installed in your standard info file location and added to your
+<TT>`dir'</TT> file for reading info files in gnu emacs and other programs,
+and a directory called <TT>`html'</TT> which contains a large number of
+<TT>`.html'</TT> files that can be read with <TT>`Netscape'</TT>, <TT>`Mosaic'</TT>
+or some other WWW program.  Point your program at <TT>`pdp-user_1.html'</TT>
+for the chapter-level summary, or <TT>`pdp-user_toc.html'</TT> for the
+detailed table of contents. 
+
+</P>
+
+<H3>2.3.1  Help Viewer Configuration</H3>
+
+<P>
+There is now a <CODE>Help</CODE> menu item on all of the objects (under the
+<CODE>Object</CODE> menu), which automatically pulls up the appropriate
+section of the <TT>`html'</TT> version of the manual, using <TT>`netscape'</TT>
+by default.
+
+</P>
+<P>
+Under Windows (CYGWIN), the default help command is setup to use
+<TT>`C:/Program Files/Internet Explorer/iexplorer.exe'</TT> -- if you
+prefer netscape or any other HTML browser, this should be changed to the
+full path to that executable.
+
+</P>
+<P>
+Under Mac (DARWIN), the default help command is <TT>`open -a
+\"Internet Explorer\" %s &#38;'</TT> -- this should work for most systems,
+although you might want to use the new browser whatever it is called.
+
+</P>
+<P>
+These defaults can be changed in the <CODE>Settings</CODE> menu of the
+<CODE>PDP++Root</CODE> object, see section <A HREF="pdp-user_107.html">9.5  Customization Through Defaults and Settings</A> and section <A HREF="pdp-user_58.html">6.17  Settings Affecting GUI Behavior</A>
+for details.
+
+</P>
+<P>
+The latest version of the manual is also available on-line from:
+<PRE>  http://psych.colorado.edu/~oreilly/PDP++/PDP++.html
+</PRE>
+
+
+<H2>2.4  MS Windows Configuration</H2>
+
+
+<H3>2.4.1  Memory Configuration</H3>
+
+<P>
+The PDP++ executables are compiled using an
+environment called cygwin developed by Cygnus Solutions (now owned by
+Red Hat Software).  The default cygwin configuration has an upper limit
+of 128MB, which should work for most simulations.  However, you might
+want to increase this limit if you are exploring larger simulations.
+
+</P>
+<P>
+Open regedit (or regedt32) and find the key
+HKEY_CURRENT_USER\Software\Cygnus Solutions\Cygwin\
+
+</P>
+<P>
+If this does not exist, you must create a new Key called 
+Cygnus Solutions, and then another within it called Cygwin.
+
+</P>
+<P>
+Then, create a new DWORD value under this key called
+"heap_chunk_in_mb" that contains the maximum amount of memory (in Mb)
+your application needs (watch the hex/decimal toggle -- you'll
+probably want to set it to decimal).  For example if you wanted to set
+the memory limit to 256Mb, just enter 256.  Exit and restart all
+cygwin applications (e.g., pdp++).
+
+</P>
+
+<H3>2.4.2  Taskbar Configuration</H3>
+
+<P>
+Because the simulator uses many windows, the windows taskbar often does
+not adequetly display the names of the windows.  This can be remediated
+by dragging the top of the bar up, allowing more room for each icon.
+Another approach is to grab the taskbar, drag it to the right edge of
+the screen, drag the left edge to widen it, and then set it to auto hide
+(right click on the taskbar, and select Properties to expose this
+option, or go to the Start menu/Settings/Taskbar).  When all this has
+been done, the window list can be exposed bringing the pointer to the
+right edge of the screen.
+
+</P>
+
+<H2>2.5  Mac OS-X Configuration</H2>
+
+<P>
+PDP++ depends on having an XWindows (X11) server running on your mac.
+Apple now has their own version of the XFree86 X11 server, which runs
+very smoothly under the standard OSX window manager.  This is the
+recommended solution.  Read more about it and download from:
+
+</P>
+<P>
+<CODE>http://www.apple.com/macosx/x11/</CODE>
+
+</P>
+<P>
+Basically, everything works just as under unix because this is a
+fairly standard unix setup after all is said and done.  The manual
+should therefore provide all the info you need.
+
+</P>
+
+<H2>2.6  Other Configuration</H2>
+
+<P>
+See section <A HREF="pdp-user_107.html">9.5  Customization Through Defaults and Settings</A> for instructions on how to setup customized
+startup files if you want to change some of the default properties of
+the system.
+
+</P>
+<P>
+Happy simulating!
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_2.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_4.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

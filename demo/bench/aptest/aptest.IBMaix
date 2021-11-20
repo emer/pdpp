@@ -1,0 +1,51 @@
+#! /bin/csh -f
+
+# IBMaix
+
+# optimal CC setting
+set CC = "xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt"
+
+#set CC = "xlc -O3 -qstrict -qarch=pwr2 -qfloat=hsflt"
+#set CC = "xlc -O3 -qstrict -qfloat=hsflt"
+#set CC = "xlc -O3 -qunroll -qarch=pwr2 -qfloat=hsflt"
+#set CC = "xlc -O3 -qstrict -qunroll -qarch=pwr2 -qfloat=hsflt"
+#set CC = "xlc -O3 -qstrict -qarch=pwr2"
+#set CC = "xlc -O2 -qarch=pwr2 -qfloat=hsflt"
+#set CC = "xlc -O2 -qfloat=hsflt"
+#set CC = "xlc -O2 -qarch=pwr2"
+
+#set CC = "gcc -O"
+#set CC = "gcc -O2"
+#set CC = "gcc -O3"
+#set CC = "gcc -O2 -ffast-math"
+#set CC = "gcc -O2 -fomit-frame-pointer"
+#set CC = "gcc -O2 -funroll-loops"
+#set CC = "gcc -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+echo $CC >results
+
+$CC -DSIZE=1000 atest.c -o atest
+$CC -DSIZE=1000 ptest.c -o ptest
+echo "Large Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Large Network ptest:" >> results
+(time ./ptest) >>& results
+echo " " >> results
+$CC -DSIZE=100 atest.c -o atest
+$CC -DSIZE=100 ptest.c -o ptest
+echo "Medium Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Medium Network ptest:" >> results
+(time ./ptest) >>& results
+echo " " >> results
+$CC -DSIZE=10 atest.c -o atest
+$CC -DSIZE=10 ptest.c -o ptest
+echo "Small Network atest:" >> results
+(time ./atest) >>& results
+echo " " >> results
+echo "Small Network ptest:" >> results
+(time ./ptest) >>& results
+
+cat results

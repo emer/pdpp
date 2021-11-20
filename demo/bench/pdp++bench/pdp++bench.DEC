@@ -1,0 +1,34 @@
+#! /bin/csh -f
+
+# machine-specific defines
+#set DEFINES="-DDEC -DNO_BUILTIN_BOOL"
+set DEFINES="-DDEC"
+
+# pdp++ coding options
+#set FLAGS="-DNO_DECAY -DNO_MOMENTUM_OPTS -DNO_WT_LIMITS"
+#set FLAGS="-DNO_DECAY"
+#set FLAGS="-DNO_MOMENTUM_OPTS"
+#set FLAGS="-DNO_WT_LIMITS"
+set FLAGS=
+
+# compiler command
+#set CC="cxx -O4"
+
+#set CC = "g++ -O2"
+#set CC = "g++ -O3"
+#set CC = "g++ -O2 -ffast-math"
+#set CC = "g++ -O2 -fomit-frame-pointer"
+#set CC = "g++ -O2 -funroll-loops"
+#set CC = "g++ -O3 -fomit-frame-pointer -ffast-math -funroll-loops"
+
+# optimal compiler
+set CC="cxx -O4"
+
+$CC $FLAGS $DEFINES -c pdp++base.cc -o pdp++base.o
+$CC $FLAGS $DEFINES -c pdp++bench.cc -o pdp++bench.o
+$CC $FLAGS $DEFINES -o pdp++bench pdp++base.o pdp++bench.o -lm
+
+echo $CC $FLAGS
+./pdp++bench 500 100
+./pdp++bench 100 2500
+./pdp++bench 10	250000

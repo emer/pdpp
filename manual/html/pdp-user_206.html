@@ -1,0 +1,200 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - bp-impl</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_205.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_207.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX1267" HREF="pdp-user_toc.html">14.1.8  Bp Implementation Details</A></H3>
+
+<P>
+Many of the relevant details are discussed above in the context of the
+descriptions of the basic Bp classes.  This section provides a little
+more detail that might be useful to someone who wanted to define their
+own versions of Bp classes, for example.
+
+</P>
+<P>
+Support for the activation updating phase of Bp is present in the basic
+structure of the PDP++ section <A HREF="pdp-user_125.html">10.4  Units</A> and section <A HREF="pdp-user_127.html">10.5  Connections</A> types,
+specifically in the <CODE>Compute_Net</CODE> and <CODE>Compute_Act</CODE> functions.
+We overload <CODE>Compute_Act</CODE> to implement the sigmoidal activation
+function.
+
+</P>
+<P>
+The error backpropagation phase is implemented with three new functions
+at both the unit and connection level.  The unit spec functions are:
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>Compute_dEdA(BpUnit* u)</CODE>
+<DD>
+<A NAME="IDX1268"></A>
+Computes the derivative of the error with respect to the
+activation.  If the unit is an output unit (i.e., it has the
+<CODE>ext_flag</CODE> <CODE>TARG</CODE> set), then it just calls the error function
+to get the difference between the target and actual output activation.
+If it is not an output unit, then it iterates through the sending
+connection groups (i.e., through the connections to units that this one
+sends activation to), and accumulates its <CODE>dEdA</CODE> as a function of
+the connection weight times the other unit's <CODE>dEdNet</CODE>.  This is done
+by calling the function <CODE>Compute_dEdA</CODE> on the sending connection
+groups, which calls this function on the <B>BpConSpec</B>, which is
+described below.
+<DT><CODE>Compute_dEdNet(BpUnit* u)</CODE>
+<DD>
+<A NAME="IDX1269"></A>
+Simply applies the derivative of the activation function to the
+already-computed <CODE>dEdA</CODE> to get the derivative with respect to the
+net input.
+<DT><CODE>Compute_Error(BpUnit* u)</CODE>
+<DD>
+<A NAME="IDX1270"></A>
+This function is not used in the standard training mode of Bp, but is
+defined so that the error can be computed when a network is being
+tested, but not trained.
+<DT><CODE>Compute_dWt(Unit* u)</CODE>
+<DD>
+<A NAME="IDX1271"></A>
+Computes the derivative of the error with respect to the weight
+(<CODE>dEdW</CODE>) for all of the unit's connections.  This is a function of
+the <CODE>dEdNet</CODE> of the unit, and the sending unit's activation.  This
+function is defined as part of the standard <B>UnitSpec</B> interface,
+and it simply calls the corresponding <CODE>Compute_dWt</CODE> function on the
+<CODE>ConSpec</CODE> for all of the receiving connection groups.  In Bp, it
+also calls <CODE>Compute_dWt</CODE> on for the bias weight.
+<DT><CODE>UpdateWeights(Unit* u)</CODE>
+<DD>
+<A NAME="IDX1272"></A>
+Updates the weights of the unit's connections based on the
+previously computed <CODE>dEdW</CODE>.  Like <CODE>Compute_dWt</CODE>, this function
+is defined to call the corresponding one on connection specs.  Also, it
+updates the bias weights.  Note that this function is called by the
+<B>EpochProcess</B>, and not by the algorithm-specific <B>BpTrial</B>
+directly.
+</DL>
+
+<P>
+The corresponding connection spec functions are as follows.  Note that,
+as described in section <A HREF="pdp-user_127.html">10.5  Connections</A>, there are two versions of every
+function defined in the <B>ConSpec</B>.  The one with a <CODE>C_</CODE> prefix
+operates on an individual <B>Connection</B>, while the other one
+iterates through a group of connections and calls the
+connection-specific one.
+
+</P>
+<DL COMPACT>
+
+<DT><CODE>float C_Compute_dEdA(BpCon* cn, BpUnit* ru, BpUnit* su)</CODE>
+<DD>
+<A NAME="IDX1273"></A>
+<DT><CODE>float Compute_dEdA(BpCon_Group* cg, BpUnit* su)</CODE>
+<DD>
+<A NAME="IDX1274"></A>
+These accumulate the derivative of the error with respect to the weights
+and return that value, which is used by the unit to increment its
+corresponding variable.  Note that this is being called on the
+<EM>sending</EM> connection groups of a given unit, which is passed as an
+argument to the functions.  The computation for each connection is
+simply the <CODE>dEdNet</CODE> of the unit that receives from the sending unit
+times the weight in between them.
+<DT><CODE>float C_Compute_dWt(BpCon* cn, BpUnit* ru, BpUnit* su)</CODE>
+<DD>
+<A NAME="IDX1275"></A>
+<DT><CODE>float Compute_dWt(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX1276"></A>
+These increment the <CODE>dEdW</CODE> variable on the receiving connections by
+multiplying the sending unit's activation value times the receiving
+unit's <CODE>dEdNet</CODE>. 
+<DT><CODE>float B_Compute_dWt(BpCon* cn, BpUnit* ru)</CODE>
+<DD>
+<A NAME="IDX1277"></A>
+The bias-weight version of this function.  It does not multiply
+times the sender's activation value (since there isn't one!).
+<DT><CODE>float C_Compute_WtDecay(BpCon* cn, BpUnit* ru, BpUnit* su)</CODE>
+<DD>
+<A NAME="IDX1278"></A>
+This calls the weight decay function on the given connection, if it is
+not NULL.  It is meant to be called as part of a <CODE>C_UpdateWeights</CODE>
+function.
+<DT><CODE>float C_BEF_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)</CODE>
+<DD>
+<A NAME="IDX1279"></A>
+<DT><CODE>float C_AFT_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)</CODE>
+<DD>
+<A NAME="IDX1280"></A>
+<DT><CODE>float C_NRM_UpdateWeights(BpCon* cn, Unit* ru, Unit* su)</CODE>
+<DD>
+<A NAME="IDX1281"></A>
+<DT><CODE>float UpdateWeights(Con_Group* cg, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX1282"></A>
+These are the functions that update the weights based on the accumulated
+<CODE>dEdW</CODE>. There is a different version of the connection-specific code
+for each of the different <CODE>momentum_type</CODE> values, and the
+group-level function has a separate loop for each type, which is more
+efficient that checking the type at each connection.
+<DT><CODE>float B_UpdateWeights(BpCon* cn, Unit* ru)</CODE>
+<DD>
+<A NAME="IDX1283"></A>
+The bias-weight version of the function, which checks the
+<CODE>momentum_type</CODE> variable and calls the appropriate <CODE>C_</CODE>
+function.
+</DL>
+
+<P>
+The following is a chart describing the flow of processing in the Bp
+algorithm, starting with the epoch process, since higher levels do not
+interact with the details of particular algorithms:
+
+</P>
+<PRE>EpochProcess: {
+  Init: {
+    environment-&#62;InitEvents();          // init events (if dynamic)
+    event_list.Add() 0 to environment-&#62;EventCount(); // get list of events
+    if(order == PERMUTE) event_list.Permute();       // permute if necessary
+    GetCurEvent();                      // get pointer to current event
+  }
+  Loop (trial): {                      // loop over trials
+    BpTrial: {                         // trial process (one event)
+      Init: {                          // at start of trial
+        cur_event = epoch_proc-&#62;cur_event; // get cur event from epoch
+      }
+      Loop (once): {                   // only process this once per trial
+        network-&#62;InitExterns();         // init external inputs to units
+        cur_event-&#62;ApplyPatterns(network); // apply patterns to network
+        Compute_Act(): {               // compute the activations
+          network-&#62;layers: {           // loop over layers
+            if(!layer-&#62;ext_flag &#38; Unit::EXT) // don't compute net for clamped
+              layer-&#62;Compute_Net();     // compute net inputs
+            layer-&#62;Compute_Act();       // compute activations from net in
+          }
+        }
+        Compute_dEdA_dEdNet(): {       // backpropagate error terms
+          network-&#62;layers (backwards): { // loop over layers backwards
+            units-&#62;Compute_dEdA();   // get error from other units or targets
+            units-&#62;Compute_dEdNet(); // add my unit error derivative
+          }
+        }
+        network-&#62;Compute_dWt();         // compute weight changes from error
+      }
+    }
+    if(wt_update == ON_LINE or wt_update == SMALL_BATCH and trial.val % batch_n)
+      network-&#62;UpdateWeights(); // after trial, update weights if necc
+    GetCurEvent();              // get next event
+  }
+  Final:
+    if(wt_update == BATCH)  network-&#62;UpdateWeights(); // batch weight updates
+}
+</PRE>
+
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_205.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_207.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

@@ -1,0 +1,10 @@
+// -*- C++ -*-
+// XXX.h 
+
+#ifdef __GNUG__
+#pragma implementation
+#endif
+#include "XXX.h"
+
+// we didn't define any non-inline functions, so there's nothing to
+// put in here, but if we did, this is where they would go...

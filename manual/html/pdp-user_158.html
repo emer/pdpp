@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51pdp
+     from ../pdp-user.texi on 2 May 2003 -->
+
+<TITLE>The PDP++ Software Users Manual - proc-levels-trial</TITLE>
+</HEAD>
+<BODY>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_157.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_159.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A><HR>
+
+
+<H3><A NAME="IDX949" HREF="pdp-user_toc.html">12.5.1  Presenting a Single Event: TrialProcess</A></H3>
+<P>
+<A NAME="IDX950"></A>
+<A NAME="IDX951"></A>
+<A NAME="IDX952"></A>
+
+</P>
+<P>
+The <B>TrialProcess</B> executes a single trial of processing, which
+corresponds to the presentation of a single <B>Event</B> to the network.
+This process is never used in its base form.  Instead, different
+algorithms derive versions of this process which perform
+algorithm-specific computations.
+
+</P>
+<P>
+<A NAME="IDX953"></A>
+The trial process obtains the current event to be processed from the
+epoch process, which it finds somewhere above it in the processing
+hierarchy.  It keeps a pointer to this event in its own <CODE>cur_event</CODE>
+member.  It also typically depends on the epoch process <CODE>wt_update</CODE>
+field to determine if it should be computing weight changes or just
+testing the network.
+
+</P>
+<P>
+Some types of <B>TrialProcess</B> objects are terminal levels in the
+processing hierarchy, since they perform all of the basic computations
+directly on the network.  This is true of feedforward backpropagation,
+for example (see section <A HREF="pdp-user_202.html">14.1.4  The Bp Trial Process</A>).  However, other types of trial process
+have sub-processes which perform iterative setting and cycling
+processes, which are described below.  This is true of the constraint
+satisfaction trial process, for example (see section <A HREF="pdp-user_221.html">15.4  Cs Proceses</A>).
+
+</P>
+<P><HR><P>
+<A HREF="pdp-user_1.html"><IMG SRC="icons/top.gif"><ALT="first,"></A><A HREF="pdp-user_157.html"><IMG SRC="icons/prev.gif"><ALT="previous,"></A><A HREF="pdp-user_159.html"><IMG SRC="icons/next.gif"><ALT="next,"></A><A HREF="pdp-user_1.html"><IMG SRC="icons/up.gif"><ALT="up,"></A><A HREF="pdp-user_toc.html"><IMG SRC="icons/toc.gif"><ALT="table of contents"></A></BODY>
+</HTML>

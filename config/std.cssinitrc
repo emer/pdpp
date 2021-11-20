@@ -1,0 +1,26 @@
+// -*- C++ -*-
+// init file for css script language
+
+// aliases
+alias print p
+alias list ls
+alias type types
+alias shell sh
+alias exit quit
+
+// functions
+extern void cp(String fn, String fn2);
+extern void dir(String fn="");
+extern void emacs(String fn="");
+extern void mv(String fn, String fn2);
+extern void mkdir(String fn);
+extern void more(String fn);
+extern void rm(String fn);
+void cp(String fn, String fn2)	{ system("cp -i "+fn+" "+fn2); }
+void dir(String fn)		{ system("ls -FC "+fn); }
+void emacs(String fn) 		{ system("emacs " + fn + "&"); }
+void mv(String fn, String fn2)	{ system("mv -i "+fn+" "+fn2); }
+void mkdir(String fn)		{ system("mkdir "+fn); }
+void more(String fn)		{ system("more "+fn); }
+void rm(String fn)		{ system("rm -i "+fn); }
+

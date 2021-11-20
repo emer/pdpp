@@ -1,0 +1,334 @@
+// ta_Dump File v1.0
+Layer .projects[0].networks[0].layers[4] { 
+Projection_Group @.projections {
+Projection @[0] { };
+Projection @[1] { };
+};
+
+Unit_Group @.units {
+CsUnit @[0] { 
+taSubGroup @.recv.gp {
+CsCon_Group @[0] { };
+CsCon_Group @[1] { };
+};
+
+taSubGroup @.send.gp {
+CsCon_Group @[0] { };
+CsCon_Group @[1] { };
+CsCon_Group @[2] { };
+};
+};
+CsUnit @[1] { 
+taSubGroup @.recv.gp {
+CsCon_Group @[0] { };
+CsCon_Group @[1] { };
+};
+
+taSubGroup @.send.gp {
+CsCon_Group @[0] { };
+CsCon_Group @[1] { };
+CsCon_Group @[2] { };
+};
+};
+};
+};
+Layer .projects[0].networks[0].layers[4] {
+name="Obj_LR";
+n_units=2;
+geom {x=2: y=1: z=1: };
+pos {x=22: y=6: z=2: };
+projections {
+el_typ=Projection;
+el_def=0;
+name="";
+Projection @[0] {
+name="Fm_Obj_LR";
+from_type=SELF;
+from=.projects[0].networks[0].layers[4]$0$;
+spec {type=FullPrjnSpec: spec=.projects[0].specs[1]$1$: };
+con_type=CsCon;
+con_gp_type=CsCon_Group;
+con_spec {type=CsConSpec: spec=.projects[0].specs[0].children[4]$2$: };
+recv_idx=1;
+send_idx=1;
+projected=1;
+proj_points=NULL;
+};
+Projection @[1] {
+name="Fm_Fig_Gr";
+from_type=CUSTOM;
+from=.projects[0].networks[0].layers[5]$3$;
+spec {type=FullPrjnSpec: spec=$1$: };
+con_type=CsCon;
+con_gp_type=CsCon_Group;
+con_spec {type=CsConSpec: spec=.projects[0].specs[0].children[3]$4$: };
+recv_idx=1;
+send_idx=5;
+projected=1;
+proj_points=NULL;
+};
+};
+units {
+el_typ=CsUnit;
+el_def=0;
+name="";
+pos {x=0: y=0: z=0: };
+CsUnit @[0] {
+name="L";
+spec {type=SigmoidUnitSpec: spec=.projects[0].specs[4].children[1]$5$: };
+pos {x=0: y=0: z=0: };
+ext_flag=NO_EXTERNAL;
+targ=0;
+ext=0;
+act=0.25;
+net=0;
+recv {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=NULL;
+own_cons=0;
+CsCon_Group @.gp[0] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=.projects[0].networks[0].layers[4].projections[0]$6$;
+own_cons=1;
+};
+{ units = {[1]; };
+wt = {-250; };
+};
+CsCon_Group @.gp[1] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=.projects[0].networks[0].layers[4].projections[1]$7$;
+own_cons=1;
+};
+{ units = {[0]; [1]; [2]; [3]; [4]; [5]; [6]; [7]; 
+[8]; [9]; [10]; [11]; [12]; [13]; [14]; [15]; 
+[16]; [17]; [18]; [19]; [20]; [21]; [22]; [23]; 
+[24]; [25]; [26]; [27]; [28]; [29]; [30]; [31]; 
+[32]; [33]; [34]; [35]; [36]; [37]; [38]; [39]; 
+[40]; [41]; [42]; [43]; [44]; [45]; [46]; [47]; 
+[48]; [49]; [50]; [51]; [52]; [53]; [54]; [55]; 
+[56]; [57]; [58]; [59]; [60]; [61]; [62]; [63]; 
+[64]; [65]; [66]; [67]; [68]; [69]; [70]; [71]; 
+[72]; [73]; [74]; [75]; [76]; [77]; [78]; [79]; 
+[80]; [81]; [82]; [83]; [84]; [85]; [86]; [87]; 
+[88]; [89]; [90]; [91]; [92]; [93]; [94]; [95]; 
+[96]; [97]; [98]; [99]; [100]; [101]; [102]; [103]; 
+[104]; [105]; [106]; [107]; [108]; [109]; [110]; [111]; 
+[112]; [113]; [114]; [115]; [116]; [117]; [118]; [119]; 
+[120]; [121]; [122]; [123]; [124]; [125]; [126]; [127]; 
+[128]; [129]; [130]; [131]; [132]; [133]; [134]; [135]; 
+[136]; [137]; [138]; [139]; [140]; [141]; [142]; [143]; 
+[144]; [145]; [146]; [147]; [148]; [149]; [150]; [151]; 
+[152]; [153]; [154]; [155]; [156]; [157]; [158]; [159]; 
+[160]; [161]; [162]; [163]; [164]; [165]; [166]; [167]; 
+[168]; [169]; [170]; [171]; [172]; [173]; [174]; [175]; 
+[176]; [177]; [178]; [179]; [180]; [181]; [182]; [183]; 
+[184]; [185]; [186]; [187]; [188]; [189]; [190]; [191]; 
+};
+wt = {0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 10; 10; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 10; 10; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 10; 10; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 10; 10; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 10; 10; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 10; 10; 0; 0; 0; 0; 0; 
+0; 0; 10; 10; 10; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 10; 10; 
+10; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; };
+};
+};
+send {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=NULL;
+own_cons=0;
+CsCon_Group @.gp[0] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=$6$;
+own_cons=0;
+};
+CsCon_Group @.gp[1] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=$6$;
+own_cons=0;
+};
+CsCon_Group @.gp[2] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=.projects[0].networks[0].layers[5].projections[5]$8$;
+own_cons=0;
+};
+};
+bias {
+wt=-250;
+};
+da=0;
+prv_net=0;
+act_m=0.0392785;
+act_p=0;
+n_dwt_aggs=0;
+};
+CsUnit @[1] {
+name="R";
+spec {type=SigmoidUnitSpec: spec=$5$: };
+pos {x=1: y=0: z=0: };
+ext_flag=NO_EXTERNAL;
+targ=0;
+ext=0;
+act=0.25;
+net=0;
+recv {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=NULL;
+own_cons=0;
+CsCon_Group @.gp[0] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=$6$;
+own_cons=1;
+};
+{ units = {[0]; };
+wt = {-250; };
+};
+CsCon_Group @.gp[1] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=$7$;
+own_cons=1;
+};
+{ units = {[0]; [1]; [2]; [3]; [4]; [5]; [6]; [7]; 
+[8]; [9]; [10]; [11]; [12]; [13]; [14]; [15]; 
+[16]; [17]; [18]; [19]; [20]; [21]; [22]; [23]; 
+[24]; [25]; [26]; [27]; [28]; [29]; [30]; [31]; 
+[32]; [33]; [34]; [35]; [36]; [37]; [38]; [39]; 
+[40]; [41]; [42]; [43]; [44]; [45]; [46]; [47]; 
+[48]; [49]; [50]; [51]; [52]; [53]; [54]; [55]; 
+[56]; [57]; [58]; [59]; [60]; [61]; [62]; [63]; 
+[64]; [65]; [66]; [67]; [68]; [69]; [70]; [71]; 
+[72]; [73]; [74]; [75]; [76]; [77]; [78]; [79]; 
+[80]; [81]; [82]; [83]; [84]; [85]; [86]; [87]; 
+[88]; [89]; [90]; [91]; [92]; [93]; [94]; [95]; 
+[96]; [97]; [98]; [99]; [100]; [101]; [102]; [103]; 
+[104]; [105]; [106]; [107]; [108]; [109]; [110]; [111]; 
+[112]; [113]; [114]; [115]; [116]; [117]; [118]; [119]; 
+[120]; [121]; [122]; [123]; [124]; [125]; [126]; [127]; 
+[128]; [129]; [130]; [131]; [132]; [133]; [134]; [135]; 
+[136]; [137]; [138]; [139]; [140]; [141]; [142]; [143]; 
+[144]; [145]; [146]; [147]; [148]; [149]; [150]; [151]; 
+[152]; [153]; [154]; [155]; [156]; [157]; [158]; [159]; 
+[160]; [161]; [162]; [163]; [164]; [165]; [166]; [167]; 
+[168]; [169]; [170]; [171]; [172]; [173]; [174]; [175]; 
+[176]; [177]; [178]; [179]; [180]; [181]; [182]; [183]; 
+[184]; [185]; [186]; [187]; [188]; [189]; [190]; [191]; 
+};
+wt = {0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 10; 10; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 10; 10; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 10; 10; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 10; 10; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 10; 10; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 10; 10; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 10; 
+10; 10; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 10; 10; 10; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; 
+0; 0; 0; 0; 0; 0; 0; 0; };
+};
+};
+send {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=NULL;
+own_cons=0;
+CsCon_Group @.gp[0] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=$6$;
+own_cons=0;
+};
+CsCon_Group @.gp[1] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$2$: };
+prjn=$6$;
+own_cons=0;
+};
+CsCon_Group @.gp[2] {
+el_typ=CsCon;
+el_def=0;
+name="";
+spec {type=CsConSpec: spec=$4$: };
+prjn=$8$;
+own_cons=0;
+};
+};
+bias {
+wt=-250;
+};
+da=0;
+prv_net=0;
+act_m=0.945125;
+act_p=0;
+n_dwt_aggs=0;
+};
+};
+unit_spec {type=SigmoidUnitSpec: spec=$5$: };
+lesion=0;
+ext_flag=NO_EXTERNAL;
+};
